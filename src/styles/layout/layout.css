@@ -1,0 +1,234 @@
+/* 布局样式 */
+.app {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-primary);
+    transition: background-color var(--transition-base);
+}
+
+/* 登录页面布局 */
+.login-page {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: var(--spacing-lg);
+}
+
+.login-box {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-large);
+}
+
+.login-title {
+    font-size: var(--font-size-xxl);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    color: var(--text-primary);
+}
+
+/* 主应用布局 */
+.main-app {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: var(--header-height) 1fr;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 顶部导航栏 */
+.header {
+    grid-column: 1 / -1;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-secondary);
+    display: flex;
+    align-items: center;
+    padding: 0 var(--spacing-lg);
+    box-shadow: var(--shadow-small);
+    z-index: 100;
+}
+
+.header__logo {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-right: var(--spacing-xl);
+}
+
+.header__nav {
+    flex: 1;
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* 侧边栏 */
+.sidebar {
+    background: var(--bg-card);
+    border-right: 1px solid var(--border-secondary);
+    overflow-y: auto;
+    padding: var(--spacing-lg) 0;
+}
+
+.sidebar__menu {
+    padding: 0 var(--spacing-md);
+}
+
+.menu-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.menu-section__title {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+/* 主内容区域 */
+.main-content {
+    background: var(--bg-secondary);
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+}
+
+.page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* 页面标题 */
+.page-header {
+    margin-bottom: var(--spacing-lg);
+}
+
+.page-title {
+    font-size: var(--font-size-xxl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.page-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+}
+
+/* 网格布局 */
+.grid {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid--4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* 响应式布局 */
+@media (max-width: 1024px) {
+    .main-app {
+        grid-template-columns: 0 1fr;
+    }
+    
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        top: var(--header-height);
+        width: var(--sidebar-width);
+        height: calc(100vh - var(--header-height));
+        transition: left var(--transition-base);
+        z-index: 99;
+    }
+    
+    .sidebar--open {
+        left: 0;
+        box-shadow: var(--shadow-large);
+    }
+    
+    .grid--4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .grid--3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .header__nav {
+        display: none;
+    }
+    
+    .grid--4,
+    .grid--3,
+    .grid--2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .main-content {
+        padding: var(--spacing-md);
+    }
+}
+
+/* 加载器 */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loader__spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--bg-primary);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

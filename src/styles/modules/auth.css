@@ -1,0 +1,490 @@
+/**
+ * 认证页面样式
+ */
+
+.ess-auth {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.ess-auth__container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+/* 语言切换器 */
+.ess-auth__language {
+    position: absolute;
+    top: -60px;
+    right: 60px;
+    z-index: 10;
+}
+
+.ess-auth__lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ess-auth__lang-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 主题切换器 */
+.ess-auth__theme {
+    position: absolute;
+    top: -60px;
+    right: 10px;
+    z-index: 10;
+}
+
+.ess-auth__theme-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ess-auth__theme-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* 主容器 */
+.ess-auth__box {
+    background: white;
+    border-radius: 12px;
+    padding: 40px 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.ess-auth__box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+/* Logo */
+.ess-auth__logo {
+    margin-bottom: 20px;
+}
+
+.ess-auth__logo img {
+    height: 60px;
+    width: auto;
+}
+
+/* 标题 */
+.ess-auth__title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.ess-auth__subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* 标签页 */
+.ess-auth__tabs {
+    display: flex;
+    margin-bottom: 30px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.ess-auth__tab {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.ess-auth__tab--active {
+    background: white;
+    color: #1890ff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 面板 */
+.ess-auth__panel {
+    display: none;
+}
+
+.ess-auth__panel--active {
+    display: block;
+}
+
+.ess-auth__panel-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.ess-auth__panel-desc {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+/* 返回按钮 */
+.ess-auth__back {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.ess-auth__back .ess-btn {
+    padding: 8px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.ess-auth__back .ess-btn:hover {
+    color: #1890ff;
+}
+
+/* 表单样式 */
+.ess-auth__form {
+    text-align: left;
+}
+
+.ess-form__group {
+    margin-bottom: 20px;
+}
+
+.ess-form__group--row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ess-form__group--password {
+    position: relative;
+}
+
+/* 输入框 */
+.ess-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.ess-input:focus {
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+    outline: none;
+}
+
+.ess-input::placeholder {
+    color: #bbb;
+}
+
+/* 密码切换按钮 */
+.ess-input__toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.ess-input__toggle:hover {
+    color: #666;
+}
+
+/* 复选框 */
+.ess-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    user-select: none;
+}
+
+.ess-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.ess-checkbox__label {
+    color: #666;
+    line-height: 1.4;
+}
+
+/* 按钮 */
+.ess-btn {
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: inherit;
+}
+
+.ess-btn--primary {
+    background: #1890ff;
+    color: white;
+    padding: 12px 24px;
+}
+
+.ess-btn--primary:hover {
+    background: #40a9ff;
+}
+
+.ess-btn--primary:disabled {
+    background: #d9d9d9;
+    cursor: not-allowed;
+}
+
+.ess-btn--block {
+    width: 100%;
+}
+
+.ess-btn--text {
+    background: transparent;
+    color: #666;
+    padding: 4px 0;
+}
+
+.ess-btn--text:hover {
+    color: #1890ff;
+}
+
+/* 链接 */
+.ess-link {
+    color: #1890ff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.ess-link:hover {
+    color: #40a9ff;
+    text-decoration: underline;
+}
+
+/* 消息提示 */
+.ess-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 10000;
+    animation: message-fade-in 0.3s ease;
+}
+
+.ess-message--success {
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+    color: #52c41a;
+}
+
+.ess-message--error {
+    background: #fff2f0;
+    border: 1px solid #ffccc7;
+    color: #ff4d4f;
+}
+
+.ess-message--info {
+    background: #e6f7ff;
+    border: 1px solid #91d5ff;
+    color: #1890ff;
+}
+
+@keyframes message-fade-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* 深色主题 */
+[data-theme="dark"] .ess-auth {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+}
+
+[data-theme="dark"] .ess-auth__box {
+    background: #1f2937;
+    color: #f9fafb;
+}
+
+[data-theme="dark"] .ess-auth__title {
+    color: #f9fafb;
+}
+
+[data-theme="dark"] .ess-auth__subtitle {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .ess-auth__tabs {
+    background: #374151;
+}
+
+[data-theme="dark"] .ess-auth__tab {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .ess-auth__tab--active {
+    background: #4b5563;
+    color: #60a5fa;
+}
+
+[data-theme="dark"] .ess-input {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+}
+
+[data-theme="dark"] .ess-input:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+}
+
+[data-theme="dark"] .ess-input::placeholder {
+    color: #6b7280;
+}
+
+[data-theme="dark"] .ess-checkbox__label {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .ess-btn--text {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .ess-btn--text:hover {
+    color: #60a5fa;
+}
+
+[data-theme="dark"] .ess-link {
+    color: #60a5fa;
+}
+
+[data-theme="dark"] .ess-link:hover {
+    color: #93c5fd;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .ess-auth__container {
+        max-width: 350px;
+        padding: 15px;
+    }
+    
+    .ess-auth__box {
+        padding: 30px 20px;
+    }
+    
+    .ess-auth__language {
+        top: -50px;
+        right: 50px;
+    }
+    
+    .ess-auth__lang-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+    
+    .ess-auth__theme {
+        top: -50px;
+        right: 5px;
+    }
+    
+    .ess-auth__theme-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ess-auth__container {
+        max-width: 320px;
+        padding: 10px;
+    }
+    
+    .ess-auth__box {
+        padding: 25px 15px;
+    }
+    
+    .ess-auth__title {
+        font-size: 20px;
+    }
+    
+    .ess-form__group--row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}

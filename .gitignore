@@ -1,0 +1,116 @@
+# 依赖目录
+node_modules/
+bower_components/
+
+# 构建输出
+dist/
+build/
+*.min.js
+*.min.css
+
+# 日志文件
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 运行时数据
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# 测试覆盖率
+coverage/
+.nyc_output/
+
+# 环境变量
+.env
+.env.local
+.env.development
+.env.production
+
+# IDE 配置
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# 操作系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.cache
+
+# 上传文件
+uploads/
+public/uploads/
+
+# 文档生成
+docs/_build/
+docs/.vuepress/dist/
+
+# 其他
+.sass-cache/
+.eslintcache
+.stylelintcache
+*.map
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.code-workspace
+
+# 本地配置
+local.config.js
+*.local.js
+
+# 压缩包
+*.zip
+*.rar
+*.tar
+*.gz
+*.7z
+
+# 数据库文件
+*.sqlite
+*.sqlite3
+*.db
+
+# 证书文件
+*.pem
+*.key
+*.crt
+*.p12
+
+# 备份文件
+backup/
+backups/
+*.backup
+
+# 私有文件
+private/
+secret/
+
+# 打包锁定文件（根据项目需要选择保留或忽略）
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml

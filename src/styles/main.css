@@ -1,0 +1,180 @@
+/* 工商储能柜能源管理系统 - 主样式文件 */
+
+/* 基础样式 */
+@import './base/variables.css';
+@import './base/reset.css';
+@import './base/typography.css';
+@import './base/animations.css';
+
+/* 布局样式 */
+@import './layout/grid.css';
+@import './layout/layout.css';
+@import './layout/header.css';
+@import './layout/sidebar.css';
+@import './layout/footer.css';
+@import './layout/responsive.css';
+
+/* 组件样式 */
+@import './components/button.css';
+@import './components/form.css';
+@import './components/input.css';
+@import './components/select.css';
+@import './components/checkbox.css';
+@import './components/radio.css';
+@import './components/switch.css';
+@import './components/table.css';
+@import './components/pagination.css';
+@import './components/modal.css';
+@import './components/drawer.css';
+@import './components/tabs.css';
+@import './components/card.css';
+@import './components/badge.css';
+@import './components/tooltip.css';
+@import './components/dropdown.css';
+@import './components/breadcrumb.css';
+@import './components/loading.css';
+@import './components/progress.css';
+@import './components/notification.css';
+
+/* 模块样式 */
+@import './modules/auth.css';
+@import './modules/dashboard.css';
+@import './modules/device.css';
+@import './modules/analysis.css';
+@import './modules/alarm.css';
+@import './modules/report.css';
+@import './modules/system.css';
+
+/* 主题样式 */
+@import './themes/default.css';
+@import './themes/dark.css';
+@import './themes/custom.css';
+
+/* 工具样式 */
+@import './utils/helpers.css';
+@import './utils/print.css';
+
+/* 全局样式 */
+.ess-app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* 主内容区域 */
+.ess-main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* 页面容器 */
+.ess-page {
+    flex: 1;
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    background-color: var(--bg-secondary);
+}
+
+/* 页面标题 */
+.ess-page__header {
+    margin-bottom: var(--spacing-lg);
+}
+
+.ess-page__title {
+    font-size: var(--font-size-xxl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.ess-page__subtitle {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+}
+
+/* 页面内容 */
+.ess-page__content {
+    animation: fadeIn var(--transition-base);
+}
+
+/* 响应式隐藏/显示 */
+@media (max-width: 575px) {
+    .ess-hide-xs { display: none !important; }
+}
+
+@media (max-width: 767px) {
+    .ess-hide-sm { display: none !important; }
+}
+
+@media (max-width: 991px) {
+    .ess-hide-md { display: none !important; }
+}
+
+@media (max-width: 1199px) {
+    .ess-hide-lg { display: none !important; }
+}
+
+@media (max-width: 1399px) {
+    .ess-hide-xl { display: none !important; }
+}
+
+@media (min-width: 576px) {
+    .ess-show-xs { display: none !important; }
+}
+
+@media (min-width: 768px) {
+    .ess-show-sm { display: none !important; }
+}
+
+@media (min-width: 992px) {
+    .ess-show-md { display: none !important; }
+}
+
+@media (min-width: 1200px) {
+    .ess-show-lg { display: none !important; }
+}
+
+@media (min-width: 1400px) {
+    .ess-show-xl { display: none !important; }
+}
+
+/* 打印样式 */
+@media print {
+    .ess-no-print {
+        display: none !important;
+    }
+    
+    .ess-print-only {
+        display: block !important;
+    }
+}
+
+/* 无障碍支持 */
+.ess-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.ess-sr-only-focusable:active,
+.ess-sr-only-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}

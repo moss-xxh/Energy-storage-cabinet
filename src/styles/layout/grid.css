@@ -1,0 +1,226 @@
+/* 网格系统 */
+
+/* 容器 */
+.ess-container {
+    width: 100%;
+    padding-right: var(--spacing-md);
+    padding-left: var(--spacing-md);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .ess-container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .ess-container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .ess-container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .ess-container {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .ess-container {
+        max-width: 1320px;
+    }
+}
+
+.ess-container-fluid {
+    width: 100%;
+    padding-right: var(--spacing-md);
+    padding-left: var(--spacing-md);
+}
+
+/* 行 */
+.ess-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: calc(var(--spacing-md) * -1);
+    margin-left: calc(var(--spacing-md) * -1);
+}
+
+.ess-row > * {
+    padding-right: var(--spacing-md);
+    padding-left: var(--spacing-md);
+}
+
+/* 列 */
+.ess-col {
+    flex: 1 0 0%;
+}
+
+.ess-col-auto {
+    flex: 0 0 auto;
+    width: auto;
+}
+
+/* 12列网格 */
+.ess-col-1 { flex: 0 0 auto; width: 8.333333%; }
+.ess-col-2 { flex: 0 0 auto; width: 16.666667%; }
+.ess-col-3 { flex: 0 0 auto; width: 25%; }
+.ess-col-4 { flex: 0 0 auto; width: 33.333333%; }
+.ess-col-5 { flex: 0 0 auto; width: 41.666667%; }
+.ess-col-6 { flex: 0 0 auto; width: 50%; }
+.ess-col-7 { flex: 0 0 auto; width: 58.333333%; }
+.ess-col-8 { flex: 0 0 auto; width: 66.666667%; }
+.ess-col-9 { flex: 0 0 auto; width: 75%; }
+.ess-col-10 { flex: 0 0 auto; width: 83.333333%; }
+.ess-col-11 { flex: 0 0 auto; width: 91.666667%; }
+.ess-col-12 { flex: 0 0 auto; width: 100%; }
+
+/* 响应式列 - 小屏幕 */
+@media (min-width: 576px) {
+    .ess-col-sm { flex: 1 0 0%; }
+    .ess-col-sm-auto { flex: 0 0 auto; width: auto; }
+    .ess-col-sm-1 { flex: 0 0 auto; width: 8.333333%; }
+    .ess-col-sm-2 { flex: 0 0 auto; width: 16.666667%; }
+    .ess-col-sm-3 { flex: 0 0 auto; width: 25%; }
+    .ess-col-sm-4 { flex: 0 0 auto; width: 33.333333%; }
+    .ess-col-sm-5 { flex: 0 0 auto; width: 41.666667%; }
+    .ess-col-sm-6 { flex: 0 0 auto; width: 50%; }
+    .ess-col-sm-7 { flex: 0 0 auto; width: 58.333333%; }
+    .ess-col-sm-8 { flex: 0 0 auto; width: 66.666667%; }
+    .ess-col-sm-9 { flex: 0 0 auto; width: 75%; }
+    .ess-col-sm-10 { flex: 0 0 auto; width: 83.333333%; }
+    .ess-col-sm-11 { flex: 0 0 auto; width: 91.666667%; }
+    .ess-col-sm-12 { flex: 0 0 auto; width: 100%; }
+}
+
+/* 响应式列 - 中屏幕 */
+@media (min-width: 768px) {
+    .ess-col-md { flex: 1 0 0%; }
+    .ess-col-md-auto { flex: 0 0 auto; width: auto; }
+    .ess-col-md-1 { flex: 0 0 auto; width: 8.333333%; }
+    .ess-col-md-2 { flex: 0 0 auto; width: 16.666667%; }
+    .ess-col-md-3 { flex: 0 0 auto; width: 25%; }
+    .ess-col-md-4 { flex: 0 0 auto; width: 33.333333%; }
+    .ess-col-md-5 { flex: 0 0 auto; width: 41.666667%; }
+    .ess-col-md-6 { flex: 0 0 auto; width: 50%; }
+    .ess-col-md-7 { flex: 0 0 auto; width: 58.333333%; }
+    .ess-col-md-8 { flex: 0 0 auto; width: 66.666667%; }
+    .ess-col-md-9 { flex: 0 0 auto; width: 75%; }
+    .ess-col-md-10 { flex: 0 0 auto; width: 83.333333%; }
+    .ess-col-md-11 { flex: 0 0 auto; width: 91.666667%; }
+    .ess-col-md-12 { flex: 0 0 auto; width: 100%; }
+}
+
+/* 响应式列 - 大屏幕 */
+@media (min-width: 992px) {
+    .ess-col-lg { flex: 1 0 0%; }
+    .ess-col-lg-auto { flex: 0 0 auto; width: auto; }
+    .ess-col-lg-1 { flex: 0 0 auto; width: 8.333333%; }
+    .ess-col-lg-2 { flex: 0 0 auto; width: 16.666667%; }
+    .ess-col-lg-3 { flex: 0 0 auto; width: 25%; }
+    .ess-col-lg-4 { flex: 0 0 auto; width: 33.333333%; }
+    .ess-col-lg-5 { flex: 0 0 auto; width: 41.666667%; }
+    .ess-col-lg-6 { flex: 0 0 auto; width: 50%; }
+    .ess-col-lg-7 { flex: 0 0 auto; width: 58.333333%; }
+    .ess-col-lg-8 { flex: 0 0 auto; width: 66.666667%; }
+    .ess-col-lg-9 { flex: 0 0 auto; width: 75%; }
+    .ess-col-lg-10 { flex: 0 0 auto; width: 83.333333%; }
+    .ess-col-lg-11 { flex: 0 0 auto; width: 91.666667%; }
+    .ess-col-lg-12 { flex: 0 0 auto; width: 100%; }
+}
+
+/* 响应式列 - 超大屏幕 */
+@media (min-width: 1200px) {
+    .ess-col-xl { flex: 1 0 0%; }
+    .ess-col-xl-auto { flex: 0 0 auto; width: auto; }
+    .ess-col-xl-1 { flex: 0 0 auto; width: 8.333333%; }
+    .ess-col-xl-2 { flex: 0 0 auto; width: 16.666667%; }
+    .ess-col-xl-3 { flex: 0 0 auto; width: 25%; }
+    .ess-col-xl-4 { flex: 0 0 auto; width: 33.333333%; }
+    .ess-col-xl-5 { flex: 0 0 auto; width: 41.666667%; }
+    .ess-col-xl-6 { flex: 0 0 auto; width: 50%; }
+    .ess-col-xl-7 { flex: 0 0 auto; width: 58.333333%; }
+    .ess-col-xl-8 { flex: 0 0 auto; width: 66.666667%; }
+    .ess-col-xl-9 { flex: 0 0 auto; width: 75%; }
+    .ess-col-xl-10 { flex: 0 0 auto; width: 83.333333%; }
+    .ess-col-xl-11 { flex: 0 0 auto; width: 91.666667%; }
+    .ess-col-xl-12 { flex: 0 0 auto; width: 100%; }
+}
+
+/* 间距 */
+.ess-g-0 { --grid-gutter: 0; }
+.ess-g-1 { --grid-gutter: var(--spacing-xs); }
+.ess-g-2 { --grid-gutter: var(--spacing-sm); }
+.ess-g-3 { --grid-gutter: var(--spacing-md); }
+.ess-g-4 { --grid-gutter: var(--spacing-lg); }
+.ess-g-5 { --grid-gutter: var(--spacing-xl); }
+
+/* Flex 对齐 */
+.ess-justify-start { justify-content: flex-start; }
+.ess-justify-end { justify-content: flex-end; }
+.ess-justify-center { justify-content: center; }
+.ess-justify-between { justify-content: space-between; }
+.ess-justify-around { justify-content: space-around; }
+.ess-justify-evenly { justify-content: space-evenly; }
+
+.ess-align-start { align-items: flex-start; }
+.ess-align-end { align-items: flex-end; }
+.ess-align-center { align-items: center; }
+.ess-align-baseline { align-items: baseline; }
+.ess-align-stretch { align-items: stretch; }
+
+/* 自定义网格 */
+.ess-grid {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.ess-grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.ess-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.ess-grid--4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.ess-grid--5 {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.ess-grid--6 {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+/* 响应式网格 */
+@media (max-width: 1024px) {
+    .ess-grid--4,
+    .ess-grid--5,
+    .ess-grid--6 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .ess-grid--3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .ess-grid--2,
+    .ess-grid--3,
+    .ess-grid--4,
+    .ess-grid--5,
+    .ess-grid--6 {
+        grid-template-columns: 1fr;
+    }
+}

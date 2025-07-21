@@ -1,0 +1,3452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择应用场景 - 能源管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: #1e293b;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(29, 78, 216, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+                linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 头部 */
+        .header {
+            padding: 2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: #2563eb;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .controls {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            border-radius: 0.75rem;
+            color: #475569;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 250ms ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-theme {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            justify-content: center;
+        }
+
+        .btn-control:hover {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 主体内容 */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 3rem 3rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.125rem;
+            color: #64748b;
+        }
+
+        /* 场景卡片网格 */
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* 场景卡片 */
+        .scenario-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 250ms ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: #2563eb;
+        }
+
+        .scenario-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        [data-theme="dark"] .scenario-image {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        .scenario-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .scenario-icon {
+            font-size: 4rem;
+            opacity: 0.5;
+        }
+
+        .scenario-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scenario-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .scenario-desc {
+            font-size: 0.875rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .scenario-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 250ms ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-info {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-info:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+
+        .btn-select {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-select:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* 弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 150ms ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 120px);
+        }
+
+        .modal-body h4 {
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-size: 1.125rem;
+        }
+
+        .modal-body ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-body li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #475569;
+        }
+
+        .modal-body li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .modal-body p {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        /* 深色主题 */
+        [data-theme="dark"] body {
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+                linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .logo-text {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .page-title {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .page-subtitle {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .scenario-card {
+            background: #334155;
+            border-color: #475569;
+        }
+        
+        [data-theme="dark"] .btn-control {
+            background: rgba(51, 65, 85, 0.95);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            color: #cbd5e1;
+        }
+        
+        [data-theme="dark"] .btn-control:hover {
+            background: rgba(71, 85, 105, 0.98);
+            border-color: #60a5fa;
+        }
+
+        [data-theme="dark"] .scenario-title {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .scenario-desc {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .btn-info {
+            background: #475569;
+            color: #cbd5e1;
+            border-color: #64748b;
+        }
+
+        [data-theme="dark"] .btn-info:hover {
+            background: #64748b;
+            border-color: #94a3b8;
+        }
+        
+        [data-theme="dark"] .btn-select {
+            background: #2563eb;
+            color: white;
+        }
+        
+        [data-theme="dark"] .btn-select:hover {
+            background: #3b82f6;
+        }
+
+        [data-theme="dark"] .modal-content {
+            background: #334155;
+            border: 1px solid #475569;
+        }
+
+        [data-theme="dark"] .modal-header {
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .modal-title {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .modal-body h4 {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .modal-body p,
+        [data-theme="dark"] .modal-body li {
+            color: #cbd5e1;
+        }
+        
+        [data-theme="dark"] .modal-close {
+            color: #cbd5e1;
+        }
+        
+        [data-theme="dark"] .modal-close:hover {
+            background: #475569;
+            color: #f1f5f9;
+        }
+        
+        /* 全屏模态框样式 */
+        .fullscreen-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .fullscreen-modal-content {
+            width: 95%;
+            height: 95%;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.3s ease;
+        }
+        
+        [data-theme="dark"] .fullscreen-modal-content {
+            background: #1e293b;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .fullscreen-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        [data-theme="dark"] .fullscreen-header {
+            border-color: #334155;
+        }
+        
+        .fullscreen-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        [data-theme="dark"] .fullscreen-title {
+            color: #f1f5f9;
+        }
+        
+        .fullscreen-close-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 24px;
+            color: #64748b;
+        }
+        
+        .fullscreen-close-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+        
+        [data-theme="dark"] .fullscreen-close-btn {
+            background: #334155;
+            color: #94a3b8;
+        }
+        
+        [data-theme="dark"] .fullscreen-close-btn:hover {
+            background: #475569;
+            color: #f1f5f9;
+        }
+        
+        .fullscreen-body {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+            position: relative;
+            overflow: hidden;
+            cursor: grab;
+        }
+        
+        .fullscreen-body.dragging {
+            cursor: grabbing;
+        }
+        
+        [data-theme="dark"] .fullscreen-body {
+            background: #0f172a;
+        }
+        
+        #fullscreen-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transform-origin: center center;
+            transition: transform 0.1s ease-out;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        
+        /* 缩放控制面板 */
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        
+        [data-theme="dark"] .zoom-controls {
+            background: rgba(51, 65, 85, 0.95);
+        }
+        
+        .zoom-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+        
+        .zoom-btn:hover {
+            background: #1d4ed8;
+            transform: scale(1.1);
+        }
+        
+        .zoom-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .zoom-level {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        [data-theme="dark"] .zoom-level {
+            color: #f1f5f9;
+        }
+        
+        .zoom-reset {
+            font-size: 12px;
+            padding: 6px 12px;
+            background: #64748b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .zoom-reset:hover {
+            background: #475569;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem;
+            }
+
+            .main {
+                padding: 0 1.5rem 1.5rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .controls {
+                gap: 0.5rem;
+            }
+
+            .btn-control {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .btn-theme {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div></div> <!-- 空占位符 -->
+        <div class="controls">
+            <button class="btn-control" onclick="toggleLanguage()">
+                <span>🌐</span>
+                <span id="lang-text">中文</span>
+            </button>
+            <button class="btn-control btn-theme" onclick="toggleTheme()">
+                <span id="theme-icon">🌙</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">选择应用场景</h1>
+            <p class="page-subtitle">根据您的实际使用需求选择对应的场景</p>
+        </div>
+
+        <div class="scenarios-grid">
+            <!-- 户用储能卡片 -->
+            <div class="scenario-card" data-scenario="residential">
+                <div class="scenario-image">
+                    <img src="./src/assets/images/scenario-residential.jpg" alt="户用储能" 
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='block';" style="display:none;">
+                    <span class="scenario-icon">🏠</span>
+                </div>
+                <div class="scenario-content">
+                    <h3 class="scenario-title">户用储能</h3>
+                    <p class="scenario-desc">适用于家庭和小型商业用户，提供可靠的家庭能源管理解决方案</p>
+                    <div class="scenario-actions">
+                        <button class="btn btn-info" onclick="showInfo('residential')">
+                            详情
+                        </button>
+                        <button class="btn btn-select" onclick="selectScenario('residential')">
+                            进入
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 工商储能卡片 -->
+            <div class="scenario-card" data-scenario="commercial">
+                <div class="scenario-image">
+                    <img src="./src/assets/images/scenario-commercial.jpg" alt="工商储能" 
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='block';" style="display:none;">
+                    <span class="scenario-icon">🏭</span>
+                </div>
+                <div class="scenario-content">
+                    <h3 class="scenario-title">工商储能</h3>
+                    <p class="scenario-desc">适用于工业和大型商业项目，实现能源成本优化和电力保障</p>
+                    <div class="scenario-actions">
+                        <button class="btn btn-info" onclick="showInfo('commercial')">
+                            详情
+                        </button>
+                        <button class="btn btn-select" onclick="selectScenario('commercial')">
+                            进入
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 充电站卡片 -->
+            <div class="scenario-card" data-scenario="charging">
+                <div class="scenario-image">
+                    <img src="./src/assets/images/scenario-charging.jpg" alt="充电桩管理" 
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='block';" style="display:none;">
+                    <span class="scenario-icon">🚗</span>
+                </div>
+                <div class="scenario-content">
+                    <h3 class="scenario-title">充电站</h3>
+                    <p class="scenario-desc">适用于电动汽车充电站运营，智能调度充电资源</p>
+                    <div class="scenario-actions">
+                        <button class="btn btn-info" onclick="showInfo('charging')">
+                            详情
+                        </button>
+                        <button class="btn btn-select" onclick="selectScenario('charging')">
+                            进入
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- 弹窗 -->
+    <div id="modal" class="modal">
+        <div class="modal-backdrop" onclick="closeModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title" class="modal-title"></h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div id="modal-body" class="modal-body"></div>
+        </div>
+    </div>
+    
+    <!-- 全屏模态框 -->
+    <div id="fullscreen-modal" class="fullscreen-modal" style="display: none;">
+        <div class="fullscreen-modal-content">
+            <div class="fullscreen-header">
+                <h3 class="fullscreen-title">系统拓扑图</h3>
+                <button class="fullscreen-close-btn" onclick="closeFullscreen()">
+                    <span>×</span>
+                </button>
+            </div>
+            <div class="fullscreen-body" id="fullscreen-body">
+                <img id="fullscreen-image" src="" alt="拓扑图全屏视图">
+                <div class="zoom-controls">
+                    <button class="zoom-btn" onclick="fullscreenZoomOut()" title="缩小">−</button>
+                    <span class="zoom-level" id="zoom-level">100%</span>
+                    <button class="zoom-btn" onclick="fullscreenZoomIn()" title="放大">+</button>
+                    <button class="zoom-reset" onclick="resetFullscreenZoom()" title="重置">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 多语言配置
+        const i18n = {
+            zh: {
+                'page.title': '选择应用场景',
+                'page.subtitle': '根据您的实际使用需求选择对应的场景',
+                'scenario.residential.title': '户用储能',
+                'scenario.residential.desc': '适用于家庭和小型商业用户，提供可靠的家庭能源管理解决方案',
+                'scenario.commercial.title': '工商储能',
+                'scenario.commercial.desc': '适用于工业和大型商业项目，实现能源成本优化和电力保障',
+                'scenario.charging.title': '充电站',
+                'scenario.charging.desc': '适用于电动汽车充电站运营，智能调度充电资源',
+                'btn.detail': '详情',
+                'btn.enter': '进入',
+                'lang.text': '中文',
+                'scenario.selected': '已选择{}场景，即将进入系统主页...',
+                // 详情弹窗
+                'info.residential.title': '户用储能系统',
+                'info.commercial.title': '工商储能系统',
+                'info.charging.title': '充电站系统',
+                'info.features': '系统特点',
+                'info.functions': '主要功能',
+                'info.applications': '应用场景'
+            },
+            en: {
+                'page.title': 'Select Application Scenario',
+                'page.subtitle': 'Choose the scenario that fits your actual usage needs',
+                'scenario.residential.title': 'Residential Storage',
+                'scenario.residential.desc': 'For homes and small businesses, providing reliable home energy management solutions',
+                'scenario.commercial.title': 'Commercial Storage',
+                'scenario.commercial.desc': 'For industrial and large commercial projects, optimizing energy costs and power reliability',
+                'scenario.charging.title': 'Charging Station',
+                'scenario.charging.desc': 'For EV charging station operations, intelligently scheduling charging resources',
+                'btn.detail': 'Details',
+                'btn.enter': 'Enter',
+                'lang.text': 'EN',
+                'scenario.selected': '{} scenario selected, entering main system...',
+                // Detail modal
+                'info.residential.title': 'Residential Storage System',
+                'info.commercial.title': 'Commercial Storage System',
+                'info.charging.title': 'Charging Station System',
+                'info.features': 'System Features',
+                'info.functions': 'Main Functions',
+                'info.applications': 'Application Scenarios'
+            }
+        };
+
+        // 当前语言
+        let currentLang = localStorage.getItem('ess_language') || 'zh';
+
+        // 翻译函数
+        function t(key) {
+            return i18n[currentLang][key] || key;
+        }
+
+        // 应用语言
+        function applyLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('ess_language', lang);
+            
+            // 更新页面标题和副标题
+            document.querySelector('.page-title').textContent = t('page.title');
+            document.querySelector('.page-subtitle').textContent = t('page.subtitle');
+            
+            // 更新语言按钮文本
+            document.getElementById('lang-text').textContent = t('lang.text');
+            
+            // 更新场景卡片
+            const scenarios = ['residential', 'commercial', 'charging'];
+            scenarios.forEach(scenario => {
+                const card = document.querySelector(`[data-scenario="${scenario}"]`);
+                if (card) {
+                    card.querySelector('.scenario-title').textContent = t(`scenario.${scenario}.title`);
+                    card.querySelector('.scenario-desc').textContent = t(`scenario.${scenario}.desc`);
+                    card.querySelectorAll('.btn-info').forEach(btn => {
+                        btn.textContent = t('btn.detail');
+                    });
+                    card.querySelectorAll('.btn-select').forEach(btn => {
+                        btn.textContent = t('btn.enter');
+                    });
+                }
+            });
+        }
+
+        // 场景详细信息
+        const scenarioInfo = {
+            residential: {
+                title: '户用储能系统',
+                titleEn: 'Residential Energy Storage System',
+                content: `
+                    <style>
+                        .modal-content-layout {
+                            display: flex;
+                            gap: 32px;
+                            height: 100%;
+                            min-height: 500px;
+                        }
+                        .content-left {
+                            flex: 1;
+                            overflow-y: auto;
+                            padding-right: 24px;
+                            max-height: 100%;
+                            overflow-x: hidden;
+                            height: 100%;
+                        }
+                        /* 自定义滚动条 */
+                        .content-left::-webkit-scrollbar {
+                            width: 8px;
+                        }
+                        .content-left::-webkit-scrollbar-track {
+                            background: #f1f5f9;
+                            border-radius: 4px;
+                        }
+                        .content-left::-webkit-scrollbar-thumb {
+                            background: #cbd5e1;
+                            border-radius: 4px;
+                            border: 2px solid #f1f5f9;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #94a3b8;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:active {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-track {
+                            background: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb {
+                            background: #475569;
+                            border-color: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:active {
+                            background: #94a3b8;
+                        }
+                        
+                        /* 拓扑图标题样式 */
+                        .topology-title {
+                            margin-bottom: 16px;
+                            color: #1e293b;
+                            font-size: 1.125rem;
+                            font-weight: 600;
+                        }
+                        
+                        [data-theme="dark"] .topology-title {
+                            color: #f1f5f9;
+                        }
+                        .content-right {
+                            flex: 1;
+                            min-width: 500px;
+                            display: flex;
+                            flex-direction: column;
+                            overflow: hidden;
+                        }
+                        .topology-container {
+                            background: #fafafa;
+                            border-radius: 12px;
+                            padding: 20px;
+                            margin-top: 16px;
+                            position: relative;
+                            height: calc(100% - 66px);
+                            min-height: 300px;
+                            max-height: 400px;
+                            overflow: hidden;
+                            border: 1px solid #e0e0e0;
+                            cursor: grab;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                        }
+                        .topology-container:active {
+                            cursor: grabbing;
+                        }
+                        [data-theme="dark"] .topology-container {
+                            background: #0f172a;
+                            border-color: #334155;
+                        }
+                        
+                        /* 缩放容器 */
+                        .topology-zoom-container {
+                            position: relative;
+                            width: 100%;
+                            height: 100%;
+                            transform-origin: center center;
+                            transition: transform 0.3s ease;
+                        }
+                        
+                        /* 缩放控制按钮 */
+                        .topology-controls {
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
+                            z-index: 20;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                        }
+                        
+                        .zoom-btn {
+                            width: 35px;
+                            height: 35px;
+                            background: rgba(255, 255, 255, 0.9);
+                            border: 1px solid #e0e0e0;
+                            border-radius: 6px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #333;
+                            transition: all 0.2s ease;
+                            user-select: none;
+                        }
+                        
+                        [data-theme="dark"] .zoom-btn {
+                            background: rgba(30, 41, 59, 0.9);
+                            border-color: #334155;
+                            color: #cbd5e1;
+                        }
+                        
+                        .zoom-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .zoom-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        /* 全屏按钮样式 */
+                        .fullscreen-btn {
+                            background: rgba(255, 255, 255, 0.95);
+                            border: 1px solid rgba(229, 231, 235, 0.8);
+                            width: 36px;
+                            height: 36px;
+                            border-radius: 8px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            font-size: 18px;
+                            color: #475569;
+                        }
+                        
+                        .fullscreen-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .fullscreen-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn {
+                            background: rgba(71, 85, 105, 0.95);
+                            border-color: rgba(148, 163, 184, 0.3);
+                            color: #e2e8f0;
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn:hover {
+                            background: rgba(59, 130, 246, 0.2);
+                            border-color: #60a5fa;
+                        }
+                        
+                        /* 缩放级别指示器 */
+                        .zoom-level {
+                            font-size: 12px;
+                            color: #64748b;
+                            text-align: center;
+                            padding: 2px 6px;
+                            background: rgba(255, 255, 255, 0.8);
+                            border-radius: 4px;
+                            min-width: 35px;
+                        }
+                        
+                        [data-theme="dark"] .zoom-level {
+                            background: rgba(30, 41, 59, 0.8);
+                            color: #94a3b8;
+                        }
+                        
+                        /* 极简节点样式 */
+                        .topology-node {
+                            position: absolute;
+                            text-align: center;
+                            z-index: 10;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            gap: 6px;
+                            transition: all 0.2s ease;
+                        }
+                        
+                        .node-icon {
+                            font-size: 32px;
+                            line-height: 1;
+                            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+                        }
+                        
+                        /* 中心逆变器特殊样式 - 3D盒子效果 */
+                        .node-inverter {
+                            background: rgba(37, 99, 235, 0.1);
+                            border: 2px solid #2563eb;
+                            border-radius: 8px;
+                            padding: 20px 30px;
+                            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+                        }
+                        [data-theme="dark"] .node-inverter {
+                            background: rgba(59, 130, 246, 0.2);
+                            border-color: #60a5fa;
+                            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+                        }
+                        .node-inverter .node-icon {
+                            font-size: 36px;
+                            color: #2563eb;
+                        }
+                        [data-theme="dark"] .node-inverter .node-icon {
+                            color: #60a5fa;
+                        }
+                        
+                        /* Neuron II 矩形设备样式 */
+                        .node-neuron {
+                            background: rgba(139, 139, 139, 0.1);
+                            border: 1px solid #8b8b8b;
+                            border-radius: 4px;
+                            padding: 12px 20px;
+                        }
+                        [data-theme="dark"] .node-neuron {
+                            background: rgba(139, 139, 139, 0.2);
+                            border-color: #a3a3a3;
+                        }
+                        
+                        /* 云服务器圆形样式 */
+                        .node-cloud .node-icon {
+                            background: rgba(100, 116, 139, 0.1);
+                            border: 1px solid #64748b;
+                            border-radius: 50%;
+                            padding: 16px;
+                        }
+                        [data-theme="dark"] .node-cloud .node-icon {
+                            background: rgba(148, 163, 184, 0.2);
+                            border-color: #94a3b8;
+                        }
+                        
+                        /* 其他图标颜色 */
+                        .node-app .node-icon { color: #2563eb; }
+                        .node-mobile .node-icon { color: #059669; }
+                        .node-cloud .node-icon { color: #64748b; }
+                        .node-neuron .node-icon { color: #f97316; }
+                        .node-grid .node-icon { color: #10b981; }
+                        .node-meter .node-icon { color: #0891b2; }
+                        .node-pv .node-icon { color: #fbbf24; }
+                        .node-battery .node-icon { color: #8b5cf6; }
+                        .node-load .node-icon { color: #ef4444; }
+                        .node-important-load .node-icon { color: #dc2626; }
+                        .node-charger .node-icon { color: #06b6d4; }
+                        .node-other .node-icon { color: #6b7280; }
+                        
+                        [data-theme="dark"] .node-app .node-icon { color: #60a5fa; }
+                        [data-theme="dark"] .node-mobile .node-icon { color: #34d399; }
+                        [data-theme="dark"] .node-cloud .node-icon { color: #94a3b8; }
+                        [data-theme="dark"] .node-neuron .node-icon { color: #fb923c; }
+                        [data-theme="dark"] .node-grid .node-icon { color: #34d399; }
+                        [data-theme="dark"] .node-meter .node-icon { color: #06b6d4; }
+                        [data-theme="dark"] .node-pv .node-icon { color: #fde047; }
+                        [data-theme="dark"] .node-battery .node-icon { color: #a78bfa; }
+                        [data-theme="dark"] .node-load .node-icon { color: #f87171; }
+                        [data-theme="dark"] .node-important-load .node-icon { color: #fca5a5; }
+                        [data-theme="dark"] .node-charger .node-icon { color: #67e8f9; }
+                        [data-theme="dark"] .node-other .node-icon { color: #9ca3af; }
+                        
+                        .topology-node:hover {
+                            transform: scale(1.1);
+                        }
+                        .node-inverter:hover {
+                            transform: scale(1.05);
+                        }
+                        /* 连接线样式 */
+                        .topology-connection {
+                            position: absolute;
+                            background: #666;
+                            z-index: 1;
+                        }
+                        [data-theme="dark"] .topology-connection {
+                            background: #94a3b8;
+                        }
+                        .topology-connection.horizontal {
+                            height: 2px;
+                        }
+                        .topology-connection.vertical {
+                            width: 2px;
+                        }
+                        .topology-connection.active {
+                            background: #f97316;
+                        }
+                        [data-theme="dark"] .topology-connection.active {
+                            background: #fb923c;
+                        }
+                        
+                        /* 虚线样式 */
+                        .topology-connection.dashed {
+                            background: transparent;
+                            border: 1px dashed #999;
+                        }
+                        [data-theme="dark"] .topology-connection.dashed {
+                            border-color: #64748b;
+                        }
+                        .topology-connection.dashed.horizontal {
+                            border-width: 1px 0 0 0;
+                        }
+                        .topology-connection.dashed.vertical {
+                            border-width: 0 0 0 1px;
+                        }
+                        
+                        .node-label {
+                            font-size: 14px;
+                            color: #333;
+                            font-weight: 500;
+                            margin-top: 4px;
+                        }
+                        [data-theme="dark"] .node-label {
+                            color: #e2e8f0;
+                        }
+                        
+                        /* 节点位置 - 完全按照参考图片真实还原 */
+                        .node-app { top: 20px; left: 50%; transform: translateX(-50%); }
+                        .node-cloud { top: 120px; left: 50%; transform: translateX(-50%); }
+                        .node-neuron { top: 200px; left: 50%; transform: translateX(-50%); }
+                        .node-inverter { top: 280px; left: 50%; transform: translateX(-50%); }
+                        
+                        /* 左侧设备 - 电网和电表 */
+                        .node-grid { top: 280px; left: 5%; transform: translateY(-50%); }
+                        .node-meter { top: 280px; left: 25%; transform: translateY(-50%); }
+                        
+                        /* 右侧设备 - 电池和光伏 */
+                        .node-battery { top: 280px; right: 5%; transform: translateY(-50%); }
+                        .node-pv { top: 280px; right: 25%; transform: translateY(-50%); }
+                        
+                        /* 底部负载设备 - 四个设备水平排列 */
+                        .node-other { bottom: 40px; left: 12%; }
+                        .node-charger { bottom: 40px; left: 32%; }
+                        .node-load { bottom: 40px; left: 52%; }
+                        .node-important-load { bottom: 40px; right: 12%; }
+                        
+                        /* 连接标签位置 */
+                        .conn-label-wifi { top: 70px; left: 50%; transform: translateX(-50%); }
+                        .conn-label-wifi2 { top: 160px; left: 50%; transform: translateX(-50%); }
+                        .conn-label-rs { top: 240px; left: 50%; transform: translateX(-50%); }
+                        
+                        /* 连接线位置 - 完全按照参考图片真实还原 */
+                        /* 主垂直线 - 从APP到逆变器 */
+                        .conn-main-vertical {
+                            height: 240px;
+                            top: 50px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                        }
+                        
+                        /* 电网到电表 */
+                        .conn-grid-meter {
+                            width: calc(25% - 5% - 55px);
+                            top: 280px;
+                            left: calc(5% + 55px);
+                            transform: translateY(-50%);
+                        }
+                        
+                        /* 电表到逆变器 - L形连接 */
+                        .conn-meter-inverter {
+                            height: 40px;
+                            top: 300px;
+                            left: calc(25% + 27px);
+                        }
+                        .conn-meter-inverter-h {
+                            width: calc(50% - 25% - 55px);
+                            top: 340px;
+                            left: calc(25% + 55px);
+                        }
+                        
+                        /* 逆变器到电池 */
+                        .conn-inverter-battery {
+                            width: calc(50% - 5% - 55px);
+                            top: 280px;
+                            right: calc(5% + 55px);
+                            transform: translateY(-50%);
+                        }
+                        
+                        /* 逆变器到光伏 */
+                        .conn-inverter-pv {
+                            width: calc(50% - 25% - 55px);
+                            top: 280px;
+                            right: calc(25% + 55px);
+                            transform: translateY(-50%);
+                        }
+                        
+                        /* 逆变器到底部负载分支 */
+                        .conn-inverter-loads {
+                            height: calc(100% - 310px - 80px);
+                            top: 310px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                        }
+                        
+                        /* 底部负载分支线 */
+                        .conn-loads-branch {
+                            width: 70%;
+                            bottom: calc(40px + 27px);
+                            left: 15%;
+                        }
+                        
+                        /* 各个负载的垂直连接 */
+                        .conn-to-other {
+                            height: 20px;
+                            bottom: 67px;
+                            left: calc(12% + 27px);
+                        }
+                        .conn-to-charger {
+                            height: 20px;
+                            bottom: 67px;
+                            left: calc(32% + 27px);
+                        }
+                        .conn-to-load {
+                            height: 20px;
+                            bottom: 67px;
+                            left: calc(52% + 27px);
+                        }
+                        .conn-to-important {
+                            height: 20px;
+                            bottom: 67px;
+                            right: calc(12% + 27px);
+                        }
+                        
+                        /* 连接标签样式 */
+                        .topology-connection-label {
+                            position: absolute;
+                            font-size: 12px;
+                            color: #666;
+                            background: rgba(255, 255, 255, 0.8);
+                            padding: 2px 6px;
+                            border-radius: 4px;
+                            z-index: 15;
+                            text-align: center;
+                        }
+                        
+                        [data-theme="dark"] .topology-connection-label {
+                            color: #94a3b8;
+                            background: rgba(30, 41, 59, 0.8);
+                        }
+                        
+                        /* 响应式布局 */
+                        @media (max-width: 1024px) {
+                            .modal-content-layout {
+                                flex-direction: column;
+                                gap: 24px;
+                            }
+                            .content-left {
+                                padding-right: 0;
+                                max-height: 300px;
+                                margin-bottom: 16px;
+                            }
+                            .content-right {
+                                min-width: auto;
+                                height: 500px;
+                            }
+                            .topology-container {
+                                margin-top: 8px;
+                                padding: 16px;
+                            }
+                        }
+                    </style>
+                    
+                    <div class="modal-content-layout">
+                        <!-- 左侧文字介绍 -->
+                        <div class="content-left">
+                            <h4>系统特点</h4>
+                            <ul>
+                                <li>适用于家庭和小型商业用户</li>
+                                <li>容量范围：5-30kWh</li>
+                                <li>支持光伏系统集成</li>
+                                <li>智能负载管理</li>
+                                <li>支持多种设备接入（充电桩、热泵、发电机等）</li>
+                            </ul>
+                            <h4>主要功能</h4>
+                            <ul>
+                                <li>峰谷电价套利</li>
+                                <li>备用电源保障</li>
+                                <li>光伏自发自用</li>
+                                <li>智能用电优化</li>
+                                <li>电动汽车充电管理</li>
+                                <li>热泵系统协同控制</li>
+                                <li>多能源智能调度</li>
+                            </ul>
+                            <h4>应用场景</h4>
+                            <p>适合别墅、住宅小区、小型商铺等场景，帮助用户降低用电成本，提高能源利用效率。</p>
+                            
+                            <h4>技术参数</h4>
+                            <ul>
+                                <li>通信协议：Modbus TCP/RTU、MQTT</li>
+                                <li>数据采集频率：秒级实时采集</li>
+                                <li>远程监控：支持Web/APP远程访问</li>
+                                <li>安全保护：多重安全防护机制</li>
+                                <li>工作温度：-20°C ~ +60°C</li>
+                                <li>相对湿度：≤95%（无凝露）</li>
+                                <li>防护等级：IP65</li>
+                                <li>安装方式：壁挂式/柜式</li>
+                            </ul>
+                            
+                            <h4>安全特性</h4>
+                            <ul>
+                                <li>过压保护：AC/DC过压保护</li>
+                                <li>欠压保护：低压断开保护</li>
+                                <li>过流保护：短路和过载保护</li>
+                                <li>温度保护：过温自动降功率</li>
+                                <li>绝缘监测：直流侧绝缘监测</li>
+                                <li>接地故障：接地故障检测</li>
+                                <li>防雷保护：内置防雷器</li>
+                            </ul>
+                            
+                            <h4>系统优势</h4>
+                            <p>该系统采用先进的能源管理算法，能够根据用电负荷、电价政策、天气预报等因素，自动优化储能系统的充放电策略，最大化用户的经济效益。</p>
+                            
+                            <p>同时，系统具备完善的监控和维护功能，用户可以通过手机APP或Web界面实时查看系统运行状态，设置运行参数，并接收故障报警信息。</p>
+                        </div>
+                        
+                        <!-- 右侧拓扑图 -->
+                        <div class="content-right">
+                            <h4 class="topology-title">系统拓扑图</h4>
+                            <div class="topology-container" id="topology-container">
+                                <!-- 缩放控制按钮 -->
+                                <div class="topology-controls">
+                                    <div class="zoom-btn" onclick="zoomIn()">+</div>
+                                    <div class="zoom-level" id="zoom-level">100%</div>
+                                    <div class="zoom-btn" onclick="zoomOut()">−</div>
+                                    <div class="zoom-btn" onclick="resetZoom()">⌂</div>
+                                    <div class="fullscreen-btn" onclick="openFullscreen(event)" title="全屏查看">⛶</div>
+                                </div>
+                                
+                                <!-- 缩放容器 -->
+                                <div class="topology-zoom-container" id="topology-zoom-container">
+                                    <!-- 直接嵌入参考图片 -->
+                                    <img src="./images/residential-topology.jpg" 
+                                         alt="系统拓扑图" 
+                                         style="width: 100%; height: auto; max-width: 100%; object-fit: contain;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    
+                                    <!-- 备用文本，如果图片加载失败 -->
+                                    <div style="display: none; text-align: center; padding: 40px; color: #666;">
+                                        <p>拓扑图加载失败</p>
+                                        <p>图片路径: ./images/residential-topology.jpg</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                `,
+                contentEn: `
+                    <style>
+                        .modal-content-layout {
+                            display: flex;
+                            gap: 32px;
+                            height: 100%;
+                            min-height: 500px;
+                        }
+                        .content-left {
+                            flex: 1;
+                            overflow-y: auto;
+                            padding-right: 24px;
+                            max-height: 100%;
+                            overflow-x: hidden;
+                            height: 100%;
+                        }
+                        /* 自定义滚动条 */
+                        .content-left::-webkit-scrollbar {
+                            width: 8px;
+                        }
+                        .content-left::-webkit-scrollbar-track {
+                            background: #f1f5f9;
+                            border-radius: 4px;
+                        }
+                        .content-left::-webkit-scrollbar-thumb {
+                            background: #cbd5e1;
+                            border-radius: 4px;
+                            border: 2px solid #f1f5f9;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #94a3b8;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:active {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-track {
+                            background: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb {
+                            background: #475569;
+                            border-color: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:active {
+                            background: #94a3b8;
+                        }
+                        
+                        /* 拓扑图标题样式 */
+                        .topology-title {
+                            margin-bottom: 16px;
+                            color: #1e293b;
+                            font-size: 1.125rem;
+                            font-weight: 600;
+                        }
+                        
+                        [data-theme="dark"] .topology-title {
+                            color: #f1f5f9;
+                        }
+                        .content-right {
+                            flex: 1;
+                            min-width: 500px;
+                            display: flex;
+                            flex-direction: column;
+                            overflow: hidden;
+                        }
+                        .topology-container {
+                            background: #fafafa;
+                            border-radius: 12px;
+                            padding: 20px;
+                            margin-top: 16px;
+                            position: relative;
+                            height: calc(100% - 66px);
+                            min-height: 300px;
+                            max-height: 400px;
+                            overflow: hidden;
+                            border: 1px solid #e0e0e0;
+                            cursor: grab;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                        }
+                        .topology-container:active {
+                            cursor: grabbing;
+                        }
+                        [data-theme="dark"] .topology-container {
+                            background: #0f172a;
+                            border-color: #334155;
+                        }
+                        
+                        /* 缩放容器 */
+                        .topology-zoom-container {
+                            position: relative;
+                            width: 100%;
+                            height: 100%;
+                            transform-origin: center center;
+                            transition: transform 0.3s ease;
+                        }
+                        
+                        /* 缩放控制按钮 */
+                        .topology-controls {
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
+                            z-index: 20;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                        }
+                        
+                        .zoom-btn {
+                            width: 35px;
+                            height: 35px;
+                            background: rgba(255, 255, 255, 0.9);
+                            border: 1px solid #e0e0e0;
+                            border-radius: 6px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #333;
+                            transition: all 0.2s ease;
+                            user-select: none;
+                        }
+                        
+                        [data-theme="dark"] .zoom-btn {
+                            background: rgba(30, 41, 59, 0.9);
+                            border-color: #334155;
+                            color: #cbd5e1;
+                        }
+                        
+                        .zoom-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .zoom-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        /* 全屏按钮样式 */
+                        .fullscreen-btn {
+                            background: rgba(255, 255, 255, 0.95);
+                            border: 1px solid rgba(229, 231, 235, 0.8);
+                            width: 36px;
+                            height: 36px;
+                            border-radius: 8px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            font-size: 18px;
+                            color: #475569;
+                        }
+                        
+                        .fullscreen-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .fullscreen-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn {
+                            background: rgba(71, 85, 105, 0.95);
+                            border-color: rgba(148, 163, 184, 0.3);
+                            color: #e2e8f0;
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn:hover {
+                            background: rgba(59, 130, 246, 0.2);
+                            border-color: #60a5fa;
+                        }
+                        
+                        /* 缩放级别指示器 */
+                        .zoom-level {
+                            font-size: 12px;
+                            color: #64748b;
+                            text-align: center;
+                            padding: 2px 6px;
+                            background: rgba(255, 255, 255, 0.8);
+                            border-radius: 4px;
+                            min-width: 35px;
+                        }
+                        
+                        [data-theme="dark"] .zoom-level {
+                            background: rgba(30, 41, 59, 0.8);
+                            color: #94a3b8;
+                        }
+                        
+                        /* 响应式布局 */
+                        @media (max-width: 1024px) {
+                            .modal-content-layout {
+                                flex-direction: column;
+                                gap: 24px;
+                            }
+                            .content-left {
+                                padding-right: 0;
+                                max-height: 300px;
+                                margin-bottom: 16px;
+                            }
+                            .content-right {
+                                min-width: auto;
+                                height: 500px;
+                            }
+                            .topology-container {
+                                margin-top: 8px;
+                                padding: 16px;
+                            }
+                        }
+                    </style>
+                    
+                    <div class="modal-content-layout">
+                        <!-- 左侧文字介绍 -->
+                        <div class="content-left">
+                            <h4>System Features</h4>
+                            <ul>
+                                <li>Suitable for residential and small commercial users</li>
+                                <li>Capacity range: 5-30kWh</li>
+                                <li>Supports photovoltaic system integration</li>
+                                <li>Intelligent load management</li>
+                                <li>Supports multiple device access (charging pile, heat pump, generator, etc.)</li>
+                            </ul>
+                            <h4>Main Functions</h4>
+                            <ul>
+                                <li>Peak-valley electricity price arbitrage</li>
+                                <li>Backup power guarantee</li>
+                                <li>Photovoltaic self-generation and self-consumption</li>
+                                <li>Intelligent electricity optimization</li>
+                                <li>Electric vehicle charging management</li>
+                                <li>Heat pump system coordinated control</li>
+                                <li>Multi-energy intelligent scheduling</li>
+                            </ul>
+                            <h4>Application Scenarios</h4>
+                            <p>Suitable for villas, residential communities, small shops and other scenarios, helping users reduce electricity costs and improve energy utilization efficiency.</p>
+                            
+                            <h4>Technical Parameters</h4>
+                            <ul>
+                                <li>Communication Protocol: Modbus TCP/RTU, MQTT</li>
+                                <li>Data Collection Frequency: Second-level real-time collection</li>
+                                <li>Remote Monitoring: Support Web/APP remote access</li>
+                                <li>Security Protection: Multiple security protection mechanisms</li>
+                                <li>Working Temperature: -20°C ~ +60°C</li>
+                                <li>Relative Humidity: ≤95% (non-condensing)</li>
+                                <li>Protection Level: IP65</li>
+                                <li>Installation Method: Wall-mounted/Cabinet-type</li>
+                            </ul>
+                            
+                            <h4>Safety Features</h4>
+                            <ul>
+                                <li>Overvoltage Protection: AC/DC overvoltage protection</li>
+                                <li>Undervoltage Protection: Low voltage disconnection protection</li>
+                                <li>Overcurrent Protection: Short circuit and overload protection</li>
+                                <li>Temperature Protection: Automatic power reduction at overtemperature</li>
+                                <li>Insulation Monitoring: DC side insulation monitoring</li>
+                                <li>Ground Fault: Ground fault detection</li>
+                                <li>Lightning Protection: Built-in lightning arrester</li>
+                            </ul>
+                            
+                            <h4>System Advantages</h4>
+                            <p>The system adopts advanced energy management algorithms, which can automatically optimize the charging and discharging strategies of the energy storage system according to factors such as power load, electricity price policy, and weather forecast, maximizing users' economic benefits.</p>
+                            
+                            <p>At the same time, the system has comprehensive monitoring and maintenance functions. Users can view the system operation status in real time through mobile APP or Web interface, set operation parameters, and receive fault alarm information.</p>
+                        </div>
+                        
+                        <!-- 右侧拓扑图 -->
+                        <div class="content-right">
+                            <h4 class="topology-title">System Topology</h4>
+                            <div class="topology-container" id="topology-container">
+                                <!-- 缩放控制按钮 -->
+                                <div class="topology-controls">
+                                    <div class="zoom-btn" onclick="zoomIn()">+</div>
+                                    <div class="zoom-level" id="zoom-level">100%</div>
+                                    <div class="zoom-btn" onclick="zoomOut()">−</div>
+                                    <div class="zoom-btn" onclick="resetZoom()">⌂</div>
+                                    <div class="fullscreen-btn" onclick="openFullscreen(event)" title="全屏查看">⛶</div>
+                                </div>
+                                
+                                <!-- 缩放容器 -->
+                                <div class="topology-zoom-container" id="topology-zoom-container">
+                                    <!-- 直接嵌入参考图片 -->
+                                    <img src="./images/residential-topology.jpg" 
+                                         alt="System Topology" 
+                                         style="width: 100%; height: auto; max-width: 100%; object-fit: contain;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    
+                                    <!-- 备用文本，如果图片加载失败 -->
+                                    <div style="display: none; text-align: center; padding: 40px; color: #666;">
+                                        <p>Topology diagram loading failed</p>
+                                        <p>Image path: ./images/residential-topology.jpg</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                `
+            },
+            commercial: {
+                title: '工商储能系统',
+                titleEn: 'Commercial Energy Storage System',
+                content: `
+                    <style>
+                        .modal-content-layout {
+                            display: flex;
+                            gap: 32px;
+                            height: 100%;
+                            min-height: 500px;
+                        }
+                        .content-left {
+                            flex: 1;
+                            overflow-y: auto;
+                            padding-right: 24px;
+                            max-height: 100%;
+                            overflow-x: hidden;
+                            height: 100%;
+                        }
+                        /* 自定义滚动条 */
+                        .content-left::-webkit-scrollbar {
+                            width: 8px;
+                        }
+                        .content-left::-webkit-scrollbar-track {
+                            background: #f1f5f9;
+                            border-radius: 4px;
+                        }
+                        .content-left::-webkit-scrollbar-thumb {
+                            background: #cbd5e1;
+                            border-radius: 4px;
+                            border: 2px solid #f1f5f9;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #94a3b8;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:active {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-track {
+                            background: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb {
+                            background: #475569;
+                            border-color: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:active {
+                            background: #94a3b8;
+                        }
+                        
+                        /* 拓扑图标题样式 */
+                        .topology-title {
+                            margin-bottom: 16px;
+                            color: #1e293b;
+                            font-size: 1.125rem;
+                            font-weight: 600;
+                        }
+                        
+                        [data-theme="dark"] .topology-title {
+                            color: #f1f5f9;
+                        }
+                        .content-right {
+                            flex: 1;
+                            min-width: 500px;
+                            display: flex;
+                            flex-direction: column;
+                            overflow: hidden;
+                        }
+                        .topology-container {
+                            background: #fafafa;
+                            border-radius: 12px;
+                            padding: 20px;
+                            margin-top: 16px;
+                            position: relative;
+                            height: calc(100% - 66px);
+                            min-height: 300px;
+                            max-height: 400px;
+                            overflow: hidden;
+                            border: 1px solid #e0e0e0;
+                            cursor: grab;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                        }
+                        .topology-container:active {
+                            cursor: grabbing;
+                        }
+                        [data-theme="dark"] .topology-container {
+                            background: #0f172a;
+                            border-color: #334155;
+                        }
+                        
+                        /* 缩放容器 */
+                        .topology-zoom-container {
+                            position: relative;
+                            width: 100%;
+                            height: 100%;
+                            transform-origin: center center;
+                            transition: transform 0.3s ease;
+                        }
+                        
+                        /* 缩放控制按钮 */
+                        .topology-controls {
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
+                            z-index: 20;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                        }
+                        
+                        .zoom-btn {
+                            width: 35px;
+                            height: 35px;
+                            background: rgba(255, 255, 255, 0.9);
+                            border: 1px solid #e0e0e0;
+                            border-radius: 6px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #333;
+                            transition: all 0.2s ease;
+                            user-select: none;
+                        }
+                        
+                        [data-theme="dark"] .zoom-btn {
+                            background: rgba(30, 41, 59, 0.9);
+                            border-color: #334155;
+                            color: #cbd5e1;
+                        }
+                        
+                        .zoom-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .zoom-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        /* 全屏按钮样式 */
+                        .fullscreen-btn {
+                            background: rgba(255, 255, 255, 0.95);
+                            border: 1px solid rgba(229, 231, 235, 0.8);
+                            width: 36px;
+                            height: 36px;
+                            border-radius: 8px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            font-size: 18px;
+                            color: #475569;
+                        }
+                        
+                        .fullscreen-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .fullscreen-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn {
+                            background: rgba(71, 85, 105, 0.95);
+                            border-color: rgba(148, 163, 184, 0.3);
+                            color: #e2e8f0;
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn:hover {
+                            background: rgba(59, 130, 246, 0.2);
+                            border-color: #60a5fa;
+                        }
+                        
+                        /* 缩放级别指示器 */
+                        .zoom-level {
+                            font-size: 12px;
+                            color: #64748b;
+                            text-align: center;
+                            padding: 2px 6px;
+                            background: rgba(255, 255, 255, 0.8);
+                            border-radius: 4px;
+                            min-width: 35px;
+                        }
+                        
+                        [data-theme="dark"] .zoom-level {
+                            background: rgba(30, 41, 59, 0.8);
+                            color: #94a3b8;
+                        }
+                        
+                        /* 响应式布局 */
+                        @media (max-width: 1024px) {
+                            .modal-content-layout {
+                                flex-direction: column;
+                                gap: 24px;
+                            }
+                            .content-left {
+                                padding-right: 0;
+                                max-height: 300px;
+                                margin-bottom: 16px;
+                            }
+                            .content-right {
+                                min-width: auto;
+                                height: 500px;
+                            }
+                            .topology-container {
+                                margin-top: 8px;
+                                padding: 16px;
+                            }
+                        }
+                    </style>
+                    
+                    <div class="modal-content-layout">
+                        <!-- 左侧文字介绍 -->
+                        <div class="content-left">
+                            <h4>系统特点</h4>
+                            <ul>
+                                <li>适用于工业和大型商业项目</li>
+                                <li>容量范围：100kWh-MWh级</li>
+                                <li>模块化设计，灵活扩展</li>
+                                <li>专业运维管理</li>
+                                <li>集成一体化柜体设计</li>
+                                <li>支持多种通信协议</li>
+                            </ul>
+                            <h4>主要功能</h4>
+                            <ul>
+                                <li>需求侧响应</li>
+                                <li>容量费用管理</li>
+                                <li>电能质量改善</li>
+                                <li>多能互补优化</li>
+                                <li>峰谷电价套利</li>
+                                <li>负荷削峰填谷</li>
+                                <li>电网辅助服务</li>
+                            </ul>
+                            <h4>应用场景</h4>
+                            <p>适合工厂、商业综合体、数据中心等大型用电场景，提供全方位的能源管理解决方案。</p>
+                            
+                            <h4>技术参数</h4>
+                            <ul>
+                                <li>通信协议：RS232/RS485/CAN、4G/WIFI</li>
+                                <li>系统容量：100kWh-10MWh</li>
+                                <li>电池管理：BMS电池管理系统</li>
+                                <li>功率控制：PCS功率变换系统</li>
+                                <li>监控系统：Neuron云服务器</li>
+                                <li>防护等级：IP54/IP65</li>
+                                <li>工作温度：-25°C ~ +55°C</li>
+                            </ul>
+                            
+                            <h4>系统架构</h4>
+                            <ul>
+                                <li>Neuron云服务器：远程监控管理</li>
+                                <li>Neuron II网关：数据采集和通信</li>
+                                <li>BMS系统：电池状态监控</li>
+                                <li>PCS系统：功率变换控制</li>
+                                <li>防雷器：电气保护</li>
+                                <li>火灾监测：安全防护</li>
+                                <li>UPS系统：不间断电源</li>
+                            </ul>
+                            
+                            <h4>经济效益</h4>
+                            <p>通过峰谷电价差套利、需求侧响应、容量费用管理等方式，可显著降低用电成本。典型应用场景下，投资回收期3-5年。</p>
+                            
+                            <p>系统采用先进的能源管理算法，结合人工智能技术，实现负荷预测、储能优化调度，最大化经济效益和能源利用效率。</p>
+                        </div>
+                        
+                        <!-- 右侧拓扑图 -->
+                        <div class="content-right">
+                            <h4 class="topology-title">系统拓扑图</h4>
+                            <div class="topology-container" id="topology-container">
+                                <!-- 缩放控制按钮 -->
+                                <div class="topology-controls">
+                                    <div class="zoom-btn" onclick="zoomIn()">+</div>
+                                    <div class="zoom-level" id="zoom-level">100%</div>
+                                    <div class="zoom-btn" onclick="zoomOut()">−</div>
+                                    <div class="zoom-btn" onclick="resetZoom()">⌂</div>
+                                    <div class="fullscreen-btn" onclick="openFullscreen(event)" title="全屏查看">⛶</div>
+                                </div>
+                                
+                                <!-- 缩放容器 -->
+                                <div class="topology-zoom-container" id="topology-zoom-container">
+                                    <!-- 直接嵌入工商储能拓扑图 -->
+                                    <img src="./images/commercial-topology.jpg" 
+                                         alt="工商储能系统拓扑图" 
+                                         style="width: 100%; height: auto; max-width: 100%; object-fit: contain;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    
+                                    <!-- 备用文本，如果图片加载失败 -->
+                                    <div style="display: none; text-align: center; padding: 40px; color: #666;">
+                                        <p>拓扑图加载失败</p>
+                                        <p>图片路径: ./images/charging-topology.jpg</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                `,
+                contentEn: `
+                    <style>
+                        .modal-content-layout {
+                            display: flex;
+                            gap: 32px;
+                            height: 100%;
+                            min-height: 500px;
+                        }
+                        .content-left {
+                            flex: 1;
+                            overflow-y: auto;
+                            padding-right: 24px;
+                            max-height: 100%;
+                            overflow-x: hidden;
+                            height: 100%;
+                        }
+                        /* 自定义滚动条 */
+                        .content-left::-webkit-scrollbar {
+                            width: 8px;
+                        }
+                        .content-left::-webkit-scrollbar-track {
+                            background: #f1f5f9;
+                            border-radius: 4px;
+                        }
+                        .content-left::-webkit-scrollbar-thumb {
+                            background: #cbd5e1;
+                            border-radius: 4px;
+                            border: 2px solid #f1f5f9;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #94a3b8;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:active {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-track {
+                            background: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb {
+                            background: #475569;
+                            border-color: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:active {
+                            background: #94a3b8;
+                        }
+                        
+                        /* 拓扑图标题样式 */
+                        .topology-title {
+                            margin-bottom: 16px;
+                            color: #1e293b;
+                            font-size: 1.125rem;
+                            font-weight: 600;
+                        }
+                        
+                        [data-theme="dark"] .topology-title {
+                            color: #f1f5f9;
+                        }
+                        .content-right {
+                            flex: 1;
+                            min-width: 500px;
+                            display: flex;
+                            flex-direction: column;
+                            overflow: hidden;
+                        }
+                        .topology-container {
+                            background: #fafafa;
+                            border-radius: 12px;
+                            padding: 20px;
+                            margin-top: 16px;
+                            position: relative;
+                            height: calc(100% - 66px);
+                            min-height: 300px;
+                            max-height: 400px;
+                            overflow: hidden;
+                            border: 1px solid #e0e0e0;
+                            cursor: grab;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                        }
+                        .topology-container:active {
+                            cursor: grabbing;
+                        }
+                        [data-theme="dark"] .topology-container {
+                            background: #0f172a;
+                            border-color: #334155;
+                        }
+                        
+                        /* 缩放容器 */
+                        .topology-zoom-container {
+                            position: relative;
+                            width: 100%;
+                            height: 100%;
+                            transform-origin: center center;
+                            transition: transform 0.3s ease;
+                        }
+                        
+                        /* 缩放控制按钮 */
+                        .topology-controls {
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
+                            z-index: 20;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                        }
+                        
+                        .zoom-btn {
+                            width: 35px;
+                            height: 35px;
+                            background: rgba(255, 255, 255, 0.9);
+                            border: 1px solid #e0e0e0;
+                            border-radius: 6px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #333;
+                            transition: all 0.2s ease;
+                            user-select: none;
+                        }
+                        
+                        [data-theme="dark"] .zoom-btn {
+                            background: rgba(30, 41, 59, 0.9);
+                            border-color: #334155;
+                            color: #cbd5e1;
+                        }
+                        
+                        .zoom-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .zoom-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        /* 全屏按钮样式 */
+                        .fullscreen-btn {
+                            background: rgba(255, 255, 255, 0.95);
+                            border: 1px solid rgba(229, 231, 235, 0.8);
+                            width: 36px;
+                            height: 36px;
+                            border-radius: 8px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            font-size: 18px;
+                            color: #475569;
+                        }
+                        
+                        .fullscreen-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .fullscreen-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn {
+                            background: rgba(71, 85, 105, 0.95);
+                            border-color: rgba(148, 163, 184, 0.3);
+                            color: #e2e8f0;
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn:hover {
+                            background: rgba(59, 130, 246, 0.2);
+                            border-color: #60a5fa;
+                        }
+                        
+                        /* 缩放级别指示器 */
+                        .zoom-level {
+                            font-size: 12px;
+                            color: #64748b;
+                            text-align: center;
+                            padding: 2px 6px;
+                            background: rgba(255, 255, 255, 0.8);
+                            border-radius: 4px;
+                            min-width: 35px;
+                        }
+                        
+                        [data-theme="dark"] .zoom-level {
+                            background: rgba(30, 41, 59, 0.8);
+                            color: #94a3b8;
+                        }
+                        
+                        /* 响应式布局 */
+                        @media (max-width: 1024px) {
+                            .modal-content-layout {
+                                flex-direction: column;
+                                gap: 24px;
+                            }
+                            .content-left {
+                                padding-right: 0;
+                                max-height: 300px;
+                                margin-bottom: 16px;
+                            }
+                            .content-right {
+                                min-width: auto;
+                                height: 500px;
+                            }
+                            .topology-container {
+                                margin-top: 8px;
+                                padding: 16px;
+                            }
+                        }
+                    </style>
+                    
+                    <div class="modal-content-layout">
+                        <!-- 左侧文字介绍 -->
+                        <div class="content-left">
+                            <h4>System Features</h4>
+                            <ul>
+                                <li>Suitable for industrial and large commercial projects</li>
+                                <li>Capacity range: 100kWh-MWh level</li>
+                                <li>Modular design, flexible expansion</li>
+                                <li>Professional operation and maintenance management</li>
+                                <li>Integrated all-in-one cabinet design</li>
+                                <li>Support for multiple communication protocols</li>
+                            </ul>
+                            <h4>Main Functions</h4>
+                            <ul>
+                                <li>Demand side response</li>
+                                <li>Capacity cost management</li>
+                                <li>Power quality improvement</li>
+                                <li>Multi-energy complementary optimization</li>
+                                <li>Peak-valley electricity price arbitrage</li>
+                                <li>Load peak shaving and valley filling</li>
+                                <li>Grid auxiliary services</li>
+                            </ul>
+                            <h4>Application Scenarios</h4>
+                            <p>Suitable for factories, commercial complexes, data centers and other large-scale power consumption scenarios, providing comprehensive energy management solutions.</p>
+                            
+                            <h4>Technical Parameters</h4>
+                            <ul>
+                                <li>Communication Protocol: RS232/RS485/CAN, 4G/WIFI</li>
+                                <li>System Capacity: 100kWh-10MWh</li>
+                                <li>Battery Management: BMS Battery Management System</li>
+                                <li>Power Control: PCS Power Conversion System</li>
+                                <li>Monitoring System: Neuron Cloud Server</li>
+                                <li>Protection Level: IP54/IP65</li>
+                                <li>Working Temperature: -25°C ~ +55°C</li>
+                            </ul>
+                            
+                            <h4>System Architecture</h4>
+                            <ul>
+                                <li>Neuron Cloud Server: Remote monitoring and management</li>
+                                <li>Neuron II Gateway: Data collection and communication</li>
+                                <li>BMS System: Battery status monitoring</li>
+                                <li>PCS System: Power conversion control</li>
+                                <li>Lightning Arrester: Electrical protection</li>
+                                <li>Fire Detection: Safety protection</li>
+                                <li>UPS System: Uninterruptible power supply</li>
+                            </ul>
+                            
+                            <h4>Economic Benefits</h4>
+                            <p>Through peak-valley electricity price arbitrage, demand side response, capacity cost management and other methods, electricity costs can be significantly reduced. In typical application scenarios, the investment payback period is 3-5 years.</p>
+                            
+                            <p>The system adopts advanced energy management algorithms combined with artificial intelligence technology to achieve load forecasting and optimal energy storage scheduling, maximizing economic benefits and energy utilization efficiency.</p>
+                        </div>
+                        
+                        <!-- 右侧拓扑图 -->
+                        <div class="content-right">
+                            <h4 class="topology-title">System Topology</h4>
+                            <div class="topology-container" id="topology-container">
+                                <!-- 缩放控制按钮 -->
+                                <div class="topology-controls">
+                                    <div class="zoom-btn" onclick="zoomIn()">+</div>
+                                    <div class="zoom-level" id="zoom-level">100%</div>
+                                    <div class="zoom-btn" onclick="zoomOut()">−</div>
+                                    <div class="zoom-btn" onclick="resetZoom()">⌂</div>
+                                    <div class="fullscreen-btn" onclick="openFullscreen(event)" title="全屏查看">⛶</div>
+                                </div>
+                                
+                                <!-- 缩放容器 -->
+                                <div class="topology-zoom-container" id="topology-zoom-container">
+                                    <!-- 直接嵌入工商储能拓扑图 -->
+                                    <img src="./images/commercial-topology.jpg" 
+                                         alt="Commercial Energy Storage System Topology" 
+                                         style="width: 100%; height: auto; max-width: 100%; object-fit: contain;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    
+                                    <!-- 备用文本，如果图片加载失败 -->
+                                    <div style="display: none; text-align: center; padding: 40px; color: #666;">
+                                        <p>Topology diagram loading failed</p>
+                                        <p>Image path: ./images/charging-topology.jpg</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                `
+            },
+            charging: {
+                title: '充电站系统',
+                titleEn: 'Charging Station System',
+                content: `
+                    <style>
+                        .modal-content-layout {
+                            display: flex;
+                            gap: 32px;
+                            height: 100%;
+                            min-height: 500px;
+                        }
+                        .content-left {
+                            flex: 1;
+                            overflow-y: auto;
+                            padding-right: 24px;
+                            max-height: 100%;
+                            overflow-x: hidden;
+                            height: 100%;
+                        }
+                        /* 自定义滚动条 */
+                        .content-left::-webkit-scrollbar {
+                            width: 8px;
+                        }
+                        .content-left::-webkit-scrollbar-track {
+                            background: #f1f5f9;
+                            border-radius: 4px;
+                        }
+                        .content-left::-webkit-scrollbar-thumb {
+                            background: #cbd5e1;
+                            border-radius: 4px;
+                            border: 2px solid #f1f5f9;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #94a3b8;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:active {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-track {
+                            background: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb {
+                            background: #475569;
+                            border-color: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:active {
+                            background: #94a3b8;
+                        }
+                        
+                        /* 拓扑图标题样式 */
+                        .topology-title {
+                            margin-bottom: 16px;
+                            color: #1e293b;
+                            font-size: 1.125rem;
+                            font-weight: 600;
+                        }
+                        
+                        [data-theme="dark"] .topology-title {
+                            color: #f1f5f9;
+                        }
+                        .content-right {
+                            flex: 1;
+                            min-width: 500px;
+                            display: flex;
+                            flex-direction: column;
+                            overflow: hidden;
+                        }
+                        .topology-container {
+                            background: #fafafa;
+                            border-radius: 12px;
+                            padding: 20px;
+                            margin-top: 16px;
+                            position: relative;
+                            height: calc(100% - 66px);
+                            min-height: 300px;
+                            max-height: 400px;
+                            overflow: hidden;
+                            border: 1px solid #e0e0e0;
+                            cursor: grab;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                        }
+                        .topology-container:active {
+                            cursor: grabbing;
+                        }
+                        [data-theme="dark"] .topology-container {
+                            background: #0f172a;
+                            border-color: #334155;
+                        }
+                        
+                        /* 缩放容器 */
+                        .topology-zoom-container {
+                            position: relative;
+                            width: 100%;
+                            height: 100%;
+                            transform-origin: center center;
+                            transition: transform 0.3s ease;
+                        }
+                        
+                        /* 缩放控制按钮 */
+                        .topology-controls {
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
+                            z-index: 20;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                        }
+                        
+                        .zoom-btn {
+                            width: 35px;
+                            height: 35px;
+                            background: rgba(255, 255, 255, 0.9);
+                            border: 1px solid #e0e0e0;
+                            border-radius: 6px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #333;
+                            transition: all 0.2s ease;
+                            user-select: none;
+                        }
+                        
+                        [data-theme="dark"] .zoom-btn {
+                            background: rgba(30, 41, 59, 0.9);
+                            border-color: #334155;
+                            color: #cbd5e1;
+                        }
+                        
+                        .zoom-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .zoom-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        /* 全屏按钮样式 */
+                        .fullscreen-btn {
+                            background: rgba(255, 255, 255, 0.95);
+                            border: 1px solid rgba(229, 231, 235, 0.8);
+                            width: 36px;
+                            height: 36px;
+                            border-radius: 8px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            font-size: 18px;
+                            color: #475569;
+                        }
+                        
+                        .fullscreen-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .fullscreen-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn {
+                            background: rgba(71, 85, 105, 0.95);
+                            border-color: rgba(148, 163, 184, 0.3);
+                            color: #e2e8f0;
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn:hover {
+                            background: rgba(59, 130, 246, 0.2);
+                            border-color: #60a5fa;
+                        }
+                        
+                        /* 缩放级别指示器 */
+                        .zoom-level {
+                            font-size: 12px;
+                            color: #64748b;
+                            text-align: center;
+                            padding: 2px 6px;
+                            background: rgba(255, 255, 255, 0.8);
+                            border-radius: 4px;
+                            min-width: 35px;
+                        }
+                        
+                        [data-theme="dark"] .zoom-level {
+                            background: rgba(30, 41, 59, 0.8);
+                            color: #94a3b8;
+                        }
+                        
+                        /* 响应式布局 */
+                        @media (max-width: 1024px) {
+                            .modal-content-layout {
+                                flex-direction: column;
+                                gap: 24px;
+                            }
+                            .content-left {
+                                padding-right: 0;
+                                max-height: 300px;
+                                margin-bottom: 16px;
+                            }
+                            .content-right {
+                                min-width: auto;
+                                height: 500px;
+                            }
+                            .topology-container {
+                                margin-top: 8px;
+                                padding: 16px;
+                            }
+                        }
+                    </style>
+                    
+                    <div class="modal-content-layout">
+                        <!-- 左侧文字介绍 -->
+                        <div class="content-left">
+                            <h4>系统特点</h4>
+                            <ul>
+                                <li>集成储能的充电站解决方案</li>
+                                <li>支持多种充电标准</li>
+                                <li>智能调度充电功率</li>
+                                <li>完善的计费系统</li>
+                                <li>储能削峰填谷功能</li>
+                                <li>远程监控管理</li>
+                            </ul>
+                            <h4>主要功能</h4>
+                            <ul>
+                                <li>动态功率分配</li>
+                                <li>有序充电管理</li>
+                                <li>储能削峰填谷</li>
+                                <li>运营数据分析</li>
+                                <li>智能负荷均衡</li>
+                                <li>电能质量优化</li>
+                                <li>故障自动诊断</li>
+                            </ul>
+                            <h4>应用场景</h4>
+                            <p>适合公共充电站、园区充电设施、高速服务区等场景，提升充电服务能力和运营效益。</p>
+                            
+                            <h4>技术参数</h4>
+                            <ul>
+                                <li>通信协议：RS232/RS485/CAN、4G/WIFI</li>
+                                <li>充电功率：单桩7kW-360kW</li>
+                                <li>充电标准：GB/T、CCS、CHAdeMO</li>
+                                <li>储能容量：50kWh-2MWh</li>
+                                <li>电池类型：磷酸铁锂</li>
+                                <li>防护等级：IP54</li>
+                                <li>工作温度：-20°C ~ +50°C</li>
+                            </ul>
+                            
+                            <h4>系统架构</h4>
+                            <ul>
+                                <li>Neuron PC界面：监控管理平台</li>
+                                <li>Neuron云服务器：数据处理中心</li>
+                                <li>Neuron II网关：设备通信枢纽</li>
+                                <li>逆变器：电能变换控制</li>
+                                <li>电池储能系统：能量存储</li>
+                                <li>光伏系统：清洁能源输入</li>
+                                <li>多路充电桩：车辆充电服务</li>
+                            </ul>
+                            
+                            <h4>运营优势</h4>
+                            <ul>
+                                <li>降低电网负荷冲击</li>
+                                <li>提高充电设施利用率</li>
+                                <li>优化电能成本结构</li>
+                                <li>增强电网稳定性</li>
+                                <li>支持快速充电需求</li>
+                                <li>实现绿色能源利用</li>
+                            </ul>
+                            
+                            <h4>智能管理</h4>
+                            <p>系统采用先进的能源管理算法，实现充电需求预测、储能优化调度和负荷智能分配，最大化提升充电站的运营效率和经济效益。</p>
+                            
+                            <p>通过云端大数据分析，为用户提供最优的充电策略和服务体验，同时为运营商提供精准的运营数据和决策支持。</p>
+                        </div>
+                        
+                        <!-- 右侧拓扑图 -->
+                        <div class="content-right">
+                            <h4 class="topology-title">系统拓扑图</h4>
+                            <div class="topology-container" id="topology-container">
+                                <!-- 缩放控制按钮 -->
+                                <div class="topology-controls">
+                                    <div class="zoom-btn" onclick="zoomIn()">+</div>
+                                    <div class="zoom-level" id="zoom-level">100%</div>
+                                    <div class="zoom-btn" onclick="zoomOut()">−</div>
+                                    <div class="zoom-btn" onclick="resetZoom()">⌂</div>
+                                    <div class="fullscreen-btn" onclick="openFullscreen(event)" title="全屏查看">⛶</div>
+                                </div>
+                                
+                                <!-- 缩放容器 -->
+                                <div class="topology-zoom-container" id="topology-zoom-container">
+                                    <!-- 直接嵌入充电站拓扑图 -->
+                                    <img src="./images/charging-topology.jpg" 
+                                         alt="充电站系统拓扑图" 
+                                         style="width: 100%; height: auto; max-width: 100%; object-fit: contain;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    
+                                    <!-- 备用文本，如果图片加载失败 -->
+                                    <div style="display: none; text-align: center; padding: 40px; color: #666;">
+                                        <p>拓扑图加载失败</p>
+                                        <p>图片路径: ./images/charging-topology.jpg</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                `,
+                contentEn: `
+                    <style>
+                        .modal-content-layout {
+                            display: flex;
+                            gap: 32px;
+                            height: 100%;
+                            min-height: 500px;
+                        }
+                        .content-left {
+                            flex: 1;
+                            overflow-y: auto;
+                            padding-right: 24px;
+                            max-height: 100%;
+                            overflow-x: hidden;
+                            height: 100%;
+                        }
+                        /* 自定义滚动条 */
+                        .content-left::-webkit-scrollbar {
+                            width: 8px;
+                        }
+                        .content-left::-webkit-scrollbar-track {
+                            background: #f1f5f9;
+                            border-radius: 4px;
+                        }
+                        .content-left::-webkit-scrollbar-thumb {
+                            background: #cbd5e1;
+                            border-radius: 4px;
+                            border: 2px solid #f1f5f9;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #94a3b8;
+                        }
+                        .content-left::-webkit-scrollbar-thumb:active {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-track {
+                            background: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb {
+                            background: #475569;
+                            border-color: #1e293b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:hover {
+                            background: #64748b;
+                        }
+                        [data-theme="dark"] .content-left::-webkit-scrollbar-thumb:active {
+                            background: #94a3b8;
+                        }
+                        
+                        /* 拓扑图标题样式 */
+                        .topology-title {
+                            margin-bottom: 16px;
+                            color: #1e293b;
+                            font-size: 1.125rem;
+                            font-weight: 600;
+                        }
+                        
+                        [data-theme="dark"] .topology-title {
+                            color: #f1f5f9;
+                        }
+                        .content-right {
+                            flex: 1;
+                            min-width: 500px;
+                            display: flex;
+                            flex-direction: column;
+                            overflow: hidden;
+                        }
+                        .topology-container {
+                            background: #fafafa;
+                            border-radius: 12px;
+                            padding: 20px;
+                            margin-top: 16px;
+                            position: relative;
+                            height: calc(100% - 66px);
+                            min-height: 300px;
+                            max-height: 400px;
+                            overflow: hidden;
+                            border: 1px solid #e0e0e0;
+                            cursor: grab;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                        }
+                        .topology-container:active {
+                            cursor: grabbing;
+                        }
+                        [data-theme="dark"] .topology-container {
+                            background: #0f172a;
+                            border-color: #334155;
+                        }
+                        
+                        /* 缩放容器 */
+                        .topology-zoom-container {
+                            position: relative;
+                            width: 100%;
+                            height: 100%;
+                            transform-origin: center center;
+                            transition: transform 0.3s ease;
+                        }
+                        
+                        /* 缩放控制按钮 */
+                        .topology-controls {
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
+                            z-index: 20;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                        }
+                        
+                        .zoom-btn {
+                            width: 35px;
+                            height: 35px;
+                            background: rgba(255, 255, 255, 0.9);
+                            border: 1px solid #e0e0e0;
+                            border-radius: 6px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #333;
+                            transition: all 0.2s ease;
+                            user-select: none;
+                        }
+                        
+                        [data-theme="dark"] .zoom-btn {
+                            background: rgba(30, 41, 59, 0.9);
+                            border-color: #334155;
+                            color: #cbd5e1;
+                        }
+                        
+                        .zoom-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .zoom-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        /* 全屏按钮样式 */
+                        .fullscreen-btn {
+                            background: rgba(255, 255, 255, 0.95);
+                            border: 1px solid rgba(229, 231, 235, 0.8);
+                            width: 36px;
+                            height: 36px;
+                            border-radius: 8px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            font-size: 18px;
+                            color: #475569;
+                        }
+                        
+                        .fullscreen-btn:hover {
+                            background: rgba(37, 99, 235, 0.1);
+                            border-color: #2563eb;
+                            transform: scale(1.1);
+                        }
+                        
+                        .fullscreen-btn:active {
+                            transform: scale(0.95);
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn {
+                            background: rgba(71, 85, 105, 0.95);
+                            border-color: rgba(148, 163, 184, 0.3);
+                            color: #e2e8f0;
+                        }
+                        
+                        [data-theme="dark"] .fullscreen-btn:hover {
+                            background: rgba(59, 130, 246, 0.2);
+                            border-color: #60a5fa;
+                        }
+                        
+                        /* 缩放级别指示器 */
+                        .zoom-level {
+                            font-size: 12px;
+                            color: #64748b;
+                            text-align: center;
+                            padding: 2px 6px;
+                            background: rgba(255, 255, 255, 0.8);
+                            border-radius: 4px;
+                            min-width: 35px;
+                        }
+                        
+                        [data-theme="dark"] .zoom-level {
+                            background: rgba(30, 41, 59, 0.8);
+                            color: #94a3b8;
+                        }
+                        
+                        /* 响应式布局 */
+                        @media (max-width: 1024px) {
+                            .modal-content-layout {
+                                flex-direction: column;
+                                gap: 24px;
+                            }
+                            .content-left {
+                                padding-right: 0;
+                                max-height: 300px;
+                                margin-bottom: 16px;
+                            }
+                            .content-right {
+                                min-width: auto;
+                                height: 500px;
+                            }
+                            .topology-container {
+                                margin-top: 8px;
+                                padding: 16px;
+                            }
+                        }
+                    </style>
+                    
+                    <div class="modal-content-layout">
+                        <!-- 左侧文字介绍 -->
+                        <div class="content-left">
+                            <h4>System Features</h4>
+                            <ul>
+                                <li>Integrated energy storage charging station solution</li>
+                                <li>Support for multiple charging standards</li>
+                                <li>Intelligent scheduling of charging power</li>
+                                <li>Comprehensive billing system</li>
+                                <li>Energy storage peak shaving and valley filling function</li>
+                                <li>Remote monitoring and management</li>
+                            </ul>
+                            <h4>Main Functions</h4>
+                            <ul>
+                                <li>Dynamic power allocation</li>
+                                <li>Orderly charging management</li>
+                                <li>Energy storage peak shaving and valley filling</li>
+                                <li>Operational data analysis</li>
+                                <li>Intelligent load balancing</li>
+                                <li>Power quality optimization</li>
+                                <li>Automatic fault diagnosis</li>
+                            </ul>
+                            <h4>Application Scenarios</h4>
+                            <p>Suitable for public charging stations, park charging facilities, highway service areas and other scenarios, improving charging service capabilities and operational benefits.</p>
+                            
+                            <h4>Technical Parameters</h4>
+                            <ul>
+                                <li>Communication Protocol: RS232/RS485/CAN, 4G/WIFI</li>
+                                <li>Charging Power: Single pile 7kW-360kW</li>
+                                <li>Charging Standards: GB/T, CCS, CHAdeMO</li>
+                                <li>Energy Storage Capacity: 50kWh-2MWh</li>
+                                <li>Battery Type: Lithium Iron Phosphate</li>
+                                <li>Protection Level: IP54</li>
+                                <li>Working Temperature: -20°C ~ +50°C</li>
+                            </ul>
+                            
+                            <h4>System Architecture</h4>
+                            <ul>
+                                <li>Neuron PC Interface: Monitoring and management platform</li>
+                                <li>Neuron Cloud Server: Data processing center</li>
+                                <li>Neuron II Gateway: Device communication hub</li>
+                                <li>Inverter: Power conversion control</li>
+                                <li>Battery Energy Storage System: Energy storage</li>
+                                <li>Photovoltaic System: Clean energy input</li>
+                                <li>Multiple charging piles: Vehicle charging service</li>
+                            </ul>
+                            
+                            <h4>Operational Advantages</h4>
+                            <ul>
+                                <li>Reduce grid load impact</li>
+                                <li>Improve charging facility utilization</li>
+                                <li>Optimize power cost structure</li>
+                                <li>Enhance grid stability</li>
+                                <li>Support fast charging demand</li>
+                                <li>Achieve green energy utilization</li>
+                            </ul>
+                            
+                            <h4>Intelligent Management</h4>
+                            <p>The system adopts advanced energy management algorithms to realize charging demand prediction, energy storage optimization scheduling and intelligent load allocation, maximizing the operational efficiency and economic benefits of charging stations.</p>
+                            
+                            <p>Through cloud-based big data analysis, it provides users with optimal charging strategies and service experience, while providing operators with accurate operational data and decision support.</p>
+                        </div>
+                        
+                        <!-- 右侧拓扑图 -->
+                        <div class="content-right">
+                            <h4 class="topology-title">System Topology</h4>
+                            <div class="topology-container" id="topology-container">
+                                <!-- 缩放控制按钮 -->
+                                <div class="topology-controls">
+                                    <div class="zoom-btn" onclick="zoomIn()">+</div>
+                                    <div class="zoom-level" id="zoom-level">100%</div>
+                                    <div class="zoom-btn" onclick="zoomOut()">−</div>
+                                    <div class="zoom-btn" onclick="resetZoom()">⌂</div>
+                                    <div class="fullscreen-btn" onclick="openFullscreen(event)" title="全屏查看">⛶</div>
+                                </div>
+                                
+                                <!-- 缩放容器 -->
+                                <div class="topology-zoom-container" id="topology-zoom-container">
+                                    <!-- 直接嵌入充电站拓扑图 -->
+                                    <img src="./images/charging-topology.jpg" 
+                                         alt="Charging Station System Topology" 
+                                         style="width: 100%; height: auto; max-width: 100%; object-fit: contain;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    
+                                    <!-- 备用文本，如果图片加载失败 -->
+                                    <div style="display: none; text-align: center; padding: 40px; color: #666;">
+                                        <p>Topology diagram loading failed</p>
+                                        <p>Image path: ./images/charging-topology.jpg</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                `
+            }
+        };
+
+        // 初始化主题
+        const savedTheme = localStorage.getItem('ess_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('theme-icon').textContent = savedTheme === 'light' ? '🌙' : '☀️';
+
+        // 切换主题
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            document.getElementById('theme-icon').textContent = newTheme === 'light' ? '🌙' : '☀️';
+            localStorage.setItem('ess_theme', newTheme);
+        }
+
+        // 切换语言
+        function toggleLanguage() {
+            const newLang = currentLang === 'zh' ? 'en' : 'zh';
+            applyLanguage(newLang);
+        }
+
+        // 显示场景详情
+        function showInfo(scenario) {
+            const info = scenarioInfo[scenario];
+            if (info) {
+                // 根据当前语言设置标题
+                const title = currentLang === 'zh' ? info.title : info.titleEn || info.title;
+                document.getElementById('modal-title').textContent = title;
+                
+                // 根据当前语言生成内容
+                const content = currentLang === 'zh' ? info.content : info.contentEn || info.content;
+                document.getElementById('modal-body').innerHTML = content;
+                document.getElementById('modal').style.display = 'flex';
+                
+                // 初始化拓扑图缩放功能
+                setTimeout(() => {
+                    initTopologyZoom();
+                }, 100);
+            }
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // 选择场景
+        function selectScenario(scenario) {
+            sessionStorage.setItem('selected_scenario', scenario);
+            const scenarioName = t(`scenario.${scenario}.title`);
+            const message = t('scenario.selected').replace('{}', scenarioName);
+            
+            // 根据不同场景跳转到不同页面
+            if (scenario === 'commercial') {
+                // 工商储能跳转到电站管理页面
+                window.location.href = './commercial-storage/station-management.html';
+            } else {
+                // 其他场景暂时显示提示信息
+                alert(message);
+                // window.location.href = './main.html';
+            }
+        }
+
+        // 获取场景名称
+        function getScenarioName(scenario) {
+            const names = {
+                residential: '户用储能',
+                commercial: '工商储能',
+                charging: '充电站'
+            };
+            return names[scenario] || scenario;
+        }
+
+        // ESC键关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // 拓扑图缩放功能
+        let currentZoom = 1;
+        let isDragging = false;
+        let dragStart = { x: 0, y: 0 };
+        let translate = { x: 0, y: 0 };
+        let zoomContainer = null;
+        let topologyContainer = null;
+        let zoomLevel = null;
+        
+        // 初始化拓扑图缩放功能
+        function initTopologyZoom() {
+            zoomContainer = document.getElementById('topology-zoom-container');
+            topologyContainer = document.getElementById('topology-container');
+            zoomLevel = document.getElementById('zoom-level');
+            
+            if (!zoomContainer || !topologyContainer || !zoomLevel) return;
+            
+            // 重置状态
+            currentZoom = 1;
+            translate = { x: 0, y: 0 };
+            updateZoom();
+            
+            // 移除之前的事件监听器
+            topologyContainer.removeEventListener('wheel', handleWheel);
+            topologyContainer.removeEventListener('mousedown', handleMouseDown);
+            topologyContainer.removeEventListener('touchstart', handleTouchStart);
+            topologyContainer.removeEventListener('touchmove', handleTouchMove);
+            topologyContainer.removeEventListener('touchend', handleTouchEnd);
+            
+            // 添加新的事件监听器
+            topologyContainer.addEventListener('wheel', handleWheel);
+            topologyContainer.addEventListener('mousedown', handleMouseDown);
+            topologyContainer.addEventListener('touchstart', handleTouchStart);
+            topologyContainer.addEventListener('touchmove', handleTouchMove);
+            topologyContainer.addEventListener('touchend', handleTouchEnd);
+        }
+        
+        // 缩放函数
+        function zoomIn() {
+            if (currentZoom < 3) {
+                currentZoom += 0.2;
+                updateZoom();
+            }
+        }
+        
+        function zoomOut() {
+            if (currentZoom > 0.5) {
+                currentZoom -= 0.2;
+                updateZoom();
+            }
+        }
+        
+        function resetZoom() {
+            currentZoom = 1;
+            translate = { x: 0, y: 0 };
+            updateZoom();
+        }
+        
+        function updateZoom() {
+            if (zoomContainer && zoomLevel) {
+                zoomContainer.style.transform = `translate(${translate.x}px, ${translate.y}px) scale(${currentZoom})`;
+                zoomLevel.textContent = Math.round(currentZoom * 100) + '%';
+            }
+        }
+        
+        // 事件处理函数
+        function handleWheel(e) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            const newZoom = Math.max(0.5, Math.min(3, currentZoom + delta));
+            
+            if (newZoom !== currentZoom) {
+                currentZoom = newZoom;
+                updateZoom();
+            }
+        }
+        
+        function handleMouseDown(e) {
+            if (e.target.closest('.topology-controls')) return;
+            isDragging = true;
+            dragStart = { x: e.clientX - translate.x, y: e.clientY - translate.y };
+        }
+        
+        function handleMouseMove(e) {
+            if (!isDragging) return;
+            translate.x = e.clientX - dragStart.x;
+            translate.y = e.clientY - dragStart.y;
+            updateZoom();
+        }
+        
+        function handleMouseUp() {
+            isDragging = false;
+        }
+        
+        function handleTouchStart(e) {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                const touch = e.touches[0];
+                dragStart = { x: touch.clientX - translate.x, y: touch.clientY - translate.y };
+            }
+        }
+        
+        function handleTouchMove(e) {
+            if (!isDragging || e.touches.length !== 1) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            translate.x = touch.clientX - dragStart.x;
+            translate.y = touch.clientY - dragStart.y;
+            updateZoom();
+        }
+        
+        function handleTouchEnd() {
+            isDragging = false;
+        }
+        
+        // 全屏功能
+        function openFullscreen(event) {
+            const button = event.target.closest('.fullscreen-btn');
+            if (!button) return;
+            
+            // 找到最近的拓扑图容器中的图片
+            const topologyContainer = button.closest('.topology-container');
+            const img = topologyContainer.querySelector('img[src*="topology"]');
+            
+            if (!img) return;
+            
+            const modal = document.getElementById('fullscreen-modal');
+            const fullscreenImage = document.getElementById('fullscreen-image');
+            const fullscreenTitle = modal.querySelector('.fullscreen-title');
+            
+            // 重置缩放和位置
+            resetFullscreenZoom();
+            
+            // 设置图片和标题
+            fullscreenImage.src = img.src;
+            fullscreenImage.alt = img.alt;
+            
+            // 根据语言设置标题
+            if (currentLang === 'zh') {
+                fullscreenTitle.textContent = img.alt || '系统拓扑图';
+            } else {
+                fullscreenTitle.textContent = img.alt || 'System Topology';
+            }
+            
+            // 显示模态框
+            modal.style.display = 'flex';
+            
+            // 防止背景滚动
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeFullscreen() {
+            const modal = document.getElementById('fullscreen-modal');
+            modal.style.display = 'none';
+            
+            // 恢复背景滚动
+            document.body.style.overflow = '';
+            
+            // 重置缩放和位置
+            resetFullscreenZoom();
+        }
+        
+        // 全屏图片缩放和拖动功能
+        let fullscreenScale = 1;
+        let fullscreenTranslateX = 0;
+        let fullscreenTranslateY = 0;
+        let isFullscreenDragging = false;
+        let fullscreenStartX = 0;
+        let fullscreenStartY = 0;
+        let fullscreenLastTranslateX = 0;
+        let fullscreenLastTranslateY = 0;
+        
+        const MIN_SCALE = 0.5;
+        const MAX_SCALE = 5;
+        const SCALE_STEP = 0.25;
+        
+        function updateFullscreenTransform() {
+            const image = document.getElementById('fullscreen-image');
+            const zoomLevel = document.getElementById('zoom-level');
+            if (image && zoomLevel) {
+                image.style.transform = `translate(${fullscreenTranslateX}px, ${fullscreenTranslateY}px) scale(${fullscreenScale})`;
+                zoomLevel.textContent = Math.round(fullscreenScale * 100) + '%';
+            }
+        }
+        
+        function fullscreenZoomIn() {
+            if (fullscreenScale < MAX_SCALE) {
+                fullscreenScale = Math.min(fullscreenScale + SCALE_STEP, MAX_SCALE);
+                updateFullscreenTransform();
+            }
+        }
+        
+        function fullscreenZoomOut() {
+            if (fullscreenScale > MIN_SCALE) {
+                fullscreenScale = Math.max(fullscreenScale - SCALE_STEP, MIN_SCALE);
+                // 缩小时调整位置，避免图片跑出视野
+                if (fullscreenScale === MIN_SCALE) {
+                    fullscreenTranslateX = 0;
+                    fullscreenTranslateY = 0;
+                }
+                updateFullscreenTransform();
+            }
+        }
+        
+        function resetFullscreenZoom() {
+            fullscreenScale = 1;
+            fullscreenTranslateX = 0;
+            fullscreenTranslateY = 0;
+            updateFullscreenTransform();
+        }
+        
+        // 初始化全屏事件监听器
+        function initFullscreenEventListeners() {
+            const fullscreenBody = document.getElementById('fullscreen-body');
+            if (!fullscreenBody) return;
+            
+            // 鼠标滚轮缩放
+            fullscreenBody.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, fullscreenScale + delta));
+                
+                if (newScale !== fullscreenScale) {
+                    // 计算鼠标位置相对于图片中心的偏移
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    // 调整平移以保持鼠标指向的点不动
+                    const scaleDiff = newScale - fullscreenScale;
+                    fullscreenTranslateX -= x * scaleDiff;
+                    fullscreenTranslateY -= y * scaleDiff;
+                    
+                    fullscreenScale = newScale;
+                    updateFullscreenTransform();
+                }
+            });
+            
+            // 鼠标拖动
+            fullscreenBody.addEventListener('mousedown', startDragging);
+            fullscreenBody.addEventListener('mousemove', drag);
+            fullscreenBody.addEventListener('mouseup', stopDragging);
+            fullscreenBody.addEventListener('mouseleave', stopDragging);
+            
+            // 触摸事件支持
+            fullscreenBody.addEventListener('touchstart', handleTouchStart, { passive: false });
+            fullscreenBody.addEventListener('touchmove', handleTouchMove, { passive: false });
+            fullscreenBody.addEventListener('touchend', handleTouchEnd);
+        }
+        
+        // DOM加载完成后初始化事件监听器
+        document.addEventListener('DOMContentLoaded', initFullscreenEventListeners);
+        
+        function startDragging(e) {
+            if (e.target.closest('.zoom-controls')) return;
+            
+            isFullscreenDragging = true;
+            fullscreenStartX = e.clientX - fullscreenTranslateX;
+            fullscreenStartY = e.clientY - fullscreenTranslateY;
+            fullscreenLastTranslateX = fullscreenTranslateX;
+            fullscreenLastTranslateY = fullscreenTranslateY;
+            
+            document.getElementById('fullscreen-body').classList.add('dragging');
+            e.preventDefault();
+        }
+        
+        function drag(e) {
+            if (!isFullscreenDragging) return;
+            
+            fullscreenTranslateX = e.clientX - fullscreenStartX;
+            fullscreenTranslateY = e.clientY - fullscreenStartY;
+            updateFullscreenTransform();
+        }
+        
+        function stopDragging() {
+            isFullscreenDragging = false;
+            document.getElementById('fullscreen-body')?.classList.remove('dragging');
+        }
+        
+        // 触摸事件处理
+        let touchStartDistance = 0;
+        let touchStartScale = 1;
+        
+        function handleTouchStart(e) {
+            if (e.target.closest('.zoom-controls')) return;
+            
+            if (e.touches.length === 1) {
+                // 单指触摸 - 拖动
+                isFullscreenDragging = true;
+                fullscreenStartX = e.touches[0].clientX - fullscreenTranslateX;
+                fullscreenStartY = e.touches[0].clientY - fullscreenTranslateY;
+                e.preventDefault();
+            } else if (e.touches.length === 2) {
+                // 双指触摸 - 缩放
+                isFullscreenDragging = false;
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                touchStartDistance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+                touchStartScale = fullscreenScale;
+                e.preventDefault();
+            }
+        }
+        
+        function handleTouchMove(e) {
+            if (e.touches.length === 1 && isFullscreenDragging) {
+                // 单指拖动
+                fullscreenTranslateX = e.touches[0].clientX - fullscreenStartX;
+                fullscreenTranslateY = e.touches[0].clientY - fullscreenStartY;
+                updateFullscreenTransform();
+                e.preventDefault();
+            } else if (e.touches.length === 2) {
+                // 双指缩放
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                const currentDistance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+                
+                const scale = (currentDistance / touchStartDistance) * touchStartScale;
+                fullscreenScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale));
+                updateFullscreenTransform();
+                e.preventDefault();
+            }
+        }
+        
+        function handleTouchEnd(e) {
+            isFullscreenDragging = false;
+        }
+        
+        // ESC键关闭全屏模态框
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const fullscreenModal = document.getElementById('fullscreen-modal');
+                if (fullscreenModal && fullscreenModal.style.display === 'flex') {
+                    closeFullscreen();
+                }
+            }
+        });
+        
+        // 点击背景关闭全屏
+        document.getElementById('fullscreen-modal')?.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget || e.target.classList.contains('fullscreen-modal-content')) {
+                closeFullscreen();
+            }
+        });
+        
+        // 全局鼠标事件
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 应用保存的语言设置
+            applyLanguage(currentLang);
+        });
+    </script>
+</body>
+</html>
