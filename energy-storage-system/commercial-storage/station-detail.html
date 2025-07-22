@@ -2322,7 +2322,7 @@
         // 加载电站数据
         function loadStationData(stationId) {
             // 这里可以根据stationId从后端加载具体数据
-            console.log('Loading data for station:', stationId);
+            // Loading data for station
             
             // 启动能量流图数据更新
             updateEnergyFlowData();
@@ -2499,20 +2499,17 @@
 
         // 导出报表
         function exportReport() {
-            alert(currentLang === 'zh' ? '报表导出功能开发中...' : 'Report export feature is under development...');
+            // 报表导出功能待实现
         }
 
         // 创建能量流向连线
         function createEnergyFlowLines() {
-            console.log('createEnergyFlowLines called');
-            
             const svg = document.getElementById('energy-flow-svg');
             if (!svg) {
-                console.error('SVG element not found!');
                 return;
             }
             
-            // 直接设置简单的SVG内容测试
+            // 设置SVG内容
             svg.setAttribute('viewBox', '0 0 1000 600');
             svg.innerHTML = `
                 <!-- 光伏到负载 -->
@@ -2557,13 +2554,10 @@
                 <path id="pvToGrid" d="M 570 110 L 800 110 Q 820 110 820 130 L 820 370" style="display:none;" />
                 <text x="710" y="100" fill="#5C85FF" font-size="14" font-weight="600">6.3 kW</text>
             `;
-            
-            console.log('SVG content set directly');
         }
 
         // 模式切换函数
         function switchMode(mode) {
-            console.log('切换到模式:', mode);
             // 这里可以添加模式切换的具体逻辑
             // 例如发送API请求到服务器
         }
@@ -2636,7 +2630,6 @@
 
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing page...');
             // 初始化页面
             initPage();
             
@@ -2666,7 +2659,6 @@
             // 创建能量流向连线
             setTimeout(function() {
                 createEnergyFlowLines();
-                console.log('Energy flow lines created');
             }, 100);
             
             // 窗口大小改变时重新绘制连线
@@ -2675,14 +2667,6 @@
             // 再次尝试创建连线（备用）
             setTimeout(createEnergyFlowLines, 500);
             
-            // 确保连线被创建
-            setInterval(function() {
-                const svg = document.getElementById('energy-flow-svg');
-                if (svg && svg.innerHTML.trim() === '<!-- 连线将通过JavaScript动态创建 -->') {
-                    console.log('SVG is empty, creating lines...');
-                    createEnergyFlowLines();
-                }
-            }, 1000);
         });
     </script>
 </body>
