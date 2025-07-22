@@ -1,0 +1,3062 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="工商储能柜能源管理系统 - 智能化能源管理解决方案">
+    <meta name="keywords" content="储能,能源管理,电池管理,BMS,PCS,能效分析">
+    <meta name="author" content="Energy Storage System Team">
+    
+    <title>工商储能柜能源管理系统</title>
+    
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background-color: #f8fafc;
+        }
+
+        /* 认证页面容器 */
+        .ess-auth {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: row;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(29, 78, 216, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+                linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 左上角固定Logo */
+        .ess-auth__logo-fixed {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 30;
+        }
+        
+        .ess-auth__logo-icon {
+            font-size: 2rem;
+            color: #2563eb;
+            filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.3));
+        }
+        
+        .ess-auth__logo-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            white-space: nowrap;
+        }
+        
+        .ess-auth__logo-image {
+            height: 48px;
+            width: auto;
+            max-width: 240px;
+            object-fit: contain;
+        }
+        
+        .ess-auth__logo-fallback {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .ess-auth::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(37, 99, 235, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 75% 75%, rgba(29, 78, 216, 0.04) 0%, transparent 25%);
+            animation: float-background 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes float-background {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, -2%) rotate(1deg); }
+            66% { transform: translate(-2%, 2%) rotate(-1deg); }
+        }
+
+        /* 左侧装饰区域 */
+        .ess-auth__promo {
+            width: calc(100vw - 480px);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(37, 99, 235, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 70% 70%, rgba(29, 78, 216, 0.1) 0%, transparent 60%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ess-auth__promo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(37, 99, 235, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 75% 75%, rgba(29, 78, 216, 0.05) 0%, transparent 25%);
+            animation: float-background 25s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .ess-auth__promo-content {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        .ess-auth__promo-logo {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            color: #2563eb;
+            filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.3));
+            animation: gentle-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes gentle-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .ess-auth__promo-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #1e293b 0%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ess-auth__promo-subtitle {
+            font-size: 1.25rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .ess-auth__promo-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .ess-auth__promo-feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.5rem;
+            padding: 1rem 0.75rem;
+            background: transparent;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .ess-auth__promo-feature:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .ess-auth__promo-feature-icon {
+            font-size: 2rem;
+            color: #2563eb;
+            margin-bottom: 0.25rem;
+            opacity: 0.8;
+        }
+
+        .ess-auth__promo-feature-text {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+
+
+        /* 控制按钮 */
+        .ess-auth__controls {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            display: flex;
+            flex-direction: row;
+            gap: 0.75rem;
+            z-index: 20;
+        }
+
+        .ess-auth__lang-btn,
+        .ess-auth__theme-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            border-radius: 0.75rem;
+            color: #374151;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            min-width: 80px;
+            justify-content: center;
+        }
+
+        .ess-auth__theme-btn {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            min-width: auto;
+        }
+
+        .ess-auth__lang-btn:hover,
+        .ess-auth__theme-btn:hover {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 主容器 */
+        .ess-auth__box {
+            display: flex;
+            flex-direction: column;
+            width: 400px;
+            max-height: 600px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            overflow: hidden;
+        }
+        
+        /* 页面头部区域 */
+        .ess-auth__header {
+            padding: 3rem 1.5rem 1rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        /* 忘记密码页面头部间距优化 */
+        #forgot-password-panel .ess-auth__header {
+            padding: 0 1.5rem 0.5rem;
+        }
+        
+        /* 场景选择页面样式 */
+        .ess-scenario {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(29, 78, 216, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+                linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            display: flex;
+            flex-direction: row;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        /* 左侧装饰区域 */
+        .ess-scenario__promo {
+            width: 40%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(37, 99, 235, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 70% 70%, rgba(29, 78, 216, 0.1) 0%, transparent 60%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ess-scenario__promo-content {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .ess-scenario__promo-logo {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #2563eb;
+            filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.3));
+            animation: gentle-pulse 3s ease-in-out infinite;
+        }
+        
+        .ess-scenario__promo-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #1e293b 0%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .ess-scenario__promo-subtitle {
+            font-size: 1.25rem;
+            color: #64748b;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        
+        /* 右侧场景选择区域 */
+        .ess-scenario__container {
+            flex: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.95);
+            border-left: 1px solid rgba(37, 99, 235, 0.1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow-y: auto;
+            padding: 2rem 3rem;
+        }
+        
+        /* 控制按钮 */
+        .ess-scenario__controls {
+            position: absolute;
+            right: 2rem;
+            top: 2rem;
+            display: flex;
+            flex-direction: row;
+            gap: 0.75rem;
+            z-index: 20;
+        }
+        
+        .ess-scenario__lang-btn,
+        .ess-scenario__theme-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            border-radius: 0.75rem;
+            color: #475569;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 250ms ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .ess-scenario__theme-btn {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            justify-content: center;
+        }
+        
+        .ess-scenario__lang-btn:hover,
+        .ess-scenario__theme-btn:hover {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* 页面头部 */
+        .ess-scenario__header {
+            text-align: center;
+            margin-bottom: 3rem;
+            margin-top: 5rem;
+        }
+        
+        .ess-scenario__title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .ess-scenario__desc {
+            font-size: 1rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+        
+        /* 场景卡片网格 */
+        .ess-scenario__cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* 场景卡片 */
+        .ess-scenario__card {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 250ms ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ess-scenario__card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+            opacity: 0;
+            transition: opacity 250ms ease;
+        }
+        
+        .ess-scenario__card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: #2563eb;
+        }
+        
+        .ess-scenario__card:hover::before {
+            opacity: 1;
+        }
+        
+        /* 卡片图片区域 */
+        .ess-scenario__card-image {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .ess-scenario__card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .ess-scenario__card-image-fallback {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ess-scenario__card-icon {
+            font-size: 4rem;
+            opacity: 0.5;
+        }
+        
+        /* 卡片内容区域 */
+        .ess-scenario__card-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .ess-scenario__card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .ess-scenario__card-desc {
+            font-size: 0.875rem;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+        
+        /* 卡片按钮区域 */
+        .ess-scenario__card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .ess-scenario__info-btn,
+        .ess-scenario__select-btn {
+            width: 100%;
+        }
+        
+        /* 弹窗样式 */
+        .ess-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ess-modal__backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        
+        .ess-modal__content {
+            position: relative;
+            background: white;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .ess-modal__header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .ess-modal__title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+        
+        .ess-modal__close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 150ms ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ess-modal__close:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        
+        .ess-modal__body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        /* 深色主题适配 */
+        [data-theme="dark"] .ess-scenario {
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+                linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        [data-theme="dark"] .ess-scenario__container {
+            background: rgba(31, 41, 55, 0.95);
+            border-color: rgba(75, 85, 99, 0.3);
+        }
+        
+        [data-theme="dark"] .ess-scenario__card {
+            background: #334155;
+            border-color: #475569;
+        }
+        
+        [data-theme="dark"] .ess-scenario__card-title {
+            color: #f1f5f9;
+        }
+        
+        [data-theme="dark"] .ess-scenario__card-desc {
+            color: #cbd5e1;
+        }
+        
+        [data-theme="dark"] .ess-modal__content {
+            background: #1e293b;
+        }
+        
+        [data-theme="dark"] .ess-modal__header {
+            border-color: #334155;
+        }
+        
+        [data-theme="dark"] .ess-modal__title {
+            color: #f1f5f9;
+        }
+        
+        [data-theme="dark"] .ess-modal__close {
+            color: #cbd5e1;
+        }
+        
+        [data-theme="dark"] .ess-modal__close:hover {
+            background: #334155;
+            color: #f1f5f9;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .ess-scenario__promo {
+                width: 35%;
+                padding: 2rem;
+            }
+            
+            .ess-scenario__container {
+                padding: 1.5rem 2rem;
+            }
+            
+            .ess-scenario__cards {
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .ess-scenario {
+                flex-direction: column;
+            }
+            
+            .ess-scenario__promo {
+                width: 100%;
+                height: 30vh;
+                min-height: 250px;
+                padding: 1.5rem;
+            }
+            
+            .ess-scenario__promo-title {
+                font-size: 1.75rem;
+            }
+            
+            .ess-scenario__promo-subtitle {
+                font-size: 1rem;
+            }
+            
+            .ess-scenario__container {
+                height: 70vh;
+                padding: 1.5rem;
+                border-left: none;
+                border-top: 1px solid rgba(37, 99, 235, 0.1);
+            }
+            
+            .ess-scenario__header {
+                margin-top: 3rem;
+                margin-bottom: 2rem;
+            }
+            
+            .ess-scenario__title {
+                font-size: 1.5rem;
+            }
+            
+            .ess-scenario__cards {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .ess-scenario__controls {
+                right: 1rem;
+                top: 1rem;
+            }
+        }
+        
+        /* 可滚动的表单区域 */
+        .ess-auth__content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* 表单字段区域（可滚动） */
+        .ess-auth__form-fields {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* 提交按钮区域（固定） */
+        .ess-auth__form-actions {
+            flex-shrink: 0;
+            padding: 1rem 1.5rem 2.5rem;
+        }
+
+        .ess-auth__form-fields::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .ess-auth__form-fields::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .ess-auth__form-fields::-webkit-scrollbar-thumb {
+            background: rgba(37, 99, 235, 0.2);
+            border-radius: 0.375rem;
+        }
+        
+        .ess-auth__form-fields::-webkit-scrollbar-thumb:hover {
+            background: rgba(37, 99, 235, 0.3);
+        }
+
+
+        /* 标题 */
+        .ess-auth__title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .ess-auth__subtitle {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        /* 标签页 */
+        .ess-auth__tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: #f1f5f9;
+            border-radius: 0.75rem;
+            padding: 0.25rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .ess-auth__tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .ess-auth__tab--active {
+            background: white;
+            color: #2563eb;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 面板 */
+        .ess-auth__panel {
+            display: none;
+        }
+
+        .ess-auth__panel--active {
+            display: block;
+        }
+
+        /* 表单 */
+        .ess-auth__form {
+            text-align: left;
+        }
+
+        .ess-form__group {
+            margin-bottom: 1.25rem;
+        }
+
+        .ess-form__group--row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .ess-form__group--password {
+            position: relative;
+        }
+
+        /* 输入框 */
+        .ess-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            background: white;
+            color: #1e293b;
+        }
+
+        .ess-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .ess-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .ess-input:hover {
+            border-color: #9ca3af;
+        }
+
+        /* 验证码 */
+        .ess-captcha {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .ess-captcha__input {
+            flex: 1;
+        }
+
+        .ess-captcha__display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+            min-width: 100px;
+            justify-content: center;
+        }
+
+        .ess-captcha__refresh {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.125rem;
+            transition: all 0.15s ease;
+        }
+
+        .ess-captcha__refresh:hover {
+            color: #2563eb;
+            background: #f8fafc;
+        }
+
+        /* 邮箱验证码 */
+        .ess-verification-code {
+            display: flex;
+            gap: 0.75rem;
+            align-items: stretch;
+        }
+
+        .ess-verification-code__input {
+            flex: 1;
+        }
+
+        .ess-verification-code__btn {
+            flex-shrink: 0;
+            min-width: 120px;
+        }
+
+        /* 密码切换按钮 */
+        .ess-input__toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: all 0.15s ease;
+        }
+
+        .ess-input__toggle:hover {
+            color: #64748b;
+            background: #f8fafc;
+        }
+
+        /* 复选框 */
+        .ess-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            user-select: none;
+        }
+
+        .ess-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            cursor: pointer;
+            accent-color: #2563eb;
+        }
+
+        .ess-checkbox__label {
+            color: #374151;
+            font-weight: 500;
+        }
+
+        /* 按钮 */
+        .ess-btn {
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .ess-btn--primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .ess-btn--primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .ess-btn--primary:active {
+            transform: translateY(0);
+        }
+
+        .ess-btn--primary:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .ess-btn--secondary {
+            background: white;
+            color: #2563eb;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .ess-btn--secondary:hover {
+            background: #f8fafc;
+            border-color: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .ess-btn--secondary:disabled {
+            background: #f1f5f9;
+            color: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .ess-btn--block {
+            width: 100%;
+        }
+
+        .ess-btn--text {
+            background: transparent;
+            color: #64748b;
+            padding: 0.5rem 0;
+        }
+
+        .ess-btn--text:hover {
+            color: #2563eb;
+        }
+
+        /* 链接 */
+        .ess-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.25s ease;
+        }
+
+        .ess-link:hover {
+            color: #1d4ed8;
+        }
+
+        /* 返回按钮 */
+        .ess-auth__back {
+            text-align: left;
+            margin-bottom: 0;
+            margin-top: -0.5rem;
+        }
+
+        .ess-auth__back .ess-btn {
+            padding: 0.25rem 0;
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .ess-auth__back .ess-btn:hover {
+            color: #2563eb;
+        }
+
+        .ess-auth__panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .ess-auth__panel-desc {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.25rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* 消息提示 */
+        .ess-message {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid;
+            animation: message-fade-in 0.3s ease;
+        }
+
+        .ess-message--success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #059669;
+        }
+
+        .ess-message--error {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .ess-message--info {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #2563eb;
+        }
+
+        @keyframes message-fade-in {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* 深色主题 */
+        [data-theme="dark"] .ess-auth {
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(29, 78, 216, 0.06) 0%, transparent 50%),
+                linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        }
+
+        [data-theme="dark"] .ess-auth__promo {
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at 70% 70%, rgba(37, 99, 235, 0.08) 0%, transparent 60%);
+        }
+
+        [data-theme="dark"] .ess-auth__promo-title {
+            color: #f8fafc;
+            background: linear-gradient(135deg, #f8fafc 0%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="dark"] .ess-auth__promo-subtitle {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .ess-auth__promo-feature {
+            background: transparent;
+            opacity: 0.6;
+        }
+
+        [data-theme="dark"] .ess-auth__promo-feature:hover {
+            opacity: 0.9;
+        }
+
+        [data-theme="dark"] .ess-auth__promo-feature-icon {
+            opacity: 0.7;
+        }
+
+        [data-theme="dark"] .ess-auth__promo-feature-text {
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .ess-auth__box {
+            background: rgba(31, 41, 55, 0.98);
+            border-color: rgba(75, 85, 99, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="dark"] .ess-auth__title {
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .ess-auth__subtitle {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .ess-auth__tabs {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        [data-theme="dark"] .ess-auth__tab {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .ess-auth__tab--active {
+            background: #475569;
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .ess-input {
+            background: #334155;
+            border-color: #475569;
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .ess-input:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        }
+
+        [data-theme="dark"] .ess-input::placeholder {
+            color: #9ca3af;
+        }
+
+        [data-theme="dark"] .ess-captcha__display {
+            background: #334155;
+            border-color: #475569;
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .ess-btn--secondary {
+            background: #334155;
+            border-color: #475569;
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .ess-btn--secondary:hover {
+            background: #475569;
+        }
+
+        [data-theme="dark"] .ess-auth__lang-btn,
+        [data-theme="dark"] .ess-auth__theme-btn {
+            background: rgba(51, 65, 85, 0.8);
+            border-color: rgba(75, 85, 99, 0.5);
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .ess-auth__lang-btn:hover,
+        [data-theme="dark"] .ess-auth__theme-btn:hover {
+            background: rgba(75, 85, 99, 0.8);
+            border-color: #94a3b8;
+        }
+
+        [data-theme="dark"] .ess-checkbox__label {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .ess-btn--text {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .ess-btn--text:hover {
+            color: #60a5fa;
+        }
+
+        [data-theme="dark"] .ess-link {
+            color: #60a5fa;
+        }
+
+        [data-theme="dark"] .ess-link:hover {
+            color: #3b82f6;
+        }
+
+        [data-theme="dark"] .ess-auth__panel-title {
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .ess-auth__panel-desc {
+            color: #cbd5e1;
+        }
+        
+        [data-theme="dark"] .ess-auth__logo-fixed {
+            background: rgba(31, 41, 55, 0.95);
+            border-color: rgba(75, 85, 99, 0.3);
+        }
+        
+        [data-theme="dark"] .ess-auth__logo-text {
+            color: #f8fafc;
+        }
+        
+        [data-theme="dark"] .ess-auth__logo-icon {
+            filter: drop-shadow(0 2px 4px rgba(96, 165, 250, 0.4));
+        }
+        
+        [data-theme="dark"] .ess-auth__logo-image {
+            filter: brightness(0.9) contrast(1.1);
+        }
+        
+
+        /* 底部版权信息 */
+        .ess-auth__footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #64748b;
+            z-index: 10;
+        }
+        
+        .ess-auth__footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .ess-auth__footer-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .ess-auth__footer-link {
+            color: #2563eb;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .ess-auth__footer-link:hover {
+            color: #1d4ed8;
+        }
+        
+        /* 深色主题下的版权信息 */
+        [data-theme="dark"] .ess-auth__footer {
+            color: #cbd5e1;
+        }
+        
+        [data-theme="dark"] .ess-auth__footer-link {
+            color: #60a5fa;
+        }
+        
+        [data-theme="dark"] .ess-auth__footer-link:hover {
+            color: #3b82f6;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .ess-auth {
+                flex-direction: column;
+            }
+            
+            .ess-auth__promo {
+                width: 100%;
+                height: 40vh;
+                min-height: 300px;
+                padding: 1.5rem;
+            }
+            
+            .ess-auth__promo-title {
+                font-size: 1.75rem;
+            }
+            
+            .ess-auth__promo-subtitle {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .ess-auth__promo-features {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+                max-width: 100%;
+            }
+            
+            .ess-auth__header {
+                padding: 2.5rem 1rem 1rem;
+            }
+            
+            #forgot-password-panel .ess-auth__header {
+                padding: 0 1rem 0.5rem;
+            }
+            
+            .ess-auth__promo-feature {
+                padding: 1rem 0.75rem;
+                min-height: auto;
+            }
+            
+            .ess-auth__promo-feature-icon {
+                font-size: 2rem;
+            }
+            
+            .ess-auth__promo-feature-text {
+                font-size: 0.8rem;
+            }
+            
+            .ess-auth__box {
+                width: calc(100% - 2rem);
+                max-width: 350px;
+                max-height: calc(60vh - 2rem);
+                border-radius: 0.75rem;
+                right: 1rem;
+                top: 70%;
+                transform: translateY(-50%);
+            }
+            
+            
+            .ess-auth__form-fields {
+                padding: 0 1rem;
+            }
+            
+            .ess-auth__form-actions {
+                padding: 0.75rem 1rem 2rem;
+            }
+            
+            .ess-auth__controls {
+                right: 1rem;
+                top: 1rem;
+                gap: 0.5rem;
+            }
+            
+            .ess-auth__lang-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
+                min-width: 70px;
+            }
+            
+            .ess-auth__theme-btn {
+                width: 40px;
+                height: 40px;
+            }
+            
+            
+            .ess-auth__title {
+                font-size: 1.25rem;
+            }
+            
+            .ess-form__group--row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .ess-captcha {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .ess-captcha__display {
+                justify-content: center;
+            }
+            
+            .ess-verification-code {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .ess-message {
+                left: 1rem;
+                right: 1rem;
+                transform: none;
+            }
+            
+            .ess-auth__logo-fixed {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .ess-auth__logo-icon {
+                font-size: 1.5rem;
+            }
+            
+            .ess-auth__logo-text {
+                font-size: 0.875rem;
+            }
+            
+            .ess-auth__logo-image {
+                height: 40px;
+                max-width: 180px;
+            }
+            
+            .ess-auth__footer {
+                padding: 0.75rem 1rem;
+                font-size: 0.7rem;
+            }
+            
+            .ess-auth__footer-line {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ess-auth">
+        <!-- 左上角Logo -->
+        <div class="ess-auth__logo-fixed">
+            <img src="./logo.png" alt="Logo" class="ess-auth__logo-image" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="ess-auth__logo-fallback" style="display: none;">
+                <div class="ess-auth__logo-icon">⚡</div>
+                <div class="ess-auth__logo-text" data-i18n="logo.text">能源管理系统</div>
+            </div>
+        </div>
+        
+        <!-- 左侧装饰宣传区域 -->
+        <div class="ess-auth__promo">
+            <div class="ess-auth__promo-content">
+                <h1 class="ess-auth__promo-title" data-i18n="promo.title">工商储能柜<br>能源管理系统</h1>
+                <p class="ess-auth__promo-subtitle" data-i18n="promo.subtitle">智能化能源管理解决方案</p>
+                
+                <div class="ess-auth__promo-features">
+                    <div class="ess-auth__promo-feature">
+                        <span class="ess-auth__promo-feature-icon">🔋</span>
+                        <span class="ess-auth__promo-feature-text" data-i18n="promo.feature1">智能储能管理</span>
+                    </div>
+                    <div class="ess-auth__promo-feature">
+                        <span class="ess-auth__promo-feature-icon">📊</span>
+                        <span class="ess-auth__promo-feature-text" data-i18n="promo.feature2">实时数据监控</span>
+                    </div>
+                    <div class="ess-auth__promo-feature">
+                        <span class="ess-auth__promo-feature-icon">⚡</span>
+                        <span class="ess-auth__promo-feature-text" data-i18n="promo.feature3">高效能源调度</span>
+                    </div>
+                    <div class="ess-auth__promo-feature">
+                        <span class="ess-auth__promo-feature-icon">🛡️</span>
+                        <span class="ess-auth__promo-feature-text" data-i18n="promo.feature4">安全防护系统</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 控制按钮区域 -->
+        <div class="ess-auth__controls">
+            <!-- 语言切换器 -->
+            <div class="ess-auth__language">
+                <button id="auth-lang-toggle" class="ess-auth__lang-btn" title="切换语言">
+                    <span class="ess-icon">🌐</span>
+                    <span id="auth-lang-text">中文</span>
+                </button>
+            </div>
+
+            <!-- 主题切换器 -->
+            <div class="ess-auth__theme">
+                <button id="auth-theme-toggle" class="ess-auth__theme-btn" title="切换主题">
+                    <span class="ess-icon" id="auth-theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 右侧登录卡片 -->
+        <div class="ess-auth__box">
+                <!-- 页面头部区域 -->
+                <div class="ess-auth__header">
+                    <!-- 标签页导航 -->
+                    <div class="ess-auth__tabs">
+                        <button class="ess-auth__tab ess-auth__tab--active" data-tab="login" data-i18n="auth.login">
+                            <span>登录</span>
+                        </button>
+                        <button class="ess-auth__tab" data-tab="register" data-i18n="auth.register">
+                            <span>注册</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 可滚动的表单区域 -->
+                <div class="ess-auth__content">
+
+                <!-- 登录表单 -->
+                <div id="login-panel" class="ess-auth__panel ess-auth__panel--active">
+                    <form id="login-form" class="ess-form ess-auth__form">
+                        <div class="ess-auth__form-fields">
+                            <div class="ess-form__group">
+                                <input 
+                                    type="text" 
+                                    id="login-username" 
+                                    class="ess-input" 
+                                    placeholder="用户名或邮箱" 
+                                    data-i18n-placeholder="auth.login.username"
+                                    required
+                                    autocomplete="username"
+                                    value="admin"
+                                >
+                            </div>
+                            <div class="ess-form__group ess-form__group--password">
+                                <input 
+                                    type="password" 
+                                    id="login-password" 
+                                    class="ess-input" 
+                                    placeholder="密码" 
+                                    data-i18n-placeholder="auth.login.password"
+                                    required
+                                    autocomplete="current-password"
+                                    value="admin123"
+                                >
+                                <button type="button" class="ess-input__toggle" id="login-password-toggle">
+                                    <span class="ess-icon">👁️</span>
+                                </button>
+                            </div>
+                            <!-- 验证码 -->
+                            <div class="ess-form__group">
+                                <div class="ess-captcha">
+                                    <input 
+                                        type="text" 
+                                        id="login-captcha" 
+                                        class="ess-input ess-captcha__input" 
+                                        placeholder="验证码" 
+                                        data-i18n-placeholder="auth.captcha"
+                                        required
+                                        maxlength="4"
+                                    >
+                                    <div class="ess-captcha__display" id="login-captcha-display">
+                                        <span id="login-captcha-text">5+3=?</span>
+                                        <button type="button" class="ess-captcha__refresh" id="login-captcha-refresh">
+                                            <span class="ess-icon">🔄</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ess-form__group ess-form__group--row">
+                                <div></div>
+                                <a href="#" class="ess-link" id="forgot-password-link" data-i18n="auth.login.forget">忘记密码？</a>
+                            </div>
+                        </div>
+                        <div class="ess-auth__form-actions">
+                            <button type="submit" class="ess-btn ess-btn--primary ess-btn--block" data-i18n="auth.login.submit">
+                                登录
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 注册表单 -->
+                <div id="register-panel" class="ess-auth__panel">
+                    <form id="register-form" class="ess-form ess-auth__form">
+                        <div class="ess-auth__form-fields">
+                            <div class="ess-form__group">
+                                <input 
+                                    type="text" 
+                                    id="register-username" 
+                                    class="ess-input" 
+                                    placeholder="用户名" 
+                                    data-i18n-placeholder="auth.register.username"
+                                    required
+                                    autocomplete="username"
+                                >
+                            </div>
+                            <div class="ess-form__group">
+                                <input 
+                                    type="email" 
+                                    id="register-email" 
+                                    class="ess-input" 
+                                    placeholder="邮箱地址" 
+                                    data-i18n-placeholder="auth.register.email"
+                                    required
+                                    autocomplete="email"
+                                >
+                            </div>
+                            <!-- 邮箱验证码 -->
+                            <div class="ess-form__group">
+                                <div class="ess-verification-code">
+                                    <input 
+                                        type="text" 
+                                        id="register-email-code" 
+                                        class="ess-input ess-verification-code__input" 
+                                        placeholder="邮箱验证码" 
+                                        data-i18n-placeholder="auth.register.emailCode"
+                                        required
+                                        maxlength="6"
+                                    >
+                                    <button type="button" class="ess-btn ess-btn--secondary ess-verification-code__btn" id="register-email-code-btn">
+                                        <span data-i18n="auth.sendCode">发送验证码</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="ess-form__group ess-form__group--password">
+                                <input 
+                                    type="password" 
+                                    id="register-password" 
+                                    class="ess-input" 
+                                    placeholder="密码" 
+                                    data-i18n-placeholder="auth.register.password"
+                                    required
+                                    autocomplete="new-password"
+                                >
+                                <button type="button" class="ess-input__toggle" id="register-password-toggle">
+                                    <span class="ess-icon">👁️</span>
+                                </button>
+                            </div>
+                            <div class="ess-form__group ess-form__group--password">
+                                <input 
+                                    type="password" 
+                                    id="register-confirm-password" 
+                                    class="ess-input" 
+                                    placeholder="确认密码" 
+                                    data-i18n-placeholder="auth.register.confirmPassword"
+                                    required
+                                    autocomplete="new-password"
+                                >
+                                <button type="button" class="ess-input__toggle" id="register-confirm-password-toggle">
+                                    <span class="ess-icon">👁️</span>
+                                </button>
+                            </div>
+                            <!-- 验证码 -->
+                            <div class="ess-form__group">
+                                <div class="ess-captcha">
+                                    <input 
+                                        type="text" 
+                                        id="register-captcha" 
+                                        class="ess-input ess-captcha__input" 
+                                        placeholder="验证码" 
+                                        data-i18n-placeholder="auth.captcha"
+                                        required
+                                        maxlength="4"
+                                    >
+                                    <div class="ess-captcha__display" id="register-captcha-display">
+                                        <span id="register-captcha-text">8-2=?</span>
+                                        <button type="button" class="ess-captcha__refresh" id="register-captcha-refresh">
+                                            <span class="ess-icon">🔄</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ess-auth__form-actions">
+                            <button type="submit" class="ess-btn ess-btn--primary ess-btn--block" data-i18n="auth.register.submit">
+                                注册
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 忘记密码表单 -->
+                <div id="forgot-password-panel" class="ess-auth__panel">
+                    <div class="ess-auth__header">
+                        <div class="ess-auth__back">
+                            <button id="back-to-login" class="ess-btn ess-btn--text">
+                                <span class="ess-icon">←</span>
+                                <span data-i18n="auth.back">返回登录</span>
+                            </button>
+                        </div>
+                        <h3 class="ess-auth__panel-title" data-i18n="auth.forgot.title">重置密码</h3>
+                        <p class="ess-auth__panel-desc" data-i18n="auth.forgot.desc">请输入您的邮箱地址和验证码</p>
+                    </div>
+                    <div class="ess-auth__content">
+                        <!-- 第一步：邮箱验证 -->
+                        <form id="forgot-step1-form" class="ess-form ess-auth__form">
+                            <div class="ess-auth__form-fields">
+                                <div class="ess-form__group">
+                                    <input 
+                                        type="email" 
+                                        id="forgot-email" 
+                                        class="ess-input" 
+                                        placeholder="邮箱地址" 
+                                        data-i18n-placeholder="auth.forgot.email"
+                                        required
+                                        autocomplete="email"
+                                    >
+                                </div>
+                                <!-- 邮箱验证码 -->
+                                <div class="ess-form__group">
+                                    <div class="ess-verification-code">
+                                        <input 
+                                            type="text" 
+                                            id="forgot-email-code" 
+                                            class="ess-input ess-verification-code__input" 
+                                            placeholder="邮箱验证码" 
+                                            data-i18n-placeholder="auth.forgot.emailCode"
+                                            required
+                                            maxlength="6"
+                                        >
+                                        <button type="button" class="ess-btn ess-btn--secondary ess-verification-code__btn" id="forgot-email-code-btn">
+                                            <span data-i18n="auth.sendCode">发送验证码</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- 验证码 -->
+                                <div class="ess-form__group">
+                                    <div class="ess-captcha">
+                                        <input 
+                                            type="text" 
+                                            id="forgot-captcha" 
+                                            class="ess-input ess-captcha__input" 
+                                            placeholder="验证码" 
+                                            data-i18n-placeholder="auth.captcha"
+                                            required
+                                            maxlength="4"
+                                        >
+                                        <div class="ess-captcha__display" id="forgot-captcha-display">
+                                            <span id="forgot-captcha-text">9+1=?</span>
+                                            <button type="button" class="ess-captcha__refresh" id="forgot-captcha-refresh">
+                                                <span class="ess-icon">🔄</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ess-auth__form-actions">
+                                <button type="submit" class="ess-btn ess-btn--primary ess-btn--block" data-i18n="auth.forgot.nextStep">
+                                    下一步
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- 第二步：设置新密码 -->
+                        <form id="forgot-step2-form" class="ess-form ess-auth__form" style="display: none;">
+                            <div class="ess-auth__form-fields">
+                                <!-- 新密码 -->
+                                <div class="ess-form__group ess-form__group--password">
+                                    <input 
+                                        type="password" 
+                                        id="forgot-new-password" 
+                                        class="ess-input" 
+                                        placeholder="新密码" 
+                                        data-i18n-placeholder="auth.forgot.newPassword"
+                                        required
+                                        autocomplete="new-password"
+                                    >
+                                    <button type="button" class="ess-input__toggle" id="forgot-new-password-toggle">
+                                        <span class="ess-icon">👁️</span>
+                                    </button>
+                                </div>
+                                <!-- 确认新密码 -->
+                                <div class="ess-form__group ess-form__group--password">
+                                    <input 
+                                        type="password" 
+                                        id="forgot-confirm-password" 
+                                        class="ess-input" 
+                                        placeholder="确认新密码" 
+                                        data-i18n-placeholder="auth.forgot.confirmPassword"
+                                        required
+                                        autocomplete="new-password"
+                                    >
+                                    <button type="button" class="ess-input__toggle" id="forgot-confirm-password-toggle">
+                                        <span class="ess-icon">👁️</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="ess-auth__form-actions">
+                                <button type="button" class="ess-btn ess-btn--secondary ess-btn--block" id="forgot-back-step" data-i18n="auth.forgot.backStep">
+                                    上一步
+                                </button>
+                                <button type="submit" class="ess-btn ess-btn--primary ess-btn--block" data-i18n="auth.forgot.submit">
+                                    重置密码
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                </div><!-- 结束 .ess-auth__content -->
+            </div>
+    </div>
+
+    <!-- 场景选择页面 -->
+    <div id="ess-scenario" class="ess-scenario" style="display: none;">
+        <!-- 左侧装饰宣传区域 -->
+        <div class="ess-scenario__promo">
+            <div class="ess-scenario__promo-content">
+                <div class="ess-scenario__promo-logo">⚡</div>
+                <h1 class="ess-scenario__promo-title" data-i18n="scenario.welcome">欢迎使用<br>能源管理系统</h1>
+                <p class="ess-scenario__promo-subtitle" data-i18n="scenario.select">请选择您的应用场景</p>
+            </div>
+        </div>
+        
+        <!-- 右侧场景选择区域 -->
+        <div class="ess-scenario__container">
+            <!-- 控制按钮区域 -->
+            <div class="ess-scenario__controls">
+                <!-- 语言切换器 -->
+                <div class="ess-scenario__language">
+                    <button id="scenario-lang-toggle" class="ess-scenario__lang-btn" title="切换语言">
+                        <span class="ess-icon">🌐</span>
+                        <span id="scenario-lang-text">中文</span>
+                    </button>
+                </div>
+                <!-- 主题切换器 -->
+                <div class="ess-scenario__theme">
+                    <button id="scenario-theme-toggle" class="ess-scenario__theme-btn" title="切换主题">
+                        <span class="ess-icon" id="scenario-theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="ess-scenario__header">
+                <h2 class="ess-scenario__title" data-i18n="scenario.title">选择应用场景</h2>
+                <p class="ess-scenario__desc" data-i18n="scenario.desc">根据您的实际使用需求选择对应的场景</p>
+            </div>
+            
+            <div class="ess-scenario__cards">
+                <!-- 户用场景卡片 -->
+                <div class="ess-scenario__card" data-scenario="residential">
+                    <div class="ess-scenario__card-image">
+                        <img src="./src/assets/images/scenario-residential.jpg" alt="户用储能" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                        <div class="ess-scenario__card-image-fallback" style="display: none;">
+                            <div class="ess-scenario__card-icon">🏠</div>
+                        </div>
+                    </div>
+                    <div class="ess-scenario__card-content">
+                        <h3 class="ess-scenario__card-title" data-i18n="scenario.residential.title">户用储能</h3>
+                        <p class="ess-scenario__card-desc" data-i18n="scenario.residential.desc">适用于家庭和小型商业用户</p>
+                        <div class="ess-scenario__card-actions">
+                            <button class="ess-btn ess-btn--secondary ess-scenario__info-btn" data-scenario="residential">
+                                <span data-i18n="scenario.learnMore">了解详情</span>
+                            </button>
+                            <button class="ess-btn ess-btn--primary ess-scenario__select-btn" data-scenario="residential">
+                                <span data-i18n="scenario.select.btn">选择此场景</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 工商储场景卡片 -->
+                <div class="ess-scenario__card" data-scenario="commercial">
+                    <div class="ess-scenario__card-image">
+                        <img src="./src/assets/images/scenario-commercial.jpg" alt="工商储能" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                        <div class="ess-scenario__card-image-fallback" style="display: none;">
+                            <div class="ess-scenario__card-icon">🏭</div>
+                        </div>
+                    </div>
+                    <div class="ess-scenario__card-content">
+                        <h3 class="ess-scenario__card-title" data-i18n="scenario.commercial.title">工商储能</h3>
+                        <p class="ess-scenario__card-desc" data-i18n="scenario.commercial.desc">适用于工业和大型商业项目</p>
+                        <div class="ess-scenario__card-actions">
+                            <button class="ess-btn ess-btn--secondary ess-scenario__info-btn" data-scenario="commercial">
+                                <span data-i18n="scenario.learnMore">了解详情</span>
+                            </button>
+                            <button class="ess-btn ess-btn--primary ess-scenario__select-btn" data-scenario="commercial">
+                                <span data-i18n="scenario.select.btn">选择此场景</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 充电桩场景卡片 -->
+                <div class="ess-scenario__card" data-scenario="charging">
+                    <div class="ess-scenario__card-image">
+                        <img src="./src/assets/images/scenario-charging.jpg" alt="充电桩管理" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                        <div class="ess-scenario__card-image-fallback" style="display: none;">
+                            <div class="ess-scenario__card-icon">🔌</div>
+                        </div>
+                    </div>
+                    <div class="ess-scenario__card-content">
+                        <h3 class="ess-scenario__card-title" data-i18n="scenario.charging.title">充电桩管理</h3>
+                        <p class="ess-scenario__card-desc" data-i18n="scenario.charging.desc">适用于电动汽车充电站运营</p>
+                        <div class="ess-scenario__card-actions">
+                            <button class="ess-btn ess-btn--secondary ess-scenario__info-btn" data-scenario="charging">
+                                <span data-i18n="scenario.learnMore">了解详情</span>
+                            </button>
+                            <button class="ess-btn ess-btn--primary ess-scenario__select-btn" data-scenario="charging">
+                                <span data-i18n="scenario.select.btn">选择此场景</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 其他场景卡片 -->
+                <div class="ess-scenario__card" data-scenario="other">
+                    <div class="ess-scenario__card-image">
+                        <img src="./src/assets/images/scenario-other.jpg" alt="其他场景" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                        <div class="ess-scenario__card-image-fallback" style="display: none;">
+                            <div class="ess-scenario__card-icon">⚙️</div>
+                        </div>
+                    </div>
+                    <div class="ess-scenario__card-content">
+                        <h3 class="ess-scenario__card-title" data-i18n="scenario.other.title">其他场景</h3>
+                        <p class="ess-scenario__card-desc" data-i18n="scenario.other.desc">自定义和特殊应用需求</p>
+                        <div class="ess-scenario__card-actions">
+                            <button class="ess-btn ess-btn--secondary ess-scenario__info-btn" data-scenario="other">
+                                <span data-i18n="scenario.learnMore">了解详情</span>
+                            </button>
+                            <button class="ess-btn ess-btn--primary ess-scenario__select-btn" data-scenario="other">
+                                <span data-i18n="scenario.select.btn">选择此场景</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 场景介绍弹窗 -->
+    <div id="scenario-modal" class="ess-modal" style="display: none;">
+        <div class="ess-modal__backdrop"></div>
+        <div class="ess-modal__content">
+            <div class="ess-modal__header">
+                <h3 id="scenario-modal-title" class="ess-modal__title"></h3>
+                <button id="scenario-modal-close" class="ess-modal__close">
+                    <span class="ess-icon">×</span>
+                </button>
+            </div>
+            <div id="scenario-modal-body" class="ess-modal__body">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部版权信息 -->
+    <div class="ess-auth__footer">
+        <div class="ess-auth__footer-content">
+            <div class="ess-auth__footer-line">
+                <span>Alwayscontrol系统版权所有者：旭衡电子（深圳）有限公司</span>
+            </div>
+            <div class="ess-auth__footer-line">
+                <span>网站备案信息：粤ICP备2021169764号</span>
+                <span>联系方式：<a href="mailto:xuheng@alwayscontrol.com.cn" class="ess-auth__footer-link">xuheng@alwayscontrol.com.cn</a></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 完整认证系统JavaScript -->
+    <script>
+        // 完整的语言包
+        const translations = {
+            'zh-CN': {
+                'system.title': '欢迎使用',
+                'system.subtitle': '请登录您的账户',
+                'promo.title': '工商储能柜能源管理系统',
+                'promo.subtitle': '智能化能源管理解决方案',
+                'promo.feature1': '智能储能管理',
+                'promo.feature2': '实时数据监控',
+                'promo.feature3': '高效能源调度',
+                'promo.feature4': '安全防护系统',
+                'logo.text': '能源管理系统',
+                'auth.login': '登录',
+                'auth.register': '注册',
+                'auth.back': '返回登录',
+                'auth.captcha': '验证码',
+                'auth.sendCode': '发送验证码',
+                'auth.login.username': '用户名或邮箱',
+                'auth.login.password': '密码',
+                'auth.login.submit': '登录',
+                'auth.login.remember': '记住我',
+                'auth.login.forget': '忘记密码？',
+                'auth.register.username': '用户名',
+                'auth.register.email': '邮箱地址',
+                'auth.register.emailCode': '邮箱验证码',
+                'auth.register.password': '密码',
+                'auth.register.confirmPassword': '确认密码',
+                'auth.register.submit': '注册',
+                'auth.register.agreement': '我同意',
+                'auth.register.terms': '服务条款',
+                'auth.register.privacy': '隐私政策',
+                'auth.forgot.title': '重置密码',
+                'auth.forgot.desc': '请输入您的邮箱地址和验证码',
+                'auth.forgot.email': '邮箱地址',
+                'auth.forgot.emailCode': '邮箱验证码',
+                'auth.forgot.newPassword': '新密码',
+                'auth.forgot.confirmPassword': '确认新密码',
+                'auth.forgot.nextStep': '下一步',
+                'auth.forgot.backStep': '上一步',
+                'auth.forgot.submit': '重置密码',
+                'validation.required': '此字段为必填项',
+                'validation.email': '请输入有效的邮箱地址',
+                'validation.password': '密码长度至少6位',
+                'validation.confirm': '两次密码输入不一致',
+                'validation.captcha': '验证码错误',
+                'validation.emailCode': '邮箱验证码错误',
+                'message.loginSuccess': '登录成功！',
+                'message.registerSuccess': '注册成功！',
+                'message.resetSuccess': '密码重置成功！',
+                'message.codeSent': '验证码已发送',
+                'message.codeExpired': '验证码已过期',
+                'message.processing': '处理中...',
+                'scenario.welcome': '欢迎使用<br>能源管理系统',
+                'scenario.select': '请选择您的应用场景',
+                'scenario.title': '选择应用场景',
+                'scenario.desc': '根据您的实际使用需求选择对应的场景',
+                'scenario.learnMore': '了解详情',
+                'scenario.select.btn': '选择此场景',
+                'scenario.residential.title': '户用储能',
+                'scenario.residential.desc': '适用于家庭和小型商业用户',
+                'scenario.commercial.title': '工商储能',
+                'scenario.commercial.desc': '适用于工业和大型商业项目',
+                'scenario.charging.title': '充电桩管理',
+                'scenario.charging.desc': '适用于电动汽车充电站运营',
+                'scenario.other.title': '其他场景',
+                'scenario.other.desc': '自定义和特殊应用需求'
+            },
+            'en-US': {
+                'system.title': 'Welcome',
+                'system.subtitle': 'Please login to your account',
+                'promo.title': 'Commercial Energy Storage<br>Management System',
+                'promo.subtitle': 'Intelligent Energy Management Solution',
+                'promo.feature1': 'Smart Energy Storage',
+                'promo.feature2': 'Real-time Monitoring',
+                'promo.feature3': 'Efficient Scheduling',
+                'promo.feature4': 'Safety Protection',
+                'logo.text': 'Energy Management',
+                'auth.login': 'Login',
+                'auth.register': 'Register',
+                'auth.back': 'Back to Login',
+                'auth.captcha': 'Captcha',
+                'auth.sendCode': 'Send Code',
+                'auth.login.username': 'Username or Email',
+                'auth.login.password': 'Password',
+                'auth.login.submit': 'Login',
+                'auth.login.remember': 'Remember me',
+                'auth.login.forget': 'Forgot password?',
+                'auth.register.username': 'Username',
+                'auth.register.email': 'Email Address',
+                'auth.register.emailCode': 'Email Code',
+                'auth.register.password': 'Password',
+                'auth.register.confirmPassword': 'Confirm Password',
+                'auth.register.submit': 'Register',
+                'auth.register.agreement': 'I agree to the',
+                'auth.register.terms': 'Terms of Service',
+                'auth.register.privacy': 'Privacy Policy',
+                'auth.forgot.title': 'Reset Password',
+                'auth.forgot.desc': 'Please enter your email address and verification code',
+                'auth.forgot.email': 'Email Address',
+                'auth.forgot.emailCode': 'Email Code',
+                'auth.forgot.newPassword': 'New Password',
+                'auth.forgot.confirmPassword': 'Confirm New Password',
+                'auth.forgot.nextStep': 'Next Step',
+                'auth.forgot.backStep': 'Previous Step',
+                'auth.forgot.submit': 'Reset Password',
+                'validation.required': 'This field is required',
+                'validation.email': 'Please enter a valid email address',
+                'validation.password': 'Password must be at least 6 characters',
+                'validation.confirm': 'Passwords do not match',
+                'validation.captcha': 'Captcha is incorrect',
+                'validation.emailCode': 'Email code is incorrect',
+                'message.loginSuccess': 'Login successful!',
+                'message.registerSuccess': 'Registration successful!',
+                'message.resetSuccess': 'Password reset successful!',
+                'message.codeSent': 'Code sent',
+                'message.codeExpired': 'Code expired',
+                'message.processing': 'Processing...',
+                'scenario.welcome': 'Welcome to<br>Energy Management System',
+                'scenario.select': 'Please select your application scenario',
+                'scenario.title': 'Select Application Scenario',
+                'scenario.desc': 'Choose the appropriate scenario based on your actual usage needs',
+                'scenario.learnMore': 'Learn More',
+                'scenario.select.btn': 'Select This Scenario',
+                'scenario.residential.title': 'Residential Storage',
+                'scenario.residential.desc': 'Suitable for homes and small businesses',
+                'scenario.commercial.title': 'Commercial Storage',
+                'scenario.commercial.desc': 'Suitable for industrial and large commercial projects',
+                'scenario.charging.title': 'Charging Station',
+                'scenario.charging.desc': 'Suitable for EV charging station operations',
+                'scenario.other.title': 'Other Scenarios',
+                'scenario.other.desc': 'Custom and special application needs'
+            }
+        };
+
+        class CompleteAuthSystem {
+            constructor() {
+                this.currentLanguage = localStorage.getItem('ess_language') || 'zh-CN';
+                this.currentTheme = localStorage.getItem('ess_theme') || 'light';
+                this.captchaAnswers = {};
+                this.emailCodeTimers = {};
+                this.emailCodes = {};
+                this.scenarioPageInitialized = false;
+                this.init();
+            }
+
+            init() {
+                this.applyTheme(this.currentTheme);
+                this.applyLanguage(this.currentLanguage);
+                this.bindEvents();
+                this.initPasswordToggle();
+                this.initCaptcha();
+            }
+
+            bindEvents() {
+                // 标签页切换
+                document.querySelectorAll('.ess-auth__tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        const tabName = e.target.closest('.ess-auth__tab').dataset.tab;
+                        this.switchTab(tabName);
+                    });
+                });
+
+                // 忘记密码链接
+                const forgotLink = document.getElementById('forgot-password-link');
+                if (forgotLink) {
+                    forgotLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.showForgotPassword();
+                    });
+                }
+
+                // 返回登录
+                const backBtn = document.getElementById('back-to-login');
+                if (backBtn) {
+                    backBtn.addEventListener('click', () => {
+                        this.showLogin();
+                    });
+                }
+
+                // 表单提交
+                this.bindFormEvents();
+
+                // 验证码刷新
+                this.bindCaptchaEvents();
+
+                // 邮箱验证码
+                this.bindEmailCodeEvents();
+
+                // 语言切换
+                const authLangToggle = document.getElementById('auth-lang-toggle');
+                if (authLangToggle) {
+                    authLangToggle.addEventListener('click', () => {
+                        this.toggleLanguage();
+                    });
+                }
+
+                // 主题切换
+                const authThemeToggle = document.getElementById('auth-theme-toggle');
+                if (authThemeToggle) {
+                    authThemeToggle.addEventListener('click', () => {
+                        this.toggleTheme();
+                    });
+                }
+            }
+
+            bindFormEvents() {
+                // 登录表单
+                const loginForm = document.getElementById('login-form');
+                if (loginForm) {
+                    loginForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleLogin();
+                    });
+                }
+
+                // 注册表单
+                const registerForm = document.getElementById('register-form');
+                if (registerForm) {
+                    registerForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleRegister();
+                    });
+                }
+
+                // 忘记密码第一步表单
+                const forgotStep1Form = document.getElementById('forgot-step1-form');
+                if (forgotStep1Form) {
+                    forgotStep1Form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleForgotPasswordStep1();
+                    });
+                }
+                
+                // 忘记密码第二步表单
+                const forgotStep2Form = document.getElementById('forgot-step2-form');
+                if (forgotStep2Form) {
+                    forgotStep2Form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleForgotPasswordStep2();
+                    });
+                }
+                
+                // 忘记密码返回上一步按钮
+                const forgotBackStep = document.getElementById('forgot-back-step');
+                if (forgotBackStep) {
+                    forgotBackStep.addEventListener('click', () => {
+                        this.showForgotPasswordStep1();
+                    });
+                }
+            }
+
+            bindCaptchaEvents() {
+                // 登录验证码刷新
+                const loginRefresh = document.getElementById('login-captcha-refresh');
+                if (loginRefresh) {
+                    loginRefresh.addEventListener('click', () => {
+                        this.generateCaptcha('login');
+                    });
+                }
+
+                // 注册验证码刷新
+                const registerRefresh = document.getElementById('register-captcha-refresh');
+                if (registerRefresh) {
+                    registerRefresh.addEventListener('click', () => {
+                        this.generateCaptcha('register');
+                    });
+                }
+
+                // 忘记密码验证码刷新
+                const forgotRefresh = document.getElementById('forgot-captcha-refresh');
+                if (forgotRefresh) {
+                    forgotRefresh.addEventListener('click', () => {
+                        this.generateCaptcha('forgot');
+                    });
+                }
+            }
+
+            bindEmailCodeEvents() {
+                // 注册邮箱验证码
+                const registerEmailBtn = document.getElementById('register-email-code-btn');
+                if (registerEmailBtn) {
+                    registerEmailBtn.addEventListener('click', () => {
+                        this.sendEmailCode('register');
+                    });
+                }
+
+                // 忘记密码邮箱验证码
+                const forgotEmailBtn = document.getElementById('forgot-email-code-btn');
+                if (forgotEmailBtn) {
+                    forgotEmailBtn.addEventListener('click', () => {
+                        this.sendEmailCode('forgot');
+                    });
+                }
+            }
+
+            initPasswordToggle() {
+                const toggleButtons = document.querySelectorAll('.ess-input__toggle');
+                toggleButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const input = button.previousElementSibling;
+                        const icon = button.querySelector('.ess-icon');
+                        
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            icon.textContent = '🙈';
+                        } else {
+                            input.type = 'password';
+                            icon.textContent = '👁️';
+                        }
+                    });
+                });
+            }
+
+            initCaptcha() {
+                this.generateCaptcha('login');
+                this.generateCaptcha('register');
+                this.generateCaptcha('forgot');
+            }
+
+            generateCaptcha(type) {
+                const operators = ['+', '-', '*'];
+                const operator = operators[Math.floor(Math.random() * operators.length)];
+                let num1, num2, answer;
+
+                if (operator === '+') {
+                    num1 = Math.floor(Math.random() * 20) + 1;
+                    num2 = Math.floor(Math.random() * 20) + 1;
+                    answer = num1 + num2;
+                } else if (operator === '-') {
+                    num1 = Math.floor(Math.random() * 20) + 10;
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    answer = num1 - num2;
+                } else {
+                    num1 = Math.floor(Math.random() * 10) + 1;
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    answer = num1 * num2;
+                }
+
+                const captchaText = `${num1}${operator}${num2}=?`;
+                this.captchaAnswers[type] = answer;
+
+                const captchaElement = document.getElementById(`${type}-captcha-text`);
+                if (captchaElement) {
+                    captchaElement.textContent = captchaText;
+                }
+            }
+
+            async sendEmailCode(type) {
+                const emailInput = document.getElementById(`${type}-email`);
+                const codeBtn = document.getElementById(`${type}-email-code-btn`);
+                
+                if (!emailInput || !codeBtn) return;
+
+                const email = emailInput.value.trim();
+                if (!email) {
+                    this.showMessage(this.t('validation.required'), 'error');
+                    return;
+                }
+
+                if (!this.isValidEmail(email)) {
+                    this.showMessage(this.t('validation.email'), 'error');
+                    return;
+                }
+
+                // 模拟发送邮箱验证码
+                codeBtn.disabled = true;
+                const originalText = codeBtn.textContent;
+                
+                try {
+                    // 生成6位验证码
+                    const code = Math.floor(100000 + Math.random() * 900000).toString();
+                    this.emailCodes[type] = code;
+                    
+                    // 模拟发送过程
+                    codeBtn.textContent = this.t('message.processing');
+                    await this.sleep(1000);
+                    
+                    this.showMessage(this.t('message.codeSent') + `: ${code}`, 'success');
+                    
+                    // 开始倒计时
+                    this.startCountdown(type, 60);
+                    
+                } catch (error) {
+                    this.showMessage('发送失败，请稍后重试', 'error');
+                    codeBtn.disabled = false;
+                    codeBtn.textContent = originalText;
+                }
+            }
+
+            startCountdown(type, seconds) {
+                const codeBtn = document.getElementById(`${type}-email-code-btn`);
+                if (!codeBtn) return;
+
+                let remaining = seconds;
+                const timer = setInterval(() => {
+                    codeBtn.textContent = `${remaining}s`;
+                    remaining--;
+                    
+                    if (remaining < 0) {
+                        clearInterval(timer);
+                        codeBtn.disabled = false;
+                        codeBtn.textContent = this.t('auth.sendCode');
+                        delete this.emailCodes[type];
+                    }
+                }, 1000);
+                
+                this.emailCodeTimers[type] = timer;
+            }
+
+            async handleLogin() {
+                const username = document.getElementById('login-username').value.trim();
+                const password = document.getElementById('login-password').value;
+                const captcha = document.getElementById('login-captcha').value.trim();
+
+                if (!this.validateForm('login', { username, password, captcha })) {
+                    return;
+                }
+
+                // 验证验证码
+                if (parseInt(captcha) !== this.captchaAnswers.login) {
+                    this.showMessage(this.t('validation.captcha'), 'error');
+                    this.generateCaptcha('login');
+                    return;
+                }
+
+                try {
+                    this.setButtonLoading('login-form', true);
+                    const result = await this.mockLogin(username, password);
+                    
+                    if (result.success) {
+                        sessionStorage.setItem('ess_user', JSON.stringify(result.user));
+                        sessionStorage.setItem('ess_token', result.token);
+
+                        this.showMessage(this.t('message.loginSuccess'), 'success');
+                        setTimeout(() => {
+                            window.location.href = './scenario-selection.html';
+                        }, 1000);
+                    } else {
+                        this.showMessage(result.message, 'error');
+                        this.generateCaptcha('login');
+                    }
+                } catch (error) {
+                    this.showMessage('登录失败，请稍后重试', 'error');
+                    this.generateCaptcha('login');
+                } finally {
+                    this.setButtonLoading('login-form', false);
+                }
+            }
+
+            async handleRegister() {
+                const username = document.getElementById('register-username').value.trim();
+                const email = document.getElementById('register-email').value.trim();
+                const emailCode = document.getElementById('register-email-code').value.trim();
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+                const captcha = document.getElementById('register-captcha').value.trim();
+
+                if (!this.validateForm('register', { username, email, emailCode, password, confirmPassword, captcha })) {
+                    return;
+                }
+
+                // 验证邮箱验证码
+                if (emailCode !== this.emailCodes.register) {
+                    this.showMessage(this.t('validation.emailCode'), 'error');
+                    return;
+                }
+
+                // 验证验证码
+                if (parseInt(captcha) !== this.captchaAnswers.register) {
+                    this.showMessage(this.t('validation.captcha'), 'error');
+                    this.generateCaptcha('register');
+                    return;
+                }
+
+                try {
+                    this.setButtonLoading('register-form', true);
+                    const result = await this.mockRegister(username, email, password);
+                    
+                    if (result.success) {
+                        this.showMessage(this.t('message.registerSuccess'), 'success');
+                        setTimeout(() => {
+                            this.switchTab('login');
+                            document.getElementById('login-username').value = username;
+                        }, 2000);
+                    } else {
+                        this.showMessage(result.message, 'error');
+                        this.generateCaptcha('register');
+                    }
+                } catch (error) {
+                    this.showMessage('注册失败，请稍后重试', 'error');
+                    this.generateCaptcha('register');
+                } finally {
+                    this.setButtonLoading('register-form', false);
+                }
+            }
+
+            async handleForgotPasswordStep1() {
+                const email = document.getElementById('forgot-email').value.trim();
+                const emailCode = document.getElementById('forgot-email-code').value.trim();
+                const captcha = document.getElementById('forgot-captcha').value.trim();
+
+                if (!this.validateForm('forgotStep1', { email, emailCode, captcha })) {
+                    return;
+                }
+
+                // 验证邮箱验证码
+                if (emailCode !== this.emailCodes.forgot) {
+                    this.showMessage(this.t('validation.emailCode'), 'error');
+                    return;
+                }
+
+                // 验证验证码
+                if (parseInt(captcha) !== this.captchaAnswers.forgot) {
+                    this.showMessage(this.t('validation.captcha'), 'error');
+                    this.generateCaptcha('forgot');
+                    return;
+                }
+
+                try {
+                    this.setButtonLoading('forgot-step1-form', true);
+                    // 模拟验证过程
+                    await this.sleep(800);
+                    
+                    this.showMessage('验证成功，请设置新密码', 'success');
+                    setTimeout(() => this.showForgotPasswordStep2(), 1000);
+                } catch (error) {
+                    this.showMessage('验证失败，请稍后重试', 'error');
+                    this.generateCaptcha('forgot');
+                } finally {
+                    this.setButtonLoading('forgot-step1-form', false);
+                }
+            }
+            
+            async handleForgotPasswordStep2() {
+                const newPassword = document.getElementById('forgot-new-password').value;
+                const confirmPassword = document.getElementById('forgot-confirm-password').value;
+
+                if (!this.validateForm('forgotStep2', { newPassword, confirmPassword })) {
+                    return;
+                }
+
+                try {
+                    this.setButtonLoading('forgot-step2-form', true);
+                    const result = await this.mockResetPassword(newPassword);
+                    
+                    if (result.success) {
+                        this.showMessage(this.t('message.resetSuccess'), 'success');
+                        setTimeout(() => this.showLogin(), 2000);
+                    } else {
+                        this.showMessage(result.message, 'error');
+                    }
+                } catch (error) {
+                    this.showMessage('密码重置失败，请稍后重试', 'error');
+                } finally {
+                    this.setButtonLoading('forgot-step2-form', false);
+                }
+            }
+            
+            showForgotPasswordStep1() {
+                document.getElementById('forgot-step1-form').style.display = 'flex';
+                document.getElementById('forgot-step2-form').style.display = 'none';
+            }
+            
+            showForgotPasswordStep2() {
+                document.getElementById('forgot-step1-form').style.display = 'none';
+                document.getElementById('forgot-step2-form').style.display = 'flex';
+            }
+
+            validateForm(type, data) {
+                const { username, email, emailCode, password, confirmPassword, captcha, newPassword } = data;
+
+                if (type === 'login') {
+                    if (!username) {
+                        this.showMessage(this.t('validation.required'), 'error');
+                        return false;
+                    }
+                    if (!password) {
+                        this.showMessage(this.t('validation.required'), 'error');
+                        return false;
+                    }
+                } else if (type === 'register') {
+                    if (!username || !email || !emailCode || !password || !confirmPassword) {
+                        this.showMessage(this.t('validation.required'), 'error');
+                        return false;
+                    }
+                    if (!this.isValidEmail(email)) {
+                        this.showMessage(this.t('validation.email'), 'error');
+                        return false;
+                    }
+                    if (password.length < 6) {
+                        this.showMessage(this.t('validation.password'), 'error');
+                        return false;
+                    }
+                    if (password !== confirmPassword) {
+                        this.showMessage(this.t('validation.confirm'), 'error');
+                        return false;
+                    }
+                } else if (type === 'forgotStep1') {
+                    if (!email || !emailCode || !captcha) {
+                        this.showMessage(this.t('validation.required'), 'error');
+                        return false;
+                    }
+                    if (!this.isValidEmail(email)) {
+                        this.showMessage(this.t('validation.email'), 'error');
+                        return false;
+                    }
+                } else if (type === 'forgotStep2') {
+                    if (!newPassword || !confirmPassword) {
+                        this.showMessage(this.t('validation.required'), 'error');
+                        return false;
+                    }
+                    if (newPassword.length < 6) {
+                        this.showMessage(this.t('validation.password'), 'error');
+                        return false;
+                    }
+                    if (newPassword !== confirmPassword) {
+                        this.showMessage(this.t('validation.confirm'), 'error');
+                        return false;
+                    }
+                    return true; // 第二步不需要验证码
+                }
+
+                if (type !== 'forgotStep2' && !captcha) {
+                    this.showMessage(this.t('validation.required'), 'error');
+                    return false;
+                }
+
+                return true;
+            }
+
+            isValidEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+
+            // 模拟API调用
+            async mockLogin(username, password) {
+                await this.sleep(1000);
+                if (username === 'admin' && password === 'admin123') {
+                    return {
+                        success: true,
+                        token: 'mock_token_' + Date.now(),
+                        user: {
+                            id: 1,
+                            username: username,
+                            email: 'admin@example.com'
+                        }
+                    };
+                } else {
+                    return {
+                        success: false,
+                        message: '用户名或密码错误'
+                    };
+                }
+            }
+
+            async mockRegister(username, email, password) {
+                await this.sleep(1000);
+                if (username === 'admin') {
+                    return {
+                        success: false,
+                        message: '用户名已存在'
+                    };
+                } else {
+                    return {
+                        success: true,
+                        message: this.t('message.registerSuccess')
+                    };
+                }
+            }
+
+            async mockSendResetLink(email) {
+                await this.sleep(1000);
+                return {
+                    success: true,
+                    message: '重置链接已发送到您的邮箱'
+                };
+            }
+
+            async mockResetPassword(newPassword) {
+                await this.sleep(1000);
+                return {
+                    success: true,
+                    message: '密码重置成功'
+                };
+            }
+
+            sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            switchTab(tabName) {
+                document.querySelectorAll('.ess-auth__tab').forEach(tab => {
+                    tab.classList.remove('ess-auth__tab--active');
+                });
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('ess-auth__tab--active');
+
+                document.querySelectorAll('.ess-auth__panel').forEach(panel => {
+                    panel.classList.remove('ess-auth__panel--active');
+                });
+
+                if (tabName === 'login') {
+                    document.getElementById('login-panel').classList.add('ess-auth__panel--active');
+                } else if (tabName === 'register') {
+                    document.getElementById('register-panel').classList.add('ess-auth__panel--active');
+                }
+            }
+
+            showForgotPassword() {
+                document.querySelectorAll('.ess-auth__panel').forEach(panel => {
+                    panel.classList.remove('ess-auth__panel--active');
+                });
+                document.getElementById('forgot-password-panel').classList.add('ess-auth__panel--active');
+                document.querySelector('.ess-auth__tabs').style.display = 'none';
+            }
+
+            showLogin() {
+                this.switchTab('login');
+                document.querySelector('.ess-auth__tabs').style.display = 'flex';
+            }
+
+            setButtonLoading(formId, loading) {
+                const form = document.getElementById(formId);
+                const button = form.querySelector('button[type="submit"]');
+                
+                if (loading) {
+                    button.disabled = true;
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = this.t('message.processing');
+                } else {
+                    button.disabled = false;
+                    button.textContent = button.dataset.originalText;
+                }
+            }
+
+            showMessage(message, type = 'info') {
+                const existingMessage = document.querySelector('.ess-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+
+                const messageEl = document.createElement('div');
+                messageEl.className = `ess-message ess-message--${type}`;
+                messageEl.textContent = message;
+
+                document.body.appendChild(messageEl);
+
+                setTimeout(() => {
+                    if (messageEl.parentNode) {
+                        messageEl.parentNode.removeChild(messageEl);
+                    }
+                }, 3000);
+            }
+
+            toggleLanguage() {
+                const newLang = this.currentLanguage === 'zh-CN' ? 'en-US' : 'zh-CN';
+                this.currentLanguage = newLang;
+                localStorage.setItem('ess_language', newLang);
+                
+                this.applyLanguage(newLang);
+                
+                const langText = document.getElementById('auth-lang-text');
+                if (langText) {
+                    langText.textContent = newLang === 'zh-CN' ? '中文' : 'EN';
+                }
+            }
+
+            toggleTheme() {
+                const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+                this.currentTheme = newTheme;
+                localStorage.setItem('ess_theme', newTheme);
+                
+                this.applyTheme(newTheme);
+                
+                const themeIcon = document.getElementById('auth-theme-icon');
+                if (themeIcon) {
+                    themeIcon.textContent = newTheme === 'light' ? '🌙' : '☀️';
+                }
+            }
+
+            applyTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                
+                const themeIcon = document.getElementById('auth-theme-icon');
+                if (themeIcon) {
+                    themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+                }
+            }
+
+            applyLanguage(lang) {
+                document.documentElement.setAttribute('lang', lang);
+                
+                document.querySelectorAll('[data-i18n]').forEach(element => {
+                    const key = element.getAttribute('data-i18n');
+                    const translation = this.t(key);
+                    if (translation) {
+                        // 如果翻译包含 HTML 标签，使用 innerHTML
+                        if (translation.includes('<br>')) {
+                            element.innerHTML = translation;
+                        } else {
+                            element.textContent = translation;
+                        }
+                    }
+                });
+
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                    const key = element.getAttribute('data-i18n-placeholder');
+                    const translation = this.t(key);
+                    if (translation) {
+                        element.placeholder = translation;
+                    }
+                });
+
+                const langText = document.getElementById('auth-lang-text');
+                if (langText) {
+                    langText.textContent = lang === 'zh-CN' ? '中文' : 'EN';
+                }
+            }
+
+            t(key, defaultValue = key) {
+                return translations[this.currentLanguage] && translations[this.currentLanguage][key] || defaultValue;
+            }
+            
+            // 场景选择相关方法
+            showScenarioSelection() {
+                console.log('Showing scenario selection page...');
+                const authPage = document.getElementById('ess-auth');
+                const scenarioPage = document.getElementById('ess-scenario');
+                
+                if (!authPage || !scenarioPage) {
+                    console.error('页面元素未找到', { authPage, scenarioPage });
+                    return;
+                }
+                
+                authPage.style.display = 'none';
+                scenarioPage.style.display = 'flex';
+                this.initScenarioPage();
+            }
+            
+            initScenarioPage() {
+                // 防止重复绑定
+                if (this.scenarioPageInitialized) {
+                    // 只更新语言和主题
+                    this.applyLanguage(this.currentLanguage);
+                    this.applyTheme(this.currentTheme);
+                    return;
+                }
+                
+                // 绑定场景选择事件
+                document.querySelectorAll('.ess-scenario__select-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const scenario = e.target.closest('.ess-scenario__select-btn').dataset.scenario;
+                        this.selectScenario(scenario);
+                    });
+                });
+                
+                // 绑定介绍按钮事件
+                document.querySelectorAll('.ess-scenario__info-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const scenario = e.target.closest('.ess-scenario__info-btn').dataset.scenario;
+                        this.showScenarioInfo(scenario);
+                    });
+                });
+                
+                // 绑定语言切换
+                const scenarioLangToggle = document.getElementById('scenario-lang-toggle');
+                if (scenarioLangToggle && !scenarioLangToggle.hasAttribute('data-initialized')) {
+                    scenarioLangToggle.setAttribute('data-initialized', 'true');
+                    scenarioLangToggle.addEventListener('click', () => {
+                        this.toggleLanguage();
+                    });
+                }
+                
+                // 绑定主题切换
+                const scenarioThemeToggle = document.getElementById('scenario-theme-toggle');
+                if (scenarioThemeToggle && !scenarioThemeToggle.hasAttribute('data-initialized')) {
+                    scenarioThemeToggle.setAttribute('data-initialized', 'true');
+                    scenarioThemeToggle.addEventListener('click', () => {
+                        this.toggleTheme();
+                    });
+                }
+                
+                // 绑定弹窗关闭
+                const modalClose = document.getElementById('scenario-modal-close');
+                if (modalClose && !modalClose.hasAttribute('data-initialized')) {
+                    modalClose.setAttribute('data-initialized', 'true');
+                    modalClose.addEventListener('click', () => {
+                        this.closeScenarioModal();
+                    });
+                }
+                
+                // 点击背景关闭弹窗
+                const modalBackdrop = document.querySelector('.ess-modal__backdrop');
+                if (modalBackdrop && !modalBackdrop.hasAttribute('data-initialized')) {
+                    modalBackdrop.setAttribute('data-initialized', 'true');
+                    modalBackdrop.addEventListener('click', () => {
+                        this.closeScenarioModal();
+                    });
+                }
+                
+                // 应用当前语言和主题
+                this.applyLanguage(this.currentLanguage);
+                this.applyTheme(this.currentTheme);
+                
+                // 标记为已初始化
+                this.scenarioPageInitialized = true;
+            }
+            
+            selectScenario(scenario) {
+                // 保存选择的场景
+                sessionStorage.setItem('selected_scenario', scenario);
+                
+                // 显示成功消息
+                this.showMessage(`已选择${this.getScenarioName(scenario)}场景`, 'success');
+                
+                // 跳转到主页（这里暂时只是隐藏当前页面）
+                setTimeout(() => {
+                    document.getElementById('ess-scenario').style.display = 'none';
+                    // 这里应该显示主应用页面
+                    this.showMessage('即将进入系统主页...', 'info');
+                }, 1000);
+            }
+            
+            getScenarioName(scenario) {
+                const names = {
+                    residential: '户用储能',
+                    commercial: '工商储能',
+                    charging: '充电桩管理',
+                    other: '其他'
+                };
+                return names[scenario] || scenario;
+            }
+            
+            showScenarioInfo(scenario) {
+                const modal = document.getElementById('scenario-modal');
+                const title = document.getElementById('scenario-modal-title');
+                const body = document.getElementById('scenario-modal-body');
+                
+                // 场景详细信息
+                const scenarioInfo = {
+                    residential: {
+                        title: '户用储能系统',
+                        content: `
+                            <h4>系统特点</h4>
+                            <ul>
+                                <li>适用于家庭和小型商业用户</li>
+                                <li>容量范围：5-30kWh</li>
+                                <li>支持光伏系统集成</li>
+                                <li>智能负载管理</li>
+                            </ul>
+                            <h4>主要功能</h4>
+                            <ul>
+                                <li>峰谷电价套利</li>
+                                <li>备用电源保障</li>
+                                <li>光伏自发自用</li>
+                                <li>智能用电优化</li>
+                            </ul>
+                            <h4>应用场景</h4>
+                            <p>适合别墅、住宅小区、小型商铺等场景，帮助用户降低用电成本，提高能源利用效率。</p>
+                        `
+                    },
+                    commercial: {
+                        title: '工商储能系统',
+                        content: `
+                            <h4>系统特点</h4>
+                            <ul>
+                                <li>适用于工业和大型商业项目</li>
+                                <li>容量范围：100kWh-MWh级</li>
+                                <li>模块化设计，灵活扩展</li>
+                                <li>专业运维管理</li>
+                            </ul>
+                            <h4>主要功能</h4>
+                            <ul>
+                                <li>需求侧响应</li>
+                                <li>容量费用管理</li>
+                                <li>电能质量改善</li>
+                                <li>多能互补优化</li>
+                            </ul>
+                            <h4>应用场景</h4>
+                            <p>适合工厂、商业综合体、数据中心等大型用电场景，提供全方位的能源管理解决方案。</p>
+                        `
+                    },
+                    charging: {
+                        title: '充电桩管理系统',
+                        content: `
+                            <h4>系统特点</h4>
+                            <ul>
+                                <li>集成储能的充电站解决方案</li>
+                                <li>支持多种充电标准</li>
+                                <li>智能调度充电功率</li>
+                                <li>完善的计费系统</li>
+                            </ul>
+                            <h4>主要功能</h4>
+                            <ul>
+                                <li>动态功率分配</li>
+                                <li>有序充电管理</li>
+                                <li>储能削峰填谷</li>
+                                <li>运营数据分析</li>
+                            </ul>
+                            <h4>应用场景</h4>
+                            <p>适合公共充电站、园区充电设施、高速服务区等场景，提升充电服务能力和运营效益。</p>
+                        `
+                    },
+                    other: {
+                        title: '其他应用场景',
+                        content: `
+                            <h4>定制化解决方案</h4>
+                            <ul>
+                                <li>微电网系统</li>
+                                <li>岛屿供电系统</li>
+                                <li>应急电源系统</li>
+                                <li>特殊行业应用</li>
+                            </ul>
+                            <h4>服务内容</h4>
+                            <ul>
+                                <li>需求分析与方案设计</li>
+                                <li>系统集成与调试</li>
+                                <li>定制化功能开发</li>
+                                <li>专业技术支持</li>
+                            </ul>
+                            <h4>联系我们</h4>
+                            <p>如果您有特殊的应用需求，请联系我们的技术团队，我们将为您提供专业的解决方案。</p>
+                        `
+                    }
+                };
+                
+                const info = scenarioInfo[scenario];
+                if (info) {
+                    title.textContent = info.title;
+                    body.innerHTML = info.content;
+                    modal.style.display = 'flex';
+                }
+            }
+            
+            closeScenarioModal() {
+                document.getElementById('scenario-modal').style.display = 'none';
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const authSystem = new CompleteAuthSystem();
+            window.authSystem = authSystem;
+        });
+    </script>
+</body>
+</html>
