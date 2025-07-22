@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>测试登录跳转</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 50px;
+            text-align: center;
+        }
+        .info {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .button:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <h1>登录流程测试</h1>
+    <div class="info">
+        <h3>测试步骤：</h3>
+        <ol style="text-align: left;">
+            <li>打开登录页面</li>
+            <li>使用默认账号密码：
+                <ul>
+                    <li>用户名：admin</li>
+                    <li>密码：admin123</li>
+                </ul>
+            </li>
+            <li>输入验证码（计算数学题）</li>
+            <li>点击登录按钮</li>
+            <li>看到"登录成功"提示后，页面将自动跳转到场景选择页面</li>
+        </ol>
+    </div>
+    
+    <div>
+        <a href="./index.html" class="button">进入登录页面</a>
+        <a href="./scenario-selection.html" class="button">直接查看场景选择页面</a>
+    </div>
+    
+    <div class="info" style="margin-top: 40px;">
+        <h3>预期结果：</h3>
+        <p>登录成功后，应该自动跳转到 scenario-selection.html 页面，显示四个场景选择卡片：</p>
+        <ul style="text-align: left;">
+            <li>户用储能</li>
+            <li>工商储能</li>
+            <li>充电桩管理</li>
+            <li>其他</li>
+        </ul>
+    </div>
+</body>
+</html>

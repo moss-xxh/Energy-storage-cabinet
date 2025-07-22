@@ -1,0 +1,139 @@
+/* 共享的菜单样式 */
+/* 一级菜单样式 */
+.menu-group {
+    margin-bottom: 0;
+}
+
+.menu-parent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    color: #64748b;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    position: relative;
+}
+
+.menu-parent:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.menu-parent.expanded {
+    background: transparent;
+    color: #3562E3;
+}
+
+.menu-arrow {
+    transition: transform 0.2s ease;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.menu-parent.expanded .menu-arrow {
+    transform: rotate(90deg);
+    color: #64748b;
+}
+
+/* 二级菜单样式 */
+.submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: transparent;
+}
+
+.submenu.open {
+    max-height: 300px;
+}
+
+.submenu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem 0.75rem 3rem;
+    color: #64748b;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    position: relative;
+}
+
+.submenu-item:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.submenu-item.active {
+    background: #eff6ff;
+    color: #3562E3;
+}
+
+.submenu-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: #3562E3;
+}
+
+.menu-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.menu-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* 暗色主题 */
+[data-theme="dark"] .menu-parent {
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .menu-parent:hover {
+    background: #334155;
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .menu-parent.expanded {
+    background: transparent;
+    color: #60a5fa;
+}
+
+[data-theme="dark"] .menu-arrow {
+    color: #64748b;
+}
+
+[data-theme="dark"] .menu-parent.expanded .menu-arrow {
+    color: #60a5fa;
+}
+
+[data-theme="dark"] .submenu {
+    background: transparent;
+}
+
+[data-theme="dark"] .submenu-item {
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .submenu-item:hover {
+    background: #334155;
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .submenu-item.active {
+    background: #1e3a8a;
+    color: #60a5fa;
+}

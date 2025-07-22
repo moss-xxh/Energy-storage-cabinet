@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实时监控 - 工商储能管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: #1e293b;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            transition: all 300ms ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 1rem 0;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 150ms ease;
+            position: relative;
+        }
+
+        .menu-item:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .menu-item.active {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: #2563eb;
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .station-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #475569;
+        }
+
+        .navbar-right {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-radius: 8px;
+            transition: all 150ms ease;
+            color: #475569;
+        }
+
+        .nav-button:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* 监控概览卡片 */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .overview-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .overview-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .overview-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .overview-unit {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .overview-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+        }
+
+        .trend-up {
+            color: #10b981;
+        }
+
+        .trend-down {
+            color: #ef4444;
+        }
+
+        /* 图表区域 */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-button {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 150ms ease;
+        }
+
+        .chart-button:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .chart-button.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .chart-container {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        /* 实时数据表格 */
+        .data-table-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.875rem;
+        }
+
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+            font-size: 0.875rem;
+        }
+
+        .data-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-normal {
+            background: #10b981;
+        }
+
+        .status-warning {
+            background: #f59e0b;
+        }
+
+        .status-error {
+            background: #ef4444;
+        }
+
+        /* 深色主题 */
+        [data-theme="dark"] body {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .sidebar,
+        [data-theme="dark"] .navbar,
+        [data-theme="dark"] .overview-card,
+        [data-theme="dark"] .chart-card,
+        [data-theme="dark"] .data-table-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .logo,
+        [data-theme="dark"] .page-title,
+        [data-theme="dark"] .overview-value,
+        [data-theme="dark"] .chart-title,
+        [data-theme="dark"] .data-table td {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .menu-item {
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .menu-item:hover {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .menu-item.active {
+            background: #1e3a8a;
+            color: #60a5fa;
+        }
+
+        [data-theme="dark"] .station-info,
+        [data-theme="dark"] .chart-container {
+            background: #0f172a;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="../logo.png" alt="Logo">
+                <span>能源管理系统</span>
+            </div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="./station-management.html" class="menu-item">
+                <span class="menu-icon">⚡</span>
+                <span>电站管理</span>
+            </a>
+            <a href="#" class="menu-item active">
+                <span class="menu-icon">📊</span>
+                <span>实时监控</span>
+            </a>
+            <a href="./data-analysis.html" class="menu-item">
+                <span class="menu-icon">📈</span>
+                <span>数据分析</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🔔</span>
+                <span>告警管理</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🔧</span>
+                <span>设备管理</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span>用户管理</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📄</span>
+                <span>报表中心</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span>系统设置</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <h1 class="page-title">实时监控</h1>
+                <div class="station-info">
+                    <span>🏭</span>
+                    <span id="station-name">上海工业园储能站</span>
+                </div>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleFullscreen()">
+                    <span>⛶</span>
+                    <span>全屏</span>
+                </button>
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button" onclick="goBack()">
+                    <span>←</span>
+                    <span>返回</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 监控概览 -->
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <div class="overview-label">实时功率</div>
+                    <div class="overview-value">
+                        1.85 <span class="overview-unit">MW</span>
+                    </div>
+                    <div class="overview-trend trend-up">
+                        <span>▲</span>
+                        <span>较昨日 +12.5%</span>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-label">今日发电量</div>
+                    <div class="overview-value">
+                        12.8 <span class="overview-unit">MWh</span>
+                    </div>
+                    <div class="overview-trend trend-up">
+                        <span>▲</span>
+                        <span>较昨日 +8.3%</span>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-label">充电状态</div>
+                    <div class="overview-value">
+                        放电中
+                    </div>
+                    <div class="overview-trend">
+                        <span class="status-dot status-normal"></span>
+                        <span>SOC: 68%</span>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-label">今日收益</div>
+                    <div class="overview-value">
+                        8,960 <span class="overview-unit">元</span>
+                    </div>
+                    <div class="overview-trend trend-up">
+                        <span>▲</span>
+                        <span>较昨日 +15.2%</span>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-label">电网频率</div>
+                    <div class="overview-value">
+                        50.02 <span class="overview-unit">Hz</span>
+                    </div>
+                    <div class="overview-trend">
+                        <span class="status-dot status-normal"></span>
+                        <span>正常</span>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-label">环境温度</div>
+                    <div class="overview-value">
+                        26.5 <span class="overview-unit">℃</span>
+                    </div>
+                    <div class="overview-trend">
+                        <span>湿度: 65%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图表区域 -->
+            <div class="charts-grid">
+                <!-- 功率曲线 -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">功率曲线</h3>
+                        <div class="chart-controls">
+                            <button class="chart-button active">今日</button>
+                            <button class="chart-button">昨日</button>
+                            <button class="chart-button">7天</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="power-chart">
+                        <canvas id="powerCanvas" style="width: 100%; height: 100%;"></canvas>
+                    </div>
+                </div>
+
+                <!-- 充放电功率分布 -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">充放电功率分布</h3>
+                        <div class="chart-controls">
+                            <button class="chart-button active">实时</button>
+                            <button class="chart-button">日统计</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="charge-chart">
+                        <canvas id="chargeCanvas" style="width: 100%; height: 100%;"></canvas>
+                    </div>
+                </div>
+
+                <!-- SOC变化曲线 -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">SOC变化曲线</h3>
+                        <div class="chart-controls">
+                            <button class="chart-button active">24小时</button>
+                            <button class="chart-button">7天</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="soc-chart">
+                        <canvas id="socCanvas" style="width: 100%; height: 100%;"></canvas>
+                    </div>
+                </div>
+
+                <!-- 收益分析 -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">收益分析</h3>
+                        <div class="chart-controls">
+                            <button class="chart-button active">今日</button>
+                            <button class="chart-button">本月</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="revenue-chart">
+                        <canvas id="revenueCanvas" style="width: 100%; height: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 实时数据表格 -->
+            <div class="data-table-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">设备实时数据</h3>
+                    <div class="chart-controls">
+                        <button class="chart-button" onclick="refreshData()">
+                            <span>🔄</span>
+                            刷新
+                        </button>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>设备名称</th>
+                                <th>状态</th>
+                                <th>电压(V)</th>
+                                <th>电流(A)</th>
+                                <th>功率(kW)</th>
+                                <th>温度(℃)</th>
+                                <th>运行时长</th>
+                                <th>更新时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="device-data">
+                            <tr>
+                                <td>PCS-01</td>
+                                <td><span class="status-dot status-normal"></span>运行</td>
+                                <td>380.5</td>
+                                <td>1,265</td>
+                                <td>925.5</td>
+                                <td>45.2</td>
+                                <td>2,568h</td>
+                                <td>10:25:36</td>
+                            </tr>
+                            <tr>
+                                <td>PCS-02</td>
+                                <td><span class="status-dot status-normal"></span>运行</td>
+                                <td>381.2</td>
+                                <td>1,180</td>
+                                <td>924.5</td>
+                                <td>44.8</td>
+                                <td>2,568h</td>
+                                <td>10:25:36</td>
+                            </tr>
+                            <tr>
+                                <td>BMS-01</td>
+                                <td><span class="status-dot status-normal"></span>正常</td>
+                                <td>768.5</td>
+                                <td>652</td>
+                                <td>--</td>
+                                <td>26.5</td>
+                                <td>2,568h</td>
+                                <td>10:25:36</td>
+                            </tr>
+                            <tr>
+                                <td>变压器-01</td>
+                                <td><span class="status-dot status-warning"></span>告警</td>
+                                <td>10,500</td>
+                                <td>168</td>
+                                <td>1,850</td>
+                                <td>78.5</td>
+                                <td>2,568h</td>
+                                <td>10:25:36</td>
+                            </tr>
+                            <tr>
+                                <td>空调系统</td>
+                                <td><span class="status-dot status-normal"></span>运行</td>
+                                <td>220</td>
+                                <td>18.5</td>
+                                <td>4.1</td>
+                                <td>--</td>
+                                <td>856h</td>
+                                <td>10:25:36</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 多语言配置
+        const i18n = {
+            zh: {
+                'page.title': '实时监控',
+                'system.name': '能源管理系统',
+                'menu.station': '电站管理',
+                'menu.monitoring': '实时监控',
+                'menu.analysis': '数据分析',
+                'menu.alarm': '告警管理',
+                'menu.device': '设备管理',
+                'menu.user': '用户管理',
+                'menu.report': '报表中心',
+                'menu.setting': '系统设置',
+                'nav.fullscreen': '全屏',
+                'nav.back': '返回',
+                'overview.realtimePower': '实时功率',
+                'overview.todayGeneration': '今日发电量',
+                'overview.chargeStatus': '充电状态',
+                'overview.todayRevenue': '今日收益',
+                'overview.gridFrequency': '电网频率',
+                'overview.temperature': '环境温度',
+                'overview.charging': '充电中',
+                'overview.discharging': '放电中',
+                'overview.standby': '待机',
+                'overview.humidity': '湿度',
+                'trend.yesterday': '较昨日',
+                'trend.normal': '正常',
+                'chart.powerCurve': '功率曲线',
+                'chart.chargeDistribution': '充放电功率分布',
+                'chart.socCurve': 'SOC变化曲线',
+                'chart.revenueAnalysis': '收益分析',
+                'chart.today': '今日',
+                'chart.yesterday': '昨日',
+                'chart.7days': '7天',
+                'chart.realtime': '实时',
+                'chart.daily': '日统计',
+                'chart.24hours': '24小时',
+                'chart.month': '本月',
+                'table.deviceData': '设备实时数据',
+                'table.refresh': '刷新',
+                'table.deviceName': '设备名称',
+                'table.status': '状态',
+                'table.voltage': '电压(V)',
+                'table.current': '电流(A)',
+                'table.power': '功率(kW)',
+                'table.temperature': '温度(℃)',
+                'table.runtime': '运行时长',
+                'table.updateTime': '更新时间',
+                'status.running': '运行',
+                'status.normal': '正常',
+                'status.warning': '告警',
+                'device.transformer': '变压器',
+                'device.airConditioner': '空调系统'
+            },
+            en: {
+                'page.title': 'Real-time Monitoring',
+                'system.name': 'Energy Management System',
+                'menu.station': 'Station Management',
+                'menu.monitoring': 'Real-time Monitoring',
+                'menu.analysis': 'Data Analysis',
+                'menu.alarm': 'Alarm Management',
+                'menu.device': 'Device Management',
+                'menu.user': 'User Management',
+                'menu.report': 'Report Center',
+                'menu.setting': 'System Settings',
+                'nav.fullscreen': 'Fullscreen',
+                'nav.back': 'Back',
+                'overview.realtimePower': 'Real-time Power',
+                'overview.todayGeneration': 'Today Generation',
+                'overview.chargeStatus': 'Charge Status',
+                'overview.todayRevenue': 'Today Revenue',
+                'overview.gridFrequency': 'Grid Frequency',
+                'overview.temperature': 'Ambient Temperature',
+                'overview.charging': 'Charging',
+                'overview.discharging': 'Discharging',
+                'overview.standby': 'Standby',
+                'overview.humidity': 'Humidity',
+                'trend.yesterday': 'vs Yesterday',
+                'trend.normal': 'Normal',
+                'chart.powerCurve': 'Power Curve',
+                'chart.chargeDistribution': 'Charge/Discharge Distribution',
+                'chart.socCurve': 'SOC Curve',
+                'chart.revenueAnalysis': 'Revenue Analysis',
+                'chart.today': 'Today',
+                'chart.yesterday': 'Yesterday',
+                'chart.7days': '7 Days',
+                'chart.realtime': 'Real-time',
+                'chart.daily': 'Daily',
+                'chart.24hours': '24 Hours',
+                'chart.month': 'This Month',
+                'table.deviceData': 'Device Real-time Data',
+                'table.refresh': 'Refresh',
+                'table.deviceName': 'Device Name',
+                'table.status': 'Status',
+                'table.voltage': 'Voltage(V)',
+                'table.current': 'Current(A)',
+                'table.power': 'Power(kW)',
+                'table.temperature': 'Temperature(℃)',
+                'table.runtime': 'Runtime',
+                'table.updateTime': 'Update Time',
+                'status.running': 'Running',
+                'status.normal': 'Normal',
+                'status.warning': 'Warning',
+                'device.transformer': 'Transformer',
+                'device.airConditioner': 'Air Conditioning'
+            }
+        };
+
+        // 当前语言
+        let currentLang = localStorage.getItem('ess_language') || 'zh';
+
+        // 翻译函数
+        function t(key) {
+            return i18n[currentLang][key] || key;
+        }
+
+        // 切换语言
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            localStorage.setItem('ess_language', currentLang);
+            document.getElementById('lang-text').textContent = currentLang === 'zh' ? '中文' : 'English';
+            applyLanguage();
+        }
+
+        // 应用语言
+        function applyLanguage() {
+            // 更新页面标题
+            document.title = `${t('page.title')} - ${t('system.name')}`;
+            
+            // 更新导航栏
+            document.querySelector('.page-title').textContent = t('page.title');
+            document.querySelector('.logo span').textContent = t('system.name');
+            
+            // 更新菜单
+            const menuItems = document.querySelectorAll('.menu-item span:last-child');
+            const menuKeys = ['station', 'monitoring', 'analysis', 'alarm', 'device', 'user', 'report', 'setting'];
+            menuItems.forEach((item, index) => {
+                if (menuKeys[index]) {
+                    item.textContent = t(`menu.${menuKeys[index]}`);
+                }
+            });
+            
+            // 更新按钮
+            document.querySelectorAll('.navbar-right .nav-button').forEach(btn => {
+                const text = btn.querySelector('span:last-child');
+                if (text) {
+                    if (text.textContent === '全屏' || text.textContent === 'Fullscreen') {
+                        text.textContent = t('nav.fullscreen');
+                    } else if (text.textContent === '返回' || text.textContent === 'Back') {
+                        text.textContent = t('nav.back');
+                    }
+                }
+            });
+            
+            // 更新概览卡片
+            document.querySelectorAll('.overview-label').forEach((label, index) => {
+                const keys = ['realtimePower', 'todayGeneration', 'chargeStatus', 'todayRevenue', 'gridFrequency', 'temperature'];
+                if (keys[index]) {
+                    label.textContent = t(`overview.${keys[index]}`);
+                }
+            });
+            
+            // 更新图表标题
+            document.querySelectorAll('.chart-title').forEach((title, index) => {
+                const keys = ['powerCurve', 'chargeDistribution', 'socCurve', 'revenueAnalysis', 'deviceData'];
+                if (keys[index]) {
+                    title.textContent = t(`chart.${keys[index]}` || `table.${keys[index]}`);
+                }
+            });
+            
+            // 更新表格标题
+            const tableHeaders = document.querySelectorAll('.data-table th');
+            const headerKeys = ['deviceName', 'status', 'voltage', 'current', 'power', 'temperature', 'runtime', 'updateTime'];
+            tableHeaders.forEach((header, index) => {
+                if (headerKeys[index]) {
+                    header.textContent = t(`table.${headerKeys[index]}`);
+                }
+            });
+        }
+
+        // 切换主题
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('ess_theme', newTheme);
+            document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // 切换侧边栏
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // 全屏切换
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // 返回
+        function goBack() {
+            window.location.href = './station-management.html';
+        }
+
+        // 刷新数据
+        function refreshData() {
+            // 模拟数据刷新
+            const time = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            document.querySelectorAll('.data-table tbody tr').forEach(row => {
+                const lastCell = row.cells[row.cells.length - 1];
+                lastCell.textContent = time;
+            });
+            
+            // 这里可以添加实际的数据刷新逻辑
+            console.log('数据已刷新');
+        }
+
+        // 绘制功率曲线
+        function drawPowerChart() {
+            const canvas = document.getElementById('powerCanvas');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制网格
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            
+            // 水平网格线
+            for (let i = 0; i <= 4; i++) {
+                const y = (canvas.height - 40) * i / 4 + 20;
+                ctx.beginPath();
+                ctx.moveTo(40, y);
+                ctx.lineTo(canvas.width - 20, y);
+                ctx.stroke();
+            }
+            
+            // 垂直网格线
+            for (let i = 0; i <= 24; i++) {
+                const x = (canvas.width - 60) * i / 24 + 40;
+                ctx.beginPath();
+                ctx.moveTo(x, 20);
+                ctx.lineTo(x, canvas.height - 20);
+                ctx.stroke();
+            }
+            
+            // 绘制功率曲线
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            // 模拟数据
+            const data = [];
+            for (let i = 0; i <= 24; i++) {
+                const value = Math.sin(i / 4) * 0.5 + 0.5 + Math.random() * 0.2;
+                data.push(value);
+            }
+            
+            data.forEach((value, index) => {
+                const x = (canvas.width - 60) * index / 24 + 40;
+                const y = canvas.height - 20 - (canvas.height - 40) * value;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            
+            ctx.stroke();
+            
+            // 绘制坐标轴标签
+            ctx.fillStyle = '#64748b';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            
+            // X轴标签
+            for (let i = 0; i <= 24; i += 4) {
+                const x = (canvas.width - 60) * i / 24 + 40;
+                ctx.fillText(`${i}:00`, x, canvas.height - 5);
+            }
+            
+            // Y轴标签
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 4; i++) {
+                const y = (canvas.height - 40) * i / 4 + 20;
+                ctx.fillText(`${(4 - i) * 0.5} MW`, 35, y + 3);
+            }
+        }
+
+        // 绘制充放电分布图
+        function drawChargeChart() {
+            const canvas = document.getElementById('chargeCanvas');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 模拟充放电数据
+            const chargeData = 925.5;
+            const dischargeData = 1850;
+            const total = chargeData + dischargeData;
+            
+            // 绘制饼图
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(canvas.width, canvas.height) / 3;
+            
+            // 充电部分
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + (chargeData / total) * 2 * Math.PI);
+            ctx.lineTo(centerX, centerY);
+            ctx.fillStyle = '#10b981';
+            ctx.fill();
+            
+            // 放电部分
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, -Math.PI / 2 + (chargeData / total) * 2 * Math.PI, -Math.PI / 2 + 2 * Math.PI);
+            ctx.lineTo(centerX, centerY);
+            ctx.fillStyle = '#f59e0b';
+            ctx.fill();
+            
+            // 绘制图例
+            ctx.font = '14px sans-serif';
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(centerX - 60, centerY + radius + 20, 15, 15);
+            ctx.fillStyle = '#64748b';
+            ctx.fillText('充电: ' + chargeData + ' kW', centerX - 40, centerY + radius + 32);
+            
+            ctx.fillStyle = '#f59e0b';
+            ctx.fillRect(centerX + 20, centerY + radius + 20, 15, 15);
+            ctx.fillStyle = '#64748b';
+            ctx.fillText('放电: ' + dischargeData + ' kW', centerX + 40, centerY + radius + 32);
+        }
+
+        // 绘制SOC曲线
+        function drawSOCChart() {
+            const canvas = document.getElementById('socCanvas');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制网格
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            
+            // 水平网格线
+            for (let i = 0; i <= 5; i++) {
+                const y = (canvas.height - 40) * i / 5 + 20;
+                ctx.beginPath();
+                ctx.moveTo(40, y);
+                ctx.lineTo(canvas.width - 20, y);
+                ctx.stroke();
+            }
+            
+            // 绘制SOC曲线
+            ctx.strokeStyle = '#22c55e';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            // 模拟SOC数据
+            const socData = [];
+            let soc = 20;
+            for (let i = 0; i <= 24; i++) {
+                if (i < 6) soc += 10;
+                else if (i < 10) soc -= 2;
+                else if (i < 14) soc -= 5;
+                else if (i < 18) soc += 8;
+                else soc -= 3;
+                soc = Math.max(10, Math.min(100, soc));
+                socData.push(soc);
+            }
+            
+            socData.forEach((value, index) => {
+                const x = (canvas.width - 60) * index / 24 + 40;
+                const y = canvas.height - 20 - (canvas.height - 40) * value / 100;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            
+            ctx.stroke();
+            
+            // 绘制坐标轴标签
+            ctx.fillStyle = '#64748b';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'right';
+            
+            // Y轴标签
+            for (let i = 0; i <= 5; i++) {
+                const y = (canvas.height - 40) * i / 5 + 20;
+                ctx.fillText(`${(5 - i) * 20}%`, 35, y + 3);
+            }
+        }
+
+        // 绘制收益图表
+        function drawRevenueChart() {
+            const canvas = document.getElementById('revenueCanvas');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 模拟收益数据
+            const hours = ['0-4时', '4-8时', '8-12时', '12-16时', '16-20时', '20-24时'];
+            const revenues = [1200, 2800, 3500, 1800, 2400, 1260];
+            const maxRevenue = Math.max(...revenues);
+            
+            const barWidth = (canvas.width - 100) / hours.length;
+            const barGap = 20;
+            
+            // 绘制柱状图
+            revenues.forEach((revenue, index) => {
+                const x = 50 + index * barWidth + barGap;
+                const barHeight = (revenue / maxRevenue) * (canvas.height - 60);
+                const y = canvas.height - 40 - barHeight;
+                
+                // 绘制柱子
+                ctx.fillStyle = '#2563eb';
+                ctx.fillRect(x, y, barWidth - barGap * 2, barHeight);
+                
+                // 绘制数值
+                ctx.fillStyle = '#64748b';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(revenue + '元', x + (barWidth - barGap * 2) / 2, y - 5);
+                
+                // 绘制时段标签
+                ctx.fillText(hours[index], x + (barWidth - barGap * 2) / 2, canvas.height - 20);
+            });
+        }
+
+        // 初始化图表
+        function initCharts() {
+            drawPowerChart();
+            drawChargeChart();
+            drawSOCChart();
+            drawRevenueChart();
+        }
+
+        // 窗口大小改变时重绘图表
+        window.addEventListener('resize', () => {
+            initCharts();
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 应用保存的主题
+            const savedTheme = localStorage.getItem('ess_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            
+            // 应用语言
+            applyLanguage();
+            
+            // 初始化图表
+            setTimeout(initCharts, 100);
+            
+            // 获取电站信息
+            const urlParams = new URLSearchParams(window.location.search);
+            const stationId = urlParams.get('station');
+            if (stationId) {
+                // 这里可以根据stationId加载对应的电站数据
+                console.log('加载电站数据:', stationId);
+            }
+            
+            // 定时刷新数据
+            setInterval(refreshData, 10000); // 每10秒刷新一次
+        });
+    </script>
+</body>
+</html>

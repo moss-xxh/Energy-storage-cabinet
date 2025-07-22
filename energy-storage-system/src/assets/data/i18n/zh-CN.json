@@ -1,0 +1,173 @@
+{
+  "system": {
+    "title": "工商储能管理系统",
+    "subtitle": "智能化能源管理解决方案"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "back": "返回登录",
+    "login": {
+      "username": "用户名或邮箱",
+      "password": "密码",
+      "submit": "登录",
+      "remember": "记住我",
+      "forget": "忘记密码？"
+    },
+    "register": {
+      "username": "用户名",
+      "email": "邮箱地址",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "submit": "注册",
+      "agreement": "我同意",
+      "terms": "服务条款",
+      "privacy": "隐私政策"
+    },
+    "forgot": {
+      "title": "重置密码",
+      "desc": "请输入您的邮箱地址，我们将发送重置密码的链接",
+      "email": "邮箱地址",
+      "submit": "发送重置链接"
+    }
+  },
+  "login": {
+    "username": "用户名",
+    "password": "密码",
+    "submit": "登录",
+    "remember": "记住我",
+    "forget": "忘记密码？",
+    "error": "用户名或密码错误"
+  },
+  "user": {
+    "logout": "退出",
+    "profile": "个人中心",
+    "settings": "设置"
+  },
+  "nav": {
+    "dashboard": "仪表盘",
+    "battery": "电池管理",
+    "energy": "能源分析",
+    "alarm": "告警管理",
+    "settings": "系统设置"
+  },
+  "menu": {
+    "monitor": "监控管理",
+    "overview": "总览",
+    "realtime": "实时监控",
+    "device": "设备管理",
+    "battery": "电池状态",
+    "pcs": "PCS管理",
+    "bms": "BMS管理",
+    "analysis": "数据分析",
+    "energy": "能效分析",
+    "report": "报表统计"
+  },
+  "dashboard": {
+    "title": "系统总览",
+    "totalPower": "总功率",
+    "totalEnergy": "总电量",
+    "efficiency": "系统效率",
+    "runningTime": "运行时间",
+    "powerChart": "功率曲线",
+    "energyChart": "电量统计",
+    "deviceStatus": "设备状态",
+    "alarmInfo": "告警信息"
+  },
+  "battery": {
+    "title": "电池管理",
+    "status": "电池状态",
+    "voltage": "电压",
+    "current": "电流",
+    "temperature": "温度",
+    "soc": "荷电状态",
+    "soh": "健康状态",
+    "cycles": "循环次数",
+    "normal": "正常",
+    "charging": "充电中",
+    "discharging": "放电中",
+    "standby": "待机",
+    "fault": "故障"
+  },
+  "energy": {
+    "title": "能源分析",
+    "daily": "日统计",
+    "monthly": "月统计",
+    "yearly": "年统计",
+    "charge": "充电量",
+    "discharge": "放电量",
+    "efficiency": "转换效率",
+    "cost": "成本分析",
+    "revenue": "收益分析"
+  },
+  "alarm": {
+    "title": "告警管理",
+    "level": "级别",
+    "type": "类型",
+    "device": "设备",
+    "time": "时间",
+    "description": "描述",
+    "status": "状态",
+    "critical": "严重",
+    "major": "重要",
+    "minor": "次要",
+    "warning": "警告",
+    "active": "活动",
+    "cleared": "已清除"
+  },
+  "settings": {
+    "title": "系统设置",
+    "general": "常规设置",
+    "language": "语言",
+    "theme": "主题",
+    "light": "浅色",
+    "dark": "深色",
+    "system": "跟随系统",
+    "device": "设备配置",
+    "alarm": "告警配置",
+    "user": "用户管理",
+    "about": "关于系统"
+  },
+  "common": {
+    "confirm": "确定",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "search": "搜索",
+    "reset": "重置",
+    "export": "导出",
+    "import": "导入",
+    "refresh": "刷新",
+    "loading": "加载中...",
+    "noData": "暂无数据",
+    "success": "操作成功",
+    "error": "操作失败",
+    "warning": "警告",
+    "info": "提示"
+  },
+  "time": {
+    "today": "今天",
+    "yesterday": "昨天",
+    "week": "本周",
+    "month": "本月",
+    "year": "本年",
+    "custom": "自定义",
+    "startTime": "开始时间",
+    "endTime": "结束时间"
+  },
+  "unit": {
+    "kw": "千瓦",
+    "kwh": "千瓦时",
+    "mw": "兆瓦",
+    "mwh": "兆瓦时",
+    "v": "伏",
+    "a": "安",
+    "celsius": "℃",
+    "percent": "%",
+    "hour": "小时",
+    "minute": "分钟",
+    "second": "秒"
+  }
+}

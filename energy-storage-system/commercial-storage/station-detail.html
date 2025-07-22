@@ -1,0 +1,2689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电站详情 - 工商储能管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: #1e293b;
+            background: #EBEDF5;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            transition: all 300ms ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 1rem 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .logo img {
+            height: auto;
+            width: 100%;
+            max-width: 220px;
+            max-height: 50px;
+            object-fit: contain;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 1rem 0;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 150ms ease;
+            position: relative;
+        }
+
+        .menu-item:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .menu-item.active {
+            background: #eff6ff;
+            color: #3562E3;
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: #3562E3;
+        }
+        
+        /* 一级菜单样式 */
+        .menu-group {
+            margin-bottom: 0;
+        }
+        
+        .menu-parent {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .menu-parent:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        
+        .menu-parent.expanded {
+            background: transparent;
+            color: #3562E3;
+        }
+        
+        .menu-arrow {
+            transition: transform 0.2s ease;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        
+        .menu-parent.expanded .menu-arrow {
+            transform: rotate(90deg);
+            color: #64748b;
+        }
+        
+        /* 二级菜单样式 */
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: transparent;
+        }
+        
+        .submenu.open {
+            max-height: 300px;
+        }
+        
+        .submenu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem 0.75rem 3rem;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+            position: relative;
+        }
+        
+        .submenu-item:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        
+        .submenu-item.active {
+            background: #eff6ff;
+            color: #3562E3;
+        }
+        
+        .submenu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: #3562E3;
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .menu-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+
+        /* 电站信息头部 */
+        .station-header {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .station-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .station-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .station-power-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        .power-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-weight: 500;
+        }
+        
+        .power-status-badge.feeding {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        
+        .power-status-badge.consuming {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        
+        .power-status-badge .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .power-status-badge.feeding .status-dot {
+            background-color: #0369a1;
+        }
+        
+        .power-status-badge.consuming .status-dot {
+            background-color: #d97706;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .power-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .station-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-online {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-offline {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .status-warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .station-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Tab切换 - 与数据分析保持一致 */
+        .detail-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: -2px;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #64748b;
+            font-weight: 500;
+            transition: all 150ms ease;
+            position: relative;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-button:hover {
+            color: #1e293b;
+        }
+
+        .tab-button.active {
+            color: #3562E3;
+            border-bottom-color: #3562E3;
+        }
+
+        /* Tab内容区域 */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 概览内容 */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card, .overview-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card.energy-flow-card {
+            background: #f8fafc;
+        }
+
+        .card-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-content {
+            padding: 0;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .stat-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* 设备列表 */
+        .device-list {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .device-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .device-table th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .device-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.875rem;
+            color: #1e293b;
+        }
+
+        .device-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .device-status.normal {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .device-status.fault {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* 运行数据 */
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .data-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+        }
+
+        /* 能量潮流图样式 */
+        .energy-flow-container {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-top: 1.5rem;
+        }
+
+        .energy-metrics-container {
+            display: flex;
+            gap: 0;
+            width: 100%;
+        }
+
+        .energy-flow-diagram {
+            position: relative;
+            height: 600px;
+            background: transparent;
+            border-radius: 0;
+            padding: 120px 60px 120px 60px;
+            overflow: hidden;
+            flex: 3;
+            min-width: 0;
+        }
+
+        .data-metrics-card {
+            flex: 1;
+            background: transparent;
+            border-radius: 0;
+            padding: 20px;
+            height: 600px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .metrics-section {
+            margin-bottom: 24px;
+        }
+
+        .metrics-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .metrics-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .metrics-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 12px 0;
+            text-align: left;
+        }
+
+        .metrics-label {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .metrics-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .flow-component {
+            position: absolute;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        .flow-component:hover {
+            transform: translateY(-5px);
+        }
+
+        .flow-component img {
+            width: 80%;
+            height: auto;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.1));
+            transition: filter 0.3s ease;
+        }
+
+        .flow-component.grid img {
+            width: 70%;
+        }
+
+        .flow-component:hover img {
+            filter: drop-shadow(0 12px 24px rgba(0,0,0,0.15));
+        }
+
+        .flow-component.pv {
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+        }
+
+        .flow-component.load {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+        }
+
+        .flow-component.storage {
+            bottom: 10px;
+            left: 90px;
+            width: 140px;
+        }
+
+        .flow-component.grid {
+            bottom: 10px;
+            right: 110px;
+            width: 120px;
+        }
+
+        .battery-indicator {
+            position: absolute;
+            top: 50%;
+            left: -60px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 30;
+        }
+        
+        .battery-icon {
+            position: relative;
+            width: 30px;
+            height: 16px;
+            border: 2px solid #64748b;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+        }
+        
+        .battery-icon::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 8px;
+            background: #64748b;
+            border-radius: 0 2px 2px 0;
+        }
+        
+        .battery-level {
+            height: 100%;
+            background: #10b981;
+            border-radius: 1px;
+            transition: width 0.3s ease;
+        }
+        
+        .battery-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .component-label {
+            position: absolute;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            background: white;
+            padding: 8px 20px;
+            border-radius: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: inline-block;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .flow-component.pv .component-label {
+            right: -80px;
+            top: calc(50% - 10px);
+            transform: translateY(-50%);
+        }
+        .flow-component.load .component-label {
+            right: -85px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .flow-component:hover .component-label {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        .flow-component.pv:hover .component-label,
+        .flow-component.load:hover .component-label {
+            transform: translateY(-50%) scale(1.05);
+        }
+        .flow-component.storage .component-label,
+        .flow-component.grid .component-label {
+            position: static;
+            margin-top: 15px;
+        }
+        .flow-component.storage:hover .component-label,
+        .flow-component.grid:hover .component-label {
+            transform: scale(1.05);
+        }
+
+        .component-power {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #3562E3;
+            margin-top: 5px;
+        }
+
+        .component-status {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+
+        .inverter {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 80px;
+            background: linear-gradient(135deg, #3562E3 0%, #2148C0 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            box-shadow: 0 8px 24px rgba(53,98,227,0.25);
+            transition: all 0.3s ease;
+            display: none; /* 暂时隐藏逆变器，使用负载替代中心位置 */
+        }
+
+        .inverter:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            box-shadow: 0 12px 32px rgba(53,98,227,0.35);
+        }
+
+        .inverter img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .inverter-label {
+            position: absolute;
+            bottom: -25px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .power-label {
+            position: absolute;
+            background: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #3562E3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            white-space: nowrap;
+            z-index: 15;
+            transition: all 0.3s ease;
+        }
+
+        .power-label.active {
+            background: #3562E3;
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* 能量流动线 */
+        .energy-flow-svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 1;
+        }
+
+        .flow-line {
+            stroke: #EDEDED;
+            stroke-width: 6;
+            fill: none;
+            opacity: 1;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            position: relative;
+        }
+        
+        @keyframes flowAnimation {
+            0% {
+                offset-distance: 0%;
+            }
+            100% {
+                offset-distance: 100%;
+            }
+        }
+        
+        .flow-segment {
+            stroke: #5C85FF;
+            stroke-width: 4;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 8px #5C85FF);
+            fill: none;
+            opacity: 0.9;
+        }
+        
+        @keyframes pathFlow {
+            0% {
+                stroke-dashoffset: 100%;
+            }
+            100% {
+                stroke-dashoffset: 0%;
+            }
+        }
+        
+        .flow-gradient {
+            stroke: url(#flowGradient);
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* 移除动画效果，保持简洁 */
+        .flow-line-active {
+            stroke: #E0E0E0;
+        }
+
+        .energy-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent 0%, #3562E3 20%, #3562E3 80%, transparent 100%);
+            height: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .energy-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%);
+            animation: energyFlow 2s linear infinite;
+        }
+
+        @keyframes energyFlow {
+            to {
+                left: 100%;
+            }
+        }
+
+        .energy-flow-label {
+            position: absolute;
+            font-size: 12px;
+            color: #666;
+            background: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .flow-line.pv-to-storage {
+            width: 3px;
+            height: 180px;
+            top: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .flow-line.pv-to-storage::after {
+            border-width: 8px 6px 0 6px;
+            border-color: #3562E3 transparent transparent transparent;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .flow-line.grid-to-storage {
+            width: 180px;
+            height: 3px;
+            top: 50%;
+            left: 170px;
+            transform: translateY(-50%);
+        }
+
+        .flow-line.grid-to-storage::after {
+            border-width: 6px 0 6px 8px;
+            border-color: transparent transparent transparent #3562E3;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .flow-line.storage-to-load {
+            width: 180px;
+            height: 3px;
+            bottom: 140px;
+            right: 170px;
+        }
+
+        .flow-line.storage-to-load::after {
+            border-width: 6px 0 6px 8px;
+            border-color: transparent transparent transparent #3562E3;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* 流动动画 */
+        @keyframes flowAnimation {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 20px 0;
+            }
+        }
+
+        .flow-line.active {
+            background-image: repeating-linear-gradient(
+                90deg,
+                #3562E3,
+                #3562E3 5px,
+                transparent 5px,
+                transparent 10px
+            );
+            animation: flowAnimation 1s linear infinite;
+        }
+
+        .flow-line.reverse {
+            animation-direction: reverse;
+        }
+
+        /* 中心枢纽 */
+        .energy-hub {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #f8fafc;
+            border: 3px solid #3562E3;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #3562E3;
+            z-index: 15;
+        }
+
+        /* 告警列表 */
+        .alarm-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            background: white;
+            color: #1e293b;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .alarm-list {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .alarm-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .alarm-table th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .alarm-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.875rem;
+            color: #1e293b;
+        }
+
+        .alarm-level {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .alarm-level.critical {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .alarm-level.major {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        .alarm-level.minor {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .alarm-level.info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        /* 报表 */
+        .report-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .date-range {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .date-input {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #1e293b;
+        }
+
+        .btn-export {
+            padding: 0.5rem 1.5rem;
+            background: #3562E3;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 150ms ease;
+        }
+
+        .btn-export:hover {
+            background: #2C50B8;
+        }
+
+        .report-content {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 深色主题 */
+        [data-theme="dark"] body {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .sidebar {
+            background: #1e293b;
+            border-right-color: #334155;
+        }
+
+        [data-theme="dark"] .menu-item {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .menu-item:hover {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .menu-item.active {
+            background: #1e3a8a;
+            color: #60a5fa;
+        }
+
+        [data-theme="dark"] .menu-parent {
+            color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .menu-parent:hover {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .navbar {
+            background: #1e293b;
+            border-bottom-color: #334155;
+        }
+
+        [data-theme="dark"] .nav-button {
+            background: #334155;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .nav-button:hover {
+            background: #475569;
+            border-color: #64748b;
+        }
+
+        [data-theme="dark"] .station-header,
+        [data-theme="dark"] .card,
+        [data-theme="dark"] .overview-card,
+        [data-theme="dark"] .device-list,
+        [data-theme="dark"] .data-card,
+        [data-theme="dark"] .alarm-list,
+        [data-theme="dark"] .report-content {
+            background: #1e293b;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="dark"] .stat-item {
+            background: #334155;
+        }
+
+        [data-theme="dark"] .chart-placeholder {
+            background: #334155;
+            color: #64748b;
+        }
+
+        [data-theme="dark"] .filter-select,
+        [data-theme="dark"] .date-input {
+            background: #334155;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .energy-flow-container {
+            background: #1e293b;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="dark"] .energy-flow-diagram {
+            background: transparent;
+        }
+
+        [data-theme="dark"] .data-metrics-card {
+            background: transparent;
+        }
+
+        [data-theme="dark"] .metrics-title {
+            color: #f1f5f9;
+            border-bottom-color: #334155;
+        }
+
+        [data-theme="dark"] .metrics-label {
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .metrics-value {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .card-header {
+            border-bottom-color: #334155;
+        }
+
+        [data-theme="dark"] .card.energy-flow-card {
+            background: #0f172a;
+        }
+
+        [data-theme="dark"] select {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f1f5f9 !important;
+        }
+
+        [data-theme="dark"] #settings-btn {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f1f5f9 !important;
+        }
+
+        [data-theme="dark"] #settings-panel {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+        }
+
+        [data-theme="dark"] #settings-panel div:first-child {
+            color: #f1f5f9 !important;
+        }
+
+        [data-theme="dark"] #settings-panel span {
+            color: #94a3b8 !important;
+        }
+
+        [data-theme="dark"] .flow-component img {
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)) brightness(0.9);
+        }
+
+        [data-theme="dark"] .component-label {
+            background: rgba(51,65,85,0.9);
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .inverter {
+            background: #1e293b;
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+
+        [data-theme="dark"] .inverter span {
+            color: #e2e8f0 !important;
+        }
+
+        [data-theme="dark"] .power-label {
+            background: #334155;
+            border-color: #475569;
+            color: #60a5fa;
+        }
+
+        
+        [data-theme="dark"] .battery-text {
+            color: #e2e8f0;
+        }
+        
+        [data-theme="dark"] .battery-icon {
+            border-color: #94a3b8;
+        }
+        
+        [data-theme="dark"] .battery-icon::after {
+            background: #94a3b8;
+        }
+
+        [data-theme="dark"] .energy-flow-label {
+            background: #334155;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .flow-line {
+            stroke: #374151;
+        }
+
+        [data-theme="dark"] .energy-hub {
+            background: #334155;
+            border-color: #60a5fa;
+            color: #60a5fa;
+        }
+
+        [data-theme="dark"] .component-name,
+        [data-theme="dark"] .component-power {
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .component-status {
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="../logo.png" alt="AlwaysControl Technology">
+            </div>
+        </div>
+        <nav class="sidebar-menu">
+            <!-- 电站菜单组 -->
+            <div class="menu-group">
+                <a href="javascript:void(0)" class="menu-parent expanded" onclick="toggleSubmenu(this)">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span class="menu-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                                <path d="M12 3v8"></path>
+                                <line x1="7" y1="3" x2="17" y2="3"></line>
+                            </svg>
+                        </span>
+                        <span class="i18n" data-i18n="menu.station">电站</span>
+                    </div>
+                    <span class="menu-arrow">▶</span>
+                </a>
+                <div class="submenu open">
+                    <a href="./station-management.html" class="submenu-item active" id="menu-station-management">
+                        <span class="i18n" data-i18n="menu.stationManagement">电站管理</span>
+                    </a>
+                    <a href="./price-settings.html" class="submenu-item" id="menu-price-settings">
+                        <span class="i18n" data-i18n="menu.priceSettings">电价设置</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 数据分析 -->
+            <a href="./data-analysis.html" class="menu-item" id="menu-data-analysis">
+                <span class="menu-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                </span>
+                <span class="i18n" data-i18n="menu.analysis">数据分析</span>
+            </a>
+            
+            <!-- 告警管理 -->
+            <a href="#" class="menu-item">
+                <span class="menu-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </span>
+                <span class="i18n" data-i18n="menu.alarm">告警管理</span>
+            </a>
+            
+            <!-- 设备管理 -->
+            <a href="#" class="menu-item">
+                <span class="menu-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                </span>
+                <span class="i18n" data-i18n="menu.device">设备管理</span>
+            </a>
+            
+            <!-- 用户管理 -->
+            <a href="#" class="menu-item">
+                <span class="menu-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </span>
+                <span class="i18n" data-i18n="menu.user">用户管理</span>
+            </a>
+            
+            <!-- 报表中心 -->
+            <a href="#" class="menu-item">
+                <span class="menu-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </span>
+                <span class="i18n" data-i18n="menu.report">报表中心</span>
+            </a>
+            
+            <!-- 系统设置 -->
+            <a href="#" class="menu-item">
+                <span class="menu-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6m4.22-10.22l4.24-4.24m-4.24 14.68l4.24 4.24M20 12h-6m-6 0H1m16.24-4.24l-4.24 4.24M7.76 7.76L3.52 3.52m4.24 14.68l-4.24 4.24"></path>
+                    </svg>
+                </span>
+                <span class="i18n" data-i18n="menu.setting">系统设置</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回电站列表">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title i18n" data-i18n="page.title">电站详情</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 内容区域 -->
+        <div class="content">
+
+            <!-- Tab切换 -->
+            <div class="detail-tabs">
+                <button class="tab-button active" onclick="switchTab('overview')">
+                    <span class="i18n" data-i18n="tab.overview">概览</span>
+                </button>
+                <button class="tab-button" onclick="switchTab('devices')">
+                    <span class="i18n" data-i18n="tab.devices">设备</span>
+                </button>
+                <button class="tab-button" onclick="switchTab('operation')">
+                    <span class="i18n" data-i18n="tab.operation">运行数据</span>
+                </button>
+                <button class="tab-button" onclick="switchTab('alarms')">
+                    <span class="i18n" data-i18n="tab.alarms">告警</span>
+                </button>
+                <button class="tab-button" onclick="switchTab('reports')">
+                    <span class="i18n" data-i18n="tab.reports">报表</span>
+                </button>
+            </div>
+
+            <!-- Tab内容 -->
+            <!-- 概览 -->
+            <div class="tab-content active" id="overview-tab">
+                <!-- 能量潮流图 - 全宽度显示在第一排 -->
+                <div class="card energy-flow-card" style="width: 100%; margin-bottom: 1.5rem;">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <h3 class="card-title" style="margin: 0;">
+                                <span class="i18n" data-i18n="overview.energy_flow">能量图</span>
+                            </h3>
+                            <div style="display: flex; align-items: center;">
+                                <select style="padding: 8px 12px; border: 1px solid #e0e0e0; border-radius: 6px; background: white; color: #333; font-size: 14px; cursor: pointer; min-width: 120px;" onchange="switchMode(this.value)">
+                                    <option value="self-consumption">自发自用</option>
+                                    <option value="time-plan">时间计划</option>
+                                    <option value="backup-mode">备电模式</option>
+                                    <option value="force-mode" selected>强制模式</option>
+                                    <option value="vpp-dispatch">VPP调度</option>
+                                    <option value="ai-mode">AI模式</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="position: relative;">
+                            <button id="settings-btn" style="padding: 8px; background: white; border: 1px solid #e0e0e0; border-radius: 6px; cursor: pointer; font-size: 14px; color: #666; display: flex; align-items: center;" onclick="toggleSettingsPanel()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="m12 1 0 6m0 6 0 6"></path>
+                                    <path d="m1 12 6 0m6 0 6 0"></path>
+                                </svg>
+                                <span style="margin-left: 4px;">设置</span>
+                            </button>
+                            <div id="settings-panel" style="display: none; position: absolute; top: 100%; right: 0; background: white; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 16px; min-width: 200px; z-index: 1000;">
+                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #333;">显示指标选择</div>
+                                <div style="display: flex; flex-direction: column; gap: 6px;">
+                                    <!-- 光伏指标 -->
+                                    <div style="font-size: 13px; font-weight: 600; color: #333; margin-top: 8px;">光伏</div>
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding-left: 12px;">
+                                        <input type="checkbox" checked data-metric-item="pv-daily" style="margin: 0;">
+                                        <span style="font-size: 13px; color: #666;">日发电量</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding-left: 12px;">
+                                        <input type="checkbox" checked data-metric-item="pv-total" style="margin: 0;">
+                                        <span style="font-size: 13px; color: #666;">总发电量</span>
+                                    </label>
+                                    
+                                    <!-- 储能指标 -->
+                                    <div style="font-size: 13px; font-weight: 600; color: #333; margin-top: 8px;">储能</div>
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding-left: 12px;">
+                                        <input type="checkbox" checked data-metric-item="storage-daily-charge" style="margin: 0;">
+                                        <span style="font-size: 13px; color: #666;">日充电量</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding-left: 12px;">
+                                        <input type="checkbox" checked data-metric-item="storage-total-charge" style="margin: 0;">
+                                        <span style="font-size: 13px; color: #666;">累计充电量</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding-left: 12px;">
+                                        <input type="checkbox" checked data-metric-item="storage-daily-discharge" style="margin: 0;">
+                                        <span style="font-size: 13px; color: #666;">日放电量</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding-left: 12px;">
+                                        <input type="checkbox" checked data-metric-item="storage-total-discharge" style="margin: 0;">
+                                        <span style="font-size: 13px; color: #666;">累计放电量</span>
+                                    </label>
+                                    
+                                    <!-- 收益指标 -->
+                                    <div style="font-size: 13px; font-weight: 600; color: #333; margin-top: 8px;">收益</div>
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding-left: 12px;">
+                                        <input type="checkbox" checked data-metric-item="revenue-yesterday" style="margin: 0;">
+                                        <span style="font-size: 13px; color: #666;">昨日收益</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding-left: 12px;">
+                                        <input type="checkbox" checked data-metric-item="revenue-today" style="margin: 0;">
+                                        <span style="font-size: 13px; color: #666;">今日收益</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding-left: 12px;">
+                                        <input type="checkbox" checked data-metric-item="revenue-month" style="margin: 0;">
+                                        <span style="font-size: 13px; color: #666;">当月收益</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding-left: 12px;">
+                                        <input type="checkbox" checked data-metric-item="revenue-total" style="margin: 0;">
+                                        <span style="font-size: 13px; color: #666;">累计收益</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <!-- 能量图和数据指标容器 -->
+                        <div class="energy-metrics-container">
+                            <!-- 能量流向图 - 占3/4宽度 -->
+                            <div class="energy-flow-diagram">
+                                <!-- SVG 能量流向连线 -->
+                                <svg class="energy-flow-svg" id="energy-flow-svg">
+                                    <!-- 连线将通过JavaScript动态创建 -->
+                                </svg>
+
+                                <!-- 光伏 -->
+                                <div class="flow-component pv">
+                                    <img src="../../光伏.png" alt="光伏面板">
+                                    <div class="component-label">
+                                        <span class="i18n" data-i18n="component.pv">光伏</span>
+                                    </div>
+                                </div>
+
+                                <!-- 负载（居中） -->
+                                <div class="flow-component load">
+                                    <img src="../../负载.png" alt="负载">
+                                    <div class="component-label">
+                                        <span class="i18n" data-i18n="component.load">负载</span>
+                                    </div>
+                                </div>
+
+                                <!-- 储能柜（左下） -->
+                                <div class="flow-component storage">
+                                    <img src="../../储能柜.png" alt="储能系统">
+                                    <div class="component-label">
+                                        <span class="i18n" data-i18n="component.storage">储能</span>
+                                    </div>
+                                    <div class="battery-indicator">
+                                        <div class="battery-icon">
+                                            <div class="battery-level" id="battery-level" style="width: 82%"></div>
+                                        </div>
+                                        <span class="battery-text" id="soc-display">82%</span>
+                                    </div>
+                                </div>
+
+                                <!-- 电网（右下） -->
+                                <div class="flow-component grid">
+                                    <img src="../../电网.png" alt="电网">
+                                    <div class="component-label">
+                                        <span class="i18n" data-i18n="component.grid">电网</span>
+                                    </div>
+                                </div>
+
+                                <!-- 状态指示器 -->
+                                <div style="position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 20px;">
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span style="font-size: 14px; color: #666;">通讯：</span>
+                                        <div style="display: flex; align-items: center; gap: 2px;">
+                                            <div style="width: 3px; height: 8px; background: #10b981; border-radius: 1px;"></div>
+                                            <div style="width: 3px; height: 12px; background: #10b981; border-radius: 1px;"></div>
+                                            <div style="width: 3px; height: 16px; background: #10b981; border-radius: 1px;"></div>
+                                            <div style="width: 3px; height: 20px; background: #10b981; border-radius: 1px;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="device-status" style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 14px; color: #666;">设备状态：</span>
+                                        <div style="display: flex; align-items: center; gap: 4px;">
+                                            <div class="status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></div>
+                                            <span class="status-text" style="font-size: 14px; color: #10b981; font-weight: 500;">在线</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 数据指标卡片 - 占1/4宽度 -->
+                            <div class="data-metrics-card">
+                                <div class="metrics-section" data-metric="pv-generation">
+                                    <h4 class="metrics-title">光伏</h4>
+                                    <div class="metrics-grid">
+                                        <div class="metrics-item" data-metric-item="pv-daily">
+                                            <span class="metrics-label">日发电量</span>
+                                            <span class="metrics-value">46.1 kWh</span>
+                                        </div>
+                                        <div class="metrics-item" data-metric-item="pv-total">
+                                            <span class="metrics-label">总发电量</span>
+                                            <span class="metrics-value">12622 kWh</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metrics-section" data-metric="storage-system">
+                                    <h4 class="metrics-title">储能</h4>
+                                    <div class="metrics-grid">
+                                        <div class="metrics-item" data-metric-item="storage-daily-charge">
+                                            <span class="metrics-label">日充电量</span>
+                                            <span class="metrics-value">39.8 kWh</span>
+                                        </div>
+                                        <div class="metrics-item" data-metric-item="storage-total-charge">
+                                            <span class="metrics-label">累计充电量</span>
+                                            <span class="metrics-value">8774 kWh</span>
+                                        </div>
+                                        <div class="metrics-item" data-metric-item="storage-daily-discharge">
+                                            <span class="metrics-label">日放电量</span>
+                                            <span class="metrics-value">25.7 kWh</span>
+                                        </div>
+                                        <div class="metrics-item" data-metric-item="storage-total-discharge">
+                                            <span class="metrics-label">累计放电量</span>
+                                            <span class="metrics-value">7347 kWh</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metrics-section" data-metric="system-revenue">
+                                    <h4 class="metrics-title">收益</h4>
+                                    <div class="metrics-grid">
+                                        <div class="metrics-item" data-metric-item="revenue-yesterday">
+                                            <span class="metrics-label">昨日收益</span>
+                                            <span class="metrics-value">¥141.72</span>
+                                        </div>
+                                        <div class="metrics-item" data-metric-item="revenue-today">
+                                            <span class="metrics-label">今日收益</span>
+                                            <span class="metrics-value">¥81.12</span>
+                                        </div>
+                                        <div class="metrics-item" data-metric-item="revenue-month">
+                                            <span class="metrics-label">当月收益</span>
+                                            <span class="metrics-value">¥2518.65</span>
+                                        </div>
+                                        <div class="metrics-item" data-metric-item="revenue-total">
+                                            <span class="metrics-label">累计收益</span>
+                                            <span class="metrics-value">¥40772.62</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overview-grid">
+                    <!-- 运行统计 -->
+                    <div class="overview-card">
+                        <h3 class="card-title i18n" data-i18n="card.operationStats">运行统计</h3>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.totalCharge">累计充电量</span>
+                                <span class="stat-value">125,678 kWh</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.totalDischarge">累计放电量</span>
+                                <span class="stat-value">118,234 kWh</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.efficiency">综合效率</span>
+                                <span class="stat-value">94.1%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.cycles">循环次数</span>
+                                <span class="stat-value">856</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 收益统计 -->
+                    <div class="overview-card">
+                        <h3 class="card-title i18n" data-i18n="card.revenueStats">收益统计</h3>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.todayRevenue">今日收益</span>
+                                <span class="stat-value">¥1,856</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.monthRevenue">本月收益</span>
+                                <span class="stat-value">¥45,678</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.yearRevenue">年度收益</span>
+                                <span class="stat-value">¥567,890</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.totalRevenue">累计收益</span>
+                                <span class="stat-value">¥2,345,678</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 功率曲线 -->
+                    <div class="overview-card" style="grid-column: span 2;">
+                        <h3 class="card-title i18n" data-i18n="card.powerCurve">今日功率曲线</h3>
+                        <div class="chart-placeholder">
+                            <span class="i18n" data-i18n="placeholder.chart">图表加载中...</span>
+                        </div>
+                    </div>
+
+                    <!-- SOC曲线 -->
+                    <div class="overview-card">
+                        <h3 class="card-title i18n" data-i18n="card.socCurve">SOC变化曲线</h3>
+                        <div class="chart-placeholder">
+                            <span class="i18n" data-i18n="placeholder.chart">图表加载中...</span>
+                        </div>
+                    </div>
+
+                    <!-- 环境信息 -->
+                    <div class="overview-card">
+                        <h3 class="card-title i18n" data-i18n="card.environment">环境信息</h3>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.temperature">环境温度</span>
+                                <span class="stat-value">26.5°C</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.humidity">环境湿度</span>
+                                <span class="stat-value">65%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.batteryTemp">电池温度</span>
+                                <span class="stat-value">28.3°C</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label i18n" data-i18n="stat.coolingStatus">冷却状态</span>
+                                <span class="stat-value i18n" data-i18n="status.running">运行中</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 设备 -->
+            <div class="tab-content" id="devices-tab">
+                <div class="device-list">
+                    <h3 class="card-title i18n" data-i18n="card.deviceList">设备列表</h3>
+                    <table class="device-table">
+                        <thead>
+                            <tr>
+                                <th class="i18n" data-i18n="table.deviceName">设备名称</th>
+                                <th class="i18n" data-i18n="table.deviceType">设备类型</th>
+                                <th class="i18n" data-i18n="table.deviceSN">设备SN</th>
+                                <th class="i18n" data-i18n="table.status">状态</th>
+                                <th class="i18n" data-i18n="table.power">功率</th>
+                                <th class="i18n" data-i18n="table.updateTime">更新时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PCS-01</td>
+                                <td class="i18n" data-i18n="device.pcs">储能变流器</td>
+                                <td>PCS2024001234</td>
+                                <td><span class="device-status normal i18n" data-i18n="status.normal">正常</span></td>
+                                <td>250 kW</td>
+                                <td>2024-01-20 15:32:45</td>
+                            </tr>
+                            <tr>
+                                <td>BMS-01</td>
+                                <td class="i18n" data-i18n="device.bms">电池管理系统</td>
+                                <td>BMS2024001235</td>
+                                <td><span class="device-status normal i18n" data-i18n="status.normal">正常</span></td>
+                                <td>-</td>
+                                <td>2024-01-20 15:32:45</td>
+                            </tr>
+                            <tr>
+                                <td>Battery-01</td>
+                                <td class="i18n" data-i18n="device.battery">电池簇</td>
+                                <td>BAT2024001236</td>
+                                <td><span class="device-status normal i18n" data-i18n="status.normal">正常</span></td>
+                                <td>-</td>
+                                <td>2024-01-20 15:32:45</td>
+                            </tr>
+                            <tr>
+                                <td>EMS-01</td>
+                                <td class="i18n" data-i18n="device.ems">能量管理系统</td>
+                                <td>EMS2024001237</td>
+                                <td><span class="device-status normal i18n" data-i18n="status.normal">正常</span></td>
+                                <td>-</td>
+                                <td>2024-01-20 15:32:45</td>
+                            </tr>
+                            <tr>
+                                <td>HVAC-01</td>
+                                <td class="i18n" data-i18n="device.hvac">空调系统</td>
+                                <td>HVAC2024001238</td>
+                                <td><span class="device-status normal i18n" data-i18n="status.normal">正常</span></td>
+                                <td>5 kW</td>
+                                <td>2024-01-20 15:32:45</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 运行数据 -->
+            <div class="tab-content" id="operation-tab">
+                <div class="data-grid">
+                    <div class="data-card">
+                        <h3 class="card-title i18n" data-i18n="card.powerData">功率数据</h3>
+                        <div class="chart-placeholder">
+                            <span class="i18n" data-i18n="placeholder.chart">图表加载中...</span>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <h3 class="card-title i18n" data-i18n="card.voltageData">电压数据</h3>
+                        <div class="chart-placeholder">
+                            <span class="i18n" data-i18n="placeholder.chart">图表加载中...</span>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <h3 class="card-title i18n" data-i18n="card.currentData">电流数据</h3>
+                        <div class="chart-placeholder">
+                            <span class="i18n" data-i18n="placeholder.chart">图表加载中...</span>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <h3 class="card-title i18n" data-i18n="card.temperatureData">温度数据</h3>
+                        <div class="chart-placeholder">
+                            <span class="i18n" data-i18n="placeholder.chart">图表加载中...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 告警 -->
+            <div class="tab-content" id="alarms-tab">
+                <div class="alarm-filters">
+                    <select class="filter-select">
+                        <option value="" class="i18n" data-i18n="filter.allLevels">所有级别</option>
+                        <option value="critical" class="i18n" data-i18n="alarm.critical">严重</option>
+                        <option value="major" class="i18n" data-i18n="alarm.major">重要</option>
+                        <option value="minor" class="i18n" data-i18n="alarm.minor">次要</option>
+                        <option value="info" class="i18n" data-i18n="alarm.info">提示</option>
+                    </select>
+                    <select class="filter-select">
+                        <option value="" class="i18n" data-i18n="filter.allStatus">所有状态</option>
+                        <option value="active" class="i18n" data-i18n="alarm.active">活动</option>
+                        <option value="cleared" class="i18n" data-i18n="alarm.cleared">已清除</option>
+                    </select>
+                    <div class="date-range">
+                        <input type="date" class="date-input" value="2024-01-01">
+                        <span>-</span>
+                        <input type="date" class="date-input" value="2024-01-20">
+                    </div>
+                </div>
+                <div class="alarm-list">
+                    <table class="alarm-table">
+                        <thead>
+                            <tr>
+                                <th class="i18n" data-i18n="table.alarmTime">告警时间</th>
+                                <th class="i18n" data-i18n="table.alarmDevice">设备</th>
+                                <th class="i18n" data-i18n="table.alarmLevel">级别</th>
+                                <th class="i18n" data-i18n="table.alarmContent">告警内容</th>
+                                <th class="i18n" data-i18n="table.alarmStatus">状态</th>
+                                <th class="i18n" data-i18n="table.clearTime">清除时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-01-20 14:23:15</td>
+                                <td>PCS-01</td>
+                                <td><span class="alarm-level minor i18n" data-i18n="alarm.minor">次要</span></td>
+                                <td>直流侧电压偏高</td>
+                                <td><span class="i18n" data-i18n="alarm.cleared">已清除</span></td>
+                                <td>2024-01-20 14:25:30</td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-19 09:15:22</td>
+                                <td>Battery-01</td>
+                                <td><span class="alarm-level info i18n" data-i18n="alarm.info">提示</span></td>
+                                <td>电池温度超过预警值</td>
+                                <td><span class="i18n" data-i18n="alarm.cleared">已清除</span></td>
+                                <td>2024-01-19 09:20:45</td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-18 16:45:10</td>
+                                <td>HVAC-01</td>
+                                <td><span class="alarm-level major i18n" data-i18n="alarm.major">重要</span></td>
+                                <td>空调系统故障</td>
+                                <td><span class="i18n" data-i18n="alarm.cleared">已清除</span></td>
+                                <td>2024-01-18 17:10:20</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 报表 -->
+            <div class="tab-content" id="reports-tab">
+                <div class="report-actions">
+                    <div class="report-filters">
+                        <select class="filter-select">
+                            <option value="daily" class="i18n" data-i18n="report.daily">日报表</option>
+                            <option value="monthly" class="i18n" data-i18n="report.monthly">月报表</option>
+                            <option value="yearly" class="i18n" data-i18n="report.yearly">年报表</option>
+                        </select>
+                        <div class="date-range">
+                            <input type="date" class="date-input" value="2024-01-01">
+                            <span>-</span>
+                            <input type="date" class="date-input" value="2024-01-20">
+                        </div>
+                    </div>
+                    <button class="btn-export" onclick="exportReport()">
+                        <span class="i18n" data-i18n="btn.export">导出报表</span>
+                    </button>
+                </div>
+                <div class="report-content">
+                    <div class="chart-placeholder" style="height: 500px;">
+                        <span class="i18n" data-i18n="placeholder.report">报表生成中...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 当前语言
+        let currentLang = localStorage.getItem('ess_language') || 'zh';
+        
+        // 多语言配置
+        const i18n = {
+            zh: {
+                // 页面标题
+                'page.title': '电站详情',
+                
+                // 概览
+                'overview.energy_flow': '能量图',
+                
+                // 菜单
+                'menu.station': '电站',
+                'menu.stationManagement': '电站管理',
+                'menu.priceSettings': '电价设置',
+                'menu.analysis': '数据分析',
+                'menu.alarm': '告警管理',
+                'menu.device': '设备管理',
+                'menu.user': '用户管理',
+                'menu.report': '报表中心',
+                'menu.setting': '系统设置',
+                
+                // 状态
+                'status.online': '在线',
+                'status.offline': '离线',
+                'status.warning': '告警',
+                'status.normal': '正常',
+                'status.fault': '故障',
+                'status.running': '运行中',
+                'status.generating': '发电中',
+                'status.importing': '购电',
+                'status.exporting': '售电',
+                'status.consuming': '用电中',
+                'status.charging': '充电中',
+                'status.discharging': '放电中',
+                
+                // 指标
+                'metric.capacity': '装机容量',
+                'metric.power': '额定功率',
+                'metric.soc': '当前SOC',
+                'metric.todayCharge': '今日充电',
+                'metric.todayDischarge': '今日放电',
+                'metric.todayRevenue': '今日收益',
+                
+                // Tab标签
+                'tab.overview': '概览',
+                'tab.devices': '设备',
+                'tab.operation': '运行数据',
+                'tab.alarms': '告警',
+                'tab.reports': '报表',
+                
+                // 卡片标题
+                'card.operationStats': '运行统计',
+                'card.revenueStats': '收益统计',
+                'card.powerCurve': '今日功率曲线',
+                'card.socCurve': 'SOC变化曲线',
+                'card.environment': '环境信息',
+                'card.energyFlow': '能量潮流图',
+                'card.deviceList': '设备列表',
+                'card.powerData': '功率数据',
+                'card.voltageData': '电压数据',
+                'card.currentData': '电流数据',
+                'card.temperatureData': '温度数据',
+                
+                // 统计项
+                'stat.totalCharge': '累计充电量',
+                'stat.totalDischarge': '累计放电量',
+                'stat.efficiency': '综合效率',
+                'stat.cycles': '循环次数',
+                'stat.todayRevenue': '今日收益',
+                'stat.monthRevenue': '本月收益',
+                'stat.yearRevenue': '年度收益',
+                'stat.totalRevenue': '累计收益',
+                'stat.temperature': '环境温度',
+                'stat.humidity': '环境湿度',
+                'stat.batteryTemp': '电池温度',
+                'stat.coolingStatus': '冷却状态',
+                
+                // 表格
+                'table.deviceName': '设备名称',
+                'table.deviceType': '设备类型',
+                'table.deviceSN': '设备SN',
+                'table.status': '状态',
+                'table.power': '功率',
+                'table.updateTime': '更新时间',
+                'table.alarmTime': '告警时间',
+                'table.alarmDevice': '设备',
+                'table.alarmLevel': '级别',
+                'table.alarmContent': '告警内容',
+                'table.alarmStatus': '状态',
+                'table.clearTime': '清除时间',
+                
+                // 设备类型
+                'device.pcs': '储能变流器',
+                'device.bms': '电池管理系统',
+                'device.battery': '电池簇',
+                'device.ems': '能量管理系统',
+                'device.hvac': '空调系统',
+                
+                // 告警
+                'alarm.critical': '严重',
+                'alarm.major': '重要',
+                'alarm.minor': '次要',
+                'alarm.info': '提示',
+                'alarm.active': '活动',
+                'alarm.cleared': '已清除',
+                
+                // 筛选
+                'filter.allLevels': '所有级别',
+                'filter.allStatus': '所有状态',
+                
+                // 报表
+                'report.daily': '日报表',
+                'report.monthly': '月报表',
+                'report.yearly': '年报表',
+                
+                // 按钮
+                'btn.export': '导出报表',
+                
+                // 组件
+                'component.pv': '光伏',
+                'component.grid': '电网',
+                'component.load': '负载',
+                'component.storage': '储能',
+                'component.hub': '汇流',
+                
+                // 占位符
+                'placeholder.chart': '图表加载中...',
+                'placeholder.report': '报表生成中...'
+            },
+            en: {
+                // 页面标题
+                'page.title': 'Station Details',
+                
+                // 概览
+                'overview.energy_flow': 'Energy Diagram',
+                
+                // 菜单
+                'menu.station': 'Station',
+                'menu.stationManagement': 'Station Management',
+                'menu.priceSettings': 'Price Settings',
+                'menu.analysis': 'Data Analysis',
+                'menu.alarm': 'Alarm Management',
+                'menu.device': 'Device Management',
+                'menu.user': 'User Management',
+                'menu.report': 'Report Center',
+                'menu.setting': 'System Settings',
+                
+                // 状态
+                'status.online': 'Online',
+                'status.offline': 'Offline',
+                'status.warning': 'Warning',
+                'status.normal': 'Normal',
+                'status.fault': 'Fault',
+                'status.running': 'Running',
+                'status.generating': 'Generating',
+                'status.importing': 'Importing',
+                'status.exporting': 'Exporting',
+                'status.consuming': 'Consuming',
+                'status.charging': 'Charging',
+                'status.discharging': 'Discharging',
+                
+                // 指标
+                'metric.capacity': 'Installed Capacity',
+                'metric.power': 'Rated Power',
+                'metric.soc': 'Current SOC',
+                'metric.todayCharge': 'Today Charge',
+                'metric.todayDischarge': 'Today Discharge',
+                'metric.todayRevenue': 'Today Revenue',
+                
+                // Tab标签
+                'tab.overview': 'Overview',
+                'tab.devices': 'Devices',
+                'tab.operation': 'Operation Data',
+                'tab.alarms': 'Alarms',
+                'tab.reports': 'Reports',
+                
+                // 卡片标题
+                'card.operationStats': 'Operation Statistics',
+                'card.revenueStats': 'Revenue Statistics',
+                'card.powerCurve': 'Today Power Curve',
+                'card.socCurve': 'SOC Change Curve',
+                'card.environment': 'Environment Info',
+                'card.energyFlow': 'Energy Flow Diagram',
+                'card.deviceList': 'Device List',
+                'card.powerData': 'Power Data',
+                'card.voltageData': 'Voltage Data',
+                'card.currentData': 'Current Data',
+                'card.temperatureData': 'Temperature Data',
+                
+                // 统计项
+                'stat.totalCharge': 'Total Charge',
+                'stat.totalDischarge': 'Total Discharge',
+                'stat.efficiency': 'Overall Efficiency',
+                'stat.cycles': 'Cycle Count',
+                'stat.todayRevenue': 'Today Revenue',
+                'stat.monthRevenue': 'Month Revenue',
+                'stat.yearRevenue': 'Year Revenue',
+                'stat.totalRevenue': 'Total Revenue',
+                'stat.temperature': 'Ambient Temp',
+                'stat.humidity': 'Ambient Humidity',
+                'stat.batteryTemp': 'Battery Temp',
+                'stat.coolingStatus': 'Cooling Status',
+                
+                // 表格
+                'table.deviceName': 'Device Name',
+                'table.deviceType': 'Device Type',
+                'table.deviceSN': 'Device SN',
+                'table.status': 'Status',
+                'table.power': 'Power',
+                'table.updateTime': 'Update Time',
+                'table.alarmTime': 'Alarm Time',
+                'table.alarmDevice': 'Device',
+                'table.alarmLevel': 'Level',
+                'table.alarmContent': 'Alarm Content',
+                'table.alarmStatus': 'Status',
+                'table.clearTime': 'Clear Time',
+                
+                // 设备类型
+                'device.pcs': 'PCS',
+                'device.bms': 'BMS',
+                'device.battery': 'Battery Cluster',
+                'device.ems': 'EMS',
+                'device.hvac': 'HVAC System',
+                
+                // 告警
+                'alarm.critical': 'Critical',
+                'alarm.major': 'Major',
+                'alarm.minor': 'Minor',
+                'alarm.info': 'Info',
+                'alarm.active': 'Active',
+                'alarm.cleared': 'Cleared',
+                
+                // 筛选
+                'filter.allLevels': 'All Levels',
+                'filter.allStatus': 'All Status',
+                
+                // 报表
+                'report.daily': 'Daily Report',
+                'report.monthly': 'Monthly Report',
+                'report.yearly': 'Yearly Report',
+                
+                // 按钮
+                'btn.export': 'Export Report',
+                
+                // 组件
+                'component.pv': 'PV',
+                'component.grid': 'Grid',
+                'component.load': 'Load',
+                'component.storage': 'Storage',
+                'component.hub': 'Hub',
+                
+                // 占位符
+                'placeholder.chart': 'Loading chart...',
+                'placeholder.report': 'Generating report...'
+            }
+        };
+
+        // 获取URL参数
+        function getUrlParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // 初始化页面
+        function initPage() {
+            const stationId = getUrlParam('id');
+            const stationName = getUrlParam('name');
+            
+            if (stationName) {
+                const stationNameEl = document.getElementById('station-name');
+                if (stationNameEl) {
+                    stationNameEl.textContent = decodeURIComponent(stationName);
+                }
+            }
+            
+            // 根据电站ID加载数据
+            loadStationData(stationId);
+        }
+
+        // 加载电站数据
+        function loadStationData(stationId) {
+            // 这里可以根据stationId从后端加载具体数据
+            console.log('Loading data for station:', stationId);
+            
+            // 启动能量流图数据更新
+            updateEnergyFlowData();
+            setInterval(updateEnergyFlowData, 5000); // 每5秒更新一次
+        }
+        
+        
+        // 更新能量流图数据
+        function updateEnergyFlowData() {
+            // 模拟动态数据
+            const pvTotal = (Math.random() * 2 + 2.5).toFixed(2); // 2.5-4.5 kW
+            const loadPower = (Math.random() * 1.5 + 2).toFixed(2); // 2-3.5 kW 负载功率
+            const gridPower = (Math.random() * 0.5 + 0.2).toFixed(2); // 0.2-0.7 kW
+            const storagePower = Math.random() > 0.5 ? 0 : (Math.random() * 0.5).toFixed(2); // 0 或 0-0.5 kW
+            const inverterPower = loadPower;
+            const soc = Math.floor(Math.random() * 20 + 75); // 75-95%
+            
+            // 计算净功率（正值为馈电，负值为用电）
+            const netPower = parseFloat(pvTotal) + parseFloat(storagePower) - parseFloat(loadPower);
+            
+            // 更新电站功率状态
+            const powerStatusEl = document.getElementById('power-status');
+            const powerValueEl = document.getElementById('power-value');
+            
+            if (powerStatusEl && powerValueEl) {
+                if (netPower > 0) {
+                    // 馈电状态
+                    powerStatusEl.className = 'power-status-badge feeding';
+                    powerStatusEl.innerHTML = '<span class="status-dot"></span><span>馈电</span>';
+                    powerValueEl.textContent = Math.abs(netPower).toFixed(2) + ' kW';
+                } else {
+                    // 用电状态
+                    powerStatusEl.className = 'power-status-badge consuming';
+                    powerStatusEl.innerHTML = '<span class="status-dot"></span><span>用电</span>';
+                    powerValueEl.textContent = Math.abs(netPower).toFixed(2) + ' kW';
+                }
+            }
+            
+            // 更新逆变器功率
+            const inverterPowerEl = document.getElementById('inverter-power');
+            if (inverterPowerEl) {
+                inverterPowerEl.textContent = inverterPower + ' kW';
+            }
+            
+            // 更新储能SOC
+            const socDisplayEl = document.getElementById('soc-display');
+            if (socDisplayEl) {
+                socDisplayEl.textContent = soc + '%';
+            }
+            const batteryLevel = document.getElementById('battery-level');
+            if (batteryLevel) {
+                batteryLevel.style.width = soc + '%';
+            }
+            
+            // 根据电量设置颜色
+            if (batteryLevel) {
+                if (soc > 60) {
+                    batteryLevel.style.background = '#10b981'; // 绿色
+                } else if (soc > 30) {
+                    batteryLevel.style.background = '#f59e0b'; // 橙色
+                } else {
+                    batteryLevel.style.background = '#ef4444'; // 红色
+                }
+            }
+            
+            // 可以根据功率状态调整线条样式
+            const flowLines = document.querySelectorAll('.flow-line');
+            flowLines.forEach(line => {
+                // 保持简洁的灰色线条
+                line.style.stroke = '#EDEDED';
+            });
+        }
+
+        // 翻译函数
+        function t(key) {
+            return i18n[currentLang][key] || key;
+        }
+
+        // 切换语言
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            localStorage.setItem('ess_language', currentLang);
+            applyLanguage();
+        }
+
+        // 应用语言
+        function applyLanguage() {
+            document.getElementById('lang-text').textContent = currentLang === 'zh' ? '中文' : 'English';
+            
+            // 更新管理员文本
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach(btn => {
+                if (btn.textContent.includes('管理员') || btn.textContent.includes('Admin')) {
+                    const span = btn.querySelector('span:last-child');
+                    if (span) {
+                        span.textContent = currentLang === 'zh' ? '管理员' : 'Admin';
+                    }
+                }
+            });
+            
+            // 更新所有带有i18n类的元素
+            document.querySelectorAll('.i18n').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (key && i18n[currentLang][key]) {
+                    element.textContent = i18n[currentLang][key];
+                }
+            });
+        }
+
+        // 切换主题
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('ess_theme', newTheme);
+            document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // 切换侧边栏
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (sidebar.style.marginLeft === '-240px') {
+                sidebar.style.marginLeft = '0';
+                mainContent.style.marginLeft = '240px';
+            } else {
+                sidebar.style.marginLeft = '-240px';
+                mainContent.style.marginLeft = '0';
+            }
+        }
+
+        // 切换子菜单
+        function toggleSubmenu(menuParent) {
+            const submenu = menuParent.nextElementSibling;
+            const isOpen = submenu.classList.contains('open');
+            
+            // 关闭其他子菜单
+            document.querySelectorAll('.submenu.open').forEach(menu => {
+                if (menu !== submenu) {
+                    menu.classList.remove('open');
+                    menu.previousElementSibling.classList.remove('expanded');
+                }
+            });
+            
+            if (isOpen) {
+                submenu.classList.remove('open');
+                menuParent.classList.remove('expanded');
+            } else {
+                submenu.classList.add('open');
+                menuParent.classList.add('expanded');
+            }
+        }
+
+        // 返回电站列表
+        function goBack() {
+            window.location.href = './station-management.html';
+        }
+
+        // 切换Tab
+        function switchTab(tabName) {
+            // 更新Tab按钮状态
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 切换内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // 导出报表
+        function exportReport() {
+            alert(currentLang === 'zh' ? '报表导出功能开发中...' : 'Report export feature is under development...');
+        }
+
+        // 创建能量流向连线
+        function createEnergyFlowLines() {
+            console.log('createEnergyFlowLines called');
+            
+            const svg = document.getElementById('energy-flow-svg');
+            if (!svg) {
+                console.error('SVG element not found!');
+                return;
+            }
+            
+            // 直接设置简单的SVG内容测试
+            svg.setAttribute('viewBox', '0 0 1000 600');
+            svg.innerHTML = `
+                <!-- 光伏到负载 -->
+                <line x1="500" y1="130" x2="500" y2="250" stroke="#EDEDED" stroke-width="6" />
+                
+                <!-- 储能到光伏 -->
+                <path d="M 160 370 L 160 130 Q 160 110 180 110 L 430 110" 
+                      stroke="#EDEDED" stroke-width="6" fill="none" />
+                
+                <!-- 光伏到电网 -->
+                <path d="M 570 110 L 800 110 Q 820 110 820 130 L 820 370" 
+                      stroke="#EDEDED" stroke-width="6" fill="none" />
+                
+                <!-- 负载到储能 -->
+                <path d="M 485 310 L 485 460 Q 485 480 465 480 L 230 480" 
+                      stroke="#EDEDED" stroke-width="6" fill="none" />
+                
+                <!-- 负载到电网 -->
+                <path d="M 515 310 L 515 460 Q 515 480 535 480 L 750 480" 
+                      stroke="#EDEDED" stroke-width="6" fill="none" />
+                
+                <!-- 储能到电网 -->
+                <line x1="230" y1="500" x2="750" y2="500" stroke="#EDEDED" stroke-width="6" />
+                
+                <!-- 动画线段 -->
+                <line x1="0" y1="-10" x2="0" y2="10" stroke="#5C85FF" stroke-width="4" stroke-linecap="round">
+                    <animateMotion dur="2s" repeatCount="indefinite">
+                        <mpath href="#pvToLoad"/>
+                    </animateMotion>
+                </line>
+                <path id="pvToLoad" d="M 500 130 L 500 250" style="display:none;" />
+                
+                <!-- 功率文字 -->
+                <text x="515" y="190" fill="#5C85FF" font-size="14" font-weight="600">7.5 kW</text>
+                
+                <!-- 第二个动画 -->
+                <line x1="-10" y1="0" x2="10" y2="0" stroke="#5C85FF" stroke-width="4" stroke-linecap="round">
+                    <animateMotion dur="3s" repeatCount="indefinite" rotate="auto">
+                        <mpath href="#pvToGrid"/>
+                    </animateMotion>
+                </line>
+                <path id="pvToGrid" d="M 570 110 L 800 110 Q 820 110 820 130 L 820 370" style="display:none;" />
+                <text x="710" y="100" fill="#5C85FF" font-size="14" font-weight="600">6.3 kW</text>
+            `;
+            
+            console.log('SVG content set directly');
+        }
+
+        // 模式切换函数
+        function switchMode(mode) {
+            console.log('切换到模式:', mode);
+            // 这里可以添加模式切换的具体逻辑
+            // 例如发送API请求到服务器
+        }
+
+        // 设备状态更新函数
+        function updateDeviceStatus(status) {
+            const statusElement = document.querySelector('.device-status');
+            const statusDot = statusElement.querySelector('.status-dot');
+            const statusText = statusElement.querySelector('.status-text');
+            
+            const statusConfig = {
+                'online': { color: '#10b981', text: '在线' },
+                'offline': { color: '#ef4444', text: '离线' },
+                'alarm': { color: '#f59e0b', text: '告警' }
+            };
+            
+            const config = statusConfig[status];
+            if (config) {
+                statusDot.style.background = config.color;
+                statusText.style.color = config.color;
+                statusText.textContent = config.text;
+            }
+        }
+
+        // 设置面板切换函数
+        function toggleSettingsPanel() {
+            const panel = document.getElementById('settings-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // 指标显示控制函数
+        function toggleMetric(metricName, show) {
+            const metricSection = document.querySelector(`[data-metric="${metricName}"]`);
+            if (metricSection) {
+                metricSection.style.display = show ? 'block' : 'none';
+            }
+        }
+
+        // 细粒度指标显示控制函数
+        function toggleMetricItem(itemName, show) {
+            const metricItem = document.querySelector(`[data-metric-item="${itemName}"]`);
+            if (metricItem) {
+                metricItem.style.display = show ? 'flex' : 'none';
+            }
+            
+            // 检查是否需要隐藏整个分类
+            const parentSection = metricItem.closest('.metrics-section');
+            if (parentSection) {
+                const visibleItems = parentSection.querySelectorAll('.metrics-item:not([style*="display: none"])');
+                const sectionTitle = parentSection.querySelector('.metrics-title');
+                if (visibleItems.length === 0) {
+                    sectionTitle.style.display = 'none';
+                } else {
+                    sectionTitle.style.display = 'block';
+                }
+            }
+        }
+
+        // 点击外部关闭设置面板
+        document.addEventListener('click', function(event) {
+            const settingsBtn = document.getElementById('settings-btn');
+            const settingsPanel = document.getElementById('settings-panel');
+            
+            if (settingsBtn && settingsPanel && 
+                !settingsBtn.contains(event.target) && 
+                !settingsPanel.contains(event.target)) {
+                settingsPanel.style.display = 'none';
+            }
+        });
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing page...');
+            // 初始化页面
+            initPage();
+            
+            // 初始化设置面板复选框事件
+            const checkboxes = document.querySelectorAll('#settings-panel input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const metricName = this.getAttribute('data-metric');
+                    const metricItemName = this.getAttribute('data-metric-item');
+                    
+                    if (metricItemName) {
+                        toggleMetricItem(metricItemName, this.checked);
+                    } else if (metricName) {
+                        toggleMetric(metricName, this.checked);
+                    }
+                });
+            });
+            
+            // 应用保存的主题
+            const savedTheme = localStorage.getItem('ess_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            
+            // 应用语言
+            applyLanguage();
+            
+            // 创建能量流向连线
+            setTimeout(function() {
+                createEnergyFlowLines();
+                console.log('Energy flow lines created');
+            }, 100);
+            
+            // 窗口大小改变时重新绘制连线
+            window.addEventListener('resize', createEnergyFlowLines);
+            
+            // 再次尝试创建连线（备用）
+            setTimeout(createEnergyFlowLines, 500);
+            
+            // 确保连线被创建
+            setInterval(function() {
+                const svg = document.getElementById('energy-flow-svg');
+                if (svg && svg.innerHTML.trim() === '<!-- 连线将通过JavaScript动态创建 -->') {
+                    console.log('SVG is empty, creating lines...');
+                    createEnergyFlowLines();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
