@@ -22,6 +22,11 @@
             padding: 2rem;
         }
 
+        .page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .page-header {
             margin-bottom: 2rem;
         }
@@ -31,6 +36,88 @@
             font-weight: 700;
             color: #1f2937;
             margin-bottom: 0.5rem;
+        }
+        
+        .search-filter-section {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .search-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            white-space: nowrap;
+        }
+
+        .search-input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            min-width: 140px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3562E3;
+            box-shadow: 0 0 0 3px rgba(53, 98, 227, 0.1);
+        }
+
+        .search-button, .reset-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-button {
+            background: #3562E3;
+            color: white;
+            border: 1px solid #3562E3;
+        }
+
+        .search-button:hover {
+            background: #2951d3;
+        }
+
+        .reset-button {
+            background: white;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+        }
+
+        .reset-button:hover {
+            background: #f9fafb;
+            color: #374151;
         }
         
         .logs-overview {
@@ -76,76 +163,73 @@
             color: #64748b;
         }
 
-        .filters-panel {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
 
-        .filter-row {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .filter-group label {
-            font-size: 14px;
-            color: #374151;
-            font-weight: 500;
-        }
-
-        .filter-group select,
-        .filter-group input {
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
-            min-width: 120px;
-        }
-
-        .logs-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .table-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
+        .table-action-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .logs-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .logs-table th,
-        .logs-table td {
-            padding: 1rem;
-            text-align: left;
+            gap: 0.5rem;
+            padding: 1.5rem;
             border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 0;
         }
 
-        .logs-table th {
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: #6b7280;
+            border-color: #d1d5db;
+        }
+
+        .action-btn.secondary:hover {
             background: #f9fafb;
-            font-weight: 600;
             color: #374151;
         }
 
-        .logs-table tr:hover {
+        .device-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .device-table th {
+            padding: 0.625rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
             background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.8125rem;
+        }
+
+        .device-table td {
+            padding: 0.625rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.8125rem;
+        }
+
+        .device-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 0;
+        }
+
+        #list-view-content {
+            padding: 1.5rem;
         }
 
         .log-level {
@@ -328,190 +412,158 @@
                 <button class="nav-button" onclick="toggleTheme()">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button class="nav-button">
-                    <span>👤</span>
-                    <span>管理员</span>
-                </button>
+                <div class="user-dropdown">
+                    <button class="nav-button user-menu-btn" onclick="toggleUserMenu()">
+                        <span>👤</span>
+                        <span>管理员</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <div class="dropdown-item" onclick="showAccountInfo()">
+                            <span>账号信息</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item logout" onclick="confirmLogout()">
+                            <span>退出</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
 
 <div class="content">
             <div class="page-content">
                 <div class="page-header">
-                    <h1>日志管理</h1>
-                    <p>系统运行日志查看与管理</p>
-                </div>
-
-                <!-- 统计概览 -->
-                <div class="logs-overview">
-                    <div class="stat-card total">
-                        <div class="stat-number">12,456</div>
-                        <div class="stat-label">总日志数</div>
-                    </div>
-                    <div class="stat-card error">
-                        <div class="stat-number">23</div>
-                        <div class="stat-label">错误日志</div>
-                    </div>
-                    <div class="stat-card warning">
-                        <div class="stat-number">156</div>
-                        <div class="stat-label">警告日志</div>
-                    </div>
-                    <div class="stat-card info">
-                        <div class="stat-number">12,277</div>
-                        <div class="stat-label">信息日志</div>
-                    </div>
                 </div>
 
                 <!-- 筛选面板 -->
-                <div class="filters-panel">
-                    <div class="filter-row">
-                        <div class="filter-group">
-                            <label>日志级别</label>
-                            <select id="log-level">
-                                <option value="">全部级别</option>
-                                <option value="error">错误</option>
-                                <option value="warning">警告</option>
-                                <option value="info">信息</option>
-                                <option value="debug">调试</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>日志源</label>
-                            <select id="log-source">
-                                <option value="">全部来源</option>
-                                <option value="system">系统</option>
-                                <option value="device">设备</option>
-                                <option value="user">用户操作</option>
-                                <option value="api">API调用</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>时间范围</label>
-                            <select id="time-range">
-                                <option value="today">今天</option>
-                                <option value="week">最近7天</option>
-                                <option value="month">最近30天</option>
-                                <option value="custom">自定义</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>关键词</label>
-                            <input type="text" id="keyword" placeholder="搜索日志内容">
-                        </div>
-                        <div class="filter-group" style="justify-content: flex-end;">
-                            <label>&nbsp;</label>
-                            <button class="btn btn-primary" onclick="searchLogs()">搜索</button>
+                <div class="search-filter-section">
+                    <div class="search-row">
+                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div class="search-group">
+                                    <label class="search-label">日志级别：</label>
+                                    <select class="search-input" id="log-level">
+                                        <option value="">全部级别</option>
+                                        <option value="error">错误</option>
+                                        <option value="warning">警告</option>
+                                        <option value="info">信息</option>
+                                        <option value="debug">调试</option>
+                                    </select>
+                                </div>
+                                <div class="search-group">
+                                    <label class="search-label">日志源：</label>
+                                    <select class="search-input" id="log-source">
+                                        <option value="">全部来源</option>
+                                        <option value="system">系统</option>
+                                        <option value="device">设备</option>
+                                        <option value="user">用户操作</option>
+                                        <option value="api">API调用</option>
+                                    </select>
+                                </div>
+                                <div class="search-group">
+                                    <label class="search-label">时间范围：</label>
+                                    <select class="search-input" id="time-range">
+                                        <option value="today">今天</option>
+                                        <option value="week">最近7天</option>
+                                        <option value="month">最近30天</option>
+                                        <option value="custom">自定义</option>
+                                    </select>
+                                </div>
+                                <div class="search-group">
+                                    <label class="search-label">关键词：</label>
+                                    <input type="text" class="search-input" id="keyword" placeholder="搜索日志内容">
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="search-button" onclick="searchLogs()">
+                                    <span>搜索</span>
+                                </button>
+                                <button class="reset-button" onclick="resetSearch()">
+                                    <span>重置</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 日志列表 -->
-                <div class="logs-container">
-                    <div class="table-header">
+                <!-- 日志管理卡片 -->
+                <div class="content-card">
+                    <div class="table-action-bar">
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="action-btn secondary" onclick="exportLogs()">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 1V9M4 6L7 9L10 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M1 10V12C1 12.5523 1.44772 13 2 13H12C12.5523 13 13 12.5523 13 12V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                                <span>导出日志</span>
+                            </button>
+                        </div>
                         <div style="display: flex; align-items: center; gap: 1rem;">
-                            <h3>系统日志</h3>
                             <div class="real-time-toggle">
-                                <span>实时刷新</span>
                                 <div class="toggle-switch" onclick="toggleRealTime(this)">
                                     <div class="toggle-slider"></div>
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <button class="btn btn-secondary" onclick="clearLogs()">清空日志</button>
-                            <button class="btn btn-secondary" onclick="exportLogs()">导出日志</button>
-                        </div>
                     </div>
 
-                    <table class="logs-table">
+                    <!-- 日志列表 -->
+                    <div id="list-view-content" class="table-container">
+                        <table class="device-table">
                         <thead>
-                            <tr>
+                            <tr onclick="viewLogDetail('log1')" style="cursor: pointer;">
                                 <th>时间</th>
                                 <th>级别</th>
                                 <th>来源</th>
                                 <th>消息</th>
                                 <th>用户</th>
                                 <th>IP地址</th>
-                                <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr onclick="viewLogDetail('log1')" style="cursor: pointer;">
                                 <td>2024-01-24 14:35:23</td>
                                 <td><span class="log-level level-error">错误</span></td>
                                 <td><span class="log-source">device.pcs</span></td>
                                 <td class="log-message">PCS-01设备通信超时，连接失败</td>
                                 <td>系统</td>
                                 <td>192.168.1.100</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-view" onclick="viewLogDetail('log1')">详情</button>
-                                    </div>
-                                </td>
                             </tr>
-                            <tr>
+                            <tr onclick="viewLogDetail('log1')" style="cursor: pointer;">
                                 <td>2024-01-24 14:32:15</td>
                                 <td><span class="log-level level-warning">警告</span></td>
                                 <td><span class="log-source">system.auth</span></td>
                                 <td class="log-message">用户张工程师连续3次登录失败</td>
                                 <td>张工程师</td>
                                 <td>192.168.1.105</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-view" onclick="viewLogDetail('log2')">详情</button>
-                                    </div>
-                                </td>
                             </tr>
-                            <tr>
+                            <tr onclick="viewLogDetail('log1')" style="cursor: pointer;">
                                 <td>2024-01-24 14:30:08</td>
                                 <td><span class="log-level level-info">信息</span></td>
                                 <td><span class="log-source">user.operation</span></td>
                                 <td class="log-message">用户李运维执行了设备重启操作</td>
                                 <td>李运维</td>
                                 <td>192.168.1.102</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-view" onclick="viewLogDetail('log3')">详情</button>
-                                    </div>
-                                </td>
                             </tr>
-                            <tr>
+                            <tr onclick="viewLogDetail('log1')" style="cursor: pointer;">
                                 <td>2024-01-24 14:28:45</td>
                                 <td><span class="log-level level-success">成功</span></td>
                                 <td><span class="log-source">api.request</span></td>
                                 <td class="log-message">数据分析报表生成成功</td>
                                 <td>系统</td>
                                 <td>127.0.0.1</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-view" onclick="viewLogDetail('log4')">详情</button>
-                                    </div>
-                                </td>
                             </tr>
-                            <tr>
+                            <tr onclick="viewLogDetail('log1')" style="cursor: pointer;">
                                 <td>2024-01-24 14:25:12</td>
                                 <td><span class="log-level level-debug">调试</span></td>
                                 <td><span class="log-source">system.monitor</span></td>
                                 <td class="log-message">定时任务执行完成，耗时125ms</td>
                                 <td>系统</td>
                                 <td>127.0.0.1</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-view" onclick="viewLogDetail('log5')">详情</button>
-                                    </div>
-                                </td>
                             </tr>
                         </tbody>
-                    </table>
-
-                    <div class="pagination">
-                        <button onclick="changePage('prev')">&laquo; 上一页</button>
-                        <button class="active">1</button>
-                        <button onclick="changePage(2)">2</button>
-                        <button onclick="changePage(3)">3</button>
-                        <button onclick="changePage(4)">4</button>
-                        <button onclick="changePage(5)">5</button>
-                        <button onclick="changePage('next')">下一页 &raquo;</button>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -537,6 +589,15 @@
             showMessage('日志搜索完成', 'success');
         }
 
+        // 重置搜索
+        function resetSearch() {
+            document.getElementById('log-level').value = '';
+            document.getElementById('log-source').value = '';
+            document.getElementById('time-range').value = 'today';
+            document.getElementById('keyword').value = '';
+            showMessage('搜索条件已重置', 'info');
+        }
+
         // 切换实时刷新
         function toggleRealTime(toggle) {
             realTimeRefresh = !realTimeRefresh;
@@ -559,16 +620,240 @@
 
         // 查看日志详情
         function viewLogDetail(logId) {
-            console.log(`查看日志详情: ${logId}`);
-            showMessage(`正在查看日志 ${logId} 详情`, 'info');
+            showLogDetailModal(logId);
+        }
+
+        // 显示日志详情模态框
+        function showLogDetailModal(logId) {
+            // 模拟日志详情数据
+            const logDetails = {
+                'log1': {
+                    id: 'log1',
+                    time: '2024-01-24 14:35:23',
+                    level: 'ERROR',
+                    source: 'device.pcs',
+                    message: 'PCS-01设备通信超时，连接失败',
+                    user: '系统',
+                    ip: '192.168.1.100',
+                    details: 'TCP连接超时，设备可能离线或网络异常。错误代码：TIMEOUT_001',
+                    stack: 'at DeviceConnection.connect(device.js:123)\nat DeviceManager.initialize(manager.js:45)\nat System.startup(system.js:12)'
+                },
+                'log2': {
+                    id: 'log2',
+                    time: '2024-01-24 14:32:15',
+                    level: 'WARNING',
+                    source: 'system.auth',
+                    message: '用户张工程师连续3次登录失败',
+                    user: '张工程师',
+                    ip: '192.168.1.105',
+                    details: '用户在短时间内多次登录失败，可能存在安全风险。建议检查密码或账户状态。',
+                    stack: ''
+                },
+                'log3': {
+                    id: 'log3',
+                    time: '2024-01-24 14:30:08',
+                    level: 'INFO',
+                    source: 'user.operation',
+                    message: '用户李运维执行了设备重启操作',
+                    user: '李运维',
+                    ip: '192.168.1.102',
+                    details: '设备ID: DEV-001，重启类型: 软重启，操作耗时: 15秒',
+                    stack: ''
+                },
+                'log4': {
+                    id: 'log4',
+                    time: '2024-01-24 14:28:45',
+                    level: 'SUCCESS',
+                    source: 'api.request',
+                    message: '数据分析报表生成成功',
+                    user: '系统',
+                    ip: '127.0.0.1',
+                    details: '报表类型: 能耗分析，数据范围: 2024-01-01 至 2024-01-24，文件大小: 2.5MB',
+                    stack: ''
+                },
+                'log5': {
+                    id: 'log5',
+                    time: '2024-01-24 14:25:12',
+                    level: 'DEBUG',
+                    source: 'system.monitor',
+                    message: '定时任务执行完成，耗时125ms',
+                    user: '系统',
+                    ip: '127.0.0.1',
+                    details: '任务名称: 数据采集任务，执行周期: 5分钟，处理记录数: 1024',
+                    stack: ''
+                }
+            };
+
+            const log = logDetails[logId] || {};
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" style="min-width: 600px; max-width: 800px;">
+                    <div class="modal-header">
+                        <h2 class="modal-title">日志详情</h2>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <div style="padding: 1rem 0;">
+                        <div class="log-detail-grid">
+                            <div class="detail-row">
+                                <span class="detail-label">时间：</span>
+                                <span class="detail-value">${log.time || ''}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">级别：</span>
+                                <span class="detail-value">
+                                    <span class="log-level level-${log.level?.toLowerCase() || 'info'}">${log.level || ''}</span>
+                                </span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">来源：</span>
+                                <span class="detail-value log-source">${log.source || ''}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">用户：</span>
+                                <span class="detail-value">${log.user || ''}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">IP地址：</span>
+                                <span class="detail-value">${log.ip || ''}</span>
+                            </div>
+                            <div class="detail-row full-width">
+                                <span class="detail-label">消息：</span>
+                                <span class="detail-value">${log.message || ''}</span>
+                            </div>
+                            <div class="detail-row full-width">
+                                <span class="detail-label">详细信息：</span>
+                                <span class="detail-value">${log.details || '无额外信息'}</span>
+                            </div>
+                            ${log.stack ? `
+                                <div class="detail-row full-width">
+                                    <span class="detail-label">堆栈信息：</span>
+                                    <pre class="detail-value stack-trace">${log.stack}</pre>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">关闭</button>
+                    </div>
+                </div>
+            `;
+            
+            // 添加样式
+            const style = document.createElement('style');
+            style.textContent = `
+                .modal {
+                    position: fixed;
+                    z-index: 1000;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    align-items: center;
+                    justify-content: center;
+                }
+                .modal-content {
+                    background: white;
+                    border-radius: 8px;
+                    padding: 2rem;
+                    max-width: 90vw;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                }
+                .modal-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1.5rem;
+                    padding-bottom: 1rem;
+                    border-bottom: 1px solid #e5e7eb;
+                }
+                .modal-title {
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    color: #1f2937;
+                }
+                .close-btn {
+                    background: none;
+                    border: none;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    color: #6b7280;
+                    padding: 0;
+                    line-height: 1;
+                }
+                .close-btn:hover {
+                    color: #374151;
+                }
+                .modal-footer {
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 1rem;
+                    margin-top: 2rem;
+                    padding-top: 1rem;
+                    border-top: 1px solid #e5e7eb;
+                }
+                .log-detail-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1rem;
+                }
+                .detail-row {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+                .detail-row.full-width {
+                    grid-column: 1 / -1;
+                }
+                .detail-label {
+                    font-weight: 600;
+                    color: #374151;
+                    font-size: 0.875rem;
+                }
+                .detail-value {
+                    color: #1f2937;
+                    font-size: 0.875rem;
+                    word-break: break-word;
+                }
+                .stack-trace {
+                    background: #f1f5f9;
+                    padding: 0.75rem;
+                    border-radius: 4px;
+                    font-family: monospace;
+                    font-size: 0.8125rem;
+                    white-space: pre-wrap;
+                    overflow-x: auto;
+                }
+            `;
+            
+            document.head.appendChild(style);
+            document.body.appendChild(modal);
+            
+            // 点击模态框外部关闭
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                    style.remove();
+                }
+            });
         }
 
         // 清空日志
         function clearLogs() {
-            if (confirm('确定要清空所有日志吗？此操作不可恢复！')) {
-                console.log('清空日志');
-                showMessage('日志已清空', 'success');
-            }
+            showConfirmDialog(
+                '清空日志',
+                '确定要清空所有系统日志吗？',
+                '清空后所有日志数据将永久丢失，此操作不可恢复！',
+                () => {
+                    console.log('清空日志');
+                    showMessage('日志已清空', 'success');
+                },
+                'danger'
+            );
         }
 
         // 导出日志
@@ -586,10 +871,344 @@
             console.log('切换到页面:', page);
         }
 
-        // 监听筛选器变化
-        document.getElementById('log-level').addEventListener('change', searchLogs);
-        document.getElementById('log-source').addEventListener('change', searchLogs);
-        document.getElementById('time-range').addEventListener('change', searchLogs);
+        // 显示确认对话框
+        function showConfirmDialog(title, message, warning, callback, type = 'primary') {
+            // 创建模态框元素
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" style="min-width: 400px;">
+                    <div class="modal-header">
+                        <h2 class="modal-title">${title}</h2>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <div style="padding: 1rem 0;">
+                        <div style="font-size: 0.9rem; color: #374151; line-height: 1.5;">${message}</div>
+                        <div style="margin-top: 1rem; padding: 0.75rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; font-size: 0.875rem; color: #dc2626;">${warning}</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">取消</button>
+                        <button type="button" class="btn ${type === 'danger' ? 'btn-danger' : 'btn-primary'}" onclick="confirmAction()">确认</button>
+                    </div>
+                </div>
+            `;
+            
+            // 添加样式
+            const style = document.createElement('style');
+            style.textContent = `
+                .modal {
+                    position: fixed;
+                    z-index: 1000;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    align-items: center;
+                    justify-content: center;
+                }
+                .modal-content {
+                    background: white;
+                    border-radius: 8px;
+                    padding: 2rem;
+                    max-width: 90vw;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                }
+                .modal-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1.5rem;
+                    padding-bottom: 1rem;
+                    border-bottom: 1px solid #e5e7eb;
+                }
+                .modal-title {
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    color: #1f2937;
+                }
+                .close-btn {
+                    background: none;
+                    border: none;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    color: #6b7280;
+                    padding: 0;
+                    line-height: 1;
+                }
+                .close-btn:hover {
+                    color: #374151;
+                }
+                .modal-footer {
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 1rem;
+                    margin-top: 2rem;
+                    padding-top: 1rem;
+                    border-top: 1px solid #e5e7eb;
+                }
+                .btn-danger {
+                    background: #ef4444;
+                    color: white;
+                }
+                .btn-danger:hover {
+                    background: #dc2626;
+                }
+            `;
+            
+            // 确认操作函数
+            window.confirmAction = function() {
+                callback();
+                modal.remove();
+                style.remove();
+                delete window.confirmAction;
+            };
+            
+            document.head.appendChild(style);
+            document.body.appendChild(modal);
+        }
+
+        // 消息提示
+        function showMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 6px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                transition: all 0.3s ease;
+                ${type === 'success' ? 'background: #10b981;' : 
+                  type === 'error' ? 'background: #ef4444;' : 
+                  'background: #3b82f6;'}
+            `;
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(messageEl)) {
+                        document.body.removeChild(messageEl);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 切换用户菜单
+        function toggleUserMenu() {
+            const menu = document.getElementById('userDropdownMenu');
+            const btn = document.querySelector('.user-menu-btn');
+            
+            menu.classList.toggle('show');
+            btn.classList.toggle('active');
+        }
+
+        // 显示账号信息
+        function showAccountInfo() {
+            toggleUserMenu(); // 关闭下拉菜单
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" style="min-width: 500px; max-width: 600px;">
+                    <div class="modal-header">
+                        <h2 class="modal-title">账号信息</h2>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <div style="padding: 1rem 0;">
+                        <div class="account-info-grid">
+                            <div class="info-section">
+                                <h3 class="section-title">基本信息</h3>
+                                <div class="info-row">
+                                    <span class="info-label">用户名：</span>
+                                    <span class="info-value">admin</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">姓名：</span>
+                                    <span class="info-value">管理员</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">邮箱：</span>
+                                    <span class="info-value">admin@company.com</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">手机：</span>
+                                    <span class="info-value">138-0000-0000</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">角色：</span>
+                                    <span class="info-value">
+                                        <span class="role-badge">系统管理员</span>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <h3 class="section-title">登录信息</h3>
+                                <div class="info-row">
+                                    <span class="info-label">最后登录：</span>
+                                    <span class="info-value">2024-01-24 14:30:00</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">登录IP：</span>
+                                    <span class="info-value">192.168.1.100</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">创建时间：</span>
+                                    <span class="info-value">2024-01-01 09:00:00</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">账号状态：</span>
+                                    <span class="info-value">
+                                        <span class="status-badge enabled">正常</span>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section full-width">
+                                <h3 class="section-title">安全设置</h3>
+                                <div class="security-actions">
+                                    <button class="btn btn-secondary" onclick="changePassword()">修改密码</button>
+                                    <button class="btn btn-secondary" onclick="updateProfile()">编辑信息</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">关闭</button>
+                    </div>
+                </div>
+            `;
+            
+            // 添加样式
+            const style = document.createElement('style');
+            style.textContent = `
+                .account-info-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 2rem;
+                }
+                .info-section {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+                .info-section.full-width {
+                    grid-column: 1 / -1;
+                }
+                .section-title {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    color: #1f2937;
+                    margin-bottom: 0.5rem;
+                    padding-bottom: 0.5rem;
+                    border-bottom: 1px solid #f1f5f9;
+                }
+                .info-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 0.5rem 0;
+                }
+                .info-label {
+                    font-weight: 500;
+                    color: #6b7280;
+                    font-size: 0.875rem;
+                }
+                .info-value {
+                    color: #1f2937;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                }
+                .role-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    background: #eff6ff;
+                    color: #1d4ed8;
+                }
+                .status-badge.enabled {
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    background: #d1fae5;
+                    color: #059669;
+                }
+                .security-actions {
+                    display: flex;
+                    gap: 1rem;
+                    margin-top: 1rem;
+                }
+            `;
+            
+            document.head.appendChild(style);
+            document.body.appendChild(modal);
+            
+            // 点击模态框外部关闭
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                    style.remove();
+                }
+            });
+        }
+
+        // 修改密码
+        function changePassword() {
+            showMessage('修改密码功能开发中...', 'info');
+        }
+
+        // 更新资料
+        function updateProfile() {
+            showMessage('编辑信息功能开发中...', 'info');
+        }
+
+        // 确认退出
+        function confirmLogout() {
+            toggleUserMenu(); // 关闭下拉菜单
+            
+            showConfirmDialog(
+                '退出登录',
+                '确定要退出当前账号吗？',
+                '退出后您需要重新登录才能继续使用系统。',
+                () => {
+                    // 模拟退出操作
+                    showMessage('正在退出...', 'info');
+                    setTimeout(() => {
+                        window.location.href = '/login.html'; // 跳转到登录页面
+                    }, 1000);
+                },
+                'primary'
+            );
+        }
+
+        // 点击其他地方关闭下拉菜单
+        document.addEventListener('click', function(e) {
+            const userDropdown = document.querySelector('.user-dropdown');
+            const menu = document.getElementById('userDropdownMenu');
+            const btn = document.querySelector('.user-menu-btn');
+            
+            if (userDropdown && !userDropdown.contains(e.target)) {
+                menu.classList.remove('show');
+                btn.classList.remove('active');
+            }
+        });
     </script>
 
     <!-- 引入侧边栏脚本 -->
@@ -654,6 +1273,148 @@
             border-color: #cbd5e1;
             color: #1e293b;
         }
+
+        /* 用户下拉菜单样式 */
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-menu-btn {
+            position: relative;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .user-menu-btn.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: #374151;
+            font-size: 0.875rem;
+            transition: background-color 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.logout:hover {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0.25rem 0;
+        }
     </style>
+
+    <script>
+        // 用户下拉菜单功能
+        function toggleUserMenu() {
+            console.log('toggleUserMenu called'); // 调试用
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button) {
+                dropdown.classList.toggle('show');
+                button.classList.toggle('active');
+                console.log('Menu toggled', dropdown.classList.contains('show')); // 调试用
+            } else {
+                console.log('Dropdown or button not found'); // 调试用
+            }
+        }
+
+        // 显示账号信息
+        function showAccountInfo() {
+            console.log('showAccountInfo called'); // 调试用
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            
+            // 显示现有的账号信息模态框
+            const accountModal = document.getElementById('accountInfoModal');
+            if (accountModal) {
+                accountModal.classList.add('show');
+            } else {
+                console.log('Account modal not found, using existing modal'); // 调试用
+                // 如果没有找到专门的账号信息模态框，使用现有的模态框
+                showExistingAccountInfo();
+            }
+        }
+
+        // 显示现有的账号信息（如果存在）
+        function showExistingAccountInfo() {
+            // 查看是否有现有的账号信息显示功能
+            alert('账号信息功能开发中');
+        }
+
+        // 确认退出
+        function confirmLogout() {
+            console.log('confirmLogout called'); // 调试用
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            
+            if (confirm('您确定要退出系统吗？')) {
+                // 这里应该调用后端API退出登录
+                alert('正在退出...');
+                setTimeout(() => {
+                    window.location.href = '../../index.html';
+                }, 1000);
+            }
+        }
+
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button && !button.contains(event.target)) {
+                dropdown.classList.remove('show');
+                button.classList.remove('active');
+            }
+        });
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, checking elements');
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            console.log('Dropdown found:', !!dropdown);
+            console.log('Button found:', !!button);
+        });
+    </script>
+
 </body>
 </html>

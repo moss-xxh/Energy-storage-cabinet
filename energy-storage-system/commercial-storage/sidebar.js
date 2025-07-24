@@ -40,7 +40,7 @@ class Sidebar {
                 children: [
                     { name: '告警规则', href: './alarm/rules.html' },
                     { name: '告警列表', href: './alarm/list.html' },
-                    { name: '历史告警', href: './alarm/history.html' }
+                    { name: '告警分析', href: './alarm/analysis.html' }
                 ]
             },
             {
@@ -48,6 +48,11 @@ class Sidebar {
                 name: '报表中心',
                 icon: '📋',
                 children: [
+                    { name: '电站报告', href: './report/station-report.html' },
+                    { name: '逆变器报表', href: './report/inverter-report.html' },
+                    { name: 'PCS报表', href: './report/pcs-report.html' },
+                    { name: '储能报表', href: './report/storage-report.html' },
+                    { name: '发电量报表', href: './report/power-generation.html' },
                     { name: '报表列表', href: './report/list.html' },
                     { name: '创建报表', href: './report/create.html' },
                     { name: '报表模板', href: './report/templates.html' }
@@ -58,19 +63,11 @@ class Sidebar {
                 name: '系统设置',
                 icon: '🔧',
                 children: [
-                    { name: '系统设置', href: './system/settings.html' },
+                    { name: '菜单管理', href: './system/menus.html' },
                     { name: '用户管理', href: './system/users.html' },
                     { name: '角色管理', href: './system/roles.html' },
+                    { name: '系统设置', href: './system/settings.html' },
                     { name: '日志管理', href: './system/logs.html' }
-                ]
-            },
-            {
-                id: 'user',
-                name: '用户中心',
-                icon: '👤',
-                children: [
-                    { name: '个人信息', href: './user/profile.html' },
-                    { name: '修改密码', href: './user/password.html' }
                 ]
             }
         ];

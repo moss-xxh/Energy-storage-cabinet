@@ -21,6 +21,11 @@
         .content {
             padding: 2rem;
         }
+        
+        .page-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
         .page-header {
             margin-bottom: 2rem;
@@ -80,54 +85,123 @@
             color: #64748b;
         }
 
-        .filters-panel {
+        .query-section {
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .filter-row {
+        .query-form {
             display: flex;
+            flex-direction: column;
             gap: 1rem;
-            align-items: center;
+        }
+
+        .query-row {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-end;
             flex-wrap: wrap;
         }
 
-        .filter-group {
+        .form-group-horizontal {
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+            min-width: 200px;
         }
 
-        .filter-group label {
+        .form-group-horizontal label {
             font-size: 14px;
             color: #374151;
             font-weight: 500;
+            white-space: nowrap;
+            min-width: 70px;
         }
 
-        .filter-group select,
-        .filter-group input {
+        .form-control {
             padding: 8px 12px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             font-size: 14px;
-            min-width: 140px;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .time-range {
+            flex: 2;
+            min-width: 320px;
+        }
+
+        .time-inputs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .time-inputs input {
+            flex: 1;
+        }
+
+        .query-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-left: auto;
+            align-self: flex-end;
         }
 
         .alarm-table {
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 0 2rem;
         }
 
         .table-header {
-            padding: 1.5rem;
+            padding: 1rem 1.5rem;
             border-bottom: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        
+        .header-left {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .btn-action-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-action-header:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
         }
 
         .alarm-table table {
@@ -137,9 +211,10 @@
 
         .alarm-table th,
         .alarm-table td {
-            padding: 1rem;
+            padding: 0.75rem 1rem;
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
         }
 
         .alarm-table th {
@@ -228,28 +303,34 @@
         }
 
         .btn-action {
-            padding: 6px 12px;
-            border: none;
+            padding: 4px 12px;
+            border: 1px solid;
             border-radius: 4px;
             font-size: 12px;
             cursor: pointer;
             text-decoration: none;
             transition: all 0.2s ease;
-        }
-
-        .btn-ack {
-            background: #fef3c7;
-            color: #d97706;
+            background: white;
         }
 
         .btn-resolve {
-            background: #d1fae5;
-            color: #059669;
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .btn-resolve:hover {
+            background: #10b981;
+            color: white;
         }
 
         .btn-detail {
-            background: #e5e7eb;
-            color: #374151;
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+        
+        .btn-detail:hover {
+            background: #3b82f6;
+            color: white;
         }
 
         .btn {
@@ -272,27 +353,6 @@
             color: #374151;
         }
 
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1.5rem;
-        }
-
-        .pagination button {
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .pagination button.active {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
-        }
 
         .alarm-detail-modal {
             position: fixed;
@@ -397,78 +457,57 @@
 
 <div class="content">
             <div class="page-content">
-                <div class="page-header">
-                    <h1>告警列表</h1>
-                    <p>实时告警信息监控与处理</p>
-                </div>
 
-                <!-- 统计卡片 -->
-                <div class="alarm-stats">
-                    <div class="stat-card total">
-                        <div class="stat-number">23</div>
-                        <div class="stat-label">活跃告警</div>
-                    </div>
-                    <div class="stat-card critical">
-                        <div class="stat-number">3</div>
-                        <div class="stat-label">严重告警</div>
-                    </div>
-                    <div class="stat-card major">
-                        <div class="stat-number">8</div>
-                        <div class="stat-label">主要告警</div>
-                    </div>
-                    <div class="stat-card minor">
-                        <div class="stat-number">7</div>
-                        <div class="stat-label">次要告警</div>
-                    </div>
-                    <div class="stat-card warning">
-                        <div class="stat-number">5</div>
-                        <div class="stat-label">警告</div>
-                    </div>
-                </div>
-
-                <!-- 筛选面板 -->
-                <div class="filters-panel">
-                    <div class="filter-row">
-                        <div class="filter-group">
-                            <label>严重程度</label>
-                            <select id="severity-filter">
-                                <option value="">全部级别</option>
-                                <option value="critical">严重</option>
-                                <option value="major">主要</option>
-                                <option value="minor">次要</option>
-                                <option value="warning">警告</option>
-                            </select>
+                <!-- 查询区域 -->
+                <div class="query-section">
+                    <div class="query-form">
+                        <div class="query-row">
+                            <div class="form-group-horizontal">
+                                <label>查询范围</label>
+                                <select class="form-control" id="scope-filter">
+                                    <option value="">全部电站</option>
+                                    <option value="station1">上海工业园储能站</option>
+                                    <option value="station2">北京科技园储能站</option>
+                                    <option value="station3">深圳产业园储能站</option>
+                                </select>
+                            </div>
+                            <div class="form-group-horizontal">
+                                <label>严重等级</label>
+                                <select class="form-control" id="severity-filter">
+                                    <option value="">全部级别</option>
+                                    <option value="critical">严重</option>
+                                    <option value="major">重要</option>
+                                    <option value="minor">次要</option>
+                                    <option value="warning">警告</option>
+                                </select>
+                            </div>
+                            <div class="form-group-horizontal">
+                                <label>设备名称</label>
+                                <input type="text" class="form-control" id="device-name-filter" placeholder="请输入设备名称">
+                            </div>
+                            <div class="form-group-horizontal">
+                                <label>状态</label>
+                                <select class="form-control" id="status-filter">
+                                    <option value="">全部状态</option>
+                                    <option value="pending">待处理</option>
+                                    <option value="processed">已处理</option>
+                                    <option value="ignored">已忽略</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="filter-group">
-                            <label>告警状态</label>
-                            <select id="status-filter">
-                                <option value="">全部状态</option>
-                                <option value="active">活跃</option>
-                                <option value="acknowledged">已确认</option>
-                                <option value="resolved">已解决</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>设备类型</label>
-                            <select id="device-filter">
-                                <option value="">全部设备</option>
-                                <option value="ess">储能柜</option>
-                                <option value="pcs">变流器</option>
-                                <option value="bms">BMS</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>时间范围</label>
-                            <select id="time-filter">
-                                <option value="1h">最近1小时</option>
-                                <option value="24h" selected>最近24小时</option>
-                                <option value="7d">最近7天</option>
-                                <option value="30d">最近30天</option>
-                            </select>
-                        </div>
-                        <div class="filter-group" style="justify-content: flex-end;">
-                            <label>&nbsp;</label>
-                            <button class="btn btn-primary" onclick="filterAlarms()">筛选</button>
+                        <div class="query-row">
+                            <div class="form-group-horizontal time-range">
+                                <label>时间范围</label>
+                                <div class="time-inputs">
+                                    <input type="datetime-local" class="form-control" id="start-time">
+                                    <span style="color: #6b7280;">至</span>
+                                    <input type="datetime-local" class="form-control" id="end-time">
+                                </div>
+                            </div>
+                            <div class="query-buttons">
+                                <button class="btn btn-primary" onclick="filterAlarms()">查询</button>
+                                <button class="btn btn-secondary" onclick="resetFilters()">重置</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -476,111 +515,98 @@
                 <!-- 告警表格 -->
                 <div class="alarm-table">
                     <div class="table-header">
-                        <h3>告警信息</h3>
-                        <div>
-                            <button class="btn btn-secondary" onclick="batchAcknowledge()">批量确认</button>
-                            <button class="btn btn-secondary" onclick="exportAlarms()">导出</button>
-                            <button class="btn btn-primary" onclick="refreshAlarms()">刷新</button>
+                        <div class="header-left">
+                            <button class="btn-action-header" onclick="exportAlarms()">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 8V1M4 4L7 1L10 4M1 10V12C1 12.5523 1.44772 13 2 13H12C12.5523 13 13 12.5523 13 12V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>导出</span>
+                            </button>
+                            <button class="btn-action-header" onclick="batchProcess()">
+                                <span>✓</span>
+                                <span>批量处理</span>
+                            </button>
+                        </div>
+                        <div class="header-actions">
                         </div>
                     </div>
 
                     <table>
                         <thead>
                             <tr>
-                                <th><input type="checkbox" id="select-all" onchange="toggleSelectAll()"></th>
-                                <th>告警标题</th>
-                                <th>严重程度</th>
-                                <th>设备/对象</th>
-                                <th>状态</th>
-                                <th>发生时间</th>
-                                <th>持续时间</th>
+                                <th style="width: 40px;"><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th>
+                                <th>设备名称</th>
+                                <th>设备编码</th>
+                                <th>告警名称</th>
+                                <th>描述</th>
+                                <th>类型</th>
+                                <th>时间</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="unread">
+                            <tr>
                                 <td><input type="checkbox" class="alarm-select" data-alarm="alarm1"></td>
-                                <td>
-                                    <div class="alarm-title">电池temperature过高</div>
-                                    <div class="alarm-description">储能柜ESS-01电池温度达到47°C，超过安全阈值</div>
-                                </td>
+                                <td>储能电池组#1</td>
+                                <td>BAT-001</td>
+                                <td>电池温度过高</td>
+                                <td>电池温度超过安全阈值(45°C)</td>
                                 <td><span class="severity-badge critical">严重</span></td>
-                                <td>ESS-Cabinet-01</td>
-                                <td><span class="status-badge active">活跃</span></td>
                                 <td>2024-01-24 14:35:22</td>
-                                <td>25分钟</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-action btn-ack" onclick="acknowledgeAlarm('alarm1')">确认</button>
-                                        <button class="btn-action btn-resolve" onclick="resolveAlarm('alarm1')">解决</button>
+                                        <button class="btn-action btn-resolve" onclick="processAlarm('alarm1')">已处理</button>
                                         <button class="btn-action btn-detail" onclick="showAlarmDetail('alarm1')">详情</button>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td><input type="checkbox" class="alarm-select" data-alarm="alarm2"></td>
-                                <td>
-                                    <div class="alarm-title">变流器通信故障</div>
-                                    <div class="alarm-description">PCS-01设备通信中断，超过5分钟未响应</div>
-                                </td>
-                                <td><span class="severity-badge major">主要</span></td>
-                                <td>PCS-01</td>
-                                <td><span class="status-badge acknowledged">已确认</span></td>
+                                <td>变流器PCS-01</td>
+                                <td>PCS-001</td>
+                                <td>变流器通信故障</td>
+                                <td>PCS-01设备通信中断，超过5分钟未响应</td>
+                                <td><span class="severity-badge major">重要</span></td>
                                 <td>2024-01-24 13:20:15</td>
-                                <td>1小时38分钟</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-action btn-resolve" onclick="resolveAlarm('alarm2')">解决</button>
+                                        <button class="btn-action btn-resolve" onclick="processAlarm('alarm2')">已处理</button>
                                         <button class="btn-action btn-detail" onclick="showAlarmDetail('alarm2')">详情</button>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td><input type="checkbox" class="alarm-select" data-alarm="alarm3"></td>
-                                <td>
-                                    <div class="alarm-title">SOC低于安全值</div>
-                                    <div class="alarm-description">储能系统SOC降至8%，低于最低安全值</div>
-                                </td>
+                                <td>电池管理系统#1</td>
+                                <td>BMS-001</td>
+                                <td>SOC低于安全值</td>
+                                <td>储能系统SOC降至8%，低于最低安全值</td>
                                 <td><span class="severity-badge warning">警告</span></td>
-                                <td>BMS-01</td>
-                                <td><span class="status-badge active">活跃</span></td>
                                 <td>2024-01-24 12:45:08</td>
-                                <td>2小时18分钟</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-action btn-ack" onclick="acknowledgeAlarm('alarm3')">确认</button>
-                                        <button class="btn-action btn-resolve" onclick="resolveAlarm('alarm3')">解决</button>
+                                        <button class="btn-action btn-resolve" onclick="processAlarm('alarm3')">已处理</button>
                                         <button class="btn-action btn-detail" onclick="showAlarmDetail('alarm3')">详情</button>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td><input type="checkbox" class="alarm-select" data-alarm="alarm4"></td>
-                                <td>
-                                    <div class="alarm-title">功率波动异常</div>
-                                    <div class="alarm-description">输出功率在1分钟内波动超过25%</div>
-                                </td>
+                                <td>能量管理系统#1</td>
+                                <td>EMS-001</td>
+                                <td>功率波动异常</td>
+                                <td>输出功率在1分钟内波动超过25%</td>
                                 <td><span class="severity-badge minor">次要</span></td>
-                                <td>EMS-01</td>
-                                <td><span class="status-badge resolved">已解决</span></td>
                                 <td>2024-01-24 11:30:45</td>
-                                <td>45分钟</td>
                                 <td>
                                     <div class="action-buttons">
+                                        <button class="btn-action btn-resolve" onclick="processAlarm('alarm4')">已处理</button>
                                         <button class="btn-action btn-detail" onclick="showAlarmDetail('alarm4')">详情</button>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-
-                    <div class="pagination">
-                        <button onclick="changePage('prev')">&laquo; 上一页</button>
-                        <button class="active">1</button>
-                        <button onclick="changePage(2)">2</button>
-                        <button onclick="changePage(3)">3</button>
-                        <button onclick="changePage('next')">下一页 &raquo;</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -693,19 +719,19 @@
     <script>
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
-            
-            // 定时刷新告警数据
-            setInterval(refreshAlarms, 30000); // 每30秒刷新一次
+            // 初始化页面
         });
 
         // 筛选告警
         function filterAlarms() {
+            const scope = document.getElementById('scope-filter').value;
             const severity = document.getElementById('severity-filter').value;
+            const deviceName = document.getElementById('device-name-filter').value;
+            const startTime = document.getElementById('start-time').value;
+            const endTime = document.getElementById('end-time').value;
             const status = document.getElementById('status-filter').value;
-            const device = document.getElementById('device-filter').value;
-            const time = document.getElementById('time-filter').value;
             
-            console.log('筛选告警:', { severity, status, device, time });
+            console.log('筛选告警:', { scope, severity, deviceName, startTime, endTime, status });
             showMessage('告警筛选已更新', 'info');
         }
 
@@ -719,76 +745,42 @@
             });
         }
 
-        // 确认告警
-        function acknowledgeAlarm(alarmId) {
-            console.log(`确认告警: ${alarmId}`);
-            showMessage(`告警 ${alarmId} 已确认`, 'success');
+        // 处理告警
+        function processAlarm(alarmId) {
+            console.log(`处理告警: ${alarmId}`);
+            showMessage(`告警 ${alarmId} 已处理`, 'success');
             
-            // 更新表格中的状态
-            updateAlarmStatus(alarmId, 'acknowledged');
+            // 更新按钮状态
+            const button = event.target;
+            button.textContent = '已处理';
+            button.disabled = true;
+            button.style.background = '#d1fae5';
+            button.style.color = '#059669';
+        }
+        
+        // 重置筛选条件
+        function resetFilters() {
+            document.getElementById('scope-filter').value = '';
+            document.getElementById('severity-filter').value = '';
+            document.getElementById('device-name-filter').value = '';
+            document.getElementById('start-time').value = '';
+            document.getElementById('end-time').value = '';
+            document.getElementById('status-filter').value = '';
+            
+            showMessage('筛选条件已重置', 'info');
         }
 
-        // 解决告警
-        function resolveAlarm(alarmId) {
-            console.log(`解决告警: ${alarmId}`);
-            showMessage(`告警 ${alarmId} 已解决`, 'success');
+        // 批量处理
+        function batchProcess() {
+            const selectedRows = document.querySelectorAll('input[type="checkbox"]:checked');
             
-            // 更新表格中的状态
-            updateAlarmStatus(alarmId, 'resolved');
-        }
-
-        // 更新告警状态
-        function updateAlarmStatus(alarmId, newStatus) {
-            const row = document.querySelector(`input[data-alarm="${alarmId}"]`).closest('tr');
-            const statusBadge = row.querySelector('.status-badge');
-            
-            // 移除未读标记
-            row.classList.remove('unread');
-            
-            // 更新状态徽章
-            statusBadge.className = `status-badge ${newStatus}`;
-            switch(newStatus) {
-                case 'acknowledged':
-                    statusBadge.textContent = '已确认';
-                    break;
-                case 'resolved':
-                    statusBadge.textContent = '已解决';
-                    break;
-                default:
-                    statusBadge.textContent = '活跃';
-            }
-            
-            // 更新操作按钮
-            const actionButtons = row.querySelector('.action-buttons');
-            if (newStatus === 'resolved') {
-                actionButtons.innerHTML = '<button class="btn-action btn-detail" onclick="showAlarmDetail(\'' + alarmId + '\')">详情</button>';
-            } else if (newStatus === 'acknowledged') {
-                actionButtons.innerHTML = `
-                    <button class="btn-action btn-resolve" onclick="resolveAlarm('${alarmId}')">解决</button>
-                    <button class="btn-action btn-detail" onclick="showAlarmDetail('${alarmId}')">详情</button>
-                `;
-            }
-        }
-
-        // 批量确认
-        function batchAcknowledge() {
-            const selectedAlarms = [];
-            document.querySelectorAll('.alarm-select:checked').forEach(checkbox => {
-                selectedAlarms.push(checkbox.dataset.alarm);
-            });
-            
-            if (selectedAlarms.length === 0) {
-                showMessage('请选择要确认的告警', 'warning');
+            if (selectedRows.length === 0) {
+                showMessage('请选择要处理的告警', 'warning');
                 return;
             }
             
-            console.log('批量确认告警:', selectedAlarms);
-            showMessage(`已确认 ${selectedAlarms.length} 个告警`, 'success');
-            
-            // 更新所有选中告警的状态
-            selectedAlarms.forEach(alarmId => {
-                updateAlarmStatus(alarmId, 'acknowledged');
-            });
+            console.log('批量处理告警');
+            showMessage(`已批量处理 ${selectedRows.length} 个告警`, 'success');
         }
 
         // 显示告警详情
@@ -847,33 +839,31 @@
             }, 2000);
         }
 
-        // 刷新告警
-        function refreshAlarms() {
-            console.log('刷新告警列表');
-            showMessage('告警数据刷新中...', 'info');
+        
+        // 显示消息提示
+        function showMessage(message, type = 'info') {
+            // 创建消息元素
+            const messageEl = document.createElement('div');
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+                color: white;
+                border-radius: 6px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                z-index: 9999;
+                font-size: 14px;
+            `;
+            messageEl.textContent = message;
             
-            // 模拟数据刷新
+            document.body.appendChild(messageEl);
+            
+            // 3秒后自动移除
             setTimeout(() => {
-                showMessage('告警数据已刷新', 'success');
-                
-                // 更新统计数据
-                updateAlarmStats();
-            }, 1500);
-        }
-
-        // 更新告警统计
-        function updateAlarmStats() {
-            const stats = document.querySelectorAll('.stat-card .stat-number');
-            stats.forEach(stat => {
-                const currentValue = parseInt(stat.textContent);
-                const newValue = Math.max(0, currentValue + Math.floor((Math.random() - 0.5) * 6));
-                stat.textContent = newValue;
-            });
-        }
-
-        // 分页
-        function changePage(page) {
-            console.log('切换到页面:', page);
+                messageEl.remove();
+            }, 3000);
         }
 
         // 模态框外点击关闭
@@ -882,6 +872,30 @@
                 closeDetailModal();
             }
         });
+        
+        // 切换侧边栏
+        function toggleSidebar() {
+            if (window.sidebar) {
+                window.sidebar.toggle();
+            }
+        }
+        
+        // 返回
+        function goBack() {
+            window.history.back();
+        }
+        
+        // 切换语言
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
+        }
+        
+        // 切换主题
+        function toggleTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            themeIcon.textContent = themeIcon.textContent === '🌙' ? '☀️' : '🌙';
+        }
     </script>
 
     <!-- 引入侧边栏脚本 -->

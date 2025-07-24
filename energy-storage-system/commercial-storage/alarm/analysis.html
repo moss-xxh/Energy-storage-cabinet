@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>告警分析 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+        
+        .page-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-card.total {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .stat-card.critical {
+            border-left: 4px solid #ef4444;
+        }
+
+        .stat-card.resolved {
+            border-left: 4px solid #10b981;
+        }
+
+        .stat-card.pending {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 20px;
+        }
+
+        .stat-icon.total { background: #eff6ff; }
+        .stat-icon.critical { background: #fef2f2; }
+        .stat-icon.resolved { background: #f0fdf4; }
+        .stat-icon.pending { background: #fffbeb; }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.up { color: #ef4444; }
+        .stat-change.down { color: #10b981; }
+
+        /* 图表容器 */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-btn {
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chart-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .chart-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* 告警趋势表格 */
+        .trend-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .table-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .trend-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .trend-table th,
+        .trend-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .trend-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .trend-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .device-name {
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .alarm-count {
+            font-weight: 600;
+        }
+
+        .trend-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .trend-badge.up {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+
+        .trend-badge.down {
+            background: #f0fdf4;
+            color: #10b981;
+        }
+
+        .trend-badge.stable {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        /* 时间选择器 */
+        .time-selector {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .time-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .time-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .time-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .time-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .custom-time {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .custom-time input {
+            padding: 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+    <div class="main-content">
+
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">告警分析</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+        <div class="content">
+            <div class="page-content">
+                <!-- 时间选择器 -->
+                <div class="time-selector">
+                    <div class="time-options">
+                        <button class="time-btn active" onclick="selectTimeRange('today')">今天</button>
+                        <button class="time-btn" onclick="selectTimeRange('week')">本周</button>
+                        <button class="time-btn" onclick="selectTimeRange('month')">本月</button>
+                        <button class="time-btn" onclick="selectTimeRange('quarter')">本季度</button>
+                        <button class="time-btn" onclick="selectTimeRange('year')">本年</button>
+                    </div>
+                    <div class="custom-time">
+                        <input type="date" id="start-date">
+                        <span>至</span>
+                        <input type="date" id="end-date">
+                        <button class="time-btn" onclick="applyCustomTime()">应用</button>
+                    </div>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="stats-grid">
+                    <div class="stat-card total">
+                        <div class="stat-header">
+                            <h4 class="stat-title">告警总数</h4>
+                            <div class="stat-icon total">📊</div>
+                        </div>
+                        <div class="stat-value">1,258</div>
+                        <div class="stat-change up">
+                            <span>↑</span>
+                            <span>12.5% 较昨日</span>
+                        </div>
+                    </div>
+                    <div class="stat-card critical">
+                        <div class="stat-header">
+                            <h4 class="stat-title">严重告警</h4>
+                            <div class="stat-icon critical">🚨</div>
+                        </div>
+                        <div class="stat-value">45</div>
+                        <div class="stat-change up">
+                            <span>↑</span>
+                            <span>8.3% 较昨日</span>
+                        </div>
+                    </div>
+                    <div class="stat-card resolved">
+                        <div class="stat-header">
+                            <h4 class="stat-title">已解决</h4>
+                            <div class="stat-icon resolved">✅</div>
+                        </div>
+                        <div class="stat-value">892</div>
+                        <div class="stat-change down">
+                            <span>↓</span>
+                            <span>5.2% 较昨日</span>
+                        </div>
+                    </div>
+                    <div class="stat-card pending">
+                        <div class="stat-header">
+                            <h4 class="stat-title">待处理</h4>
+                            <div class="stat-icon pending">⏳</div>
+                        </div>
+                        <div class="stat-value">321</div>
+                        <div class="stat-change up">
+                            <span>↑</span>
+                            <span>15.8% 较昨日</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 图表区域 -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">告警趋势分析</h3>
+                            <div class="chart-actions">
+                                <button class="chart-btn active" onclick="switchChart('trend', 'day')">日</button>
+                                <button class="chart-btn" onclick="switchChart('trend', 'week')">周</button>
+                                <button class="chart-btn" onclick="switchChart('trend', 'month')">月</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">告警类型分布</h3>
+                            <div class="chart-actions">
+                                <button class="chart-btn active" onclick="switchChart('type', 'pie')">饼图</button>
+                                <button class="chart-btn" onclick="switchChart('type', 'bar')">柱状图</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="typeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">设备告警排行</h3>
+                            <div class="chart-actions">
+                                <button class="chart-btn" onclick="exportChart('device')">导出</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="deviceChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">告警处理效率</h3>
+                            <div class="chart-actions">
+                                <button class="chart-btn" onclick="exportChart('efficiency')">导出</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="efficiencyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 告警趋势表格 -->
+                <div class="trend-table">
+                    <div class="table-header">
+                        <h3>设备告警统计</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>设备名称</th>
+                                <th>设备编码</th>
+                                <th>总告警数</th>
+                                <th>严重</th>
+                                <th>重要</th>
+                                <th>次要</th>
+                                <th>警告</th>
+                                <th>趋势</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="device-name">储能电池组#1</td>
+                                <td>BAT-001</td>
+                                <td class="alarm-count">156</td>
+                                <td style="color: #ef4444;">12</td>
+                                <td style="color: #f59e0b;">34</td>
+                                <td style="color: #3b82f6;">67</td>
+                                <td style="color: #8b5cf6;">43</td>
+                                <td>
+                                    <span class="trend-badge up">
+                                        <span>↑</span>
+                                        <span>+15%</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="device-name">变流器PCS-01</td>
+                                <td>PCS-001</td>
+                                <td class="alarm-count">89</td>
+                                <td style="color: #ef4444;">5</td>
+                                <td style="color: #f59e0b;">23</td>
+                                <td style="color: #3b82f6;">45</td>
+                                <td style="color: #8b5cf6;">16</td>
+                                <td>
+                                    <span class="trend-badge down">
+                                        <span>↓</span>
+                                        <span>-8%</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="device-name">电池管理系统#1</td>
+                                <td>BMS-001</td>
+                                <td class="alarm-count">134</td>
+                                <td style="color: #ef4444;">8</td>
+                                <td style="color: #f59e0b;">45</td>
+                                <td style="color: #3b82f6;">56</td>
+                                <td style="color: #8b5cf6;">25</td>
+                                <td>
+                                    <span class="trend-badge stable">
+                                        <span>→</span>
+                                        <span>0%</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="device-name">能量管理系统#1</td>
+                                <td>EMS-001</td>
+                                <td class="alarm-count">67</td>
+                                <td style="color: #ef4444;">2</td>
+                                <td style="color: #f59e0b;">15</td>
+                                <td style="color: #3b82f6;">32</td>
+                                <td style="color: #8b5cf6;">18</td>
+                                <td>
+                                    <span class="trend-badge up">
+                                        <span>↑</span>
+                                        <span>+23%</span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 时间范围选择
+        function selectTimeRange(range) {
+            // 移除所有active类
+            document.querySelectorAll('.time-options .time-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 添加active类到当前按钮
+            event.target.classList.add('active');
+            
+            // 根据范围更新数据
+            console.log('选择时间范围:', range);
+            updateAnalysisData(range);
+        }
+
+        // 应用自定义时间
+        function applyCustomTime() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            if (startDate && endDate) {
+                console.log('自定义时间范围:', startDate, '至', endDate);
+                updateAnalysisData('custom', startDate, endDate);
+            }
+        }
+
+        // 切换图表
+        function switchChart(chartType, viewType) {
+            // 更新按钮状态
+            const buttons = event.target.parentElement.querySelectorAll('.chart-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (chartType === 'type') {
+                // 切换告警类型图表
+                typeChart.destroy();
+                const ctx = document.getElementById('typeChart').getContext('2d');
+                
+                if (viewType === 'pie') {
+                    typeChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['严重', '重要', '次要', '警告'],
+                            datasets: [{
+                                data: [45, 89, 134, 67],
+                                backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6'],
+                                borderWidth: 2,
+                                borderColor: '#ffffff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { position: 'right' } }
+                        }
+                    });
+                } else if (viewType === 'bar') {
+                    typeChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['严重', '重要', '次要', '警告'],
+                            datasets: [{
+                                label: '告警数量',
+                                data: [45, 89, 134, 67],
+                                backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+                }
+            }
+            
+            console.log('切换图表:', chartType, viewType);
+        }
+
+        // 导出图表
+        function exportChart(chartType) {
+            console.log('导出图表:', chartType);
+            showMessage('图表导出成功', 'success');
+        }
+
+        // 更新分析数据
+        function updateAnalysisData(range, startDate, endDate) {
+            console.log('更新分析数据...');
+            showMessage('数据更新中...', 'info');
+            
+            // 模拟数据更新
+            setTimeout(() => {
+                showMessage('数据更新完成', 'success');
+            }, 1500);
+        }
+
+        // 显示消息提示
+        function showMessage(message, type = 'info') {
+            const messageEl = document.createElement('div');
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+                color: white;
+                border-radius: 6px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                z-index: 9999;
+                font-size: 14px;
+            `;
+            messageEl.textContent = message;
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.remove();
+            }, 3000);
+        }
+
+        // 切换侧边栏
+        function toggleSidebar() {
+            if (window.sidebar) {
+                window.sidebar.toggle();
+            }
+        }
+
+        // 返回
+        function goBack() {
+            window.history.back();
+        }
+
+        // 切换语言
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
+        }
+
+        // 切换主题
+        function toggleTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            themeIcon.textContent = themeIcon.textContent === '🌙' ? '☀️' : '🌙';
+        }
+
+        // 图表实例
+        let trendChart, typeChart, deviceChart, efficiencyChart;
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置今天日期
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('end-date').value = today;
+            
+            // 设置30天前的日期
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            document.getElementById('start-date').value = thirtyDaysAgo.toISOString().split('T')[0];
+            
+            // 初始化图表
+            initCharts();
+        });
+
+        // 初始化所有图表
+        function initCharts() {
+            initTrendChart();
+            initTypeChart();
+            initDeviceChart();
+            initEfficiencyChart();
+        }
+
+        // 初始化告警趋势图表
+        function initTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['01-01', '01-02', '01-03', '01-04', '01-05', '01-06', '01-07', '01-08', '01-09', '01-10'],
+                    datasets: [{
+                        label: '严重',
+                        data: [12, 8, 15, 10, 18, 14, 22, 16, 20, 25],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: '重要',
+                        data: [25, 32, 28, 35, 30, 38, 42, 36, 40, 45],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: '次要',
+                        data: [45, 52, 48, 55, 50, 58, 62, 56, 60, 65],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: '警告',
+                        data: [35, 42, 38, 45, 40, 48, 52, 46, 50, 55],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // 初始化告警类型分布图表
+        function initTypeChart() {
+            const ctx = document.getElementById('typeChart').getContext('2d');
+            typeChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['严重', '重要', '次要', '警告'],
+                    datasets: [{
+                        data: [45, 89, 134, 67],
+                        backgroundColor: [
+                            '#ef4444',
+                            '#f59e0b',
+                            '#3b82f6',
+                            '#8b5cf6'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+        }
+
+        // 初始化设备告警排行图表
+        function initDeviceChart() {
+            const ctx = document.getElementById('deviceChart').getContext('2d');
+            deviceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['储能电池组#1', '变流器PCS-01', '电池管理系统#1', '能量管理系统#1', '储能电池组#2', '变流器PCS-02'],
+                    datasets: [{
+                        label: '告警数量',
+                        data: [156, 89, 134, 67, 98, 76],
+                        backgroundColor: [
+                            '#ef4444',
+                            '#f59e0b',
+                            '#3b82f6',
+                            '#8b5cf6',
+                            '#10b981',
+                            '#f97316'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // 初始化告警处理效率图表
+        function initEfficiencyChart() {
+            const ctx = document.getElementById('efficiencyChart').getContext('2d');
+            efficiencyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [{
+                        label: '平均处理时长(小时)',
+                        data: [2.5, 3.2, 2.8, 3.5, 3.0, 2.2, 1.8],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '小时'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+</body>
+</html>

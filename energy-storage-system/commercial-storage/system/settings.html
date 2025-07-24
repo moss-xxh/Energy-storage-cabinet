@@ -214,10 +214,22 @@
                 <button class="nav-button" onclick="toggleTheme()">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button class="nav-button">
-                    <span>👤</span>
-                    <span>管理员</span>
-                </button>
+                <div class="user-dropdown">
+                    <button class="nav-button user-menu-btn" onclick="toggleUserMenu()">
+                        <span>👤</span>
+                        <span>管理员</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <div class="dropdown-item" onclick="showAccountInfo()">
+                            <span>账号信息</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item logout" onclick="confirmLogout()">
+                            <span>退出</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
 
@@ -520,6 +532,7 @@
     <script>
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
+            showSection('general');
         });
 
         // 显示指定设置区域
@@ -536,7 +549,7 @@
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
-            event.target.classList.add('active');
+            document.querySelector(`[href="#${sectionName}"]`).classList.add('active');
         }
 
         // 切换开关
@@ -569,6 +582,66 @@
             setTimeout(() => {
                 showMessage('数据备份完成', 'success');
             }, 3000);
+        }
+
+        // 消息提示
+        function showMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 6px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                transition: all 0.3s ease;
+                ${type === 'success' ? 'background: #10b981;' : 
+                  type === 'error' ? 'background: #ef4444;' : 
+                  'background: #3b82f6;'}
+            `;
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(messageEl);
+                }, 300);
+            }, 3000);
+        }
+
+        // 通用函数
+        function toggleSidebar() {
+            if (window.sidebar) {
+                window.sidebar.toggle();
+            }
+        }
+
+        function goBack() {
+            history.back();
+        }
+
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
+        }
+
+        function toggleTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            }
         }
     </script>
 
@@ -634,6 +707,319 @@
             border-color: #cbd5e1;
             color: #1e293b;
         }
+
+        /* 用户下拉菜单样式 */
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-menu-btn {
+            position: relative;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .user-menu-btn.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: #374151;
+            font-size: 0.875rem;
+            transition: background-color 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.logout:hover {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0.25rem 0;
+        }
     </style>
+
+    <!-- 账号信息模态框 -->
+    <div id="accountInfoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">账号信息</h2>
+                <button class="close-btn" onclick="closeAccountModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" value="管理员" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" value="admin@example.com" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>角色</label>
+                    <input type="text" value="系统管理员" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>最后登录时间</label>
+                    <input type="text" value="2024-03-15 14:30:25" readonly>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="showPasswordModal()">修改密码</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAccountModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修改密码模态框 -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">修改密码</h2>
+                <button class="close-btn" onclick="closePasswordModal()">&times;</button>
+            </div>
+            
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="oldPassword">当前密码 <span class="required">*</span></label>
+                    <input type="password" id="oldPassword" name="oldPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">新密码 <span class="required">*</span></label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">确认新密码 <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+            </form>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="savePassword()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 退出确认模态框 -->
+    <div id="logoutConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">确认退出</h2>
+                <button class="close-btn" onclick="closeLogoutModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p>您确定要退出系统吗？</p>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeLogoutModal()">取消</button>
+                <button type="button" class="btn btn-danger" onclick="performLogout()">确认退出</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 用户下拉菜单功能
+        function toggleUserMenu() {
+            console.log('toggleUserMenu called'); // 调试用
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button) {
+                dropdown.classList.toggle('show');
+                button.classList.toggle('active');
+                console.log('Menu toggled', dropdown.classList.contains('show')); // 调试用
+            } else {
+                console.log('Dropdown or button not found'); // 调试用
+            }
+        }
+
+        // 显示账号信息
+        function showAccountInfo() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            document.getElementById('accountInfoModal').classList.add('show');
+        }
+
+        // 关闭账号信息模态框
+        function closeAccountModal() {
+            document.getElementById('accountInfoModal').classList.remove('show');
+        }
+
+        // 显示修改密码模态框
+        function showPasswordModal() {
+            document.getElementById('accountInfoModal').classList.remove('show');
+            document.getElementById('passwordModal').classList.add('show');
+        }
+
+        // 关闭修改密码模态框
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('show');
+            document.getElementById('passwordForm').reset();
+        }
+
+        // 保存密码
+        function savePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                showMessage('请填写所有必填字段', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showMessage('新密码和确认密码不匹配', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showMessage('新密码长度不能少于6位', 'error');
+                return;
+            }
+
+            // 这里应该调用后端API修改密码
+            showMessage('密码修改成功', 'success');
+            closePasswordModal();
+        }
+
+        // 确认退出
+        function confirmLogout() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            document.getElementById('logoutConfirmModal').classList.add('show');
+        }
+
+        // 关闭退出确认模态框
+        function closeLogoutModal() {
+            document.getElementById('logoutConfirmModal').classList.remove('show');
+        }
+
+        // 执行退出
+        function performLogout() {
+            // 这里应该调用后端API退出登录
+            showMessage('正在退出...', 'info');
+            setTimeout(() => {
+                window.location.href = '../../index.html';
+            }, 1000);
+        }
+
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button && !button.contains(event.target)) {
+                dropdown.classList.remove('show');
+                button.classList.remove('active');
+            }
+        });
+
+        // 通用工具函数
+        function toggleSidebar() {
+            if (window.sidebar) {
+                window.sidebar.toggle();
+            }
+        }
+
+        function goBack() {
+            history.back();
+        }
+
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
+        }
+
+        function toggleTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            }
+        }
+
+        function showMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 6px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                transition: all 0.3s ease;
+                ${type === 'success' ? 'background: #10b981;' : 
+                  type === 'error' ? 'background: #ef4444;' : 
+                  'background: #3b82f6;'}
+            `;
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(messageEl);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+
 </body>
 </html>

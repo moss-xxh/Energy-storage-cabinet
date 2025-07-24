@@ -22,6 +22,11 @@
             padding: 2rem;
         }
 
+        .page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .page-header {
             margin-bottom: 2rem;
         }
@@ -33,104 +38,180 @@
             margin-bottom: 0.5rem;
         }
         
-        .user-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-card {
+        .search-filter-section {
             background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            text-align: center;
-            border-left: 4px solid #3b82f6;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #64748b;
-        }
-
-        .filters-panel {
-            background: white;
-            border-radius: 8px;
+            border-radius: 0.75rem;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .filter-row {
+        .content-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .search-row {
             display: flex;
-            gap: 1rem;
             align-items: center;
+            gap: 1rem;
             flex-wrap: wrap;
         }
 
-        .filter-group {
+        .search-group {
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 0.5rem;
         }
 
-        .filter-group label {
-            font-size: 14px;
-            color: #374151;
+        .search-label {
+            font-size: 0.875rem;
             font-weight: 500;
+            color: #374151;
+            white-space: nowrap;
         }
 
-        .filter-group select,
-        .filter-group input {
-            padding: 8px 12px;
+        .search-input {
+            padding: 0.5rem 0.75rem;
             border: 1px solid #d1d5db;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 0.875rem;
             min-width: 140px;
         }
 
-        .user-table {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        .search-input:focus {
+            outline: none;
+            border-color: #3562E3;
+            box-shadow: 0 0 0 3px rgba(53, 98, 227, 0.1);
         }
 
-        .table-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
+        .search-button, .reset-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 0.5rem;
         }
 
-        .user-table table {
-            width: 100%;
-            border-collapse: collapse;
+        .search-button {
+            background: #3562E3;
+            color: white;
+            border: 1px solid #3562E3;
         }
 
-        .user-table th,
-        .user-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
+        .search-button:hover {
+            background: #2951d3;
         }
 
-        .user-table th {
+        .reset-button {
+            background: white;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+        }
+
+        .reset-button:hover {
             background: #f9fafb;
-            font-weight: 600;
             color: #374151;
         }
 
-        .user-table tr:hover {
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+        }
+
+        .table-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .table-action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 0;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn.primary {
+            background: #3562E3;
+            color: white;
+            border-color: #3562E3;
+        }
+
+        .action-btn.primary:hover {
+            background: #2951d3;
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: #6b7280;
+            border-color: #d1d5db;
+        }
+
+        .action-btn.secondary:hover {
             background: #f9fafb;
+            color: #374151;
+        }
+
+        .device-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .device-table th {
+            padding: 0.625rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.8125rem;
+        }
+
+        .device-table td {
+            padding: 0.625rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.8125rem;
+        }
+
+        .device-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 0;
+        }
+
+        #list-view-content {
+            padding: 1.5rem;
         }
 
         .user-avatar {
@@ -198,33 +279,78 @@
             color: #1d4ed8;
         }
 
+
+        .site-permissions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .site-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            background: #fef3c7;
+            color: #d97706;
+            white-space: nowrap;
+        }
+
+        .site-count {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+            background: #e5e7eb;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .site-count:hover {
+            background: #d1d5db;
+        }
+
+        .status-badge.enabled {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-badge.disabled {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
         .action-buttons {
             display: flex;
             gap: 0.5rem;
         }
 
-        .btn-action {
-            padding: 6px 12px;
+        .table-action {
+            background: none;
             border: none;
-            border-radius: 4px;
-            font-size: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            padding: 0.375rem;
+            border-radius: 0.25rem;
+            color: #374151;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn-edit {
-            background: #dbeafe;
-            color: #1d4ed8;
+        .table-action:hover {
+            background: #f3f4f6;
+            color: #111827;
         }
 
-        .btn-reset {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .btn-delete {
-            background: #fee2e2;
-            color: #dc2626;
+        .table-action svg {
+            width: 16px;
+            height: 16px;
         }
 
         .btn {
@@ -247,27 +373,144 @@
             color: #374151;
         }
 
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1.5rem;
+        .btn-danger {
+            background: #ef4444;
+            color: white;
         }
 
-        .pagination button {
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            min-width: 600px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #374151;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
             padding: 8px 12px;
             border: 1px solid #d1d5db;
-            background: white;
             border-radius: 6px;
-            cursor: pointer;
+            font-size: 14px;
         }
 
-        .pagination button.active {
-            background: #3b82f6;
-            color: white;
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
             border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item input[type="checkbox"],
+        .checkbox-item input[type="radio"] {
+            width: auto;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
     </style>
 </head>
 <body>
@@ -294,182 +537,599 @@
                 <button class="nav-button" onclick="toggleTheme()">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button class="nav-button">
-                    <span>👤</span>
-                    <span>管理员</span>
-                </button>
+                <div class="user-dropdown">
+                    <button class="nav-button user-menu-btn" onclick="toggleUserMenu()">
+                        <span>👤</span>
+                        <span>管理员</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <div class="dropdown-item" onclick="showAccountInfo()">
+                            <span>账号信息</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item logout" onclick="confirmLogout()">
+                            <span>退出</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
 
 <div class="content">
             <div class="page-content">
-                <div class="page-header">
-                    <h1>用户管理</h1>
-                    <p>系统用户账户管理</p>
-                </div>
-
-                <!-- 统计卡片 -->
-                <div class="user-stats">
-                    <div class="stat-card">
-                        <div class="stat-number">24</div>
-                        <div class="stat-label">总用户数</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">20</div>
-                        <div class="stat-label">活跃用户</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">4</div>
-                        <div class="stat-label">管理员</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">12</div>
-                        <div class="stat-label">本月登录</div>
-                    </div>
-                </div>
 
                 <!-- 筛选面板 -->
-                <div class="filters-panel">
-                    <div class="filter-row">
-                        <div class="filter-group">
-                            <label>用户状态</label>
-                            <select id="status-filter">
-                                <option value="">全部状态</option>
-                                <option value="active">活跃</option>
-                                <option value="inactive">禁用</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>用户角色</label>
-                            <select id="role-filter">
-                                <option value="">全部角色</option>
-                                <option value="admin">管理员</option>
-                                <option value="operator">操作员</option>
-                                <option value="viewer">查看者</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>关键词</label>
-                            <input type="text" id="keyword-search" placeholder="搜索用户名或邮箱">
-                        </div>
-                        <div class="filter-group" style="justify-content: flex-end;">
-                            <label>&nbsp;</label>
-                            <button class="btn btn-primary" onclick="searchUsers()">搜索</button>
+                <div class="search-filter-section">
+                    <div class="search-row">
+                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div class="search-group">
+                                    <label class="search-label">用户状态：</label>
+                                    <select class="search-input" id="status-filter">
+                                        <option value="">全部状态</option>
+                                        <option value="active">活跃</option>
+                                        <option value="inactive">禁用</option>
+                                    </select>
+                                </div>
+                                <div class="search-group">
+                                    <label class="search-label">用户角色：</label>
+                                    <select class="search-input" id="role-filter">
+                                        <option value="">全部角色</option>
+                                        <option value="admin">管理员</option>
+                                        <option value="operator">操作员</option>
+                                        <option value="viewer">查看者</option>
+                                    </select>
+                                </div>
+                                <div class="search-group">
+                                    <label class="search-label">关键词：</label>
+                                    <input type="text" class="search-input" id="keyword-search" placeholder="搜索用户名或邮箱">
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="search-button" onclick="searchUsers()">
+                                    <span>搜索</span>
+                                </button>
+                                <button class="reset-button" onclick="resetSearch()">
+                                    <span>重置</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 用户表格 -->
-                <div class="user-table">
-                    <div class="table-header">
-                        <h3>用户列表</h3>
-                        <div>
-                            <button class="btn btn-secondary" onclick="exportUsers()">导出</button>
-                            <button class="btn btn-primary" onclick="addUser()">添加用户</button>
+                <!-- 用户管理卡片 -->
+                <div class="content-card">
+                    <div class="table-action-bar">
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="action-btn primary" onclick="addUser()">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>新增用户</span>
+                            </button>
+                            <button class="action-btn secondary" onclick="importUsers()">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 4V13M4 10L7 13L10 10M1 2V4C1 4.55228 1.44772 5 2 5H12C12.5523 5 13 4.55228 13 4V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>导入</span>  
+                            </button>
+                            <button class="action-btn secondary" onclick="inviteUser()">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 1L10 4H8V7H6V4H4L7 1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2 13H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                                <span>邀请用户</span>  
+                            </button>
                         </div>
                     </div>
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>用户信息</th>
-                                <th>角色</th>
-                                <th>部门</th>
-                                <th>状态</th>
-                                <th>最后登录</th>
-                                <th>创建时间</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar">👤</div>
-                                        <div class="user-details">
-                                            <div class="user-name">张工程师</div>
-                                            <div class="user-email">zhang.engineer@company.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="role-badge">管理员</span></td>
-                                <td>技术部</td>
-                                <td><span class="status-badge active">活跃</span></td>
-                                <td>2024-01-24 14:30</td>
-                                <td>2024-01-01 09:00</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-edit" onclick="editUser('user1')">编辑</button>
-                                        <button class="btn-action btn-reset" onclick="resetPassword('user1')">重置密码</button>
-                                        <button class="btn-action btn-delete" onclick="deleteUser('user1')">删除</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar">👩</div>
-                                        <div class="user-details">
-                                            <div class="user-name">李运维</div>
-                                            <div class="user-email">li.operator@company.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="role-badge">操作员</span></td>
-                                <td>运维部</td>
-                                <td><span class="status-badge active">活跃</span></td>
-                                <td>2024-01-24 11:15</td>
-                                <td>2024-01-05 14:20</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-edit" onclick="editUser('user2')">编辑</button>
-                                        <button class="btn-action btn-reset" onclick="resetPassword('user2')">重置密码</button>
-                                        <button class="btn-action btn-delete" onclick="deleteUser('user2')">删除</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar">👨</div>
-                                        <div class="user-details">
-                                            <div class="user-name">王分析师</div>
-                                            <div class="user-email">wang.analyst@company.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="role-badge">查看者</span></td>
-                                <td>数据部</td>
-                                <td><span class="status-badge inactive">禁用</span></td>
-                                <td>2024-01-20 16:45</td>
-                                <td>2024-01-10 10:30</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-edit" onclick="editUser('user3')">编辑</button>
-                                        <button class="btn-action btn-reset" onclick="resetPassword('user3')">重置密码</button>
-                                        <button class="btn-action btn-delete" onclick="deleteUser('user3')">删除</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="pagination">
-                        <button onclick="changePage('prev')">&laquo; 上一页</button>
-                        <button class="active">1</button>
-                        <button onclick="changePage(2)">2</button>
-                        <button onclick="changePage(3)">3</button>
-                        <button onclick="changePage('next')">下一页 &raquo;</button>
+                    <!-- 用户列表 -->
+                    <div id="list-view-content" class="table-container">
+                        <table class="device-table">
+                            <thead>
+                                <tr>
+                                    <th>昵称</th>
+                                    <th>账号</th>
+                                    <th>邮箱</th>
+                                    <th>角色</th>
+                                    <th>状态</th>
+                                    <th>站点权限</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                                <!-- 用户列表将通过JavaScript动态生成 -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 新增/编辑用户模态框 -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">新增用户</h2>
+                <button class="close-btn" onclick="closeUserModal()">&times;</button>
+            </div>
+            
+            <form id="userForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nickname">昵称 <span class="required">*</span></label>
+                        <input type="text" id="nickname" name="nickname" placeholder="请输入用户昵称" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">账号 <span class="required">*</span></label>
+                        <input type="text" id="username" name="username" placeholder="请输入登录账号" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">邮箱 <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="请输入邮箱地址" required>
+                </div>
+
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="role">角色 <span class="required">*</span></label>
+                        <select id="role" name="role" required>
+                            <option value="">请选择角色</option>
+                            <option value="admin">管理员</option>
+                            <option value="operator">操作员</option>
+                            <option value="viewer">查看者</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">状态</label>
+                        <select id="status" name="status">
+                            <option value="enabled">开启</option>
+                            <option value="disabled">禁用</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label>站点权限</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="site_station1" name="sitePermissions" value="station1">
+                            <label for="site_station1">北京储能站</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="site_station2" name="sitePermissions" value="station2">
+                            <label for="site_station2">上海储能站</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="site_station3" name="sitePermissions" value="station3">
+                            <label for="site_station3">深圳储能站</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="site_station4" name="sitePermissions" value="station4">
+                            <label for="site_station4">广州储能站</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="site_station5" name="sitePermissions" value="station5">
+                            <label for="site_station5">杭州储能站</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="site_station6" name="sitePermissions" value="station6">
+                            <label for="site_station6">成都储能站</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="remark">备注</label>
+                    <textarea id="remark" name="remark" placeholder="用户备注信息"></textarea>
+                </div>
+            </form>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeUserModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveUser()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 邀请用户模态框 -->
+    <div id="inviteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">邀请用户</h2>
+                <button class="close-btn" onclick="closeInviteModal()">&times;</button>
+            </div>
+            
+            <form id="inviteForm">
+                <div class="form-group">
+                    <label for="inviteEmail">邮箱地址 <span class="required">*</span></label>
+                    <input type="email" id="inviteEmail" name="inviteEmail" placeholder="请输入被邀请用户的邮箱地址" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inviteRole">默认角色 <span class="required">*</span></label>
+                        <select id="inviteRole" name="role" required>
+                            <option value="">请选择角色</option>
+                            <option value="admin">管理员</option>
+                            <option value="operator">操作员</option>
+                            <option value="viewer">查看者</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="inviteExpiry">邀请有效期</label>
+                        <select id="inviteExpiry" name="expiry">
+                            <option value="24">24小时</option>
+                            <option value="72" selected>3天</option>
+                            <option value="168">7天</option>
+                            <option value="720">30天</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="requireApproval" name="requireApproval" style="width: auto; margin-right: 0.5rem;">
+                        需要管理员审核
+                    </label>
+                    <div style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">
+                        勾选后，用户注册时需要管理员审核通过才能正式使用系统
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inviteMessage">邀请消息</label>
+                    <textarea id="inviteMessage" name="message" placeholder="可选：添加自定义邀请消息" rows="3"></textarea>
+                </div>
+            </form>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeInviteModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="generateInviteLink()">生成邀请链接</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 邀请链接结果模态框 -->
+    <div id="inviteLinkModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">邀请链接已生成</h2>
+                <button class="close-btn" onclick="closeInviteLinkModal()">&times;</button>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <p style="color: #059669; margin-bottom: 1rem;">✅ 邀请链接生成成功！</p>
+                <div style="background: #f3f4f6; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">邀请链接：</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="generatedInviteLink" readonly style="flex: 1; background: white;">
+                        <button class="btn btn-secondary" onclick="copyInviteLink()" title="复制链接">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div style="background: #eff6ff; padding: 1rem; border-radius: 6px; font-size: 0.875rem;">
+                    <div><strong>邀请信息：</strong></div>
+                    <div id="inviteInfo" style="margin-top: 0.5rem;"></div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeInviteLinkModal()">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="sendInviteEmail()">发送邮件邀请</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认对话框模态框 -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content" style="min-width: 400px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="confirmTitle">确认操作</h2>
+                <button class="close-btn" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            
+            <div style="padding: 1rem 0;">
+                <div id="confirmMessage" style="font-size: 0.9rem; color: #374151; line-height: 1.5;"></div>
+                <div id="confirmWarning" style="margin-top: 1rem; padding: 0.75rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; font-size: 0.875rem; color: #dc2626;"></div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">取消</button>
+                <button type="button" class="btn" id="confirmButton" onclick="executeConfirmAction()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 账号信息模态框 -->
+    <div id="accountInfoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">账号信息</h2>
+                <button class="close-btn" onclick="closeAccountModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" value="管理员" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" value="admin@example.com" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>角色</label>
+                    <input type="text" value="系统管理员" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>最后登录时间</label>
+                    <input type="text" value="2024-03-15 14:30:25" readonly>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="showPasswordModal()">修改密码</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAccountModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修改密码模态框 -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">修改密码</h2>
+                <button class="close-btn" onclick="closePasswordModal()">&times;</button>
+            </div>
+            
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="oldPassword">当前密码 <span class="required">*</span></label>
+                    <input type="password" id="oldPassword" name="oldPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">新密码 <span class="required">*</span></label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">确认新密码 <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+            </form>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="savePassword()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 退出确认模态框 -->
+    <div id="logoutConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">确认退出</h2>
+                <button class="close-btn" onclick="closeLogoutModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p>您确定要退出系统吗？</p>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeLogoutModal()">取消</button>
+                <button type="button" class="btn btn-danger" onclick="performLogout()">确认退出</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let currentEditingUser = null;
+        let confirmCallback = null;
+        let users = [
+            {
+                id: 'user1',
+                nickname: '张工程师',
+                username: 'zhang.engineer',
+                email: 'zhang.engineer@company.com',
+                role: 'admin',
+                status: 'enabled',
+                sitePermissions: ['station1', 'station2', 'station3', 'station4', 'station5', 'station6'],
+                remark: '技术负责人',
+                lastLogin: '2024-01-24 14:30',
+                createTime: '2024-01-01 09:00'
+            },
+            {
+                id: 'user2',
+                nickname: '李运维',
+                username: 'li.operator',
+                email: 'li.operator@company.com',
+                role: 'operator',
+                status: 'enabled',
+                sitePermissions: ['station1', 'station2'],
+                remark: '日常运维负责',
+                lastLogin: '2024-01-24 11:15',
+                createTime: '2024-01-05 14:20'
+            }
+        ];
+
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('用户管理页面初始化完成');
+            renderUserTable();
         });
+
+        // 渲染用户表格
+        function renderUserTable() {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '';
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                
+                // 处理站点权限显示
+                const sitePermissionsHtml = user.sitePermissions.length > 2 
+                    ? `<div class="site-permissions">
+                        ${user.sitePermissions.slice(0, 2).map(site => `<span class="site-badge">${getSiteName(site)}</span>`).join('')}
+                        <span class="site-count">+${user.sitePermissions.length - 2}</span>
+                       </div>`
+                    : `<div class="site-permissions">
+                        ${user.sitePermissions.map(site => `<span class="site-badge">${getSiteName(site)}</span>`).join('')}
+                       </div>`;
+                
+                row.innerHTML = `
+                    <td>${user.nickname || ''}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td><span class="role-badge">${getRoleName(user.role)}</span></td>
+                    <td><span class="status-badge ${user.status}">${user.status === 'enabled' ? '开启' : '禁用'}</span></td>
+                    <td>${sitePermissionsHtml}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="table-action" onclick="editUser('${user.id}')" title="编辑">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
+                            <button class="table-action" onclick="resetPassword('${user.id}')" title="重置密码">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <circle cx="12" cy="16" r="1"></circle>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </button>
+                            <button class="table-action" onclick="deleteUser('${user.id}')" title="删除">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3,6 5,6 21,6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // 邀请用户
+        function inviteUser() {
+            document.getElementById('inviteForm').reset();
+            document.getElementById('inviteModal').classList.add('show');
+        }
+
+        // 关闭邀请模态框
+        function closeInviteModal() {
+            document.getElementById('inviteModal').classList.remove('show');
+        }
+
+        // 关闭邀请链接模态框
+        function closeInviteLinkModal() {
+            document.getElementById('inviteLinkModal').classList.remove('show');
+        }
+
+        // 生成邀请链接
+        function generateInviteLink() {
+            const form = document.getElementById('inviteForm');
+            const formData = new FormData(form);
+            
+            const inviteData = {
+                email: formData.get('inviteEmail'),
+                roles: Array.from(document.querySelectorAll('input[name="inviteRoles"]:checked')).map(cb => cb.value),
+                expiry: formData.get('expiry'),
+                requireApproval: document.getElementById('requireApproval').checked,
+                message: formData.get('message')
+            };
+
+            // 生成唯一的邀请token
+            const inviteToken = generateInviteToken();
+            const expiryDate = new Date();
+            expiryDate.setHours(expiryDate.getHours() + parseInt(inviteData.expiry));
+            
+            // 生成邀请链接
+            const baseUrl = window.location.origin;
+            const inviteLink = `${baseUrl}/register?token=${inviteToken}`;
+            
+            // 显示邀请链接
+            document.getElementById('generatedInviteLink').value = inviteLink;
+            
+            // 显示邀请信息
+            const inviteInfo = `
+                <div>邀请邮箱: ${inviteData.email}</div>
+                <div>默认角色: ${getRoleName(inviteData.role)}</div>
+                <div>有效期至: ${expiryDate.toLocaleString()}</div>
+                <div>需要审核: ${inviteData.requireApproval ? '是' : '否'}</div>
+                ${inviteData.message ? `<div>邀请消息: ${inviteData.message}</div>` : ''}
+            `;
+            document.getElementById('inviteInfo').innerHTML = inviteInfo;
+            
+            // 关闭邀请表单，显示结果
+            closeInviteModal();
+            document.getElementById('inviteLinkModal').classList.add('show');
+            
+            showMessage('邀请链接生成成功', 'success');
+        }
+
+        // 生成邀请token
+        function generateInviteToken() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 32; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // 复制邀请链接
+        function copyInviteLink() {
+            const linkInput = document.getElementById('generatedInviteLink');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999); // 兼容移动设备
+            
+            try {
+                document.execCommand('copy');
+                showMessage('邀请链接已复制到剪贴板', 'success');
+            } catch (err) {
+                // 如果浏览器不支持execCommand，使用现代API
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(linkInput.value).then(() => {
+                        showMessage('邀请链接已复制到剪贴板', 'success');
+                    }).catch(() => {
+                        showMessage('复制失败，请手动选择复制', 'error');
+                    });
+                } else {
+                    showMessage('复制失败，请手动选择复制', 'error');
+                }
+            }
+        }
+
+        // 发送邮件邀请
+        function sendInviteEmail() {
+            const inviteLink = document.getElementById('generatedInviteLink').value;
+            showMessage('邀请邮件发送中...', 'info');
+            
+            // 模拟发送邮件
+            setTimeout(() => {
+                showMessage('邀请邮件发送成功', 'success');
+                closeInviteLinkModal();
+            }, 2000);
+        }
 
         // 搜索用户
         function searchUsers() {
@@ -481,47 +1141,390 @@
             showMessage('用户搜索完成', 'success');
         }
 
-        // 添加用户
+        // 重置搜索
+        function resetSearch() {
+            document.getElementById('status-filter').value = '';
+            document.getElementById('role-filter').value = '';
+            document.getElementById('keyword-search').value = '';
+            showMessage('搜索条件已重置', 'info');
+        }
+
+        // 显示新增用户模态框
         function addUser() {
-            console.log('添加新用户');
-            showMessage('正在打开添加用户对话框', 'info');
+            currentEditingUser = null;
+            document.getElementById('modalTitle').textContent = '新增用户';
+            document.getElementById('userForm').reset();
+            document.getElementById('userModal').classList.add('show');
         }
 
         // 编辑用户
         function editUser(userId) {
-            console.log(`编辑用户: ${userId}`);
-            showMessage(`正在编辑用户 ${userId}`, 'info');
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            currentEditingUser = user;
+            document.getElementById('modalTitle').textContent = '编辑用户';
+            
+            // 填充表单数据
+            document.getElementById('nickname').value = user.nickname || '';
+            document.getElementById('username').value = user.username;
+            document.getElementById('email').value = user.email;
+            document.getElementById('role').value = user.role;
+            document.getElementById('status').value = user.status;
+            document.getElementById('remark').value = user.remark || '';
+
+
+            // 设置站点权限复选框
+            document.querySelectorAll('input[name="sitePermissions"]').forEach(checkbox => {
+                checkbox.checked = user.sitePermissions.includes(checkbox.value);
+            });
+
+            document.getElementById('userModal').classList.add('show');
+        }
+
+        // 保存用户
+        function saveUser() {
+            const form = document.getElementById('userForm');
+            const formData = new FormData(form);
+            
+            // 获取选中的站点权限
+            const sitePermissions = Array.from(document.querySelectorAll('input[name="sitePermissions"]:checked'))
+                .map(checkbox => checkbox.value);
+
+            const userData = {
+                nickname: formData.get('nickname'),
+                username: formData.get('username'),
+                email: formData.get('email'),
+                roles: Array.from(document.querySelectorAll('input[name="inviteRoles"]:checked')).map(cb => cb.value),
+                status: formData.get('status'),
+                sitePermissions: sitePermissions,
+                remark: formData.get('remark')
+            };
+
+            if (currentEditingUser) {
+                // 编辑现有用户
+                Object.assign(currentEditingUser, userData);
+                showMessage('用户信息更新成功', 'success');
+            } else {
+                // 新增用户
+                const newUser = {
+                    id: 'user' + (users.length + 1),
+                    ...userData,
+                    lastLogin: '-',
+                    createTime: new Date().toISOString().slice(0, 16).replace('T', ' ')
+                };
+                users.push(newUser);
+                showMessage('用户创建成功', 'success');
+            }
+
+            renderUserTable();
+            closeUserModal();
+        }
+
+        // 关闭用户模态框
+        function closeUserModal() {
+            document.getElementById('userModal').classList.remove('show');
         }
 
         // 重置密码
         function resetPassword(userId) {
-            if (confirm(`确定要重置用户 ${userId} 的密码吗？`)) {
-                console.log(`重置密码: ${userId}`);
-                showMessage(`用户 ${userId} 密码已重置`, 'success');
-            }
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            showConfirmDialog(
+                '重置密码',
+                `确定要重置用户 <strong>${user.nickname || user.username}</strong> 的密码吗？`,
+                '重置后用户需要使用新密码重新登录，此操作不可撤销。',
+                () => {
+                    showMessage(`用户 ${user.nickname || user.username} 密码已重置`, 'success');
+                },
+                'danger'
+            );
         }
 
         // 删除用户
         function deleteUser(userId) {
-            if (confirm(`确定要删除用户 ${userId} 吗？`)) {
-                console.log(`删除用户: ${userId}`);
-                showMessage(`用户 ${userId} 已删除`, 'success');
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            showConfirmDialog(
+                '删除用户',
+                `确定要删除用户 <strong>${user.nickname || user.username}</strong> 吗？`,
+                '删除后该用户的所有数据将永久丢失，此操作不可恢复！',
+                () => {
+                    const index = users.findIndex(u => u.id === userId);
+                    if (index > -1) {
+                        users.splice(index, 1);
+                        showMessage(`用户 ${user.nickname || user.username} 已删除`, 'success');
+                        renderUserTable();
+                    }
+                },
+                'danger'
+            );
+        }
+
+        // 导入用户
+        function importUsers() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv,.xlsx,.xls';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    showMessage('用户数据导入中...', 'info');
+                    // 模拟导入过程
+                    setTimeout(() => {
+                        showMessage(`成功导入用户数据文件: ${file.name}`, 'success');
+                    }, 2000);
+                }
+            };
+            input.click();
+        }
+
+        // 生成CSV内容
+        function generateUserCSV() {
+            const headers = ['昵称', '账号', '邮箱', '角色', '状态', '站点权限', '最后登录', '创建时间', '备注'];
+            const rows = users.map(user => [
+                user.nickname || '',
+                user.username,
+                user.email,
+                getRoleName(user.role),
+                user.status === 'enabled' ? '开启' : '禁用',
+                user.sitePermissions.map(getSiteName).join(';'),
+                user.lastLogin,
+                user.createTime,
+                user.remark || ''
+            ]);
+
+            return [headers, ...rows].map(row => row.join(',')).join('\n');
+        }
+
+        // 获取站点名称
+        function getSiteName(siteId) {
+            const siteMap = {
+                'station1': '北京储能站',
+                'station2': '上海储能站',
+                'station3': '深圳储能站',
+                'station4': '广州储能站',
+                'station5': '杭州储能站',
+                'station6': '成都储能站'
+            };
+            return siteMap[siteId] || siteId;
+        }
+
+
+        // 下载CSV文件
+        function downloadCSV(content, filename) {
+            const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
         }
 
-        // 导出用户
-        function exportUsers() {
-            console.log('导出用户数据');
-            showMessage('用户数据导出中...', 'info');
-            
-            setTimeout(() => {
-                showMessage('用户数据导出完成', 'success');
-            }, 2000);
+
+        // 获取角色名称
+        function getRoleName(role) {
+            const roleMap = {
+                'admin': '管理员',
+                'operator': '操作员',
+                'viewer': '查看者'
+            };
+            return roleMap[role] || role;
         }
 
-        // 分页
-        function changePage(page) {
-            console.log('切换到页面:', page);
+
+        // 消息提示
+        function showMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 6px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                transition: all 0.3s ease;
+                ${type === 'success' ? 'background: #10b981;' : 
+                  type === 'error' ? 'background: #ef4444;' : 
+                  'background: #3b82f6;'}
+            `;
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(messageEl)) {
+                        document.body.removeChild(messageEl);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 通用工具函数
+        function toggleSidebar() {
+            if (window.sidebar) {
+                window.sidebar.toggle();
+            }
+        }
+
+        function goBack() {
+            history.back();
+        }
+
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
+        }
+
+        function toggleTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            }
+        }
+
+        // 用户下拉菜单功能
+        function toggleUserMenu() {
+            console.log('toggleUserMenu called'); // 调试用
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button) {
+                dropdown.classList.toggle('show');
+                button.classList.toggle('active');
+                console.log('Menu toggled', dropdown.classList.contains('show')); // 调试用
+            } else {
+                console.log('Dropdown or button not found'); // 调试用
+            }
+        }
+
+        // 显示账号信息
+        function showAccountInfo() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            document.getElementById('accountInfoModal').classList.add('show');
+        }
+
+        // 关闭账号信息模态框
+        function closeAccountModal() {
+            document.getElementById('accountInfoModal').classList.remove('show');
+        }
+
+        // 显示修改密码模态框
+        function showPasswordModal() {
+            document.getElementById('accountInfoModal').classList.remove('show');
+            document.getElementById('passwordModal').classList.add('show');
+        }
+
+        // 关闭修改密码模态框
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('show');
+            document.getElementById('passwordForm').reset();
+        }
+
+        // 保存密码
+        function savePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                showMessage('请填写所有必填字段', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showMessage('新密码和确认密码不匹配', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showMessage('新密码长度不能少于6位', 'error');
+                return;
+            }
+
+            // 这里应该调用后端API修改密码
+            showMessage('密码修改成功', 'success');
+            closePasswordModal();
+        }
+
+        // 确认退出
+        function confirmLogout() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            document.getElementById('logoutConfirmModal').classList.add('show');
+        }
+
+        // 关闭退出确认模态框
+        function closeLogoutModal() {
+            document.getElementById('logoutConfirmModal').classList.remove('show');
+        }
+
+        // 执行退出
+        function performLogout() {
+            // 这里应该调用后端API退出登录
+            showMessage('正在退出...', 'info');
+            setTimeout(() => {
+                window.location.href = '../../index.html';
+            }, 1000);
+        }
+
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button && !button.contains(event.target)) {
+                dropdown.classList.remove('show');
+                button.classList.remove('active');
+            }
+        });
+
+        // 显示确认对话框
+        function showConfirmDialog(title, message, warning, callback, type = 'primary') {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').innerHTML = message;
+            document.getElementById('confirmWarning').textContent = warning;
+            
+            const confirmButton = document.getElementById('confirmButton');
+            confirmButton.className = `btn ${type === 'danger' ? 'btn-danger' : 'btn-primary'}`;
+            confirmButton.textContent = '确认';
+            
+            confirmCallback = callback;
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        // 关闭确认对话框
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+            confirmCallback = null;
+        }
+
+        // 执行确认操作
+        function executeConfirmAction() {
+            if (confirmCallback) {
+                confirmCallback();
+            }
+            closeConfirmModal();
         }
     </script>
 
@@ -586,6 +1589,72 @@
             background: #f8fafc;
             border-color: #cbd5e1;
             color: #1e293b;
+        }
+
+        /* 用户下拉菜单样式 */
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-menu-btn {
+            position: relative;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .user-menu-btn.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: #374151;
+            font-size: 0.875rem;
+            transition: background-color 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.logout:hover {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0.25rem 0;
         }
     </style>
 </body>

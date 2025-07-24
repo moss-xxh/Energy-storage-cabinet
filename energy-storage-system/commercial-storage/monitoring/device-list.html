@@ -1698,8 +1698,15 @@
 
         // 设备操作函数
         function viewDetails(sn) {
-            console.log('查看设备详情:', sn);
-            showToast(`查看设备详情: ${sn}`);
+            // 查找设备信息
+            const device = allDevices.find(d => d.sn === sn);
+            if (!device) {
+                showToast('设备不存在');
+                return;
+            }
+            
+            // 跳转到设备详情页面
+            window.location.href = `../device-detail.html?deviceId=${encodeURIComponent(device.code)}&stationId=${encodeURIComponent(selectedStationId || '')}`;
         }
 
         function editDevice(sn) {

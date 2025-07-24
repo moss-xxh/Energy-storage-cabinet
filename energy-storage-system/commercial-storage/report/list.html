@@ -236,6 +236,15 @@
             color: #374151;
         }
 
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
         .pagination {
             display: flex;
             justify-content: center;
@@ -296,10 +305,22 @@
                 <button class="nav-button" onclick="toggleTheme()">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button class="nav-button">
-                    <span>👤</span>
-                    <span>管理员</span>
-                </button>
+                <div class="user-dropdown">
+                    <button class="nav-button user-menu-btn" onclick="toggleUserMenu()">
+                        <span>👤</span>
+                        <span>管理员</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <div class="dropdown-item" onclick="showAccountInfo()">
+                            <span>账号信息</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item logout" onclick="confirmLogout()">
+                            <span>退出</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
 
@@ -367,6 +388,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <h2>报表列表</h2>
                     <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-success" onclick="window.location.href='./station-report.html'">电站报告</button>
                         <button class="btn btn-secondary" onclick="window.location.href='./templates.html'">管理模板</button>
                         <button class="btn btn-primary" onclick="window.location.href='./create.html'">创建报表</button>
                     </div>
@@ -374,6 +396,25 @@
 
                 <!-- 报表网格 -->
                 <div class="report-grid" id="report-grid">
+                    <!-- 电站报告卡片 -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <span class="report-type custom" style="background: #f0f9ff; color: #0369a1;">电站报告</span>
+                            <h3 class="report-title">电站运行综合报告</h3>
+                            <p class="report-description">包含发电量、储能数据、设备状态、经济效益等全面的电站运行分析报告</p>
+                        </div>
+                        <div class="report-body">
+                            <div class="report-meta">
+                                <span>更新时间: 实时</span>
+                                <span>覆盖范围: 全电站</span>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-action btn-view" onclick="window.location.href='./station-report.html'">查看报告</button>
+                                <button class="btn-action btn-download" onclick="exportStationReport()">导出</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- 报表卡片 -->
                     <div class="report-card">
                         <div class="report-header">
@@ -570,6 +611,120 @@
         function changePage(page) {
             console.log('切换到页面:', page);
         }
+
+        // 导出电站报告
+        function exportStationReport() {
+            showMessage('正在生成电站报告...', 'info');
+            
+            // 模拟导出过程
+            setTimeout(() => {
+                showMessage('电站报告已生成并开始下载', 'success');
+            }, 2000);
+        }
+
+        // 消息提示函数
+        function showMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 6px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                transition: all 0.3s ease;
+                ${type === 'success' ? 'background: #10b981;' : 
+                  type === 'error' ? 'background: #ef4444;' : 
+                  'background: #3b82f6;'}
+            `;
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(messageEl)) {
+                        document.body.removeChild(messageEl);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 用户下拉菜单功能
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button) {
+                dropdown.classList.toggle('show');
+                button.classList.toggle('active');
+            }
+        }
+
+        // 显示账号信息
+        function showAccountInfo() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            alert('账号信息功能开发中');
+        }
+
+        // 确认退出
+        function confirmLogout() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            
+            if (confirm('您确定要退出系统吗？')) {
+                alert('正在退出...');
+                setTimeout(() => {
+                    window.location.href = '../../index.html';
+                }, 1000);
+            }
+        }
+
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button && !button.contains(event.target)) {
+                dropdown.classList.remove('show');
+                button.classList.remove('active');
+            }
+        });
+
+        // 通用工具函数
+        function toggleSidebar() {
+            if (window.sidebar) {
+                window.sidebar.toggle();
+            }
+        }
+
+        function goBack() {
+            history.back();
+        }
+
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
+        }
+
+        function toggleTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            }
+        }
     </script>
 
     <!-- 引入侧边栏脚本 -->
@@ -633,6 +788,72 @@
             background: #f8fafc;
             border-color: #cbd5e1;
             color: #1e293b;
+        }
+
+        /* 用户下拉菜单样式 */
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-menu-btn {
+            position: relative;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .user-menu-btn.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: #374151;
+            font-size: 0.875rem;
+            transition: background-color 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.logout:hover {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0.25rem 0;
         }
     </style>
 </body>

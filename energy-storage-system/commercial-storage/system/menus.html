@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜单管理 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .menu-tree {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .tree-toolbar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .menu-tree-container {
+            position: relative;
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            background: white;
+            cursor: move;
+            transition: all 0.2s ease;
+        }
+
+        .tree-item:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .tree-item.dragging {
+            opacity: 0.5;
+            transform: rotate(3deg);
+        }
+
+        .tree-item.drag-over {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .menu-level-0 {
+            margin-left: 0;
+        }
+
+        .menu-level-1 {
+            margin-left: 2rem;
+        }
+
+        .menu-level-2 {
+            margin-left: 4rem;
+        }
+
+        .tree-item-icon {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .tree-item-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tree-item-name {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .tree-item-path {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .tree-item-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-disabled {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .tree-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn.edit {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .action-btn.edit:hover {
+            background: #dbeafe;
+        }
+
+        .action-btn.delete {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .action-btn.delete:hover {
+            background: #fee2e2;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: #9ca3af;
+            margin-right: 0.5rem;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            min-width: 500px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #374151;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        .expand-toggle {
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 12px;
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            user-select: none;
+            transition: color 0.2s ease;
+        }
+
+        .expand-toggle:hover {
+            color: #374151;
+        }
+
+        .expand-toggle.expanded {
+            color: #3b82f6;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        /* 用户下拉菜单样式 */
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-menu-btn {
+            position: relative;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .user-menu-btn.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: #374151;
+            font-size: 0.875rem;
+            transition: background-color 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.logout:hover {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0.25rem 0;
+        }
+
+        /* 账号信息模态框 */
+        #accountInfoModal .modal-content {
+            max-width: 500px;
+        }
+
+        /* 确认退出模态框 */
+        #logoutConfirmModal .modal-content {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        #logoutConfirmModal .modal-body {
+            padding: 2rem;
+        }
+
+        #logoutConfirmModal .modal-body p {
+            font-size: 1.1rem;
+            color: #374151;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">菜单管理</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <div class="user-dropdown">
+                    <button class="nav-button user-menu-btn" onclick="toggleUserMenu()">
+                        <span>👤</span>
+                        <span>管理员</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <div class="dropdown-item" onclick="showAccountInfo()">
+                            <span>账号信息</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item logout" onclick="confirmLogout()">
+                            <span>退出</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>菜单管理</h1>
+                    <button class="btn btn-primary" onclick="showAddMenuModal()">
+                        <span>+</span>
+                        新增菜单
+                    </button>
+                </div>
+
+                <div class="menu-tree">
+                    <div class="tree-toolbar">
+                        <button class="btn btn-secondary" onclick="expandAll()">展开全部</button>
+                        <button class="btn btn-secondary" onclick="collapseAll()">收起全部</button>
+                        <button class="btn btn-secondary" onclick="sortMenus()">自动排序</button>
+                    </div>
+
+                    <div class="menu-tree-container" id="menuTreeContainer">
+                        <!-- 菜单树结构将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 账号信息模态框 -->
+    <div id="accountInfoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">账号信息</h2>
+                <button class="close-btn" onclick="closeAccountModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" value="管理员" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" value="admin@example.com" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>角色</label>
+                    <input type="text" value="系统管理员" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>最后登录时间</label>
+                    <input type="text" value="2024-03-15 14:30:25" readonly>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="showPasswordModal()">修改密码</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAccountModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修改密码模态框 -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">修改密码</h2>
+                <button class="close-btn" onclick="closePasswordModal()">&times;</button>
+            </div>
+            
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="oldPassword">当前密码 <span class="required">*</span></label>
+                    <input type="password" id="oldPassword" name="oldPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">新密码 <span class="required">*</span></label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">确认新密码 <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+            </form>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="savePassword()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 退出确认模态框 -->
+    <div id="logoutConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">确认退出</h2>
+                <button class="close-btn" onclick="closeLogoutModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p>您确定要退出系统吗？</p>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeLogoutModal()">取消</button>
+                <button type="button" class="btn btn-danger" onclick="performLogout()">确认退出</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增/编辑菜单模态框 -->
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">新增菜单</h2>
+                <button class="close-btn" onclick="closeMenuModal()">&times;</button>
+            </div>
+            
+            <form id="menuForm">
+                <div class="form-group">
+                    <label for="menuName">菜单名称</label>
+                    <input type="text" id="menuName" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="menuIcon">菜单图标</label>
+                    <input type="text" id="menuIcon" name="icon" placeholder="例如：⚡ 或 🔧">
+                </div>
+                
+                <div class="form-group">
+                    <label for="menuPath">菜单路径</label>
+                    <input type="text" id="menuPath" name="path" placeholder="例如：./station-management.html">
+                </div>
+                
+                <div class="form-group">
+                    <label for="parentMenu">父级菜单</label>
+                    <select id="parentMenu" name="parent">
+                        <option value="">根菜单</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="menuSort">排序</label>
+                    <input type="number" id="menuSort" name="sort" value="1" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="menuStatus">状态</label>
+                    <select id="menuStatus" name="status">
+                        <option value="active">启用</option>
+                        <option value="disabled">禁用</option>
+                    </select>
+                </div>
+            </form>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeMenuModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveMenu()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 菜单数据
+        let menuData = [
+            {
+                id: 1,
+                name: '电站',
+                icon: '⚡',
+                path: '',
+                parent: null,
+                sort: 1,
+                status: 'active',
+                children: [
+                    { id: 11, name: '电站管理', icon: '', path: './station-management.html', parent: 1, sort: 1, status: 'active', children: [] },
+                    { id: 12, name: '电价设置', icon: '', path: './price-settings.html', parent: 1, sort: 2, status: 'active', children: [] },
+                    { id: 13, name: '电站控制', icon: '', path: './control.html', parent: 1, sort: 3, status: 'active', children: [] }
+                ]
+            },
+            {
+                id: 2,
+                name: '设备管理',
+                icon: '⚙️',
+                path: '',
+                parent: null,
+                sort: 2,
+                status: 'active',
+                children: [
+                    { id: 21, name: '设备列表', icon: '', path: './monitoring/device-list.html', parent: 2, sort: 1, status: 'active', children: [] },
+                    { id: 22, name: '设备台账', icon: '', path: './device/manage.html', parent: 2, sort: 2, status: 'active', children: [] },
+                    { id: 23, name: '远程控制', icon: '', path: './device/control.html', parent: 2, sort: 3, status: 'active', children: [] },
+                    { id: 24, name: '固件管理', icon: '', path: './device/firmware.html', parent: 2, sort: 4, status: 'active', children: [] }
+                ]
+            },
+            {
+                id: 3,
+                name: '数据分析',
+                icon: '📊',
+                path: '',
+                parent: null,
+                sort: 3,
+                status: 'active',
+                children: [
+                    { id: 31, name: '能耗分析', icon: '', path: './analysis/energy.html', parent: 3, sort: 1, status: 'active', children: [] },
+                    { id: 32, name: '效率分析', icon: '', path: './analysis/efficiency.html', parent: 3, sort: 2, status: 'active', children: [] },
+                    { id: 33, name: '经济性分析', icon: '', path: './analysis/economic.html', parent: 3, sort: 3, status: 'active', children: [] }
+                ]
+            },
+            {
+                id: 4,
+                name: '告警管理',
+                icon: '🔔',
+                path: '',
+                parent: null,
+                sort: 4,
+                status: 'active',
+                children: [
+                    { id: 41, name: '告警规则', icon: '', path: './alarm/rules.html', parent: 4, sort: 1, status: 'active', children: [] },
+                    { id: 42, name: '告警列表', icon: '', path: './alarm/list.html', parent: 4, sort: 2, status: 'active', children: [] },
+                    { id: 43, name: '告警分析', icon: '', path: './alarm/analysis.html', parent: 4, sort: 3, status: 'active', children: [] }
+                ]
+            },
+            {
+                id: 5,
+                name: '报表中心',
+                icon: '📋',
+                path: '',
+                parent: null,
+                sort: 5,
+                status: 'active',
+                children: [
+                    { id: 51, name: '报表列表', icon: '', path: './report/list.html', parent: 5, sort: 1, status: 'active', children: [] },
+                    { id: 52, name: '创建报表', icon: '', path: './report/create.html', parent: 5, sort: 2, status: 'active', children: [] },
+                    { id: 53, name: '报表模板', icon: '', path: './report/templates.html', parent: 5, sort: 3, status: 'active', children: [] }
+                ]
+            },
+            {
+                id: 6,
+                name: '系统设置',
+                icon: '🔧',
+                path: '',
+                parent: null,
+                sort: 6,
+                status: 'active',
+                children: [
+                    { id: 61, name: '菜单管理', icon: '', path: './system/menus.html', parent: 6, sort: 1, status: 'active', children: [] },
+                    { id: 62, name: '用户管理', icon: '', path: './system/users.html', parent: 6, sort: 2, status: 'active', children: [] },
+                    { id: 63, name: '角色管理', icon: '', path: './system/roles.html', parent: 6, sort: 3, status: 'active', children: [] },
+                    { id: 64, name: '系统设置', icon: '', path: './system/settings.html', parent: 6, sort: 4, status: 'active', children: [] },
+                    { id: 65, name: '日志管理', icon: '', path: './system/logs.html', parent: 6, sort: 5, status: 'active', children: [] }
+                ]
+            },
+            {
+                id: 7,
+                name: '用户中心',
+                icon: '👤',
+                path: '',
+                parent: null,
+                sort: 7,
+                status: 'active',
+                children: [
+                    { id: 71, name: '个人信息', icon: '', path: './user/profile.html', parent: 7, sort: 1, status: 'active', children: [] },
+                    { id: 72, name: '修改密码', icon: '', path: './user/password.html', parent: 7, sort: 2, status: 'active', children: [] }
+                ]
+            }
+        ];
+
+        let currentEditingMenu = null;
+        let draggedElement = null;
+        let maxMenuId = 100;
+        let expandedMenus = new Set(); // 记录展开的菜单
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 默认展开前几个菜单以便用户看到结构
+            expandedMenus.add(1); // 电站
+            expandedMenus.add(2); // 设备管理
+            expandedMenus.add(6); // 系统设置
+            
+            renderMenuTree();
+            setupDragAndDrop();
+        });
+
+        // 渲染菜单树
+        function renderMenuTree() {
+            const container = document.getElementById('menuTreeContainer');
+            container.innerHTML = '';
+            
+            menuData.forEach(menu => {
+                renderMenuItem(menu, container, 0);
+            });
+        }
+
+        // 渲染单个菜单项
+        function renderMenuItem(menu, container, level) {
+            const menuElement = document.createElement('div');
+            menuElement.className = `tree-item menu-level-${level}`;
+            menuElement.dataset.menuId = menu.id;
+            menuElement.draggable = true;
+            
+            // 判断是否有子菜单
+            const hasChildren = menu.children && menu.children.length > 0;
+            const isExpanded = expandedMenus.has(menu.id);
+            
+            menuElement.innerHTML = `
+                <span class="drag-handle">⋮⋮</span>
+                ${hasChildren ? `<span class="expand-toggle ${isExpanded ? 'expanded' : ''}" onclick="toggleMenuExpand(${menu.id})">${isExpanded ? '▼' : '▶'}</span>` : '<span class="expand-spacer" style="width: 16px; display: inline-block;"></span>'}
+                <span class="tree-item-icon">${menu.icon}</span>
+                <div class="tree-item-content">
+                    <span class="tree-item-name">${menu.name}</span>
+                    ${menu.path ? `<span class="tree-item-path">${menu.path}</span>` : ''}
+                    <span class="tree-item-status status-${menu.status}">
+                        ${menu.status === 'active' ? '启用' : '禁用'}
+                    </span>
+                </div>
+                <div class="tree-item-actions">
+                    <button class="action-btn edit" onclick="editMenu(${menu.id})">编辑</button>
+                    <button class="action-btn delete" onclick="deleteMenu(${menu.id})">删除</button>
+                </div>
+            `;
+            
+            container.appendChild(menuElement);
+            
+            // 渲染子菜单（根据展开状态决定是否显示）
+            if (hasChildren && isExpanded) {
+                menu.children.forEach(child => {
+                    renderMenuItem(child, container, level + 1);
+                });
+            }
+        }
+
+        // 设置拖拽功能
+        function setupDragAndDrop() {
+            const container = document.getElementById('menuTreeContainer');
+            
+            container.addEventListener('dragstart', function(e) {
+                if (e.target.classList.contains('tree-item')) {
+                    draggedElement = e.target;
+                    e.target.classList.add('dragging');
+                }
+            });
+            
+            container.addEventListener('dragend', function(e) {
+                if (e.target.classList.contains('tree-item')) {
+                    e.target.classList.remove('dragging');
+                    draggedElement = null;
+                }
+            });
+            
+            container.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(container, e.clientY);
+                if (afterElement == null) {
+                    container.appendChild(draggedElement);
+                } else {
+                    container.insertBefore(draggedElement, afterElement);
+                }
+            });
+        }
+
+        // 获取拖拽后的位置
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.tree-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // 显示新增菜单模态框
+        function showAddMenuModal() {
+            currentEditingMenu = null;
+            document.getElementById('modalTitle').textContent = '新增菜单';
+            document.getElementById('menuForm').reset();
+            updateParentMenuOptions();
+            document.getElementById('menuModal').classList.add('show');
+        }
+
+        // 编辑菜单
+        function editMenu(menuId) {
+            const menu = findMenuById(menuId);
+            if (!menu) return;
+            
+            currentEditingMenu = menu;
+            document.getElementById('modalTitle').textContent = '编辑菜单';
+            
+            // 填充表单
+            document.getElementById('menuName').value = menu.name;
+            document.getElementById('menuIcon').value = menu.icon;
+            document.getElementById('menuPath').value = menu.path;
+            document.getElementById('parentMenu').value = menu.parent || '';
+            document.getElementById('menuSort').value = menu.sort;
+            document.getElementById('menuStatus').value = menu.status;
+            
+            updateParentMenuOptions();
+            document.getElementById('menuModal').classList.add('show');
+        }
+
+        // 删除菜单
+        function deleteMenu(menuId) {
+            if (confirm('确定要删除此菜单吗？删除后不可恢复。')) {
+                removeMenuById(menuId);
+                renderMenuTree();
+                showMessage('菜单删除成功', 'success');
+            }
+        }
+
+        // 保存菜单
+        function saveMenu() {
+            const form = document.getElementById('menuForm');
+            const formData = new FormData(form);
+            
+            const menuData = {
+                name: formData.get('name'),
+                icon: formData.get('icon'),
+                path: formData.get('path'),
+                parent: formData.get('parent') ? parseInt(formData.get('parent')) : null,
+                sort: parseInt(formData.get('sort')),
+                status: formData.get('status')
+            };
+            
+            if (currentEditingMenu) {
+                // 编辑现有菜单
+                Object.assign(currentEditingMenu, menuData);
+                showMessage('菜单更新成功', 'success');
+            } else {
+                // 新增菜单
+                const newMenu = {
+                    id: ++maxMenuId,
+                    ...menuData,
+                    children: []
+                };
+                
+                if (newMenu.parent) {
+                    const parent = findMenuById(newMenu.parent);
+                    if (parent) {
+                        parent.children.push(newMenu);
+                    }
+                } else {
+                    window.menuData.push(newMenu);
+                }
+                
+                showMessage('菜单创建成功', 'success');
+            }
+            
+            renderMenuTree();
+            closeMenuModal();
+        }
+
+        // 关闭模态框
+        function closeMenuModal() {
+            document.getElementById('menuModal').classList.remove('show');
+        }
+
+        // 更新父级菜单选项
+        function updateParentMenuOptions() {
+            const select = document.getElementById('parentMenu');
+            select.innerHTML = '<option value="">根菜单</option>';
+            
+            menuData.forEach(menu => {
+                if (!currentEditingMenu || menu.id !== currentEditingMenu.id) {
+                    select.appendChild(new Option(menu.name, menu.id));
+                }
+            });
+        }
+
+        // 查找菜单
+        function findMenuById(id) {
+            for (let menu of menuData) {
+                if (menu.id === id) return menu;
+                for (let child of menu.children) {
+                    if (child.id === id) return child;
+                }
+            }
+            return null;
+        }
+
+        // 删除菜单
+        function removeMenuById(id) {
+            // 从根菜单删除
+            let index = menuData.findIndex(menu => menu.id === id);
+            if (index !== -1) {
+                menuData.splice(index, 1);
+                return;
+            }
+            
+            // 从子菜单删除
+            for (let menu of menuData) {
+                index = menu.children.findIndex(child => child.id === id);
+                if (index !== -1) {
+                    menu.children.splice(index, 1);
+                    return;
+                }
+            }
+        }
+
+        // 切换单个菜单的展开/收起状态
+        function toggleMenuExpand(menuId) {
+            if (expandedMenus.has(menuId)) {
+                expandedMenus.delete(menuId);
+            } else {
+                expandedMenus.add(menuId);
+            }
+            renderMenuTree();
+        }
+
+        // 展开全部
+        function expandAll() {
+            // 添加所有有子菜单的菜单ID到展开集合
+            menuData.forEach(menu => {
+                if (menu.children && menu.children.length > 0) {
+                    expandedMenus.add(menu.id);
+                }
+            });
+            renderMenuTree();
+            showMessage('已展开所有菜单', 'success');
+        }
+
+        // 收起全部
+        function collapseAll() {
+            // 清空展开集合
+            expandedMenus.clear();
+            renderMenuTree();
+            showMessage('已收起所有菜单', 'success');
+        }
+
+        // 自动排序
+        function sortMenus() {
+            // 对根级菜单排序
+            menuData.sort((a, b) => a.sort - b.sort);
+            
+            // 对每个菜单的子菜单排序
+            menuData.forEach(menu => {
+                if (menu.children && menu.children.length > 0) {
+                    menu.children.sort((a, b) => a.sort - b.sort);
+                }
+            });
+            
+            renderMenuTree();
+            showMessage('菜单自动排序完成', 'success');
+        }
+
+        // 消息提示
+        function showMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 6px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                transition: all 0.3s ease;
+                ${type === 'success' ? 'background: #10b981;' : 
+                  type === 'error' ? 'background: #ef4444;' : 
+                  'background: #3b82f6;'}
+            `;
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(messageEl);
+                }, 300);
+            }, 3000);
+        }
+
+        // 通用工具函数
+        function toggleSidebar() {
+            if (window.sidebar) {
+                window.sidebar.toggle();
+            }
+        }
+
+        function goBack() {
+            history.back();
+        }
+
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
+        }
+
+        function toggleTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            }
+        }
+
+        // 用户下拉菜单功能
+        function toggleUserMenu() {
+            console.log('toggleUserMenu called'); // 调试用
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button) {
+                dropdown.classList.toggle('show');
+                button.classList.toggle('active');
+                console.log('Menu toggled', dropdown.classList.contains('show')); // 调试用
+            } else {
+                console.log('Dropdown or button not found'); // 调试用
+            }
+        }
+
+        // 显示账号信息
+        function showAccountInfo() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            document.getElementById('accountInfoModal').classList.add('show');
+        }
+
+        // 关闭账号信息模态框
+        function closeAccountModal() {
+            document.getElementById('accountInfoModal').classList.remove('show');
+        }
+
+        // 显示修改密码模态框
+        function showPasswordModal() {
+            document.getElementById('accountInfoModal').classList.remove('show');
+            document.getElementById('passwordModal').classList.add('show');
+        }
+
+        // 关闭修改密码模态框
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('show');
+            document.getElementById('passwordForm').reset();
+        }
+
+        // 保存密码
+        function savePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                showMessage('请填写所有必填字段', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showMessage('新密码和确认密码不匹配', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showMessage('新密码长度不能少于6位', 'error');
+                return;
+            }
+
+            // 这里应该调用后端API修改密码
+            showMessage('密码修改成功', 'success');
+            closePasswordModal();
+        }
+
+        // 确认退出
+        function confirmLogout() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            document.getElementById('logoutConfirmModal').classList.add('show');
+        }
+
+        // 关闭退出确认模态框
+        function closeLogoutModal() {
+            document.getElementById('logoutConfirmModal').classList.remove('show');
+        }
+
+        // 执行退出
+        function performLogout() {
+            // 这里应该调用后端API退出登录
+            showMessage('正在退出...', 'info');
+            setTimeout(() => {
+                window.location.href = '../../index.html';
+            }, 1000);
+        }
+
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button && !button.contains(event.target)) {
+                dropdown.classList.remove('show');
+                button.classList.remove('active');
+            }
+        });
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+</body>
+</html>

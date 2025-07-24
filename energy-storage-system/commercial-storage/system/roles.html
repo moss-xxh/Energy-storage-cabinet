@@ -22,6 +22,11 @@
             padding: 2rem;
         }
 
+        .page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .page-header {
             margin-bottom: 2rem;
         }
@@ -33,100 +38,240 @@
             margin-bottom: 0.5rem;
         }
         
-        .role-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .role-card {
+        .search-filter-section {
             background: white;
-            border-radius: 8px;
+            border-radius: 0.75rem;
             padding: 1.5rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border-left: 4px solid #3b82f6;
         }
 
-        .role-header {
+        .content-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .search-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            white-space: nowrap;
+        }
+
+        .search-input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            min-width: 140px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3562E3;
+            box-shadow: 0 0 0 3px rgba(53, 98, 227, 0.1);
+        }
+
+        .search-button, .reset-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-button {
+            background: #3562E3;
+            color: white;
+            border: 1px solid #3562E3;
+        }
+
+        .search-button:hover {
+            background: #2951d3;
+        }
+
+        .reset-button {
+            background: white;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+        }
+
+        .reset-button:hover {
+            background: #f9fafb;
+            color: #374151;
+        }
+        
+        .role-table {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-action-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 0;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn.primary {
+            background: #3562E3;
+            color: white;
+            border-color: #3562E3;
+        }
+
+        .action-btn.primary:hover {
+            background: #2951d3;
+        }
+
+        .device-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .device-table th {
+            padding: 0.625rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.8125rem;
+        }
+
+        .device-table td {
+            padding: 0.625rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.8125rem;
+        }
+
+        .device-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 0;
+        }
+
+        #list-view-content {
+            padding: 1.5rem;
+        }
+
+        .table-action {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.375rem;
+            border-radius: 0.25rem;
+            color: #374151;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .table-action:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .table-action svg {
+            width: 16px;
+            height: 16px;
         }
 
         .role-name {
-            font-size: 1.25rem;
             font-weight: 600;
-            color: #1e293b;
-        }
-
-        .role-users {
-            font-size: 14px;
-            color: #64748b;
-            background: #f1f5f9;
-            padding: 4px 8px;
-            border-radius: 12px;
+            color: #1f2937;
         }
 
         .role-description {
             color: #64748b;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
+            font-size: 0.8125rem;
+            line-height: 1.4;
+            max-width: 300px;
         }
 
-        .permissions-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .permissions-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.75rem;
-        }
-
-        .permissions-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .permission-tag {
-            background: #eff6ff;
-            color: #1d4ed8;
-            padding: 4px 8px;
+        .user-count {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            background: #f1f5f9;
+            color: #64748b;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 500;
         }
 
-        .role-actions {
+        .permission-tags {
             display: flex;
-            gap: 0.5rem;
-            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            max-width: 200px;
         }
 
-        .btn-action {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-edit {
-            background: #dbeafe;
+        .permission-tag {
+            background: #eff6ff;
             color: #1d4ed8;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 500;
         }
 
-        .btn-copy {
-            background: #f3e8ff;
-            color: #7c3aed;
+        .role-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
         }
 
-        .btn-delete {
+        .status-active {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-inactive {
             background: #fee2e2;
             color: #dc2626;
         }
@@ -192,73 +337,117 @@
             padding: 1.5rem;
         }
 
-        .permission-group {
-            margin-bottom: 2rem;
+        /* 权限树结构样式 */
+        .permission-tree {
+            margin-top: 1rem;
         }
 
-        .group-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
+        .tree-group {
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tree-parent {
+            background: #f8fafc;
             border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+            user-select: none;
         }
 
-        .permission-item {
+        .tree-parent:hover {
+            background: #f1f5f9;
+        }
+
+        .tree-checkbox-wrapper {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 0;
+            padding: 1rem;
+            gap: 0.75rem;
+        }
+
+        .tree-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .expand-icon {
+            font-size: 0.75rem;
+            color: #6b7280;
+            transition: transform 0.2s ease;
+            width: 12px;
+            text-align: center;
+        }
+
+        .tree-parent.expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        .group-name {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 0.9rem;
+        }
+
+        .tree-children {
+            display: none;
+            background: white;
+        }
+
+        .tree-children.expanded {
+            display: block;
+        }
+
+        .tree-child {
             border-bottom: 1px solid #f1f5f9;
         }
 
-        .permission-item:last-child {
+        .tree-child:last-child {
             border-bottom: none;
         }
 
-        .permission-info {
-            flex: 1;
+        .tree-child .tree-checkbox-wrapper {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+        }
+
+        .tree-child .tree-label {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
         }
 
         .permission-name {
             font-weight: 500;
             color: #1e293b;
-            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
         }
 
         .permission-desc {
-            font-size: 14px;
+            font-size: 0.8125rem;
             color: #64748b;
+            line-height: 1.4;
         }
 
-        .permission-toggle {
-            position: relative;
-            width: 48px;
-            height: 24px;
-            background: #d1d5db;
-            border-radius: 12px;
+        /* 复选框样式 */
+        .parent-checkbox,
+        .child-checkbox {
+            width: 16px;
+            height: 16px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            accent-color: #3b82f6;
         }
 
-        .permission-toggle.active {
-            background: #3b82f6;
+        .parent-checkbox {
+            transform: scale(1.1);
         }
 
-        .toggle-slider {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-        }
-
-        .permission-toggle.active .toggle-slider {
-            transform: translateX(24px);
+        /* 半选状态样式 */
+        .parent-checkbox:indeterminate {
+            accent-color: #f59e0b;
         }
 
         .form-actions {
@@ -268,6 +457,74 @@
             margin-top: 2rem;
             padding-top: 1rem;
             border-top: 1px solid #e5e7eb;
+        }
+
+        .role-form {
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .role-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #dc2626;
         }
     </style>
 </head>
@@ -295,123 +552,255 @@
                 <button class="nav-button" onclick="toggleTheme()">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button class="nav-button">
-                    <span>👤</span>
-                    <span>管理员</span>
-                </button>
+                <div class="user-dropdown">
+                    <button class="nav-button user-menu-btn" onclick="toggleUserMenu()">
+                        <span>👤</span>
+                        <span>管理员</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <div class="dropdown-item" onclick="showAccountInfo()">
+                            <span>账号信息</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item logout" onclick="confirmLogout()">
+                            <span>退出</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
 
 <div class="content">
             <div class="page-content">
                 <div class="page-header">
-                    <h1>角色管理</h1>
-                    <p>系统角色与权限管理</p>
                 </div>
 
-                <div class="role-header-main">
-                    <h2>系统角色</h2>
-                    <button class="btn btn-primary" onclick="showCreateRoleModal()">创建角色</button>
+                <!-- 筛选面板 -->
+                <div class="search-filter-section">
+                    <div class="search-row">
+                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div class="search-group">
+                                    <label class="search-label">角色状态：</label>
+                                    <select class="search-input" id="status-filter">
+                                        <option value="">全部状态</option>
+                                        <option value="active">启用</option>
+                                        <option value="inactive">禁用</option>
+                                    </select>
+                                </div>
+                                <div class="search-group">
+                                    <label class="search-label">关键词：</label>
+                                    <input type="text" class="search-input" id="keyword-search" placeholder="搜索角色名称">
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="search-button" onclick="searchRoles()">
+                                    <span>搜索</span>
+                                </button>
+                                <button class="reset-button" onclick="resetSearch()">
+                                    <span>重置</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="role-grid">
-                    <!-- 管理员角色 -->
-                    <div class="role-card">
-                        <div class="role-header">
-                            <h3 class="role-name">系统管理员</h3>
-                            <span class="role-users">4 用户</span>
-                        </div>
-                        <p class="role-description">拥有系统最高权限，可以管理所有功能模块和用户账户</p>
-                        
-                        <div class="permissions-section">
-                            <div class="permissions-title">主要权限</div>
-                            <div class="permissions-list">
-                                <span class="permission-tag">用户管理</span>
-                                <span class="permission-tag">系统设置</span>
-                                <span class="permission-tag">数据管理</span>
-                                <span class="permission-tag">报表导出</span>
-                                <span class="permission-tag">设备控制</span>
-                            </div>
-                        </div>
-
-                        <div class="role-actions">
-                            <button class="btn-action btn-edit" onclick="editRole('admin')">编辑</button>
-                            <button class="btn-action btn-copy" onclick="copyRole('admin')">复制</button>
+                <!-- 角色管理卡片 -->
+                <div class="content-card">
+                    <div class="table-action-bar">
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="action-btn primary" onclick="showCreateRoleModal()">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>创建角色</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- 操作员角色 -->
-                    <div class="role-card">
-                        <div class="role-header">
-                            <h3 class="role-name">系统操作员</h3>
-                            <span class="role-users">12 用户</span>
-                        </div>
-                        <p class="role-description">负责日常运维操作，可以监控设备状态、处理告警、生成报表</p>
-                        
-                        <div class="permissions-section">
-                            <div class="permissions-title">主要权限</div>
-                            <div class="permissions-list">
-                                <span class="permission-tag">设备监控</span>
-                                <span class="permission-tag">告警处理</span>
-                                <span class="permission-tag">数据查看</span>
-                                <span class="permission-tag">报表生成</span>
-                            </div>
-                        </div>
-
-                        <div class="role-actions">
-                            <button class="btn-action btn-edit" onclick="editRole('operator')">编辑</button>
-                            <button class="btn-action btn-copy" onclick="copyRole('operator')">复制</button>
-                            <button class="btn-action btn-delete" onclick="deleteRole('operator')">删除</button>
-                        </div>
-                    </div>
-
-                    <!-- 查看者角色 -->
-                    <div class="role-card">
-                        <div class="role-header">
-                            <h3 class="role-name">数据查看者</h3>
-                            <span class="role-users">8 用户</span>
-                        </div>
-                        <p class="role-description">仅可查看数据和报表，不能进行任何操作或修改</p>
-                        
-                        <div class="permissions-section">
-                            <div class="permissions-title">主要权限</div>
-                            <div class="permissions-list">
-                                <span class="permission-tag">数据查看</span>
-                                <span class="permission-tag">报表查看</span>
-                                <span class="permission-tag">设备状态查看</span>
-                            </div>
-                        </div>
-
-                        <div class="role-actions">
-                            <button class="btn-action btn-edit" onclick="editRole('viewer')">编辑</button>
-                            <button class="btn-action btn-copy" onclick="copyRole('viewer')">复制</button>
-                            <button class="btn-action btn-delete" onclick="deleteRole('viewer')">删除</button>
-                        </div>
-                    </div>
-
-                    <!-- 维护工程师角色 -->
-                    <div class="role-card">
-                        <div class="role-header">
-                            <h3 class="role-name">维护工程师</h3>
-                            <span class="role-users">6 用户</span>
-                        </div>
-                        <p class="role-description">负责设备维护和故障处理，可以进行设备控制和固件更新</p>
-                        
-                        <div class="permissions-section">
-                            <div class="permissions-title">主要权限</div>
-                            <div class="permissions-list">
-                                <span class="permission-tag">设备控制</span>
-                                <span class="permission-tag">固件管理</span>
-                                <span class="permission-tag">维护记录</span>
-                                <span class="permission-tag">告警处理</span>
-                            </div>
-                        </div>
-
-                        <div class="role-actions">
-                            <button class="btn-action btn-edit" onclick="editRole('engineer')">编辑</button>
-                            <button class="btn-action btn-copy" onclick="copyRole('engineer')">复制</button>
-                            <button class="btn-action btn-delete" onclick="deleteRole('engineer')">删除</button>
-                        </div>
+                    <!-- 角色列表 -->
+                    <div id="list-view-content" class="table-container">
+                        <table class="device-table">
+                            <thead>
+                                <tr>
+                                    <th>角色名称</th>
+                                    <th>描述</th>
+                                    <th>用户数量</th>
+                                    <th>主要权限</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="role-name">系统管理员</div>
+                                    </td>
+                                    <td>
+                                        <div class="role-description">拥有系统最高权限，可以管理所有功能模块和用户账户</div>
+                                    </td>
+                                    <td>
+                                        <span class="user-count">4 用户</span>
+                                    </td>
+                                    <td>
+                                        <div class="permission-tags">
+                                            <span class="permission-tag">用户管理</span>
+                                            <span class="permission-tag">系统设置</span>
+                                            <span class="permission-tag">数据管理</span>
+                                            <span class="permission-tag">+5项</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="role-status status-active">启用</span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="table-action" onclick="editRole('admin')" title="编辑">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                </svg>
+                                            </button>
+                                            <button class="table-action" onclick="copyRole('admin')" title="复制">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="role-name">系统操作员</div>
+                                    </td>
+                                    <td>
+                                        <div class="role-description">负责日常运维操作，可以监控设备状态、处理告警、生成报表</div>
+                                    </td>
+                                    <td>
+                                        <span class="user-count">12 用户</span>
+                                    </td>
+                                    <td>
+                                        <div class="permission-tags">
+                                            <span class="permission-tag">设备监控</span>
+                                            <span class="permission-tag">告警处理</span>
+                                            <span class="permission-tag">数据查看</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="role-status status-active">启用</span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="table-action" onclick="editRole('operator')" title="编辑">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                </svg>
+                                            </button>
+                                            <button class="table-action" onclick="copyRole('operator')" title="复制">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                </svg>
+                                            </button>
+                                            <button class="table-action" onclick="deleteRole('operator')" title="删除">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="3,6 5,6 21,6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="role-name">数据查看者</div>
+                                    </td>
+                                    <td>
+                                        <div class="role-description">仅可查看数据和报表，不能进行任何操作或修改</div>
+                                    </td>
+                                    <td>
+                                        <span class="user-count">8 用户</span>
+                                    </td>
+                                    <td>
+                                        <div class="permission-tags">
+                                            <span class="permission-tag">数据查看</span>
+                                            <span class="permission-tag">报表查看</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="role-status status-active">启用</span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="table-action" onclick="editRole('viewer')" title="编辑">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                </svg>
+                                            </button>
+                                            <button class="table-action" onclick="copyRole('viewer')" title="复制">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                </svg>
+                                            </button>
+                                            <button class="table-action" onclick="deleteRole('viewer')" title="删除">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="3,6 5,6 21,6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="role-name">维护工程师</div>
+                                    </td>
+                                    <td>
+                                        <div class="role-description">负责设备维护和故障处理，可以进行设备控制和固件更新</div>
+                                    </td>
+                                    <td>
+                                        <span class="user-count">6 用户</span>
+                                    </td>
+                                    <td>
+                                        <div class="permission-tags">
+                                            <span class="permission-tag">设备控制</span>
+                                            <span class="permission-tag">固件管理</span>
+                                            <span class="permission-tag">维护记录</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="role-status status-active">启用</span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="table-action" onclick="editRole('engineer')" title="编辑">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                </svg>
+                                            </button>
+                                            <button class="table-action" onclick="copyRole('engineer')" title="复制">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                </svg>
+                                            </button>
+                                            <button class="table-action" onclick="deleteRole('engineer')" title="删除">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="3,6 5,6 21,6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -426,137 +815,535 @@
                 <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="permission-group">
-                    <h4 class="group-title">设备管理</h4>
-                    <div class="permission-item">
-                        <div class="permission-info">
-                            <div class="permission-name">设备监控</div>
-                            <div class="permission-desc">查看设备实时状态和数据</div>
+                <!-- 角色基本信息表单 -->
+                <div id="role-form-section" class="role-form">
+                    <form id="roleForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="roleName">角色名称 <span class="required">*</span></label>
+                                <input type="text" id="roleName" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="roleStatus">状态</label>
+                                <select id="roleStatus" name="status">
+                                    <option value="active">启用</option>
+                                    <option value="inactive">禁用</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="permission-toggle active" onclick="togglePermission(this)">
-                            <div class="toggle-slider"></div>
+                        
+                        <div class="form-group">
+                            <label for="roleDescription">描述</label>
+                            <textarea id="roleDescription" name="description" placeholder="角色描述和职责说明"></textarea>
                         </div>
-                    </div>
-                    <div class="permission-item">
-                        <div class="permission-info">
-                            <div class="permission-name">设备控制</div>
-                            <div class="permission-desc">远程控制设备启停和参数调节</div>
-                        </div>
-                        <div class="permission-toggle" onclick="togglePermission(this)">
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
-                    <div class="permission-item">
-                        <div class="permission-info">
-                            <div class="permission-name">固件管理</div>
-                            <div class="permission-desc">设备固件升级和版本管理</div>
-                        </div>
-                        <div class="permission-toggle" onclick="togglePermission(this)">
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
 
-                <div class="permission-group">
-                    <h4 class="group-title">数据分析</h4>
-                    <div class="permission-item">
-                        <div class="permission-info">
-                            <div class="permission-name">数据查看</div>
-                            <div class="permission-desc">查看系统各类数据和统计信息</div>
+                <!-- 权限设置 - 树结构 -->
+                <div class="permission-tree">
+                    <div class="tree-group">
+                        <div class="tree-parent" data-group="station" onclick="toggleTreeNode('station')">
+                            <div class="tree-checkbox-wrapper">
+                                <input type="checkbox" id="station_all" class="parent-checkbox" onchange="toggleGroupPermissions('station', this)" onclick="event.stopPropagation()">
+                                <label for="station_all" class="tree-label">
+                                    <span class="expand-icon">▶</span>
+                                    <span class="group-name">电站管理</span>
+                                </label>
+                            </div>
                         </div>
-                        <div class="permission-toggle active" onclick="togglePermission(this)">
-                            <div class="toggle-slider"></div>
+                        <div class="tree-children" id="station_children">
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="station_monitor" class="child-checkbox" data-parent="station" onchange="updateParentCheckbox('station')">
+                                    <label for="station_monitor" class="tree-label">
+                                        <span class="permission-name">电站监控</span>
+                                        <span class="permission-desc">查看电站实时状态和运行数据</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="station_control" class="child-checkbox" data-parent="station" onchange="updateParentCheckbox('station')">
+                                    <label for="station_control" class="tree-label">
+                                        <span class="permission-name">电站控制</span>
+                                        <span class="permission-desc">远程控制电站启停和参数调节</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="price_setting" class="child-checkbox" data-parent="station" onchange="updateParentCheckbox('station')">
+                                    <label for="price_setting" class="tree-label">
+                                        <span class="permission-name">电价设置</span>
+                                        <span class="permission-desc">管理电价策略和时段设置</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="permission-item">
-                        <div class="permission-info">
-                            <div class="permission-name">数据导出</div>
-                            <div class="permission-desc">导出数据报表和分析结果</div>
-                        </div>
-                        <div class="permission-toggle" onclick="togglePermission(this)">
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="permission-group">
-                    <h4 class="group-title">系统管理</h4>
-                    <div class="permission-item">
-                        <div class="permission-info">
-                            <div class="permission-name">用户管理</div>
-                            <div class="permission-desc">管理系统用户账户和权限</div>
+                    <div class="tree-group">
+                        <div class="tree-parent" data-group="device" onclick="toggleTreeNode('device')">
+                            <div class="tree-checkbox-wrapper">
+                                <input type="checkbox" id="device_all" class="parent-checkbox" onchange="toggleGroupPermissions('device', this)" onclick="event.stopPropagation()">
+                                <label for="device_all" class="tree-label">
+                                    <span class="expand-icon">▶</span>
+                                    <span class="group-name">设备管理</span>
+                                </label>
+                            </div>
                         </div>
-                        <div class="permission-toggle" onclick="togglePermission(this)">
-                            <div class="toggle-slider"></div>
+                        <div class="tree-children" id="device_children">
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="device_monitor" class="child-checkbox" data-parent="device" onchange="updateParentCheckbox('device')">
+                                    <label for="device_monitor" class="tree-label">
+                                        <span class="permission-name">设备监控</span>
+                                        <span class="permission-desc">查看设备实时状态和数据</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="device_control" class="child-checkbox" data-parent="device" onchange="updateParentCheckbox('device')">
+                                    <label for="device_control" class="tree-label">
+                                        <span class="permission-name">设备控制</span>
+                                        <span class="permission-desc">远程控制设备启停和参数调节</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="firmware_manage" class="child-checkbox" data-parent="device" onchange="updateParentCheckbox('device')">
+                                    <label for="firmware_manage" class="tree-label">
+                                        <span class="permission-name">固件管理</span>
+                                        <span class="permission-desc">设备固件升级和版本管理</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="permission-item">
-                        <div class="permission-info">
-                            <div class="permission-name">系统设置</div>
-                            <div class="permission-desc">修改系统配置和参数</div>
+
+                    <div class="tree-group">
+                        <div class="tree-parent" data-group="data" onclick="toggleTreeNode('data')">
+                            <div class="tree-checkbox-wrapper">
+                                <input type="checkbox" id="data_all" class="parent-checkbox" onchange="toggleGroupPermissions('data', this)" onclick="event.stopPropagation()">
+                                <label for="data_all" class="tree-label">
+                                    <span class="expand-icon">▶</span>
+                                    <span class="group-name">数据分析</span>
+                                </label>
+                            </div>
                         </div>
-                        <div class="permission-toggle" onclick="togglePermission(this)">
-                            <div class="toggle-slider"></div>
+                        <div class="tree-children" id="data_children">
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="data_view" class="child-checkbox" data-parent="data" onchange="updateParentCheckbox('data')">
+                                    <label for="data_view" class="tree-label">
+                                        <span class="permission-name">数据查看</span>
+                                        <span class="permission-desc">查看系统各类数据和统计信息</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="data_export" class="child-checkbox" data-parent="data" onchange="updateParentCheckbox('data')">
+                                    <label for="data_export" class="tree-label">
+                                        <span class="permission-name">数据导出</span>
+                                        <span class="permission-desc">导出数据报表和分析结果</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="advanced_analysis" class="child-checkbox" data-parent="data" onchange="updateParentCheckbox('data')">
+                                    <label for="advanced_analysis" class="tree-label">
+                                        <span class="permission-name">高级分析</span>
+                                        <span class="permission-desc">使用高级分析工具和算法</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tree-group">
+                        <div class="tree-parent" data-group="alarm" onclick="toggleTreeNode('alarm')">
+                            <div class="tree-checkbox-wrapper">
+                                <input type="checkbox" id="alarm_all" class="parent-checkbox" onchange="toggleGroupPermissions('alarm', this)" onclick="event.stopPropagation()">
+                                <label for="alarm_all" class="tree-label">
+                                    <span class="expand-icon">▶</span>
+                                    <span class="group-name">告警管理</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="tree-children" id="alarm_children">
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="alarm_view" class="child-checkbox" data-parent="alarm" onchange="updateParentCheckbox('alarm')">
+                                    <label for="alarm_view" class="tree-label">
+                                        <span class="permission-name">告警查看</span>
+                                        <span class="permission-desc">查看系统告警信息</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="alarm_handle" class="child-checkbox" data-parent="alarm" onchange="updateParentCheckbox('alarm')">
+                                    <label for="alarm_handle" class="tree-label">
+                                        <span class="permission-name">告警处理</span>
+                                        <span class="permission-desc">处理和确认告警信息</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="alarm_rule" class="child-checkbox" data-parent="alarm" onchange="updateParentCheckbox('alarm')">
+                                    <label for="alarm_rule" class="tree-label">
+                                        <span class="permission-name">规则管理</span>
+                                        <span class="permission-desc">管理告警规则和阈值</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tree-group">
+                        <div class="tree-parent" data-group="report" onclick="toggleTreeNode('report')">
+                            <div class="tree-checkbox-wrapper">
+                                <input type="checkbox" id="report_all" class="parent-checkbox" onchange="toggleGroupPermissions('report', this)" onclick="event.stopPropagation()">
+                                <label for="report_all" class="tree-label">
+                                    <span class="expand-icon">▶</span>
+                                    <span class="group-name">报表中心</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="tree-children" id="report_children">
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="report_view" class="child-checkbox" data-parent="report" onchange="updateParentCheckbox('report')">
+                                    <label for="report_view" class="tree-label">
+                                        <span class="permission-name">报表查看</span>
+                                        <span class="permission-desc">查看各类报表</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="report_create" class="child-checkbox" data-parent="report" onchange="updateParentCheckbox('report')">
+                                    <label for="report_create" class="tree-label">
+                                        <span class="permission-name">报表创建</span>
+                                        <span class="permission-desc">创建和编辑报表</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="template_manage" class="child-checkbox" data-parent="report" onchange="updateParentCheckbox('report')">
+                                    <label for="template_manage" class="tree-label">
+                                        <span class="permission-name">模板管理</span>
+                                        <span class="permission-desc">管理报表模板</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tree-group">
+                        <div class="tree-parent" data-group="system" onclick="toggleTreeNode('system')">
+                            <div class="tree-checkbox-wrapper">
+                                <input type="checkbox" id="system_all" class="parent-checkbox" onchange="toggleGroupPermissions('system', this)" onclick="event.stopPropagation()">
+                                <label for="system_all" class="tree-label">
+                                    <span class="expand-icon">▶</span>
+                                    <span class="group-name">系统管理</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="tree-children" id="system_children">
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="user_manage" class="child-checkbox" data-parent="system" onchange="updateParentCheckbox('system')">
+                                    <label for="user_manage" class="tree-label">
+                                        <span class="permission-name">用户管理</span>
+                                        <span class="permission-desc">管理系统用户账户和权限</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="role_manage" class="child-checkbox" data-parent="system" onchange="updateParentCheckbox('system')">
+                                    <label for="role_manage" class="tree-label">
+                                        <span class="permission-name">角色管理</span>
+                                        <span class="permission-desc">管理系统角色和权限</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="system_setting" class="child-checkbox" data-parent="system" onchange="updateParentCheckbox('system')">
+                                    <label for="system_setting" class="tree-label">
+                                        <span class="permission-name">系统设置</span>
+                                        <span class="permission-desc">修改系统配置和参数</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="tree-child">
+                                <div class="tree-checkbox-wrapper">
+                                    <input type="checkbox" id="log_manage" class="child-checkbox" data-parent="system" onchange="updateParentCheckbox('system')">
+                                    <label for="log_manage" class="tree-label">
+                                        <span class="permission-name">日志管理</span>
+                                        <span class="permission-desc">查看和管理系统日志</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-actions">
                     <button class="btn btn-secondary" onclick="closeModal()">取消</button>
-                    <button class="btn btn-primary" onclick="savePermissions()">保存权限</button>
+                    <button class="btn btn-primary" onclick="saveRole()">保存角色</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        let roles = [
+            {
+                id: 'admin',
+                name: '系统管理员',
+                description: '拥有系统最高权限，可以管理所有功能模块和用户账户',
+                status: 'active',
+                userCount: 4,
+                permissions: ['user_manage', 'role_manage', 'system_setting', 'log_manage', 'station_monitor', 'station_control', 'device_monitor', 'device_control', 'data_view', 'data_export', 'report_view', 'report_create'],
+                builtin: true
+            },
+            {
+                id: 'operator',
+                name: '系统操作员',
+                description: '负责日常运维操作，可以监控设备状态、处理告警、生成报表',
+                status: 'active',
+                userCount: 12,
+                permissions: ['station_monitor', 'device_monitor', 'alarm_view', 'alarm_handle', 'data_view', 'report_view'],
+                builtin: false
+            },
+            {
+                id: 'viewer',
+                name: '数据查看者',
+                description: '仅可查看数据和报表，不能进行任何操作或修改',
+                status: 'active',
+                userCount: 8,
+                permissions: ['station_monitor', 'device_monitor', 'data_view', 'report_view'],
+                builtin: false
+            },
+            {
+                id: 'engineer',
+                name: '维护工程师',
+                description: '负责设备维护和故障处理，可以进行设备控制和固件更新',
+                status: 'active',
+                userCount: 6,
+                permissions: ['device_monitor', 'device_control', 'firmware_manage', 'alarm_view', 'alarm_handle'],
+                builtin: false
+            }
+        ];
+
+        let currentEditingRole = null;
+        let nextRoleId = 1000;
+
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
+            renderRoles();
         });
+
+        // 搜索角色
+        function searchRoles() {
+            const status = document.getElementById('status-filter').value;
+            const keyword = document.getElementById('keyword-search').value;
+            
+            console.log('搜索角色:', { status, keyword });
+            showMessage('角色搜索完成', 'success');
+        }
+
+        // 重置搜索
+        function resetSearch() {
+            document.getElementById('status-filter').value = '';
+            document.getElementById('keyword-search').value = '';
+            showMessage('搜索条件已重置', 'info');
+        }
+
+        // 渲染角色列表
+        function renderRoles() {
+            // 这里可以动态更新角色卡片，目前保持静态显示
+            console.log('角色数据:', roles);
+        }
 
         // 显示创建角色模态框
         function showCreateRoleModal() {
+            currentEditingRole = null;
             document.getElementById('modal-title').textContent = '创建新角色';
+            document.getElementById('roleForm').reset();
+            
+            // 清除所有权限选择
+            document.querySelectorAll('.parent-checkbox, .child-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.indeterminate = false;
+            });
+            
             document.getElementById('permission-modal').style.display = 'flex';
         }
 
         // 编辑角色
         function editRole(roleId) {
-            document.getElementById('modal-title').textContent = `编辑角色权限 - ${roleId}`;
+            const role = roles.find(r => r.id === roleId);
+            if (!role) return;
+
+            currentEditingRole = role;
+            document.getElementById('modal-title').textContent = `编辑角色 - ${role.name}`;
+            
+            // 填充表单数据
+            document.getElementById('roleName').value = role.name;
+            document.getElementById('roleStatus').value = role.status;
+            document.getElementById('roleDescription').value = role.description;
+            
+            // 设置权限选择状态
+            document.querySelectorAll('.child-checkbox').forEach(checkbox => {
+                checkbox.checked = role.permissions.includes(checkbox.id);
+            });
+            
+            // 更新父复选框状态
+            ['station', 'device', 'data', 'alarm', 'report', 'system'].forEach(group => {
+                updateParentCheckbox(group);
+            });
+            
             document.getElementById('permission-modal').style.display = 'flex';
-            console.log(`编辑角色: ${roleId}`);
         }
 
         // 复制角色
         function copyRole(roleId) {
-            console.log(`复制角色: ${roleId}`);
-            showMessage(`角色 ${roleId} 已复制`, 'success');
+            const role = roles.find(r => r.id === roleId);
+            if (!role) return;
+
+            const newRole = {
+                ...role,
+                id: 'role_' + (++nextRoleId),
+                name: role.name + '_副本',
+                userCount: 0,
+                builtin: false
+            };
+
+            roles.push(newRole);
+            showMessage(`角色 ${role.name} 已复制`, 'success');
+            console.log('复制的角色:', newRole);
         }
 
         // 删除角色
         function deleteRole(roleId) {
-            if (confirm(`确定要删除角色 ${roleId} 吗？`)) {
-                console.log(`删除角色: ${roleId}`);
-                showMessage(`角色 ${roleId} 已删除`, 'success');
+            const role = roles.find(r => r.id === roleId);
+            if (!role) return;
+
+            if (role.builtin) {
+                showMessage('内置角色不能删除', 'error');
+                return;
+            }
+
+            if (role.userCount > 0) {
+                showMessage('该角色下还有用户，请先移除用户后再删除', 'error');
+                return;
+            }
+
+            if (confirm(`确定要删除角色 ${role.name} 吗？删除后不可恢复。`)) {
+                const index = roles.findIndex(r => r.id === roleId);
+                if (index > -1) {
+                    roles.splice(index, 1);
+                    showMessage(`角色 ${role.name} 已删除`, 'success');
+                }
             }
         }
 
-        // 切换权限
-        function togglePermission(toggle) {
-            toggle.classList.toggle('active');
+        // 切换组权限
+        function toggleGroupPermissions(groupName, parentCheckbox) {
+            const children = document.querySelectorAll(`input[data-parent="${groupName}"]`);
+            const isChecked = parentCheckbox.checked;
+            
+            children.forEach(child => {
+                child.checked = isChecked;
+            });
         }
 
-        // 保存权限
-        function savePermissions() {
-            const permissions = [];
-            document.querySelectorAll('.permission-toggle.active').forEach(toggle => {
-                const permissionItem = toggle.closest('.permission-item');
-                const permissionName = permissionItem.querySelector('.permission-name').textContent;
-                permissions.push(permissionName);
-            });
+        // 更新父复选框状态
+        function updateParentCheckbox(groupName) {
+            const parentCheckbox = document.getElementById(groupName + '_all');
+            const children = document.querySelectorAll(`input[data-parent="${groupName}"]`);
+            const checkedChildren = document.querySelectorAll(`input[data-parent="${groupName}"]:checked`);
             
-            console.log('保存权限:', permissions);
-            showMessage('权限设置已保存', 'success');
+            if (checkedChildren.length === 0) {
+                // 无选中
+                parentCheckbox.checked = false;
+                parentCheckbox.indeterminate = false;
+            } else if (checkedChildren.length === children.length) {
+                // 全选
+                parentCheckbox.checked = true;
+                parentCheckbox.indeterminate = false;
+            } else {
+                // 半选
+                parentCheckbox.checked = false;
+                parentCheckbox.indeterminate = true;
+            }
+        }
+
+        // 切换树节点展开/收起
+        function toggleTreeNode(groupName) {
+            const parent = document.querySelector(`[data-group="${groupName}"]`);
+            const children = document.getElementById(groupName + '_children');
+            
+            parent.classList.toggle('expanded');
+            children.classList.toggle('expanded');
+        }
+
+        // 保存角色
+        function saveRole() {
+            const formData = new FormData(document.getElementById('roleForm'));
+            
+            // 获取选中的权限
+            const permissions = Array.from(document.querySelectorAll('.child-checkbox:checked'))
+                .map(checkbox => checkbox.id);
+
+            const roleData = {
+                name: formData.get('name'),
+                description: formData.get('description'),
+                status: formData.get('status'),
+                permissions: permissions
+            };
+
+            // 验证必填字段
+            if (!roleData.name.trim()) {
+                showMessage('请输入角色名称', 'error');
+                return;
+            }
+
+            if (currentEditingRole) {
+                // 编辑现有角色
+                if (currentEditingRole.builtin && (
+                    currentEditingRole.name !== roleData.name || 
+                    currentEditingRole.status !== roleData.status
+                )) {
+                    showMessage('内置角色不能修改名称和状态', 'error');
+                    return;
+                }
+                
+                Object.assign(currentEditingRole, roleData);
+                showMessage(`角色 ${roleData.name} 更新成功`, 'success');
+            } else {
+                // 新增角色
+                const newRole = {
+                    id: 'role_' + (++nextRoleId),
+                    ...roleData,
+                    userCount: 0,
+                    builtin: false
+                };
+                
+                roles.push(newRole);
+                showMessage(`角色 ${roleData.name} 创建成功`, 'success');
+            }
+
             closeModal();
         }
 
@@ -571,6 +1358,68 @@
                 closeModal();
             }
         });
+
+        // 消息提示
+        function showMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 6px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                transition: all 0.3s ease;
+                ${type === 'success' ? 'background: #10b981;' : 
+                  type === 'error' ? 'background: #ef4444;' : 
+                  'background: #3b82f6;'}
+            `;
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(messageEl)) {
+                        document.body.removeChild(messageEl);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 通用工具函数
+        function toggleSidebar() {
+            if (window.sidebar) {
+                window.sidebar.toggle();
+            }
+        }
+
+        function goBack() {
+            history.back();
+        }
+
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
+        }
+
+        function toggleTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            }
+        }
     </script>
 
     <!-- 引入侧边栏脚本 -->
@@ -635,6 +1484,260 @@
             border-color: #cbd5e1;
             color: #1e293b;
         }
+
+        /* 用户下拉菜单样式 */
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-menu-btn {
+            position: relative;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .user-menu-btn.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: #374151;
+            font-size: 0.875rem;
+            transition: background-color 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.logout:hover {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0.25rem 0;
+        }
     </style>
+
+    <!-- 账号信息模态框 -->
+    <div id="accountInfoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">账号信息</h2>
+                <button class="close-btn" onclick="closeAccountModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" value="管理员" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" value="admin@example.com" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>角色</label>
+                    <input type="text" value="系统管理员" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>最后登录时间</label>
+                    <input type="text" value="2024-03-15 14:30:25" readonly>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="showPasswordModal()">修改密码</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAccountModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修改密码模态框 -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">修改密码</h2>
+                <button class="close-btn" onclick="closePasswordModal()">&times;</button>
+            </div>
+            
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="oldPassword">当前密码 <span class="required">*</span></label>
+                    <input type="password" id="oldPassword" name="oldPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">新密码 <span class="required">*</span></label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">确认新密码 <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+            </form>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="savePassword()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 退出确认模态框 -->
+    <div id="logoutConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">确认退出</h2>
+                <button class="close-btn" onclick="closeLogoutModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p>您确定要退出系统吗？</p>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeLogoutModal()">取消</button>
+                <button type="button" class="btn btn-danger" onclick="performLogout()">确认退出</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 用户下拉菜单功能
+        function toggleUserMenu() {
+            console.log('toggleUserMenu called'); // 调试用
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button) {
+                dropdown.classList.toggle('show');
+                button.classList.toggle('active');
+                console.log('Menu toggled', dropdown.classList.contains('show')); // 调试用
+            } else {
+                console.log('Dropdown or button not found'); // 调试用
+            }
+        }
+
+        // 显示账号信息
+        function showAccountInfo() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            document.getElementById('accountInfoModal').classList.add('show');
+        }
+
+        // 关闭账号信息模态框
+        function closeAccountModal() {
+            document.getElementById('accountInfoModal').classList.remove('show');
+        }
+
+        // 显示修改密码模态框
+        function showPasswordModal() {
+            document.getElementById('accountInfoModal').classList.remove('show');
+            document.getElementById('passwordModal').classList.add('show');
+        }
+
+        // 关闭修改密码模态框
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('show');
+            document.getElementById('passwordForm').reset();
+        }
+
+        // 保存密码
+        function savePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                showMessage('请填写所有必填字段', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showMessage('新密码和确认密码不匹配', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showMessage('新密码长度不能少于6位', 'error');
+                return;
+            }
+
+            // 这里应该调用后端API修改密码
+            showMessage('密码修改成功', 'success');
+            closePasswordModal();
+        }
+
+        // 确认退出
+        function confirmLogout() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            document.getElementById('logoutConfirmModal').classList.add('show');
+        }
+
+        // 关闭退出确认模态框
+        function closeLogoutModal() {
+            document.getElementById('logoutConfirmModal').classList.remove('show');
+        }
+
+        // 执行退出
+        function performLogout() {
+            // 这里应该调用后端API退出登录
+            showMessage('正在退出...', 'info');
+            setTimeout(() => {
+                window.location.href = '../../index.html';
+            }, 1000);
+        }
+
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button && !button.contains(event.target)) {
+                dropdown.classList.remove('show');
+                button.classList.remove('active');
+            }
+        });
+    </script>
+
 </body>
 </html>

@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>储能报表 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8fafc;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 1.5rem;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        /* 报表头部 */
+        .report-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .report-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .report-header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .report-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* 时间维度选择 */
+        .time-controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .time-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .time-tab {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .time-tab.active {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .date-range-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .date-range-selector label {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .date-range-selector input,
+        .date-range-selector select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        /* 关键指标卡片 */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .metric-card.charge::before {
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .metric-card.discharge::before {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .metric-card.efficiency::before {
+            background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .metric-card.cycles::before {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .metric-icon.blue {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .metric-icon.orange {
+            background: #fed7aa;
+            color: #f59e0b;
+        }
+
+        .metric-icon.purple {
+            background: #e9d5ff;
+            color: #8b5cf6;
+        }
+
+        .metric-icon.green {
+            background: #d1fae5;
+            color: #10b981;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-unit {
+            font-size: 1rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .metric-change {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .change-positive {
+            color: #10b981;
+        }
+
+        .change-negative {
+            color: #ef4444;
+        }
+
+        /* 图表容器 */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .chart-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* 电池组详情表格 */
+        .battery-table-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .battery-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .battery-table th,
+        .battery-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .battery-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .battery-table td {
+            font-size: 0.875rem;
+            color: #1f2937;
+        }
+
+        .soc-bar {
+            width: 100px;
+            height: 20px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .soc-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .soc-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1f2937;
+            z-index: 1;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-charging {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .status-discharging {
+            background: #fed7aa;
+            color: #d97706;
+        }
+
+        .status-idle {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .status-maintenance {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        /* 用户下拉菜单样式 */
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-menu-btn {
+            position: relative;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .user-menu-btn.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: #374151;
+            font-size: 0.875rem;
+            transition: background-color 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.logout:hover {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0.25rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">储能报表</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <div class="user-dropdown">
+                    <button class="nav-button user-menu-btn" onclick="toggleUserMenu()">
+                        <span>👤</span>
+                        <span>管理员</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <div class="dropdown-item" onclick="showAccountInfo()">
+                            <span>账号信息</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item logout" onclick="confirmLogout()">
+                            <span>退出</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- 报表头部 -->
+            <div class="report-header">
+                <div class="report-header-content">
+                    <h1 class="report-title">储能设备充放电报表</h1>
+                    <p class="report-subtitle">电池储能系统运行数据统计与分析</p>
+                </div>
+            </div>
+
+            <!-- 时间维度选择 -->
+            <div class="time-controls">
+                <div class="time-tabs">
+                    <button class="time-tab active" onclick="changeTimeRange('day')">日报表</button>
+                    <button class="time-tab" onclick="changeTimeRange('month')">月报表</button>
+                    <button class="time-tab" onclick="changeTimeRange('year')">年报表</button>
+                </div>
+                
+                <div class="date-range-selector">
+                    <div id="daySelector" style="display: flex; align-items: center; gap: 1rem;">
+                        <label>选择日期：</label>
+                        <input type="date" id="selectedDate" value="2024-01-24">
+                    </div>
+                    
+                    <div id="monthSelector" style="display: none; align-items: center; gap: 1rem;">
+                        <label>选择月份：</label>
+                        <input type="month" id="selectedMonth" value="2024-01">
+                    </div>
+                    
+                    <div id="yearSelector" style="display: none; align-items: center; gap: 1rem;">
+                        <label>选择年份：</label>
+                        <select id="selectedYear">
+                            <option value="2024">2024年</option>
+                            <option value="2023">2023年</option>
+                            <option value="2022">2022年</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="queryData()">
+                        <span>🔍</span>查询
+                    </button>
+                    
+                    <div style="margin-left: auto; display: flex; gap: 1rem;">
+                        <button class="btn btn-secondary" onclick="showSubscriptionModal()">
+                            <span>📧</span>订阅
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportStorageReport()">
+                            <span>📥</span>导出
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 关键指标 -->
+            <div class="metrics-grid">
+                <div class="metric-card charge">
+                    <div class="metric-header">
+                        <span class="metric-label">充电量</span>
+                        <div class="metric-icon blue">⚡</div>
+                    </div>
+                    <div class="metric-value">1,856.4 <span class="metric-unit">MWh</span></div>
+                    <div class="metric-change change-positive">
+                        <span>↗</span>
+                        <span>+12.5% vs 上期</span>
+                    </div>
+                </div>
+
+                <div class="metric-card discharge">
+                    <div class="metric-header">
+                        <span class="metric-label">放电量</span>
+                        <div class="metric-icon orange">🔋</div>
+                    </div>
+                    <div class="metric-value">1,742.8 <span class="metric-unit">MWh</span></div>
+                    <div class="metric-change change-positive">
+                        <span>↗</span>
+                        <span>+8.3% vs 上期</span>
+                    </div>
+                </div>
+
+                <div class="metric-card efficiency">
+                    <div class="metric-header">
+                        <span class="metric-label">充放电效率</span>
+                        <div class="metric-icon purple">📊</div>
+                    </div>
+                    <div class="metric-value">93.9 <span class="metric-unit">%</span></div>
+                    <div class="metric-change change-positive">
+                        <span>↗</span>
+                        <span>+1.2% vs 上期</span>
+                    </div>
+                </div>
+
+                <div class="metric-card cycles">
+                    <div class="metric-header">
+                        <span class="metric-label">循环次数</span>
+                        <div class="metric-icon green">🔄</div>
+                    </div>
+                    <div class="metric-value">186 <span class="metric-unit">次</span></div>
+                    <div class="metric-change change-negative">
+                        <span>↘</span>
+                        <span>-5.1% vs 上期</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图表区域 -->
+            <div class="charts-container">
+                <!-- 充放电功率曲线 -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">充放电功率曲线</h3>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background: #3b82f6;"></span>
+                                <span>充电功率</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background: #f59e0b;"></span>
+                                <span>放电功率</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="powerCurveChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- SOC变化趋势 -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">SOC变化趋势</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="socTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 充放电统计分析 -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3 class="chart-title">充放电统计分析</h3>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #10b981;"></span>
+                            <span>充电量</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #8b5cf6;"></span>
+                            <span>放电量</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #ef4444;"></span>
+                            <span>损耗</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="statisticsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 电池组详情 -->
+            <div class="battery-table-container">
+                <div class="table-header">
+                    <h3 class="table-title">电池组运行详情</h3>
+                    <select class="filter-select" onchange="filterBatteries(this.value)">
+                        <option value="all">全部状态</option>
+                        <option value="charging">充电中</option>
+                        <option value="discharging">放电中</option>
+                        <option value="idle">空闲</option>
+                        <option value="maintenance">维护</option>
+                    </select>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table class="battery-table">
+                        <thead>
+                            <tr>
+                                <th>电池组编号</th>
+                                <th>当前状态</th>
+                                <th>SOC</th>
+                                <th>充电量(kWh)</th>
+                                <th>放电量(kWh)</th>
+                                <th>循环次数</th>
+                                <th>温度(°C)</th>
+                                <th>效率(%)</th>
+                                <th>健康度(%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>BAT-001</td>
+                                <td><span class="status-indicator status-charging">⚡ 充电中</span></td>
+                                <td>
+                                    <div class="soc-bar">
+                                        <div class="soc-fill" style="width: 65%;"></div>
+                                        <span class="soc-text">65%</span>
+                                    </div>
+                                </td>
+                                <td>485.2</td>
+                                <td>0</td>
+                                <td>186</td>
+                                <td>25.3</td>
+                                <td>94.2</td>
+                                <td>98.5</td>
+                            </tr>
+                            <tr>
+                                <td>BAT-002</td>
+                                <td><span class="status-indicator status-discharging">🔋 放电中</span></td>
+                                <td>
+                                    <div class="soc-bar">
+                                        <div class="soc-fill" style="width: 82%;"></div>
+                                        <span class="soc-text">82%</span>
+                                    </div>
+                                </td>
+                                <td>0</td>
+                                <td>325.8</td>
+                                <td>192</td>
+                                <td>26.1</td>
+                                <td>93.8</td>
+                                <td>97.2</td>
+                            </tr>
+                            <tr>
+                                <td>BAT-003</td>
+                                <td><span class="status-indicator status-idle">⏸️ 空闲</span></td>
+                                <td>
+                                    <div class="soc-bar">
+                                        <div class="soc-fill" style="width: 50%;"></div>
+                                        <span class="soc-text">50%</span>
+                                    </div>
+                                </td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>178</td>
+                                <td>24.8</td>
+                                <td>-</td>
+                                <td>99.1</td>
+                            </tr>
+                            <tr>
+                                <td>BAT-004</td>
+                                <td><span class="status-indicator status-charging">⚡ 充电中</span></td>
+                                <td>
+                                    <div class="soc-bar">
+                                        <div class="soc-fill" style="width: 35%;"></div>
+                                        <span class="soc-text">35%</span>
+                                    </div>
+                                </td>
+                                <td>625.4</td>
+                                <td>0</td>
+                                <td>203</td>
+                                <td>25.9</td>
+                                <td>95.1</td>
+                                <td>96.8</td>
+                            </tr>
+                            <tr>
+                                <td>BAT-005</td>
+                                <td><span class="status-indicator status-maintenance">🔧 维护中</span></td>
+                                <td>
+                                    <div class="soc-bar">
+                                        <div class="soc-fill" style="width: 90%;"></div>
+                                        <span class="soc-text">90%</span>
+                                    </div>
+                                </td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>165</td>
+                                <td>23.5</td>
+                                <td>-</td>
+                                <td>94.5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTimeRange = 'day';
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+        });
+
+        // 初始化图表
+        function initCharts() {
+            // 充放电功率曲线
+            const powerCtx = document.getElementById('powerCurveChart').getContext('2d');
+            new Chart(powerCtx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                    datasets: [{
+                        label: '充电功率 (MW)',
+                        data: [
+                            5, 8, 12, 15, 20, 25, 30, 28, 25, 22, 18, 15,
+                            12, 10, 8, 15, 20, 25, 22, 18, 15, 10, 8, 5
+                        ],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: '放电功率 (MW)',
+                        data: [
+                            -2, -5, -8, -10, -12, -15, -18, -20, -22, -25, -28, -30,
+                            -28, -25, -22, -20, -18, -15, -12, -10, -8, -5, -3, -2
+                        ],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                color: '#f1f5f9'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // SOC变化趋势
+            const socCtx = document.getElementById('socTrendChart').getContext('2d');
+            new Chart(socCtx, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                    datasets: [{
+                        label: 'SOC (%)',
+                        data: [45, 65, 85, 70, 55, 75, 60],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                color: '#f1f5f9'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 充放电统计分析
+            const statsCtx = document.getElementById('statisticsChart').getContext('2d');
+            new Chart(statsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['1日', '2日', '3日', '4日', '5日', '6日', '7日'],
+                    datasets: [{
+                        label: '充电量',
+                        data: [285, 312, 298, 325, 342, 315, 280],
+                        backgroundColor: '#10b981'
+                    }, {
+                        label: '放电量',
+                        data: [265, 290, 275, 305, 320, 295, 262],
+                        backgroundColor: '#8b5cf6'
+                    }, {
+                        label: '损耗',
+                        data: [20, 22, 23, 20, 22, 20, 18],
+                        backgroundColor: '#ef4444'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f1f5f9'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 切换时间范围
+        function changeTimeRange(range) {
+            currentTimeRange = range;
+            
+            // 更新标签页状态
+            document.querySelectorAll('.time-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 显示对应的日期选择器
+            document.getElementById('daySelector').style.display = range === 'day' ? 'flex' : 'none';
+            document.getElementById('monthSelector').style.display = range === 'month' ? 'flex' : 'none';
+            document.getElementById('yearSelector').style.display = range === 'year' ? 'flex' : 'none';
+            
+            // 刷新数据
+            queryData();
+        }
+
+        // 查询数据
+        function queryData() {
+            showMessage('正在查询数据...', 'info');
+            
+            // 模拟数据查询
+            setTimeout(() => {
+                showMessage('数据查询完成', 'success');
+                // 这里可以重新加载图表和数据
+            }, 1500);
+        }
+
+        // 导出储能报表
+        function exportStorageReport() {
+            showMessage('正在导出储能报表...', 'info');
+            
+            setTimeout(() => {
+                showMessage('储能报表导出成功', 'success');
+            }, 2000);
+        }
+
+        // 筛选电池组
+        function filterBatteries(status) {
+            // 这里实现筛选逻辑
+            showMessage(`已筛选${status === 'all' ? '全部' : status}状态的电池组`, 'info');
+        }
+
+        // 显示订阅模态框
+        function showSubscriptionModal() {
+            if (window.subscriptionModal) {
+                window.subscriptionModal.show();
+            }
+        }
+
+        // 用户下拉菜单功能
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button) {
+                dropdown.classList.toggle('show');
+                button.classList.toggle('active');
+            }
+        }
+
+        // 显示账号信息
+        function showAccountInfo() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            alert('账号信息功能开发中');
+        }
+
+        // 确认退出
+        function confirmLogout() {
+            document.getElementById('userDropdownMenu').classList.remove('show');
+            document.querySelector('.user-menu-btn').classList.remove('active');
+            
+            if (confirm('您确定要退出系统吗？')) {
+                alert('正在退出...');
+                setTimeout(() => {
+                    window.location.href = '../../index.html';
+                }, 1000);
+            }
+        }
+
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdownMenu');
+            const button = document.querySelector('.user-menu-btn');
+            
+            if (dropdown && button && !button.contains(event.target)) {
+                dropdown.classList.remove('show');
+                button.classList.remove('active');
+            }
+        });
+
+        // 通用工具函数
+        function toggleSidebar() {
+            if (window.sidebar) {
+                window.sidebar.toggle();
+            }
+        }
+
+        function goBack() {
+            history.back();
+        }
+
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
+        }
+
+        function toggleTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            }
+        }
+
+        function showMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 6px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                transition: all 0.3s ease;
+                ${type === 'success' ? 'background: #10b981;' : 
+                  type === 'error' ? 'background: #ef4444;' : 
+                  'background: #3b82f6;'}
+            `;
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(messageEl);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+
+    <!-- 引入Bootstrap和jQuery -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+    
+    <!-- 引入订阅模态框组件 -->
+    <script src="subscription-modal.js"></script>
+</body>
+</html>
