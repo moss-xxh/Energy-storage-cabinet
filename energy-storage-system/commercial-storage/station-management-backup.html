@@ -20,81 +20,6 @@
             min-height: 100vh;
         }
 
-        /* 侧边栏样式 */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 240px;
-            height: 100vh;
-            background: white;
-            border-right: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            transition: all 300ms ease;
-            z-index: 100;
-        }
-
-        .sidebar-header {
-            padding: 1rem 0.5rem;
-            border-bottom: 1px solid #e2e8f0;
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .logo img {
-            height: auto;
-            width: 100%;
-            max-width: 220px;
-            max-height: 50px;
-            object-fit: contain;
-        }
-
-        .sidebar-menu {
-            flex: 1;
-            padding: 1rem 0;
-            overflow-y: auto;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1.5rem;
-            color: #64748b;
-            text-decoration: none;
-            transition: all 150ms ease;
-            position: relative;
-        }
-
-        .menu-item:hover {
-            background: #f1f5f9;
-            color: #1e293b;
-        }
-
-        .menu-item.active {
-            background: #eff6ff;
-            color: #3562E3;
-        }
-
-        .menu-item.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 3px;
-            height: 100%;
-            background: #3562E3;
-        }
-        
         /* 一级菜单样式 */
         .menu-group {
             margin-bottom: 0;
@@ -267,9 +192,11 @@
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             border: 1px solid #e2e8f0;
+            max-width: 1129px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -424,12 +351,14 @@
             color: #1e293b;
         }
 
-
         /* 电站列表区域 */
         .station-section {
             background: white;
             border-radius: 0.75rem;
             border: 1px solid #e2e8f0;
+            max-width: 1129px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         /* 电站状态Tab */
@@ -438,6 +367,7 @@
             gap: 0;
             border-bottom: 1px solid #e5e7eb;
             padding: 0 1.5rem;
+            margin-top: 10px;
         }
         
         .station-tab {
@@ -769,7 +699,7 @@
 
         /* 电站列表视图 */
         #list-view-content {
-            padding: 1.5rem;
+            padding: 1rem;
         }
         
         .station-table {
@@ -785,6 +715,53 @@
             color: #64748b;
             font-size: 0.875rem;
             border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .station-table th.sortable {
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+        
+        .station-table th.sortable:hover {
+            background: #e5e7eb;
+        }
+        
+        .th-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        
+        .sort-icons {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-left: 0.5rem;
+        }
+        
+        .sort-icon {
+            font-size: 0.75rem;
+            opacity: 0.4;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            line-height: 0.75rem;
+            padding: 2px 4px;
+        }
+        
+        .sort-icon:hover {
+            opacity: 0.8;
+        }
+        
+        .station-table th.sortable:hover .sort-icon {
+            opacity: 0.7;
+        }
+        
+        .sort-icon.active {
+            opacity: 1;
+            color: #3562E3;
+            font-weight: bold;
         }
 
         .station-table td {
@@ -1383,8 +1360,7 @@
         [data-theme="dark"] .btn-cancel:hover {
             background: #4b5563;
         }
-        
-        
+
         /* 移动端响应式 - 查询功能 */
         @media (max-width: 768px) {
             .search-input,
@@ -2413,7 +2389,6 @@
                 width: 100%;
             }
 
-
             .station-grid {
                 grid-template-columns: 1fr;
             }
@@ -2428,6 +2403,7 @@
     <!-- 侧边栏容器 -->
     <div id="sidebar-container"></div>
 
+    <!-- 侧边栏 -->
     <!-- 主内容区域 -->
     <main class="main-content">
         <!-- 顶部导航栏 -->
@@ -2460,33 +2436,40 @@
         <div class="content">
             <!-- 查询区域 -->
             <div class="search-filter-section">
-                <div class="search-row" style="justify-content: space-between; align-items: center;">
+                <div class="search-row" style="justify-content: space-between; align-items: center; position: relative;">
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <div class="search-group" style="flex: 0 0 300px;">
                             <label class="search-label">电站名称：</label>
                             <input type="text" class="search-input" placeholder="请输入电站名称" id="station-name-search">
                         </div>
+                        <div class="search-group" style="flex: 0 0 200px;">
+                            <label class="search-label">状态：</label>
+                            <select class="search-input" id="station-status-search">
+                                <option value="">全部状态</option>
+                                <option value="online">在线</option>
+                                <option value="offline">离线</option>
+                                <option value="warning">告警</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <button class="search-button" onclick="searchStations()">
-                            <span>🔍</span>
                             <span>搜索</span>
                         </button>
                         <button class="reset-button" onclick="resetSearch()">
-                            <span>🔄</span>
                             <span>重置</span>
-                        </button>
-                    </div>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button class="create-button" onclick="createStation()">
-                            <span>➕</span>
-                            <span>新建</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-
             <!-- 电站列表 -->
-            <div class="station-section">
+            <div class="station-section" style="position: relative;">
+                <!-- 新建按钮 -->
+                <button class="create-button" onclick="createStation()" style="position: absolute; top: 1rem; right: 1rem; z-index: 10;">
+                    <span>➕</span>
+                    <span>新建</span>
+                </button>
                 <!-- Tab切换 -->
                 <div class="station-tabs" style="display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; gap: 0;">
@@ -2515,11 +2498,36 @@
                         <thead>
                             <tr>
                                 <th class="i18n" data-i18n="station.name">电站名称</th>
+                                <th class="i18n" data-i18n="station.mode">模式</th>
                                 <th class="i18n" data-i18n="station.status">状态</th>
-                                <th class="i18n" data-i18n="station.power.installed">装机功率</th>
-                                <th class="i18n" data-i18n="station.power.realtime">实时功率</th>
+                                <th class="i18n sortable" data-i18n="station.utilization" data-sort="utilization">
+                                    <div class="th-content">
+                                        <span>利用率</span>
+                                        <div class="sort-icons">
+                                            <span class="sort-icon sort-up" onclick="sortTable('utilization', 'asc')">↑</span>
+                                            <span class="sort-icon sort-down" onclick="sortTable('utilization', 'desc')">↓</span>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="i18n sortable" data-i18n="station.power.installed" data-sort="installed">
+                                    <div class="th-content">
+                                        <span>装机功率</span>
+                                        <div class="sort-icons">
+                                            <span class="sort-icon sort-up" onclick="sortTable('installed', 'asc')">↑</span>
+                                            <span class="sort-icon sort-down" onclick="sortTable('installed', 'desc')">↓</span>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="i18n sortable" data-i18n="station.power.realtime" data-sort="realtime">
+                                    <div class="th-content">
+                                        <span>实时功率</span>
+                                        <div class="sort-icons">
+                                            <span class="sort-icon sort-up" onclick="sortTable('realtime', 'asc')">↑</span>
+                                            <span class="sort-icon sort-down" onclick="sortTable('realtime', 'desc')">↓</span>
+                                        </div>
+                                    </div>
+                                </th>
                                 <th class="i18n" data-i18n="station.address">地址</th>
-                                <th class="i18n" data-i18n="station.remark">备注</th>
                                 <th style="width: 100px;" class="i18n" data-i18n="action.operation">操作</th>
                             </tr>
                         </thead>
@@ -2527,15 +2535,15 @@
                             <tr>
                                 <td>
                                     <div class="station-name">
-                                        <span>🏭</span>
                                         <a href="./station-detail.html?id=ST001&name=上海工业园储能站" style="color: #3562E3; text-decoration: none;" class="i18n-station-name" data-name-zh="上海工业园储能站" data-name-en="Shanghai Industrial Park Energy Storage Station">上海工业园储能站</a>
                                     </div>
                                 </td>
+                                <td><span class="station-mode">自发自用</span></td>
                                 <td><span class="station-status status-online i18n" data-i18n="station.status.online">在线</span></td>
+                                <td><span class="station-utilization">72%</span></td>
                                 <td>2.5 MW</td>
                                 <td>1.8 MW</td>
                                 <td class="i18n-address" data-address-zh="上海市浦东新区张江高科技园区" data-address-en="Zhangjiang High-Tech Park, Pudong New Area, Shanghai">上海市浦东新区张江高科技园区</td>
-                                <td class="i18n-remark" data-remark-zh="-" data-remark-en="-">-</td>
                                 <td>
                                     <div style="display: flex; gap: 0.25rem; justify-content: center;">
                                         <button class="table-action" onclick="editStation(event, 'ST001')" title="编辑">
@@ -2559,15 +2567,15 @@
                             <tr>
                                 <td>
                                     <div class="station-name">
-                                        <span>🏭</span>
                                         <a href="./station-detail.html?id=ST002&name=北京科技园储能站" style="color: #3562E3; text-decoration: none;" class="i18n-station-name" data-name-zh="北京科技园储能站" data-name-en="Beijing Science Park Energy Storage Station">北京科技园储能站</a>
                                     </div>
                                 </td>
+                                <td><span class="station-mode">经济模式</span></td>
                                 <td><span class="station-status status-warning i18n" data-i18n="station.status.warning">告警</span></td>
+                                <td><span class="station-utilization">70%</span></td>
                                 <td>3.0 MW</td>
                                 <td>2.1 MW</td>
                                 <td class="i18n-address" data-address-zh="北京市海淀区中关村科技园" data-address-en="Zhongguancun Science Park, Haidian District, Beijing">北京市海淀区中关村科技园</td>
-                                <td class="i18n-remark" data-remark-zh="需要维护" data-remark-en="Maintenance required">需要维护</td>
                                 <td>
                                     <div style="display: flex; gap: 0.25rem; justify-content: center;">
                                         <button class="table-action" onclick="editStation(event, 'ST002')" title="编辑">
@@ -2591,15 +2599,15 @@
                             <tr>
                                 <td>
                                     <div class="station-name">
-                                        <span>🏭</span>
                                         <a href="./station-detail.html?id=ST003&name=深圳产业园储能站" style="color: #3562E3; text-decoration: none;" class="i18n-station-name" data-name-zh="深圳产业园储能站" data-name-en="Shenzhen Industrial Park Energy Storage Station">深圳产业园储能站</a>
                                     </div>
                                 </td>
+                                <td><span class="station-mode">应急模式</span></td>
                                 <td><span class="station-status status-offline i18n" data-i18n="station.status.offline">离线</span></td>
+                                <td><span class="station-utilization">0%</span></td>
                                 <td>1.5 MW</td>
                                 <td>0 MW</td>
                                 <td class="i18n-address" data-address-zh="深圳市南山区科技园南路" data-address-en="Science Park South Road, Nanshan District, Shenzhen">深圳市南山区科技园南路</td>
-                                <td class="i18n-remark" data-remark-zh="设备检修中" data-remark-en="Equipment under maintenance">设备检修中</td>
                                 <td>
                                     <div style="display: flex; gap: 0.25rem; justify-content: center;">
                                         <button class="table-action" onclick="editStation(event, 'ST003')" title="编辑">
@@ -2623,15 +2631,15 @@
                             <tr>
                                 <td>
                                     <div class="station-name">
-                                        <span>🏭</span>
                                         <a href="./station-detail.html?id=ST004&name=广州智慧园储能站" style="color: #3562E3; text-decoration: none;" class="i18n-station-name" data-name-zh="广州智慧园储能站" data-name-en="Guangzhou Smart Park Energy Storage Station">广州智慧园储能站</a>
                                     </div>
                                 </td>
+                                <td><span class="station-mode">自发自用</span></td>
                                 <td><span class="station-status status-online i18n" data-i18n="station.status.online">在线</span></td>
+                                <td><span class="station-utilization">75%</span></td>
                                 <td>2.0 MW</td>
                                 <td>1.5 MW</td>
                                 <td class="i18n-address" data-address-zh="广州市天河区珠江新城" data-address-en="Zhujiang New Town, Tianhe District, Guangzhou">广州市天河区珠江新城</td>
-                                <td class="i18n-remark" data-remark-zh="-" data-remark-en="-">-</td>
                                 <td>
                                     <div style="display: flex; gap: 0.25rem; justify-content: center;">
                                         <button class="table-action" onclick="editStation(event, 'ST004')" title="编辑">
@@ -2655,15 +2663,15 @@
                             <tr>
                                 <td>
                                     <div class="station-name">
-                                        <span>🏭</span>
                                         <a href="./station-detail.html?id=ST005&name=杭州科创园储能站" style="color: #3562E3; text-decoration: none;" class="i18n-station-name" data-name-zh="杭州科创园储能站" data-name-en="Hangzhou Innovation Park Energy Storage Station">杭州科创园储能站</a>
                                     </div>
                                 </td>
+                                <td><span class="station-mode">经济模式</span></td>
                                 <td><span class="station-status status-online i18n" data-i18n="station.status.online">在线</span></td>
+                                <td><span class="station-utilization">77%</span></td>
                                 <td>1.8 MW</td>
                                 <td>1.2 MW</td>
                                 <td class="i18n-address" data-address-zh="杭州市西湖区文三路" data-address-en="Wensan Road, Xihu District, Hangzhou">杭州市西湖区文三路</td>
-                                <td class="i18n-remark" data-remark-zh="-" data-remark-en="-">-</td>
                                 <td>
                                     <div style="display: flex; gap: 0.25rem; justify-content: center;">
                                         <button class="table-action" onclick="editStation(event, 'ST005')" title="编辑">
@@ -2687,15 +2695,15 @@
                             <tr>
                                 <td>
                                     <div class="station-name">
-                                        <span>🏭</span>
                                         <a href="./station-detail.html?id=ST006&name=南京高新区储能站" style="color: #3562E3; text-decoration: none;" class="i18n-station-name" data-name-zh="南京高新区储能站" data-name-en="Nanjing High-tech Zone Energy Storage Station">南京高新区储能站</a>
                                     </div>
                                 </td>
+                                <td><span class="station-mode">应急模式</span></td>
                                 <td><span class="station-status status-online i18n" data-i18n="station.status.online">在线</span></td>
+                                <td><span class="station-utilization">86%</span></td>
                                 <td>2.2 MW</td>
                                 <td>1.7 MW</td>
                                 <td class="i18n-address" data-address-zh="南京市江宁区高新技术开发区" data-address-en="High-tech Development Zone, Jiangning District, Nanjing">南京市江宁区高新技术开发区</td>
-                                <td class="i18n-remark" data-remark-zh="-" data-remark-en="-">-</td>
                                 <td>
                                     <div style="display: flex; gap: 0.25rem; justify-content: center;">
                                         <button class="table-action" onclick="editStation(event, 'ST006')" title="编辑">
@@ -2719,15 +2727,15 @@
                             <tr>
                                 <td>
                                     <div class="station-name">
-                                        <span>🏭</span>
                                         <a href="./station-detail.html?id=ST007&name=苏州工业园储能站" style="color: #3562E3; text-decoration: none;" class="i18n-station-name" data-name-zh="苏州工业园储能站" data-name-en="Suzhou Industrial Park Energy Storage Station">苏州工业园储能站</a>
                                     </div>
                                 </td>
+                                <td><span class="station-mode">VPP模式</span></td>
                                 <td><span class="station-status status-online i18n" data-i18n="station.status.online">在线</span></td>
+                                <td><span class="station-utilization">63%</span></td>
                                 <td>1.9 MW</td>
                                 <td>1.4 MW</td>
                                 <td class="i18n-address" data-address-zh="苏州市工业园区星湖街" data-address-en="Xinghu Street, Industrial Park, Suzhou">苏州市工业园区星湖街</td>
-                                <td class="i18n-remark" data-remark-zh="-" data-remark-en="-">-</td>
                                 <td>
                                     <div style="display: flex; gap: 0.25rem; justify-content: center;">
                                         <button class="table-action" onclick="editStation(event, 'ST007')" title="编辑">
@@ -2751,15 +2759,15 @@
                             <tr>
                                 <td>
                                     <div class="station-name">
-                                        <span>🏭</span>
                                         <a href="./station-detail.html?id=ST008&name=武汉光谷储能站" style="color: #3562E3; text-decoration: none;" class="i18n-station-name" data-name-zh="武汉光谷储能站" data-name-en="Wuhan Optics Valley Energy Storage Station">武汉光谷储能站</a>
                                     </div>
                                 </td>
+                                <td><span class="station-mode">自发自用</span></td>
                                 <td><span class="station-status status-online i18n" data-i18n="station.status.online">在线</span></td>
+                                <td><span class="station-utilization">73%</span></td>
                                 <td>2.3 MW</td>
                                 <td>1.9 MW</td>
                                 <td class="i18n-address" data-address-zh="武汉市东湖新技术开发区" data-address-en="East Lake High-tech Development Zone, Wuhan">武汉市东湖新技术开发区</td>
-                                <td class="i18n-remark" data-remark-zh="-" data-remark-en="-">-</td>
                                 <td>
                                     <div style="display: flex; gap: 0.25rem; justify-content: center;">
                                         <button class="table-action" onclick="editStation(event, 'ST008')" title="编辑">
@@ -2783,15 +2791,15 @@
                             <tr>
                                 <td>
                                     <div class="station-name">
-                                        <span>🏭</span>
                                         <a href="./station-detail.html?id=ST009&name=成都高新区储能站" style="color: #3562E3; text-decoration: none;" class="i18n-station-name" data-name-zh="成都高新区储能站" data-name-en="Chengdu High-tech Zone Energy Storage Station">成都高新区储能站</a>
                                     </div>
                                 </td>
+                                <td><span class="station-mode">经济模式</span></td>
                                 <td><span class="station-status status-online i18n" data-i18n="station.status.online">在线</span></td>
+                                <td><span class="station-utilization">76%</span></td>
                                 <td>2.1 MW</td>
                                 <td>1.6 MW</td>
                                 <td class="i18n-address" data-address-zh="成都市高新区天府大道" data-address-en="Tianfu Avenue, High-tech Zone, Chengdu">成都市高新区天府大道</td>
-                                <td class="i18n-remark" data-remark-zh="-" data-remark-en="-">-</td>
                                 <td>
                                     <div style="display: flex; gap: 0.25rem; justify-content: center;">
                                         <button class="table-action" onclick="editStation(event, 'ST009')" title="编辑">
@@ -2815,15 +2823,15 @@
                             <tr>
                                 <td>
                                     <div class="station-name">
-                                        <span>🏭</span>
                                         <a href="./station-detail.html?id=ST010&name=西安科技园储能站" style="color: #3562E3; text-decoration: none;" class="i18n-station-name" data-name-zh="西安科技园储能站" data-name-en="Xi'an Science Park Energy Storage Station">西安科技园储能站</a>
                                     </div>
                                 </td>
+                                <td><span class="station-mode">应急模式</span></td>
                                 <td><span class="station-status status-offline i18n" data-i18n="station.status.offline">离线</span></td>
+                                <td><span class="station-utilization">0%</span></td>
                                 <td>1.7 MW</td>
                                 <td>0 MW</td>
                                 <td class="i18n-address" data-address-zh="西安市高新区科技路" data-address-en="Technology Road, High-tech Zone, Xi'an">西安市高新区科技路</td>
-                                <td class="i18n-remark" data-remark-zh="网络故障" data-remark-en="Network failure">网络故障</td>
                                 <td>
                                     <div style="display: flex; gap: 0.25rem; justify-content: center;">
                                         <button class="table-action" onclick="editStation(event, 'ST010')" title="编辑">
@@ -3103,11 +3111,10 @@
                 'menu.user': '用户管理',
                 'menu.report': '报表中心',
                 'menu.setting': '系统设置',
-                
-                
+
                 // 搜索
                 'search.region': '组织区域：',
-                'search.organization': '组织名称：',
+                'search.organization': '状态：',
                 'search.type': '电站类型：',
                 'search.name': '电站名称/S·N：',
                 'search.account': '用户账号：',
@@ -3187,6 +3194,7 @@
                 // 表单字段
                 'form.stationName': '电站名称',
                 'form.stationNamePlaceholder': '请输入电站名称',
+                'form.mode': '模式',
                 'form.stationType': '电站类型',
                 'form.commercialStorage': '工商储',
                 'form.address': '地址',
@@ -3246,8 +3254,7 @@
                 'menu.user': 'User Management',
                 'menu.report': 'Report Center',
                 'menu.setting': 'System Settings',
-                
-                
+
                 // Search
                 'search.region': 'Organization Region:',
                 'search.organization': 'Organization Name:',
@@ -3330,6 +3337,7 @@
                 // Form fields
                 'form.stationName': 'Station Name',
                 'form.stationNamePlaceholder': 'Enter station name',
+                'form.mode': 'Mode',
                 'form.stationType': 'Station Type',
                 'form.commercialStorage': 'Commercial Storage',
                 'form.address': 'Address',
@@ -3395,8 +3403,7 @@
             document.querySelector('.page-title').textContent = t('page.title');
             
             // 更新菜单（已通过i18n属性自动更新）
-            
-            
+
             // 更新搜索标签
             const searchLabels = document.querySelectorAll('.search-label');
             searchLabels.forEach((label, index) => {
@@ -3563,8 +3570,8 @@
             // 更新货币选择器
             updateCurrencyOptions();
             document.querySelector('#station-name-search').placeholder = currentLang === 'zh' ? '请输入电站名称' : 'Enter station name';
-            document.querySelector('.search-button span:last-child').textContent = currentLang === 'zh' ? '搜索' : 'Search';
-            document.querySelector('.reset-button span:last-child').textContent = currentLang === 'zh' ? '重置' : 'Reset';
+            document.querySelector('.search-button span').textContent = currentLang === 'zh' ? '搜索' : 'Search';
+            document.querySelector('.reset-button span').textContent = currentLang === 'zh' ? '重置' : 'Reset';
             document.querySelector('.create-button span:last-child').textContent = currentLang === 'zh' ? '新建' : 'Create';
             
             // 更新分页信息
@@ -3705,20 +3712,24 @@
         }
 
         // 切换查询类型
-        
-        
+
         // 搜索电站
         function searchStations() {
             const stationName = document.getElementById('station-name-search').value;
+            const stationStatus = document.getElementById('station-status-search').value;
             
-            console.log('查询条件：', { stationName });
+            console.log('查询条件：', { stationName, stationStatus });
             
             // 模拟查询结果
             let resultMessage = '查询结果：';
             let matchCount = Math.floor(Math.random() * 20) + 1;
             
-            if (stationName.trim()) {
+            if (stationName.trim() && stationStatus) {
+                resultMessage += `名称包含"${stationName}"且状态为"${getStatusName(stationStatus)}"的电站共 ${matchCount} 个`;
+            } else if (stationName.trim()) {
                 resultMessage += `名称包含"${stationName}"的电站共 ${matchCount} 个`;
+            } else if (stationStatus) {
+                resultMessage += `状态为"${getStatusName(stationStatus)}"的电站共 ${matchCount} 个`;
             } else {
                 resultMessage += '显示所有电站（共 126 个）';
             }
@@ -3727,9 +3738,83 @@
             // 这里可以添加实际的电站列表更新逻辑
         }
         
+        // 获取状态名称
+        function getStatusName(status) {
+            const statusNames = {
+                'online': '在线',
+                'offline': '离线',
+                'warning': '告警'
+            };
+            return statusNames[status] || status;
+        }
+        
         // 重置搜索
         function resetSearch() {
             document.getElementById('station-name-search').value = '';
+            document.getElementById('station-status-search').value = '';
+        }
+        
+        // 表格排序功能 - 新版本：分离的上下箭头
+        let currentSort = { column: null, direction: null };
+        
+        function sortTable(column, direction) {
+            const table = document.querySelector('.station-table');
+            const tbody = table.querySelector('tbody');
+            
+            // 先移除所有active类
+            table.querySelectorAll('.sort-icon').forEach(icon => {
+                icon.classList.remove('active');
+            });
+            
+            // 判断是否点击相同的排序
+            if (currentSort.column === column && currentSort.direction === direction) {
+                // 取消排序
+                currentSort = { column: null, direction: null };
+                return;
+            }
+            
+            // 更新当前排序状态
+            currentSort = { column, direction };
+            
+            // 设置点击的箭头为active
+            const clickedTh = table.querySelector(`th[data-sort="${column}"]`);
+            if (clickedTh) {
+                const arrow = clickedTh.querySelector(`.sort-${direction === 'asc' ? 'up' : 'down'}`);
+                if (arrow) arrow.classList.add('active');
+            }
+            
+            // 执行排序
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            rows.sort((a, b) => {
+                let aValue = 0, bValue = 0;
+                
+                switch(column) {
+                    case 'utilization':
+                        const aUtil = a.cells[3].querySelector('.station-utilization');
+                        const bUtil = b.cells[3].querySelector('.station-utilization');
+                        aValue = aUtil ? parseInt(aUtil.textContent.replace('%', '')) : 0;
+                        bValue = bUtil ? parseInt(bUtil.textContent.replace('%', '')) : 0;
+                        break;
+                    case 'installed':
+                        aValue = parseFloat(a.cells[4].textContent.replace(' MW', '')) || 0;
+                        bValue = parseFloat(b.cells[4].textContent.replace(' MW', '')) || 0;
+                        break;
+                    case 'realtime':
+                        aValue = parseFloat(a.cells[5].textContent.replace(' MW', '')) || 0;
+                        bValue = parseFloat(b.cells[5].textContent.replace(' MW', '')) || 0;
+                        break;
+                }
+                
+                // 根据方向排序
+                if (direction === 'asc') {
+                    return aValue - bValue; // 升序
+                } else {
+                    return bValue - aValue; // 降序
+                }
+            });
+            
+            // 重新排列行
+            rows.forEach(row => tbody.appendChild(row));
         }
         
         // 当前向导步骤
@@ -3805,12 +3890,18 @@
                 case 1:
                     // 验证基础信息
                     const stationName = document.getElementById('station-name').value.trim();
+                    const stationMode = document.getElementById('station-mode').value;
                     const address = document.getElementById('address').value.trim();
                     const timezone = document.getElementById('timezone').value;
                     
                     if (!stationName) {
                         alert('请输入电站名称');
                         document.getElementById('station-name').focus();
+                        return false;
+                    }
+                    if (!stationMode) {
+                        alert('请选择模式');
+                        document.getElementById('station-mode').focus();
                         return false;
                     }
                     if (!address) {
@@ -4188,6 +4279,7 @@
             const formData = {
                 // 基础信息
                 stationName: document.getElementById('station-name').value,
+                stationMode: document.getElementById('station-mode').value,
                 stationType: '工商储', // 固定值
                 gridDate: document.getElementById('grid-date').value || '',
                 installedPower: document.getElementById('installed-power').value || '',
@@ -4215,7 +4307,15 @@
             console.log('电站创建数据：', formData);
             
             // 模拟提交
-            alert('电站创建成功！\n\n电站名称：' + formData.stationName + '\n电站类型：工商储\n地址：' + formData.address + '\n时区：' + formData.timezone);
+            // 获取模式名称
+            const modeNames = {
+                'self-use': '自发自用',
+                'economic': '经济模式',
+                'emergency': '应急模式',
+                'vpp': 'VPP模式'
+            };
+            
+            alert('电站创建成功！\n\n电站名称：' + formData.stationName + '\n模式：' + modeNames[formData.stationMode] + '\n电站类型：工商储\n地址：' + formData.address + '\n时区：' + formData.timezone);
             
             // 关闭弹窗
             closeCreateStationModal();
@@ -4943,10 +5043,20 @@
                         <h3 class="section-title i18n" data-i18n="wizard.basicInfo">基础信息</h3>
                         <div style="display: flex; flex-direction: column; gap: 1rem;">
                             <!-- 第一排 -->
-                            <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;">
                                 <div class="form-group">
                                     <label class="form-label required i18n" data-i18n="form.stationName">电站名称</label>
                                     <input type="text" class="form-input i18n" id="station-name" placeholder="请输入电站名称" data-i18n-placeholder="form.stationNamePlaceholder">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label required i18n" data-i18n="form.mode">模式</label>
+                                    <select class="form-select" id="station-mode">
+                                        <option value="">请选择模式</option>
+                                        <option value="self-use">自发自用</option>
+                                        <option value="economic">经济模式</option>
+                                        <option value="emergency">应急模式</option>
+                                        <option value="vpp">VPP模式</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label i18n" data-i18n="form.stationType">电站类型</label>
@@ -5343,7 +5453,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- 引入侧边栏脚本 -->
     <script src="./sidebar.js"></script>
 </body>

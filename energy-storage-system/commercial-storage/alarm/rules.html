@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>告警规则 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .rules-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .rules-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rules-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rules-table th,
+        .rules-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .rules-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .rules-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-badge.inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .severity-critical {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .severity-major {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .severity-minor {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .severity-warning {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .btn-copy {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-toggle {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">告警规则</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>告警规则</h1>
+                    <p>配置和管理系统告警规则</p>
+                </div>
+
+                <!-- 统计概览 -->
+                <div class="rules-overview">
+                    <div class="stat-card">
+                        <div class="stat-number">24</div>
+                        <div class="stat-label">总规则数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">18</div>
+                        <div class="stat-label">启用规则</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">禁用规则</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">本月触发</div>
+                    </div>
+                </div>
+
+                <!-- 告警规则表格 -->
+                <div class="rules-container">
+                    <div class="table-header">
+                        <h3>告警规则列表</h3>
+                        <div>
+                            <button class="btn btn-secondary" onclick="importRules()">导入规则</button>
+                            <button class="btn btn-primary" onclick="createRule()">新建规则</button>
+                        </div>
+                    </div>
+
+                    <table class="rules-table">
+                        <thead>
+                            <tr>
+                                <th>规则名称</th>
+                                <th>监控对象</th>
+                                <th>条件</th>
+                                <th>严重程度</th>
+                                <th>状态</th>
+                                <th>触发次数</th>
+                                <th>最后触发</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>电池温度过高告警</td>
+                                <td>BATT-01</td>
+                                <td>温度 > 45°C</td>
+                                <td><span class="severity-badge severity-critical">严重</span></td>
+                                <td><span class="status-badge active">启用</span></td>
+                                <td>3</td>
+                                <td>2024-01-24 14:30</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-edit" onclick="editRule('rule1')">编辑</button>
+                                        <button class="btn-action btn-copy" onclick="copyRule('rule1')">复制</button>
+                                        <button class="btn-action btn-toggle" onclick="toggleRule('rule1')">禁用</button>
+                                        <button class="btn-action btn-delete" onclick="deleteRule('rule1')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PCS电流异常</td>
+                                <td>PCS-01</td>
+                                <td>电流 > 500A</td>
+                                <td><span class="severity-badge severity-major">重要</span></td>
+                                <td><span class="status-badge active">启用</span></td>
+                                <td>1</td>
+                                <td>2024-01-23 09:15</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-edit" onclick="editRule('rule2')">编辑</button>
+                                        <button class="btn-action btn-copy" onclick="copyRule('rule2')">复制</button>
+                                        <button class="btn-action btn-toggle" onclick="toggleRule('rule2')">禁用</button>
+                                        <button class="btn-action btn-delete" onclick="deleteRule('rule2')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>通信故障检测</td>
+                                <td>全部设备</td>
+                                <td>通信中断 > 5分钟</td>
+                                <td><span class="severity-badge severity-major">重要</span></td>
+                                <td><span class="status-badge active">启用</span></td>
+                                <td>8</td>
+                                <td>2024-01-22 16:45</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-edit" onclick="editRule('rule3')">编辑</button>
+                                        <button class="btn-action btn-copy" onclick="copyRule('rule3')">复制</button>
+                                        <button class="btn-action btn-toggle" onclick="toggleRule('rule3')">禁用</button>
+                                        <button class="btn-action btn-delete" onclick="deleteRule('rule3')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SOC过低警告</td>
+                                <td>BATT-02</td>
+                                <td>SOC < 10%</td>
+                                <td><span class="severity-badge severity-minor">次要</span></td>
+                                <td><span class="status-badge inactive">禁用</span></td>
+                                <td>0</td>
+                                <td>-</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-edit" onclick="editRule('rule4')">编辑</button>
+                                        <button class="btn-action btn-copy" onclick="copyRule('rule4')">复制</button>
+                                        <button class="btn-action btn-toggle" onclick="toggleRule('rule4')">启用</button>
+                                        <button class="btn-action btn-delete" onclick="deleteRule('rule4')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>空调温度告警</td>
+                                <td>HVAC-01</td>
+                                <td>环境温度 > 35°C</td>
+                                <td><span class="severity-badge severity-warning">警告</span></td>
+                                <td><span class="status-badge active">启用</span></td>
+                                <td>15</td>
+                                <td>2024-01-24 13:20</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-edit" onclick="editRule('rule5')">编辑</button>
+                                        <button class="btn-action btn-copy" onclick="copyRule('rule5')">复制</button>
+                                        <button class="btn-action btn-toggle" onclick="toggleRule('rule5')">禁用</button>
+                                        <button class="btn-action btn-delete" onclick="deleteRule('rule5')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 创建新规则
+        function createRule() {
+            console.log('创建新告警规则');
+            showMessage('正在打开规则创建页面', 'info');
+        }
+
+        // 编辑规则
+        function editRule(ruleId) {
+            console.log(`编辑规则: ${ruleId}`);
+            showMessage(`正在编辑规则 ${ruleId}`, 'info');
+        }
+
+        // 复制规则
+        function copyRule(ruleId) {
+            console.log(`复制规则: ${ruleId}`);
+            showMessage(`规则 ${ruleId} 已复制`, 'success');
+        }
+
+        // 切换规则状态
+        function toggleRule(ruleId) {
+            console.log(`切换规则状态: ${ruleId}`);
+            showMessage(`规则 ${ruleId} 状态已切换`, 'success');
+            // 这里应该更新页面上的状态显示
+        }
+
+        // 删除规则
+        function deleteRule(ruleId) {
+            if (confirm(`确定要删除规则 ${ruleId} 吗？`)) {
+                console.log(`删除规则: ${ruleId}`);
+                showMessage(`规则 ${ruleId} 已删除`, 'success');
+            }
+        }
+
+        // 导入规则
+        function importRules() {
+            console.log('导入告警规则');
+            showMessage('规则导入功能待实现', 'info');
+        }
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

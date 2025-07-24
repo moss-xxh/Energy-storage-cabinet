@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色管理 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .role-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #3b82f6;
+        }
+
+        .role-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .role-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .role-users {
+            font-size: 14px;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        .role-description {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .permissions-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .permissions-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.75rem;
+        }
+
+        .permissions-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .permission-tag {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .role-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .btn-copy {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .role-header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .permission-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .permission-group {
+            margin-bottom: 2rem;
+        }
+
+        .group-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .permission-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .permission-item:last-child {
+            border-bottom: none;
+        }
+
+        .permission-info {
+            flex: 1;
+        }
+
+        .permission-name {
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .permission-desc {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .permission-toggle {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: #d1d5db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .permission-toggle.active {
+            background: #3b82f6;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .permission-toggle.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">角色管理</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>角色管理</h1>
+                    <p>系统角色与权限管理</p>
+                </div>
+
+                <div class="role-header-main">
+                    <h2>系统角色</h2>
+                    <button class="btn btn-primary" onclick="showCreateRoleModal()">创建角色</button>
+                </div>
+
+                <div class="role-grid">
+                    <!-- 管理员角色 -->
+                    <div class="role-card">
+                        <div class="role-header">
+                            <h3 class="role-name">系统管理员</h3>
+                            <span class="role-users">4 用户</span>
+                        </div>
+                        <p class="role-description">拥有系统最高权限，可以管理所有功能模块和用户账户</p>
+                        
+                        <div class="permissions-section">
+                            <div class="permissions-title">主要权限</div>
+                            <div class="permissions-list">
+                                <span class="permission-tag">用户管理</span>
+                                <span class="permission-tag">系统设置</span>
+                                <span class="permission-tag">数据管理</span>
+                                <span class="permission-tag">报表导出</span>
+                                <span class="permission-tag">设备控制</span>
+                            </div>
+                        </div>
+
+                        <div class="role-actions">
+                            <button class="btn-action btn-edit" onclick="editRole('admin')">编辑</button>
+                            <button class="btn-action btn-copy" onclick="copyRole('admin')">复制</button>
+                        </div>
+                    </div>
+
+                    <!-- 操作员角色 -->
+                    <div class="role-card">
+                        <div class="role-header">
+                            <h3 class="role-name">系统操作员</h3>
+                            <span class="role-users">12 用户</span>
+                        </div>
+                        <p class="role-description">负责日常运维操作，可以监控设备状态、处理告警、生成报表</p>
+                        
+                        <div class="permissions-section">
+                            <div class="permissions-title">主要权限</div>
+                            <div class="permissions-list">
+                                <span class="permission-tag">设备监控</span>
+                                <span class="permission-tag">告警处理</span>
+                                <span class="permission-tag">数据查看</span>
+                                <span class="permission-tag">报表生成</span>
+                            </div>
+                        </div>
+
+                        <div class="role-actions">
+                            <button class="btn-action btn-edit" onclick="editRole('operator')">编辑</button>
+                            <button class="btn-action btn-copy" onclick="copyRole('operator')">复制</button>
+                            <button class="btn-action btn-delete" onclick="deleteRole('operator')">删除</button>
+                        </div>
+                    </div>
+
+                    <!-- 查看者角色 -->
+                    <div class="role-card">
+                        <div class="role-header">
+                            <h3 class="role-name">数据查看者</h3>
+                            <span class="role-users">8 用户</span>
+                        </div>
+                        <p class="role-description">仅可查看数据和报表，不能进行任何操作或修改</p>
+                        
+                        <div class="permissions-section">
+                            <div class="permissions-title">主要权限</div>
+                            <div class="permissions-list">
+                                <span class="permission-tag">数据查看</span>
+                                <span class="permission-tag">报表查看</span>
+                                <span class="permission-tag">设备状态查看</span>
+                            </div>
+                        </div>
+
+                        <div class="role-actions">
+                            <button class="btn-action btn-edit" onclick="editRole('viewer')">编辑</button>
+                            <button class="btn-action btn-copy" onclick="copyRole('viewer')">复制</button>
+                            <button class="btn-action btn-delete" onclick="deleteRole('viewer')">删除</button>
+                        </div>
+                    </div>
+
+                    <!-- 维护工程师角色 -->
+                    <div class="role-card">
+                        <div class="role-header">
+                            <h3 class="role-name">维护工程师</h3>
+                            <span class="role-users">6 用户</span>
+                        </div>
+                        <p class="role-description">负责设备维护和故障处理，可以进行设备控制和固件更新</p>
+                        
+                        <div class="permissions-section">
+                            <div class="permissions-title">主要权限</div>
+                            <div class="permissions-list">
+                                <span class="permission-tag">设备控制</span>
+                                <span class="permission-tag">固件管理</span>
+                                <span class="permission-tag">维护记录</span>
+                                <span class="permission-tag">告警处理</span>
+                            </div>
+                        </div>
+
+                        <div class="role-actions">
+                            <button class="btn-action btn-edit" onclick="editRole('engineer')">编辑</button>
+                            <button class="btn-action btn-copy" onclick="copyRole('engineer')">复制</button>
+                            <button class="btn-action btn-delete" onclick="deleteRole('engineer')">删除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 权限编辑模态框 -->
+    <div id="permission-modal" class="permission-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">编辑角色权限</h3>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="permission-group">
+                    <h4 class="group-title">设备管理</h4>
+                    <div class="permission-item">
+                        <div class="permission-info">
+                            <div class="permission-name">设备监控</div>
+                            <div class="permission-desc">查看设备实时状态和数据</div>
+                        </div>
+                        <div class="permission-toggle active" onclick="togglePermission(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-info">
+                            <div class="permission-name">设备控制</div>
+                            <div class="permission-desc">远程控制设备启停和参数调节</div>
+                        </div>
+                        <div class="permission-toggle" onclick="togglePermission(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-info">
+                            <div class="permission-name">固件管理</div>
+                            <div class="permission-desc">设备固件升级和版本管理</div>
+                        </div>
+                        <div class="permission-toggle" onclick="togglePermission(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="permission-group">
+                    <h4 class="group-title">数据分析</h4>
+                    <div class="permission-item">
+                        <div class="permission-info">
+                            <div class="permission-name">数据查看</div>
+                            <div class="permission-desc">查看系统各类数据和统计信息</div>
+                        </div>
+                        <div class="permission-toggle active" onclick="togglePermission(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-info">
+                            <div class="permission-name">数据导出</div>
+                            <div class="permission-desc">导出数据报表和分析结果</div>
+                        </div>
+                        <div class="permission-toggle" onclick="togglePermission(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="permission-group">
+                    <h4 class="group-title">系统管理</h4>
+                    <div class="permission-item">
+                        <div class="permission-info">
+                            <div class="permission-name">用户管理</div>
+                            <div class="permission-desc">管理系统用户账户和权限</div>
+                        </div>
+                        <div class="permission-toggle" onclick="togglePermission(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-info">
+                            <div class="permission-name">系统设置</div>
+                            <div class="permission-desc">修改系统配置和参数</div>
+                        </div>
+                        <div class="permission-toggle" onclick="togglePermission(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                    <button class="btn btn-primary" onclick="savePermissions()">保存权限</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 显示创建角色模态框
+        function showCreateRoleModal() {
+            document.getElementById('modal-title').textContent = '创建新角色';
+            document.getElementById('permission-modal').style.display = 'flex';
+        }
+
+        // 编辑角色
+        function editRole(roleId) {
+            document.getElementById('modal-title').textContent = `编辑角色权限 - ${roleId}`;
+            document.getElementById('permission-modal').style.display = 'flex';
+            console.log(`编辑角色: ${roleId}`);
+        }
+
+        // 复制角色
+        function copyRole(roleId) {
+            console.log(`复制角色: ${roleId}`);
+            showMessage(`角色 ${roleId} 已复制`, 'success');
+        }
+
+        // 删除角色
+        function deleteRole(roleId) {
+            if (confirm(`确定要删除角色 ${roleId} 吗？`)) {
+                console.log(`删除角色: ${roleId}`);
+                showMessage(`角色 ${roleId} 已删除`, 'success');
+            }
+        }
+
+        // 切换权限
+        function togglePermission(toggle) {
+            toggle.classList.toggle('active');
+        }
+
+        // 保存权限
+        function savePermissions() {
+            const permissions = [];
+            document.querySelectorAll('.permission-toggle.active').forEach(toggle => {
+                const permissionItem = toggle.closest('.permission-item');
+                const permissionName = permissionItem.querySelector('.permission-name').textContent;
+                permissions.push(permissionName);
+            });
+            
+            console.log('保存权限:', permissions);
+            showMessage('权限设置已保存', 'success');
+            closeModal();
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('permission-modal').style.display = 'none';
+        }
+
+        // 模态框外点击关闭
+        document.getElementById('permission-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

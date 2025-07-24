@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>报表列表 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .report-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .filters-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 140px;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .report-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .report-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .report-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-type.daily {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .report-type.weekly {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .report-type.monthly {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .report-type.custom {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .report-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-description {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .report-body {
+            padding: 1.5rem;
+        }
+
+        .report-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .btn-download {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .btn-edit {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">报表列表</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>报表列表</h1>
+                    <p>报表管理与下载</p>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="report-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">45</div>
+                        <div class="stat-label">总报表数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">本月生成</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">定期报表</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">下载次数</div>
+                    </div>
+                </div>
+
+                <!-- 筛选面板 -->
+                <div class="filters-panel">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>报表类型</label>
+                            <select id="type-filter">
+                                <option value="">全部类型</option>
+                                <option value="daily">日报</option>
+                                <option value="weekly">周报</option>
+                                <option value="monthly">月报</option>
+                                <option value="custom">自定义</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>生成时间</label>
+                            <select id="time-filter">
+                                <option value="7d">最近7天</option>
+                                <option value="30d" selected>最近30天</option>
+                                <option value="3m">最近3个月</option>
+                                <option value="1y">最近1年</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>关键词</label>
+                            <input type="text" id="keyword-search" placeholder="搜索报表名称">
+                        </div>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="searchReports()">搜索</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作栏 -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2>报表列表</h2>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-secondary" onclick="window.location.href='./templates.html'">管理模板</button>
+                        <button class="btn btn-primary" onclick="window.location.href='./create.html'">创建报表</button>
+                    </div>
+                </div>
+
+                <!-- 报表网格 -->
+                <div class="report-grid" id="report-grid">
+                    <!-- 报表卡片 -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <span class="report-type daily">日报</span>
+                            <h3 class="report-title">储能系统运行日报</h3>
+                            <p class="report-description">包含设备运行状态、能耗数据、告警信息等日常运行数据统计</p>
+                        </div>
+                        <div class="report-body">
+                            <div class="report-meta">
+                                <span>生成时间: 2024-01-24 08:00</span>
+                                <span>大小: 2.3 MB</span>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-action btn-view" onclick="viewReport('daily-001')">预览</button>
+                                <button class="btn-action btn-download" onclick="downloadReport('daily-001')">下载</button>
+                                <button class="btn-action btn-edit" onclick="editReport('daily-001')">编辑</button>
+                                <button class="btn-action btn-delete" onclick="deleteReport('daily-001')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-header">
+                            <span class="report-type weekly">周报</span>
+                            <h3 class="report-title">能耗分析周报</h3>
+                            <p class="report-description">一周内能耗趋势、效率分析、成本统计等综合数据报告</p>
+                        </div>
+                        <div class="report-body">
+                            <div class="report-meta">
+                                <span>生成时间: 2024-01-22 09:00</span>
+                                <span>大小: 4.1 MB</span>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-action btn-view" onclick="viewReport('weekly-001')">预览</button>
+                                <button class="btn-action btn-download" onclick="downloadReport('weekly-001')">下载</button>
+                                <button class="btn-action btn-edit" onclick="editReport('weekly-001')">编辑</button>
+                                <button class="btn-action btn-delete" onclick="deleteReport('weekly-001')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-header">
+                            <span class="report-type monthly">月报</span>
+                            <h3 class="report-title">经济效益月度报告</h3>
+                            <p class="report-description">月度收益分析、投资回报率、成本效益等经济指标统计</p>
+                        </div>
+                        <div class="report-body">
+                            <div class="report-meta">
+                                <span>生成时间: 2024-01-01 10:00</span>
+                                <span>大小: 5.8 MB</span>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-action btn-view" onclick="viewReport('monthly-001')">预览</button>
+                                <button class="btn-action btn-download" onclick="downloadReport('monthly-001')">下载</button>
+                                <button class="btn-action btn-edit" onclick="editReport('monthly-001')">编辑</button>
+                                <button class="btn-action btn-delete" onclick="deleteReport('monthly-001')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-header">
+                            <span class="report-type custom">自定义</span>
+                            <h3 class="report-title">设备维护专项报告</h3>
+                            <p class="report-description">设备维护记录、故障分析、维护成本等专项统计报告</p>
+                        </div>
+                        <div class="report-body">
+                            <div class="report-meta">
+                                <span>生成时间: 2024-01-20 14:30</span>
+                                <span>大小: 3.2 MB</span>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-action btn-view" onclick="viewReport('custom-001')">预览</button>
+                                <button class="btn-action btn-download" onclick="downloadReport('custom-001')">下载</button>
+                                <button class="btn-action btn-edit" onclick="editReport('custom-001')">编辑</button>
+                                <button class="btn-action btn-delete" onclick="deleteReport('custom-001')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-header">
+                            <span class="report-type daily">日报</span>
+                            <h3 class="report-title">告警统计日报</h3>
+                            <p class="report-description">日常告警发生情况、处理状态、响应时间等统计分析</p>
+                        </div>
+                        <div class="report-body">
+                            <div class="report-meta">
+                                <span>生成时间: 2024-01-23 08:00</span>
+                                <span>大小: 1.8 MB</span>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-action btn-view" onclick="viewReport('daily-002')">预览</button>
+                                <button class="btn-action btn-download" onclick="downloadReport('daily-002')">下载</button>
+                                <button class="btn-action btn-edit" onclick="editReport('daily-002')">编辑</button>
+                                <button class="btn-action btn-delete" onclick="deleteReport('daily-002')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-header">
+                            <span class="report-type weekly">周报</span>
+                            <h3 class="report-title">系统性能周报</h3>
+                            <p class="report-description">系统整体性能指标、可用率、响应时间等周度分析报告</p>
+                        </div>
+                        <div class="report-body">
+                            <div class="report-meta">
+                                <span>生成时间: 2024-01-15 09:00</span>
+                                <span>大小: 3.5 MB</span>
+                            </div>
+                            <div class="report-actions">
+                                <button class="btn-action btn-view" onclick="viewReport('weekly-002')">预览</button>
+                                <button class="btn-action btn-download" onclick="downloadReport('weekly-002')">下载</button>
+                                <button class="btn-action btn-edit" onclick="editReport('weekly-002')">编辑</button>
+                                <button class="btn-action btn-delete" onclick="deleteReport('weekly-002')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <button onclick="changePage('prev')">&laquo; 上一页</button>
+                    <button class="active">1</button>
+                    <button onclick="changePage(2)">2</button>
+                    <button onclick="changePage(3)">3</button>
+                    <button onclick="changePage('next')">下一页 &raquo;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 搜索报表
+        function searchReports() {
+            const type = document.getElementById('type-filter').value;
+            const time = document.getElementById('time-filter').value;
+            const keyword = document.getElementById('keyword-search').value;
+            
+            console.log('搜索报表:', { type, time, keyword });
+            showMessage('报表搜索完成', 'success');
+        }
+
+        // 预览报表
+        function viewReport(reportId) {
+            console.log(`预览报表: ${reportId}`);
+            showMessage(`正在打开报表 ${reportId}`, 'info');
+            
+            // 模拟打开新窗口预览
+            setTimeout(() => {
+                showMessage('报表预览已打开', 'success');
+            }, 1000);
+        }
+
+        // 下载报表
+        function downloadReport(reportId) {
+            console.log(`下载报表: ${reportId}`);
+            showMessage(`开始下载报表 ${reportId}`, 'info');
+            
+            // 模拟下载过程
+            setTimeout(() => {
+                showMessage('报表下载完成', 'success');
+            }, 2000);
+        }
+
+        // 编辑报表
+        function editReport(reportId) {
+            console.log(`编辑报表: ${reportId}`);
+            window.location.href = `./create.html?edit=${reportId}`;
+        }
+
+        // 删除报表
+        function deleteReport(reportId) {
+            if (confirm(`确定要删除报表 ${reportId} 吗？`)) {
+                console.log(`删除报表: ${reportId}`);
+                showMessage(`报表 ${reportId} 已删除`, 'success');
+                
+                // 模拟删除DOM元素
+                const reportCard = event.target.closest('.report-card');
+                reportCard.style.opacity = '0';
+                setTimeout(() => {
+                    reportCard.remove();
+                }, 300);
+            }
+        }
+
+        // 分页
+        function changePage(page) {
+            console.log('切换到页面:', page);
+        }
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

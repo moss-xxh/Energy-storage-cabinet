@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工商储能管理系统</title>
+    <link rel="stylesheet" href="./sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-section {
+            background: white;
+            border-radius: 8px;
+            padding: 3rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.125rem;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid transparent;
+        }
+
+        .module-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-color: #3b82f6;
+        }
+
+        .module-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .module-station .module-icon {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .module-monitoring .module-icon {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .module-device .module-icon {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        .module-analysis .module-icon {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .module-alarm .module-icon {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .module-report .module-icon {
+            background: #f3e8ff;
+            color: #9333ea;
+        }
+
+        .module-system .module-icon {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+
+        .module-user .module-icon {
+            background: #fce7f3;
+            color: #ec4899;
+        }
+
+        .module-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .module-description {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">页面</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <!-- 欢迎区域 -->
+                <div class="welcome-section">
+                    <h1 class="welcome-title">欢迎使用工商储能管理系统</h1>
+                    <p class="welcome-subtitle">
+                        全面的储能设备监控、数据分析和智能管理平台<br>
+                        助力您实现能源效率最大化和运营成本最优化
+                    </p>
+                </div>
+
+                <!-- 实时统计 -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">在线电站</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">运行设备</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">2,456.8</div>
+                        <div class="stat-label">今日发电量 (kWh)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">88.7%</div>
+                        <div class="stat-label">系统效率</div>
+                    </div>
+                </div>
+
+                <!-- 功能模块 -->
+                <div class="module-grid">
+                    <a href="./station-management.html" class="module-card module-station">
+                        <div class="module-icon">⚡</div>
+                        <h3 class="module-title">电站管理</h3>
+                        <p class="module-description">管理所有储能电站，查看电站详情和运行状态</p>
+                    </a>
+
+                    <a href="./monitoring/device-list.html" class="module-card module-monitoring">
+                        <div class="module-icon">📡</div>
+                        <h3 class="module-title">实时监控</h3>
+                        <p class="module-description">实时监控设备状态，查看拓扑图和运行参数</p>
+                    </a>
+
+                    <a href="./device/manage.html" class="module-card module-device">
+                        <div class="module-icon">⚙️</div>
+                        <h3 class="module-title">设备管理</h3>
+                        <p class="module-description">管理设备台账，远程控制和固件更新</p>
+                    </a>
+
+                    <a href="./analysis.html" class="module-card module-analysis">
+                        <div class="module-icon">📊</div>
+                        <h3 class="module-title">数据分析</h3>
+                        <p class="module-description">能耗分析、效率分析和经济性评估</p>
+                    </a>
+
+                    <a href="./alarm/list.html" class="module-card module-alarm">
+                        <div class="module-icon">🔔</div>
+                        <h3 class="module-title">告警管理</h3>
+                        <p class="module-description">实时告警监控，告警规则配置和历史查询</p>
+                    </a>
+
+                    <a href="./report/list.html" class="module-card module-report">
+                        <div class="module-icon">📋</div>
+                        <h3 class="module-title">报表中心</h3>
+                        <p class="module-description">自定义报表生成，数据导出和定期报告</p>
+                    </a>
+
+                    <a href="./system/settings.html" class="module-card module-system">
+                        <div class="module-icon">🔧</div>
+                        <h3 class="module-title">系统设置</h3>
+                        <p class="module-description">系统配置、用户权限和日志管理</p>
+                    </a>
+
+                    <a href="./user/profile.html" class="module-card module-user">
+                        <div class="module-icon">👤</div>
+                        <h3 class="module-title">用户中心</h3>
+                        <p class="module-description">个人信息管理和密码修改</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="./sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

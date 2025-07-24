@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>实时监控 - 工商储能管理系统</title>
-    <link rel="stylesheet" href="./sidebar.css">
     <style>
         * {
             margin: 0;
@@ -18,6 +17,86 @@
             color: #1e293b;
             background: #f8fafc;
             min-height: 100vh;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            transition: all 300ms ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 1rem 0;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 150ms ease;
+            position: relative;
+        }
+
+        .menu-item:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .menu-item.active {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: #2563eb;
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* 主内容区域 */
@@ -338,10 +417,50 @@
     </style>
 </head>
 <body>
-    <!-- 侧边栏容器 -->
-    <div id="sidebar-container"></div>
-
     <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="../logo.png" alt="Logo">
+                <span>能源管理系统</span>
+            </div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="./station-management.html" class="menu-item">
+                <span class="menu-icon">⚡</span>
+                <span>电站管理</span>
+            </a>
+            <a href="#" class="menu-item active">
+                <span class="menu-icon">📊</span>
+                <span>实时监控</span>
+            </a>
+            <a href="./data-analysis.html" class="menu-item">
+                <span class="menu-icon">📈</span>
+                <span>数据分析</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🔔</span>
+                <span>告警管理</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🔧</span>
+                <span>设备管理</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span>用户管理</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📄</span>
+                <span>报表中心</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span>系统设置</span>
+            </a>
+        </nav>
+    </aside>
+
     <!-- 主内容区域 -->
     <main class="main-content">
         <!-- 顶部导航栏 -->
@@ -1072,8 +1191,5 @@
             setInterval(refreshData, 10000); // 每10秒刷新一次
         });
     </script>
-
-    <!-- 引入侧边栏脚本 -->
-    <script src="./sidebar.js"></script>
 </body>
 </html>

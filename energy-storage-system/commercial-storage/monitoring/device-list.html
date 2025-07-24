@@ -1,0 +1,2322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备列表 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: #1e293b;
+            background: #EBEDF5;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem;
+            background: none;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 150ms ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .nav-button:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .content {
+            flex: 1;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-layout {
+            display: flex;
+            gap: 2rem;
+            height: 100%;
+        }
+
+        .left-panel {
+            width: 280px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            min-width: 0;
+        }
+
+        /* 搜索过滤区域 */
+        .search-filter-section {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .search-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            white-space: nowrap;
+        }
+
+        .search-input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            background: white;
+            color: #1e293b;
+            min-width: 200px;
+        }
+
+        .search-button, .reset-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 150ms ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-button {
+            background: #3562E3;
+            color: white;
+            border: 1px solid #3562E3;
+        }
+
+        .search-button:hover {
+            background: #2951d3;
+        }
+
+        .reset-button {
+            background: white;
+            color: #64748b;
+            border: 1px solid #d1d5db;
+        }
+
+        .reset-button:hover {
+            background: #f8fafc;
+        }
+
+        /* 设备列表区域 */
+        .device-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .device-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .device-table th {
+            padding: 0.625rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.8125rem;
+        }
+
+        .device-table td {
+            padding: 0.625rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.8125rem;
+        }
+
+        .device-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .device-name {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .device-type {
+            color: #6b7280;
+        }
+
+        .device-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .device-status.online {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .device-status.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .device-status.offline {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* 表格操作按钮 */
+        .table-action {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.375rem;
+            border-radius: 0.25rem;
+            color: #374151;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .table-action:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .table-action svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 排序功能 */
+        .device-table th.sortable {
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+        
+        .device-table th.sortable:hover {
+            background: #e5e7eb;
+        }
+        
+        .th-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        
+        .sort-icons {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-left: 0.5rem;
+        }
+        
+        .sort-icon {
+            font-size: 0.75rem;
+            opacity: 0.4;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            line-height: 0.75rem;
+            padding: 2px 4px;
+        }
+        
+        .sort-icon:hover {
+            opacity: 0.8;
+        }
+        
+        .device-table th.sortable:hover .sort-icon {
+            opacity: 0.7;
+        }
+        
+        .sort-icon.active {
+            opacity: 1;
+            color: #3562E3;
+            font-weight: bold;
+        }
+
+        .station-search-section {
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            height: fit-content;
+            margin: 0.5rem;
+        }
+
+        .device-section {
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        .section-header {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+
+
+        .collapse-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+        
+        .collapse-btn:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #475569;
+        }
+
+        .collapse-icon {
+            transition: transform 0.2s ease;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .collapse-btn.collapsed .collapse-icon {
+            transform: rotate(180deg);
+        }
+
+        /* 左侧面板收起状态 */
+        .left-panel {
+            transition: width 0.3s ease;
+        }
+        
+        .left-panel.collapsed {
+            width: 50px;
+        }
+        
+        .left-panel.collapsed .station-search-input,
+        .left-panel.collapsed .station-search-container {
+            display: none;
+        }
+        
+        .table-action-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.8125rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .action-btn:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+        
+        .action-btn.primary {
+            background: #3562E3;
+            color: white;
+            border-color: #3562E3;
+        }
+        
+        .action-btn.primary:hover {
+            background: #2951d3;
+            border-color: #2951d3;
+        }
+        
+        .action-btn.ota {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        
+        .action-btn.ota:hover {
+            background: #059669;
+            border-color: #059669;
+        }
+        
+        .action-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .left-panel.collapsed .section-header {
+            justify-content: center;
+            padding: 1rem 0.5rem;
+        }
+
+        .station-search-container {
+            padding: 0.75rem;
+            padding-left: 1.25rem;
+        }
+        
+        .station-search-input {
+            flex: 1;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .station-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .station-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: white;
+        }
+
+        .station-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .station-card.selected {
+            border-color: #3562E3;
+            background: #eff6ff;
+            box-shadow: 0 0 0 1px #3562E3;
+        }
+
+        .station-card-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .station-card.selected .station-card-name {
+            color: #3562E3;
+        }
+
+        .station-card-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .station-card.selected .station-card-info {
+            color: #4f46e5;
+        }
+
+        /* 表格容器 - 支持水平滚动 */
+        .table-container {
+            overflow-x: auto;
+            flex: 1;
+            margin-top: 1rem;
+        }
+
+        .device-table {
+            min-width: 1000px; /* 缩小表格最小宽度 */
+            position: relative;
+        }
+
+        .device-table th,
+        .device-table td {
+            white-space: nowrap;
+        }
+
+        /* 固定列样式 */
+        .device-table thead .fixed-left,
+        .device-table thead .fixed-right {
+            position: sticky;
+            background: #f9fafb;
+            z-index: 10;
+        }
+
+        .device-table tbody .fixed-left,
+        .device-table tbody .fixed-right {
+            position: sticky;
+            background: white;
+            z-index: 10;
+        }
+
+        .fixed-left {
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .fixed-left.device-name-col {
+            left: 0;
+            min-width: 180px;
+        }
+        
+        .device-name-col {
+            display: flex;
+            align-items: center;
+        }
+
+        .fixed-right {
+            right: 0;
+            border-left: 1px solid #e5e7eb;
+            min-width: 120px;
+        }
+
+        /* 表格行悬停时固定列背景色调整 */
+        .device-table tbody tr:hover .fixed-left,
+        .device-table tbody tr:hover .fixed-right {
+            background: #f8fafc;
+        }
+
+        /* 滚动列样式 */
+        .scrollable-col {
+            min-width: 100px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        /* 开关样式 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 20px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #3562E3;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+        
+        /* Toast样式 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #1f2937;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            z-index: 1100;
+            opacity: 0;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        /* 模态弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .device-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 1rem 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+        
+        .device-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .device-item:last-child {
+            border-bottom: none;
+        }
+        
+        .text-gray {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .modal-footer {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+        
+        /* 进度弹窗 */
+        .progress-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        
+        .progress-popup.show {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+        
+        .progress-header {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .progress-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .progress-content {
+            padding: 1rem;
+        }
+        
+        .progress-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        /* 结果弹窗 */
+        .result-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        
+        .result-popup.show {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+        
+        .result-header {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .result-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .result-content {
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .result-item {
+            flex: 1;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .result-item span:first-child {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .result-item span:last-child {
+            display: block;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .result-item.success {
+            background: #dcfce7;
+        }
+        
+        .result-item.success span:first-child {
+            color: #16a34a;
+        }
+        
+        .result-item.fail {
+            background: #fee2e2;
+        }
+        
+        .result-item.fail span:first-child {
+            color: #dc2626;
+        }
+        
+        .result-footer {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+        
+        .btn-text {
+            background: none;
+            border: none;
+            color: #6b7280;
+            font-size: 0.875rem;
+            cursor: pointer;
+            padding: 0.375rem 0.75rem;
+        }
+        
+        .btn-primary-sm {
+            padding: 0.375rem 0.75rem;
+            background: #3562E3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+        
+        /* 详情抽屉 */
+        .details-drawer {
+            width: 900px;
+        }
+        
+        .stats-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            flex: 1;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-card.success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .stat-card.fail {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+        }
+        
+        .table-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .retry-all-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .retry-all-btn:hover {
+            background: #b91c1c;
+        }
+        
+        .retry-all-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .device-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        
+        .device-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.15s;
+        }
+        
+        .device-card:hover {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-color: #cbd5e1;
+        }
+        
+        .device-card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .device-card-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .device-card-name {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .device-card-sn {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-badge.success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .status-badge.failed {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .retry-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .retry-btn:hover {
+            border-color: #3562E3;
+            color: #3562E3;
+        }
+        
+        /* 设备列表样式 */
+        .device-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        
+        .device-list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            background: #f9fafb;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        
+        .device-list-item:hover {
+            background: #f3f4f6;
+        }
+        
+        .device-name {
+            font-weight: 600;
+            color: #1f2937;
+            flex: 1;
+        }
+        
+        .device-sn {
+            color: #6b7280;
+            flex: 1;
+        }
+        
+        .device-status {
+            font-weight: 500;
+        }
+        
+        .device-status.status-failed {
+            color: #dc2626;
+        }
+        
+        /* Tab样式 */
+        .details-tabs {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0;
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1rem;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tab-btn:hover {
+            color: #374151;
+        }
+        
+        .tab-btn.active {
+            color: #3562E3;
+            border-bottom-color: #3562E3;
+        }
+        
+        .tab-btn span {
+            background: #f3f4f6;
+            padding: 0.125rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .tab-btn.active span {
+            background: #dbeafe;
+            color: #3562E3;
+        }
+        
+        /* 抽屉样式 */
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 999;
+        }
+        
+        .drawer-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .drawer.open {
+            right: 0;
+        }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+        
+        .drawer-close:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+        
+        .drawer-body {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        
+        .drawer-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            color: #1f2937;
+            background: white;
+            transition: all 0.15s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3562E3;
+            box-shadow: 0 0 0 3px rgba(53, 98, 227, 0.1);
+        }
+        
+        .required {
+            color: #ef4444;
+        }
+        
+        .btn-primary {
+            padding: 0.5rem 1rem;
+            background: #3562E3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .btn-primary:hover {
+            background: #2951d3;
+        }
+        
+        .btn-cancel {
+            padding: 0.5rem 1rem;
+            background: white;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .btn-cancel:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">设备列表</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 内容区域 - 左右布局 -->
+        <div class="content">
+            <div class="main-layout">
+                <!-- 左侧电站搜索区域 -->
+                <div class="left-panel">
+                    <div class="station-search-section">
+                        <div class="section-header">
+                            <input type="text" class="search-input station-search-input" placeholder="搜索电站名称" id="station-search" oninput="searchStations()">
+                            <button class="collapse-btn" onclick="toggleLeftPanel()" id="leftPanelCollapseBtn" title="收起/展开">
+                                <svg class="collapse-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="station-search-container">
+                            <div class="station-cards" id="stationCards">
+                                <!-- 电站卡片将通过JavaScript动态加载 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧设备区域 -->
+                <div class="right-panel">
+                    <!-- 查询区域 -->
+                    <div class="search-filter-section">
+                        <div class="search-row">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div class="search-group">
+                                    <label class="search-label">设备名称：</label>
+                                    <input type="text" class="search-input" placeholder="请输入设备名称" id="device-name-search">
+                                </div>
+                                <div class="search-group">
+                                    <label class="search-label">状态：</label>
+                                    <select class="search-input" id="device-status-search">
+                                        <option value="">全部状态</option>
+                                        <option value="online">在线</option>
+                                        <option value="offline">离线</option>
+                                        <option value="warning">告警</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="search-button" onclick="searchDevices()">
+                                    <span>搜索</span>
+                                </button>
+                                <button class="reset-button" onclick="resetSearch()">
+                                    <span>重置</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 设备列表区域 -->
+                    <div class="device-section">
+                        <div class="table-action-bar">
+                            <button class="action-btn primary" onclick="addDevice()">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>新增</span>
+                            </button>
+                            <button class="action-btn ota" onclick="otaUpgradeDevices()">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 10V1M4 4L7 1L10 4M1 10V12C1 12.5523 1.44772 13 2 13H12C12.5523 13 13 12.5523 13 12V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>OTA升级</span>
+                            </button>
+                            <button class="action-btn" onclick="importDevices()">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 1V8M4 5L7 8L10 5M1 10V12C1 12.5523 1.44772 13 2 13H12C12.5523 13 13 12.5523 13 12V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>导入</span>
+                            </button>
+                            <button class="action-btn" onclick="exportDevices()">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 8V1M4 4L7 1L10 4M1 10V12C1 12.5523 1.44772 13 2 13H12C12.5523 13 13 12.5523 13 12V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>导出</span>
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table class="device-table" id="deviceTable">
+                                <thead>
+                                    <tr>
+                                        <th class="fixed-left device-name-col">
+                                            <input type="checkbox" id="selectAllDevices" onchange="toggleAllDevices(this.checked)" style="margin-right: 8px;">
+                                            设备名称
+                                        </th>
+                                        <th class="scrollable-col">编码</th>
+                                        <th class="scrollable-col sortable" data-sort="utilization">
+                                            <div class="th-content">
+                                                <span>利用率</span>
+                                                <div class="sort-icons">
+                                                    <span class="sort-icon sort-up" onclick="sortTable('utilization', 'asc')">↑</span>
+                                                    <span class="sort-icon sort-down" onclick="sortTable('utilization', 'desc')">↓</span>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th class="scrollable-col sortable" data-sort="realtimePower">
+                                            <div class="th-content">
+                                                <span>实时功率</span>
+                                                <div class="sort-icons">
+                                                    <span class="sort-icon sort-up" onclick="sortTable('realtimePower', 'asc')">↑</span>
+                                                    <span class="sort-icon sort-down" onclick="sortTable('realtimePower', 'desc')">↓</span>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th class="scrollable-col sortable" data-sort="installedPower">
+                                            <div class="th-content">
+                                                <span>装机功率</span>
+                                                <div class="sort-icons">
+                                                    <span class="sort-icon sort-up" onclick="sortTable('installedPower', 'asc')">↑</span>
+                                                    <span class="sort-icon sort-down" onclick="sortTable('installedPower', 'desc')">↓</span>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th class="scrollable-col sortable" data-sort="soc">
+                                            <div class="th-content">
+                                                <span>SOC</span>
+                                                <div class="sort-icons">
+                                                    <span class="sort-icon sort-up" onclick="sortTable('soc', 'asc')">↑</span>
+                                                    <span class="sort-icon sort-down" onclick="sortTable('soc', 'desc')">↓</span>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th class="scrollable-col">状态</th>
+                                        <th class="scrollable-col">设置</th>
+                                        <th class="scrollable-col">固件版本</th>
+                                        <th class="scrollable-col">电站</th>
+                                        <th class="fixed-right operation-col">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="deviceTableBody">
+                                    <!-- 设备数据将通过JavaScript动态加载 -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../sidebar.js"></script>
+    <script>
+        // 电站数据
+        const stations = [
+            { id: 'ST001', name: '上海工业园储能站', deviceCount: 12, status: 'online' },
+            { id: 'ST002', name: '北京科技园储能站', deviceCount: 8, status: 'online' },
+            { id: 'ST003', name: '深圳产业园储能站', deviceCount: 15, status: 'warning' },
+            { id: 'ST004', name: '广州智慧园储能站', deviceCount: 6, status: 'online' },
+            { id: 'ST005', name: '杭州科创园储能站', deviceCount: 10, status: 'offline' }
+        ];
+
+        // 当前显示的电站数据（用于搜索过滤）
+        let filteredStations = [...stations];
+
+        // 设备数据（按电站分组）
+        const devicesByStation = {
+            'ST001': [
+                { name: 'INV-001', code: 'INV001', sn: 'SN001', utilization: 85, realtimePower: 450, installedPower: 500, soc: 80, firmware: 'v2.1.3', status: 'online', station: '上海工业园储能站' },
+                { name: 'PCS-002', code: 'PCS002', sn: 'SN002', utilization: 92, realtimePower: 920, installedPower: 1000, soc: 95, firmware: 'v1.8.5', status: 'online', station: '上海工业园储能站' },
+                { name: 'BMS-003', code: 'BMS003', sn: 'SN003', utilization: 78, realtimePower: 234, installedPower: 300, soc: 68, firmware: 'v3.2.1', status: 'warning', station: '上海工业园储能站' }
+            ],
+            'ST002': [
+                { name: 'INV-004', code: 'INV004', sn: 'SN004', utilization: 88, realtimePower: 704, installedPower: 800, soc: 82, firmware: 'v2.1.3', status: 'online', station: '北京科技园储能站' },
+                { name: 'EMS-005', code: 'EMS005', sn: 'SN005', utilization: 75, realtimePower: 450, installedPower: 600, soc: 75, firmware: 'v2.5.7', status: 'online', station: '北京科技园储能站' }
+            ],
+            'ST003': [
+                { name: 'PCS-006', code: 'PCS006', sn: 'SN006', utilization: 0, realtimePower: 0, installedPower: 500, soc: 0, firmware: 'v1.8.5', status: 'offline', station: '深圳产业园储能站' },
+                { name: 'BMS-007', code: 'BMS007', sn: 'SN007', utilization: 65, realtimePower: 195, installedPower: 300, soc: 45, firmware: 'v3.2.1', status: 'warning', station: '深圳产业园储能站' }
+            ],
+            'ST004': [
+                { name: 'INV-008', code: 'INV008', sn: 'SN008', utilization: 90, realtimePower: 540, installedPower: 600, soc: 90, firmware: 'v2.1.3', status: 'online', station: '广州智慧园储能站' }
+            ],
+            'ST005': [
+                { name: 'EMS-009', code: 'EMS009', sn: 'SN009', utilization: 0, realtimePower: 0, installedPower: 800, soc: 0, firmware: 'v2.5.7', status: 'offline', station: '杭州科创园储能站' },
+                { name: 'PCS-010', code: 'PCS010', sn: 'SN010', utilization: 0, realtimePower: 0, installedPower: 1000, soc: 0, firmware: 'v1.8.5', status: 'offline', station: '杭州科创园储能站' }
+            ]
+        };
+
+        // 当前选中的电站和排序状态
+        let selectedStationId = null;
+        let currentSort = { column: null, direction: null };
+        
+        // 所有设备数据（合并所有电站的设备）
+        const allDevices = Object.values(devicesByStation).flat();
+
+        // 渲染电站卡片
+        function renderStationCards(stationsToRender = filteredStations) {
+            const stationCards = document.getElementById('stationCards');
+            stationCards.innerHTML = stationsToRender.map(station => `
+                <div class="station-card" data-station-id="${station.id}" onclick="selectStation('${station.id}')">
+                    <div class="station-card-name">${station.name}</div>
+                    <div class="station-card-info">
+                        <span>${station.deviceCount}台设备</span>
+                        <span class="device-status ${station.status}">${getStatusText(station.status)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 搜索电站
+        function searchStations() {
+            const searchInput = document.getElementById('station-search').value.toLowerCase();
+            
+            if (!searchInput) {
+                filteredStations = [...stations];
+            } else {
+                filteredStations = stations.filter(station => 
+                    station.name.toLowerCase().includes(searchInput)
+                );
+            }
+            
+            renderStationCards(filteredStations);
+        }
+
+        // 选择电站
+        function selectStation(stationId) {
+            // 更新选中状态
+            selectedStationId = stationId;
+            
+            // 更新卡片选中样式
+            document.querySelectorAll('.station-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            if (stationId) {
+                document.querySelector(`[data-station-id="${stationId}"]`).classList.add('selected');
+                // 渲染该电站的设备
+                const devices = devicesByStation[stationId] || [];
+                renderDeviceTable(devices);
+            } else {
+                // 未选择电站时显示所有设备
+                renderDeviceTable(allDevices);
+            }
+        }
+
+        // 渲染设备表格
+        function renderDeviceTable(devices) {
+            const tbody = document.getElementById('deviceTableBody');
+            
+            tbody.innerHTML = devices.map(device => `
+                <tr>
+                    <td class="fixed-left device-name-col">
+                        <input type="checkbox" class="device-checkbox" value="${device.sn}" onchange="updateSelectAll()" style="margin-right: 8px;">
+                        <span class="device-name">${device.name}</span>
+                    </td>
+                    <td class="scrollable-col">${device.code}</td>
+                    <td class="scrollable-col">${device.utilization}%</td>
+                    <td class="scrollable-col">${device.realtimePower}kW</td>
+                    <td class="scrollable-col">${device.installedPower}kW</td>
+                    <td class="scrollable-col">${device.soc}%</td>
+                    <td class="scrollable-col">
+                        <span class="device-status ${device.status}">
+                            ${getStatusText(device.status)}
+                        </span>
+                    </td>
+                    <td class="scrollable-col">
+                        <label class="switch">
+                            <input type="checkbox" ${device.enabled !== false ? 'checked' : ''} onchange="toggleDevice('${device.sn}', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </td>
+                    <td class="scrollable-col">${device.firmware}</td>
+                    <td class="scrollable-col">${device.station}</td>
+                    <td class="fixed-right operation-col">
+                        <div style="display: flex; gap: 0.25rem; justify-content: center;">
+                            <button class="table-action" onclick="viewDetails('${device.sn}')" title="详情">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                            <button class="table-action" onclick="editDevice('${device.sn}')" title="编辑">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
+                            <button class="table-action" onclick="deleteDevice('${device.sn}')" title="删除">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3,6 5,6 21,6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const statusMap = {
+                'online': '在线',
+                'offline': '离线',
+                'warning': '告警'
+            };
+            return statusMap[status] || status;
+        }
+
+        // 左侧面板收起/展开
+        function toggleLeftPanel() {
+            const leftPanel = document.querySelector('.left-panel');
+            const btn = document.getElementById('leftPanelCollapseBtn');
+            
+            if (leftPanel.classList.contains('collapsed')) {
+                leftPanel.classList.remove('collapsed');
+                btn.classList.remove('collapsed');
+                btn.title = '收起';
+            } else {
+                leftPanel.classList.add('collapsed');
+                btn.classList.add('collapsed');
+                btn.title = '展开';
+            }
+        }
+
+        // 排序表格
+        function sortTable(column, direction) {
+            // 更新排序图标
+            document.querySelectorAll('.sort-icon').forEach(icon => {
+                icon.classList.remove('active');
+            });
+            
+            const sortIcon = document.querySelector(`[data-sort="${column}"] .sort-${direction}`);
+            if (sortIcon) {
+                sortIcon.classList.add('active');
+            }
+            
+            // 获取当前显示的设备数据
+            const devices = selectedStationId ? (devicesByStation[selectedStationId] || []) : allDevices;
+            const sortedDevices = [...devices].sort((a, b) => {
+                let aVal = a[column];
+                let bVal = b[column];
+                
+                // 处理数值类型
+                if (typeof aVal === 'number' && typeof bVal === 'number') {
+                    return direction === 'asc' ? aVal - bVal : bVal - aVal;
+                }
+                
+                // 处理字符串类型
+                if (typeof aVal === 'string' && typeof bVal === 'string') {
+                    return direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+                }
+                
+                return 0;
+            });
+            
+            currentSort = { column, direction };
+            renderDeviceTable(sortedDevices);
+        }
+
+        // 搜索设备
+        function searchDevices() {
+            const nameInput = document.getElementById('device-name-search').value.toLowerCase();
+            const statusInput = document.getElementById('device-status-search').value;
+            
+            // 如果选中了电站，只搜索该电站的设备；否则搜索所有设备
+            const devices = selectedStationId ? (devicesByStation[selectedStationId] || []) : allDevices;
+            
+            const filteredDevices = devices.filter(device => {
+                const nameMatch = !nameInput || device.name.toLowerCase().includes(nameInput);
+                const statusMatch = !statusInput || device.status === statusInput;
+                
+                return nameMatch && statusMatch;
+            });
+            
+            renderDeviceTable(filteredDevices);
+        }
+
+        // 重置搜索
+        function resetSearch() {
+            document.getElementById('device-name-search').value = '';
+            document.getElementById('device-status-search').value = '';
+            
+            // 恢复显示：如果有选中电站显示该电站设备，否则显示所有设备
+            const devices = selectedStationId ? (devicesByStation[selectedStationId] || []) : allDevices;
+            renderDeviceTable(devices);
+        }
+
+        // 设备操作函数
+        function viewDetails(sn) {
+            console.log('查看设备详情:', sn);
+            showToast(`查看设备详情: ${sn}`);
+        }
+
+        function editDevice(sn) {
+            // 查找设备数据
+            const device = allDevices.find(d => d.sn === sn);
+            if (!device) {
+                showToast('设备不存在');
+                return;
+            }
+            
+            // 设置表单标题
+            document.querySelector('#deviceDrawer .drawer-header h3').textContent = '编辑设备';
+            
+            // 填充表单数据
+            const form = document.getElementById('addDeviceForm');
+            
+            // 查找电站ID
+            let stationId = '';
+            for (const [id, devices] of Object.entries(devicesByStation)) {
+                if (devices.some(d => d.sn === sn)) {
+                    stationId = id;
+                    break;
+                }
+            }
+            
+            form.station.value = stationId;
+            form.deviceName.value = device.name;
+            form.deviceSn.value = device.sn;
+            form.deviceSn.readOnly = true; // 编辑时SN不可修改
+            form.deviceType.value = device.type || 'inverter';
+            form.status.value = device.enabled !== false ? 'enabled' : 'disabled';
+            form.description.value = device.description || '';
+            
+            // 保存编辑状态
+            form.dataset.editMode = 'true';
+            form.dataset.editSn = sn;
+            
+            openDrawer();
+        }
+
+        let deleteDeviceSn = null;
+        
+        function deleteDevice(sn) {
+            const device = allDevices.find(d => d.sn === sn);
+            if (!device) {
+                showToast('设备不存在');
+                return;
+            }
+            
+            deleteDeviceSn = sn;
+            document.getElementById('deleteDeviceName').textContent = device.name;
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+        
+        function confirmDelete() {
+            if (deleteDeviceSn) {
+                console.log('删除设备:', deleteDeviceSn);
+                showToast('设备删除成功');
+                
+                // 关闭弹窗
+                cancelDelete();
+                
+                // 刷新表格（实际应该调用API删除后刷新）
+                const devices = selectedStationId ? (devicesByStation[selectedStationId] || []) : allDevices;
+                renderDeviceTable(devices);
+            }
+        }
+        
+        function cancelDelete() {
+            deleteDeviceSn = null;
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+        
+        // 切换设备启用/禁用状态
+        function toggleDevice(sn, enabled) {
+            console.log(`设备 ${sn} 状态切换为: ${enabled ? '启用' : '禁用'}`);
+            // 这里可以添加实际的API调用来更新设备状态
+        }
+
+        // 导航函数
+        function toggleSidebar() {
+            console.log('切换侧边栏');
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function toggleLanguage() {
+            console.log('切换语言');
+        }
+
+        function toggleTheme() {
+            console.log('切换主题');
+        }
+
+        // 设备操作函数
+        function addDevice() {
+            console.log('新增设备');
+            openDrawer();
+        }
+        
+        function otaUpgradeDevices() {
+            const selectedDevices = getSelectedDevices();
+            if (selectedDevices.length === 0) {
+                showToast('请先选择要升级的设备');
+                return;
+            }
+            
+            // 显示确认弹窗
+            const modal = document.getElementById('otaConfirmModal');
+            const deviceList = document.getElementById('confirmDeviceList');
+            const deviceCount = document.getElementById('deviceCount');
+            
+            // 获取选中的设备信息
+            const devices = selectedDevices.map(sn => {
+                // 从所有设备中找到对应的设备信息
+                return allDevices.find(d => d.sn === sn);
+            }).filter(Boolean);
+            
+            deviceCount.textContent = devices.length;
+            deviceList.innerHTML = devices.map(device => `
+                <div class="device-item">
+                    <span>${device.name}</span>
+                    <span class="text-gray">${device.sn}</span>
+                </div>
+            `).join('');
+            
+            modal.style.display = 'flex';
+        }
+        
+        function importDevices() {
+            console.log('导入设备');
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx,.xls,.csv';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    showToast(`已选择文件: ${file.name}`);
+                }
+            };
+            input.click();
+        }
+        
+        function exportDevices() {
+            console.log('导出设备');
+            showToast('导出设备数据成功');
+        }
+        
+        // 多选功能
+        function toggleAllDevices(checked) {
+            const checkboxes = document.querySelectorAll('.device-checkbox');
+            checkboxes.forEach(cb => cb.checked = checked);
+        }
+        
+        function updateSelectAll() {
+            const checkboxes = document.querySelectorAll('.device-checkbox');
+            const selectAll = document.getElementById('selectAllDevices');
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            
+            selectAll.checked = checkedCount === checkboxes.length && checkboxes.length > 0;
+            selectAll.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
+        }
+        
+        function getSelectedDevices() {
+            const checkboxes = document.querySelectorAll('.device-checkbox:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+        
+        // 抽屉功能
+        function openDrawer() {
+            const drawer = document.getElementById('deviceDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.add('open');
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeDrawer() {
+            const drawer = document.getElementById('deviceDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            const form = document.getElementById('addDeviceForm');
+            
+            drawer.classList.remove('open');
+            overlay.classList.remove('show');
+            document.body.style.overflow = '';
+            
+            // 清空表单
+            form.reset();
+            
+            // 重置编辑状态
+            delete form.dataset.editMode;
+            delete form.dataset.editSn;
+            form.deviceSn.readOnly = false;
+            
+            // 重置标题
+            document.querySelector('#deviceDrawer .drawer-header h3').textContent = '新增设备';
+        }
+        
+        function saveDevice() {
+            const form = document.getElementById('addDeviceForm');
+            const formData = new FormData(form);
+            
+            const deviceData = {
+                station: formData.get('station'),
+                name: formData.get('deviceName'),
+                sn: formData.get('deviceSn'),
+                type: formData.get('deviceType'),
+                status: formData.get('status'),
+                description: formData.get('description')
+            };
+            
+            const isEditMode = form.dataset.editMode === 'true';
+            
+            console.log(isEditMode ? '更新设备:' : '保存设备:', deviceData);
+            showToast(isEditMode ? '设备更新成功' : '设备添加成功');
+            closeDrawer();
+        }
+
+        // Toast提示功能
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+        
+        // OTA升级相关函数
+        function confirmOTA() {
+            const modal = document.getElementById('otaConfirmModal');
+            modal.style.display = 'none';
+            
+            // 开始升级
+            startOTAUpgrade();
+        }
+        
+        function cancelOTA() {
+            const modal = document.getElementById('otaConfirmModal');
+            modal.style.display = 'none';
+        }
+        
+        let upgradeInterval = null;
+        let upgradeProgress = 0;
+        let totalDevices = 0;
+        
+        function startOTAUpgrade() {
+            const selectedDevices = getSelectedDevices();
+            totalDevices = selectedDevices.length;
+            upgradeProgress = 0;
+            
+            // 显示进度弹窗
+            const progressPopup = document.getElementById('otaProgressPopup');
+            progressPopup.classList.add('show');
+            
+            updateProgress();
+            
+            // 模拟升级过程
+            upgradeInterval = setInterval(() => {
+                upgradeProgress++;
+                updateProgress();
+                
+                if (upgradeProgress >= totalDevices) {
+                    clearInterval(upgradeInterval);
+                    completeUpgrade();
+                }
+            }, 1000); // 每秒升级一个设备
+        }
+        
+        function updateProgress() {
+            document.getElementById('totalCount').textContent = totalDevices;
+            document.getElementById('completedCount').textContent = upgradeProgress;
+            document.getElementById('remainingCount').textContent = totalDevices - upgradeProgress;
+        }
+        
+        function completeUpgrade() {
+            // 隐藏进度弹窗
+            document.getElementById('otaProgressPopup').classList.remove('show');
+            
+            // 显示结果弹窗
+            const resultPopup = document.getElementById('otaResultPopup');
+            resultPopup.classList.add('show');
+            
+            // 模拟结果数据
+            const successCount = Math.floor(totalDevices * 0.8);
+            const failCount = totalDevices - successCount;
+            
+            document.getElementById('totalResult').textContent = totalDevices;
+            document.getElementById('successCount').textContent = successCount;
+            document.getElementById('failCount').textContent = failCount;
+        }
+        
+        function closeResult() {
+            document.getElementById('otaResultPopup').classList.remove('show');
+        }
+        
+        function showUpgradeDetails() {
+            document.getElementById('upgradeDetailsDrawer').classList.add('open');
+            document.getElementById('drawerOverlay2').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // 加载详情数据
+            loadUpgradeDetails();
+        }
+        
+        function closeDetailsDrawer() {
+            document.getElementById('upgradeDetailsDrawer').classList.remove('open');
+            document.getElementById('drawerOverlay2').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        
+        
+        function retryAllFailed() {
+            const failedDevices = document.querySelectorAll('.status-badge.failed').length;
+            showToast(`正在重试 ${failedDevices} 个失败设备的升级`);
+            closeDetailsDrawer();
+            // 可以重新启动升级流程
+        }
+        
+        // 全局变量存储升级详情数据
+        let upgradeDetailsData = [];
+        
+        // Tab切换函数
+        function switchTab(tab) {
+            // 更新active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 显示/隐藏失败重试按钮
+            const retryButtonContainer = document.getElementById('retryButtonContainer');
+            if (tab === 'failed') {
+                retryButtonContainer.style.display = 'flex';
+            } else {
+                retryButtonContainer.style.display = 'none';
+            }
+            
+            // 显示过滤后的设备
+            showDeviceCards(tab);
+        }
+        
+        // 重试单个设备
+        function retryUpgrade(sn) {
+            showToast(`正在重试设备 ${sn} 的升级...`);
+            // 模拟重试
+            setTimeout(() => {
+                showToast('重试已启动');
+            }, 1000);
+        }
+        
+        // 显示设备列表
+        function showDeviceCards(filter) {
+            const cardsGrid = document.getElementById('deviceCardsGrid');
+            let filteredDevices = upgradeDetailsData;
+            
+            if (filter === 'success') {
+                filteredDevices = upgradeDetailsData.filter(d => d.upgradeStatus === 'success');
+            } else if (filter === 'failed') {
+                filteredDevices = upgradeDetailsData.filter(d => d.upgradeStatus === 'failed');
+            }
+            
+            // 改为简单的列表显示
+            cardsGrid.innerHTML = `
+                <div class="device-list-container">
+                    ${filteredDevices.map(device => `
+                        <div class="device-list-item">
+                            <span class="device-name">${device.name}</span>
+                            <span class="device-sn">${device.sn}</span>
+                            <span class="device-status ${device.upgradeStatus === 'failed' ? 'status-failed' : ''}">
+                                ${device.upgradeStatus === 'success' ? '成功' : '失败'}
+                            </span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // 更新loadUpgradeDetails函数以保存数据并更新Tab计数
+        function loadUpgradeDetails() {
+            const statsSection = document.getElementById('statsSection');
+            const retryAllBtn = document.getElementById('retryAllBtn');
+            const selectedDevices = getSelectedDevices();
+            
+            // 模拟详情数据
+            upgradeDetailsData = selectedDevices.map((sn, index) => {
+                const device = allDevices.find(d => d.sn === sn);
+                const status = index < Math.floor(selectedDevices.length * 0.8) ? 'success' : 'failed';
+                return {
+                    ...device,
+                    upgradeStatus: status,
+                    message: status === 'success' ? '升级成功' : '升级失败：网络超时'
+                };
+            });
+            
+            // 统计数据
+            const successCount = upgradeDetailsData.filter(d => d.upgradeStatus === 'success').length;
+            const failCount = upgradeDetailsData.filter(d => d.upgradeStatus === 'failed').length;
+            
+            // 更新Tab计数
+            document.getElementById('successTabCount').textContent = `(${successCount})`;
+            document.getElementById('failedTabCount').textContent = `(${failCount})`;
+            
+            // 控制重试按钮状态
+            retryAllBtn.disabled = failCount === 0;
+            
+            // 更新统计卡片
+            statsSection.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${selectedDevices.length}</div>
+                    <div class="stat-label">总计</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-value">${successCount}</div>
+                    <div class="stat-label">成功</div>
+                </div>
+                <div class="stat-card fail">
+                    <div class="stat-value">${failCount}</div>
+                    <div class="stat-label">失败</div>
+                </div>
+            `;
+            
+            // 默认显示成功设备
+            showDeviceCards('success');
+            
+            // 确保成功tab是激活状态
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('successTab').classList.add('active');
+            
+            // 隐藏失败重试按钮（因为默认显示成功tab）
+            document.getElementById('retryButtonContainer').style.display = 'none';
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            renderStationCards();
+            // 默认显示所有设备
+            renderDeviceTable(allDevices);
+        });
+    </script>
+    <!-- 右侧抽屉 -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    <div class="drawer" id="deviceDrawer">
+        <div class="drawer-header">
+            <h3>新增设备</h3>
+            <button class="drawer-close" onclick="closeDrawer()">×</button>
+        </div>
+        <div class="drawer-body">
+            <form id="addDeviceForm">
+                <div class="form-group">
+                    <label>电站 <span class="required">*</span></label>
+                    <select name="station" class="form-input" required>
+                        <option value="">请选择电站</option>
+                        <option value="ST001">上海工业园储能站</option>
+                        <option value="ST002">北京科技园储能站</option>
+                        <option value="ST003">深圳产业园储能站</option>
+                        <option value="ST004">广州智慧园储能站</option>
+                        <option value="ST005">杭州科创园储能站</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>设备名称 <span class="required">*</span></label>
+                    <input type="text" name="deviceName" class="form-input" placeholder="请输入设备名称" required>
+                </div>
+                <div class="form-group">
+                    <label>设备SN <span class="required">*</span></label>
+                    <input type="text" name="deviceSn" class="form-input" placeholder="请输入设备SN" required>
+                </div>
+                <div class="form-group">
+                    <label>设备类型 <span class="required">*</span></label>
+                    <select name="deviceType" class="form-input" required>
+                        <option value="">请选择设备类型</option>
+                        <option value="inverter">逆变器</option>
+                        <option value="pcs">储能变流器</option>
+                        <option value="bms">电池管理系统</option>
+                        <option value="ems">能量管理系统</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>状态 <span class="required">*</span></label>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                            <input type="radio" name="status" value="enabled" checked>
+                            <span>启用</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                            <input type="radio" name="status" value="disabled">
+                            <span>禁用</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <textarea name="description" class="form-input" rows="3" placeholder="请输入设备描述（选填）"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="drawer-footer">
+            <button class="btn-cancel" onclick="closeDrawer()">取消</button>
+            <button class="btn-primary" onclick="saveDevice()">保存</button>
+        </div>
+    </div>
+    <!-- Toast提示 -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+    
+    <!-- OTA升级确认弹窗 -->
+    <div class="modal" id="otaConfirmModal">
+        <div class="modal-content">
+            <h3>确认升级</h3>
+            <p>确认要对以下 <span id="deviceCount">0</span> 个设备进行OTA升级吗？</p>
+            <div class="device-list" id="confirmDeviceList">
+                <!-- 设备列表 -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="cancelOTA()">取消</button>
+                <button class="btn-primary" onclick="confirmOTA()">确定</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- OTA升级进度弹窗 -->
+    <div class="progress-popup" id="otaProgressPopup">
+        <div class="progress-header">
+            <h4>OTA升级中</h4>
+        </div>
+        <div class="progress-content">
+            <div class="progress-item">
+                <span>总计：</span>
+                <span id="totalCount">0</span>个
+            </div>
+            <div class="progress-item">
+                <span>已完成：</span>
+                <span id="completedCount">0</span>个
+            </div>
+            <div class="progress-item">
+                <span>剩余：</span>
+                <span id="remainingCount">0</span>个
+            </div>
+        </div>
+    </div>
+    
+    <!-- OTA升级结果弹窗 -->
+    <div class="result-popup" id="otaResultPopup">
+        <div class="result-header">
+            <h4>升级完成</h4>
+            <button class="close-btn" onclick="closeResult()">×</button>
+        </div>
+        <div class="result-content">
+            <div class="result-item">
+                <span id="totalResult">0</span>
+                <span>总计</span>
+            </div>
+            <div class="result-item success">
+                <span id="successCount">0</span>
+                <span>成功</span>
+            </div>
+            <div class="result-item fail">
+                <span id="failCount">0</span>
+                <span>失败</span>
+            </div>
+        </div>
+        <div class="result-footer">
+            <button class="btn-text" onclick="closeResult()">取消</button>
+            <button class="btn-primary-sm" onclick="showUpgradeDetails()">查看详情</button>
+        </div>
+    </div>
+    
+    <!-- 升级详情抽屉 -->
+    <div class="drawer-overlay" id="drawerOverlay2" onclick="closeDetailsDrawer()"></div>
+    <div class="drawer details-drawer" id="upgradeDetailsDrawer">
+        <div class="drawer-header">
+            <h3>OTA升级详情</h3>
+            <button class="drawer-close" onclick="closeDetailsDrawer()">×</button>
+        </div>
+        <div class="drawer-body">
+            <div class="stats-section" id="statsSection">
+                <!-- 统计卡片将通过JS动态生成 -->
+            </div>
+            <div class="details-tabs">
+                <button class="tab-btn active" onclick="switchTab('success')" id="successTab">
+                    成功 <span id="successTabCount"></span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('failed')" id="failedTab">
+                    失败 <span id="failedTabCount"></span>
+                </button>
+            </div>
+            <div class="table-header" id="retryButtonContainer" style="display: none;">
+                <button class="retry-all-btn" id="retryAllBtn" onclick="retryAllFailed()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.333 2.667V6.667H9.333M2.667 13.333V9.333H6.667M12.68 6C11.893 3.373 9.333 1.333 6.467 1.333C3.173 1.333 0.453 4.053 0.453 7.333C0.453 9.12 1.173 10.773 2.32 12.073M3.32 10C4.107 12.627 6.667 14.667 9.533 14.667C12.827 14.667 15.547 11.947 15.547 8.667C15.547 6.88 14.827 5.227 13.68 3.927" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>失败重试</span>
+                </button>
+            </div>
+            <div class="device-cards-grid" id="deviceCardsGrid">
+                <!-- 设备卡片将通过JS动态生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 删除确认弹窗 -->
+    <div class="modal" id="deleteConfirmModal">
+        <div class="modal-content">
+            <h3>确认删除</h3>
+            <p>确认要删除设备 <span id="deleteDeviceName" style="font-weight: 600"></span> 吗？</p>
+            <p style="color: #dc2626; font-size: 0.875rem; margin-top: 0.5rem;">删除后无法恢复</p>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="cancelDelete()">取消</button>
+                <button class="btn-primary" onclick="confirmDelete()" style="background: #dc2626; border-color: #dc2626;">确认删除</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人信息 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+            height: fit-content;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #9ca3af;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-role {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        .stat-number {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .profile-info {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .info-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input:read-only {
+            background-color: #f9fafb;
+            color: #6b7280;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .upload-avatar {
+            margin-top: 1rem;
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        .upload-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .upload-btn:hover {
+            background: #f8fafc;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">个人信息</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>个人信息</h1>
+                    <p>查看和编辑个人资料</p>
+                </div>
+
+                <div class="profile-container">
+                    <!-- 个人资料卡片 -->
+                    <div class="profile-card">
+                        <div class="avatar">
+                            👤
+                        </div>
+                        <div class="profile-name">张工程师</div>
+                        <div class="profile-role">系统管理员</div>
+                        
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">158</div>
+                                <div class="stat-label">登录次数</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">23</div>
+                                <div class="stat-label">工作天数</div>
+                            </div>
+                        </div>
+
+                        <div class="upload-avatar">
+                            <label for="avatar-upload" class="upload-btn">更换头像</label>
+                            <input type="file" id="avatar-upload" class="upload-input" accept="image/*" onchange="handleAvatarUpload(this)">
+                        </div>
+                    </div>
+
+                    <!-- 个人信息表单 -->
+                    <div class="profile-info">
+                        <div class="info-header">
+                            <h2 class="info-title">个人信息</h2>
+                            <button class="btn btn-secondary" id="edit-btn" onclick="toggleEdit()">编辑</button>
+                        </div>
+
+                        <form id="profile-form">
+                            <!-- 基本信息 -->
+                            <div class="form-section">
+                                <h3 class="section-title">基本信息</h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>用户名</label>
+                                        <input type="text" id="username" value="zhangeng" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>工号</label>
+                                        <input type="text" id="employee-id" value="EMP-2024001" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>姓名</label>
+                                        <input type="text" id="full-name" value="张工程师" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>性别</label>
+                                        <select id="gender" disabled>
+                                            <option value="male" selected>男</option>
+                                            <option value="female">女</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>出生日期</label>
+                                        <input type="date" id="birth-date" value="1985-03-15" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>身份证号</label>
+                                        <input type="text" id="id-card" value="320***********1234" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 联系信息 -->
+                            <div class="form-section">
+                                <h3 class="section-title">联系信息</h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>手机号码</label>
+                                        <input type="tel" id="phone" value="138****5678" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>邮箱地址</label>
+                                        <input type="email" id="email" value="zhang.engineer@company.com" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label>联系地址</label>
+                                    <input type="text" id="address" value="上海市浦东新区张江高科技园区" readonly>
+                                </div>
+                            </div>
+
+                            <!-- 工作信息 -->
+                            <div class="form-section">
+                                <h3 class="section-title">工作信息</h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>部门</label>
+                                        <input type="text" id="department" value="技术部" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>职位</label>
+                                        <input type="text" id="position" value="系统管理员" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>入职日期</label>
+                                        <input type="date" id="join-date" value="2024-01-01" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>直属领导</label>
+                                        <input type="text" id="supervisor" value="李部长" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 其他信息 -->
+                            <div class="form-section">
+                                <h3 class="section-title">其他信息</h3>
+                                
+                                <div class="form-group full-width">
+                                    <label>个人简介</label>
+                                    <textarea id="bio" readonly>具有5年储能系统管理经验，熟悉各类储能设备的运维管理，擅长系统优化和故障处理。</textarea>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>紧急联系人</label>
+                                        <input type="text" id="emergency-contact" value="李女士" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>紧急联系电话</label>
+                                        <input type="tel" id="emergency-phone" value="139****9876" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions" id="form-actions" style="display: none;">
+                                <button type="button" class="btn btn-secondary" onclick="cancelEdit()">取消</button>
+                                <button type="submit" class="btn btn-primary">保存更改</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isEditing = false;
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 切换编辑模式
+        function toggleEdit() {
+            isEditing = !isEditing;
+            const editBtn = document.getElementById('edit-btn');
+            const formActions = document.getElementById('form-actions');
+            const inputs = document.querySelectorAll('#profile-form input:not([id="username"]):not([id="employee-id"]), #profile-form select, #profile-form textarea');
+            
+            if (isEditing) {
+                editBtn.textContent = '取消编辑';
+                editBtn.className = 'btn btn-secondary';
+                formActions.style.display = 'flex';
+                
+                inputs.forEach(input => {
+                    input.removeAttribute('readonly');
+                    input.removeAttribute('disabled');
+                });
+            } else {
+                editBtn.textContent = '编辑';
+                editBtn.className = 'btn btn-secondary';
+                formActions.style.display = 'none';
+                
+                inputs.forEach(input => {
+                    if (input.tagName === 'SELECT') {
+                        input.setAttribute('disabled', '');
+                    } else {
+                        input.setAttribute('readonly', '');
+                    }
+                });
+            }
+        }
+
+        // 取消编辑
+        function cancelEdit() {
+            // 重新加载原始数据
+            location.reload();
+        }
+
+        // 处理头像上传
+        function handleAvatarUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    showMessage('图片大小不能超过2MB', 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatar = document.querySelector('.avatar');
+                    avatar.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                    showMessage('头像上传成功', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 表单提交
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                fullName: document.getElementById('full-name').value,
+                gender: document.getElementById('gender').value,
+                birthDate: document.getElementById('birth-date').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                bio: document.getElementById('bio').value,
+                emergencyContact: document.getElementById('emergency-contact').value,
+                emergencyPhone: document.getElementById('emergency-phone').value
+            };
+            
+            // 简单验证
+            if (!formData.fullName || !formData.phone || !formData.email) {
+                showMessage('请填写必填字段', 'error');
+                return;
+            }
+            
+            console.log('更新个人信息:', formData);
+            showMessage('个人信息更新中...', 'info');
+            
+            // 模拟保存过程
+            setTimeout(() => {
+                showMessage('个人信息更新成功', 'success');
+                toggleEdit(); // 退出编辑模式
+            }, 2000);
+        });
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>固件管理 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .firmware-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .firmware-filters {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 160px;
+        }
+
+        .firmware-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 1.5rem;
+        }
+
+        .device-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .list-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .device-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .device-table th,
+        .device-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .device-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .device-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .firmware-version {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .version-latest {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .version-outdated {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .version-unknown {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-update {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-update:hover {
+            background: #2563eb;
+        }
+
+        .btn-rollback {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-rollback:hover {
+            background: #d97706;
+        }
+
+        .btn-info {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-info:hover {
+            background: #d1d5db;
+        }
+
+        .firmware-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .upload-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .upload-panel h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .firmware-list {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .firmware-list h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .firmware-item {
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .firmware-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .firmware-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .firmware-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .firmware-version-tag {
+            background: #eff6ff;
+            color: #3730a3;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .firmware-details {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .firmware-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .upgrade-progress {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">固件管理</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>固件管理</h1>
+                    <p>设备固件版本管理与升级</p>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="firmware-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">设备总数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">128</div>
+                        <div class="stat-label">最新版本</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">23</div>
+                        <div class="stat-label">待升级</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">升级中</div>
+                    </div>
+                </div>
+
+                <!-- 筛选条件 -->
+                <div class="firmware-filters">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>设备类型</label>
+                            <select id="device-type-filter">
+                                <option value="">全部类型</option>
+                                <option value="储能柜">储能柜</option>
+                                <option value="变流器">变流器</option>
+                                <option value="BMS">电池管理系统</option>
+                                <option value="EMS">能量管理系统</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>固件状态</label>
+                            <select id="firmware-status-filter">
+                                <option value="">全部状态</option>
+                                <option value="latest">最新版本</option>
+                                <option value="outdated">待升级</option>
+                                <option value="upgrading">升级中</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>所属电站</label>
+                            <select id="station-filter">
+                                <option value="">全部电站</option>
+                                <option value="1">上海工业园储能站</option>
+                                <option value="2">深圳华为储能电站</option>
+                            </select>
+                        </div>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="filterDevices()">筛选</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="firmware-content">
+                    <!-- 设备列表 -->
+                    <div class="device-list">
+                        <div class="list-header">
+                            <h3>设备固件状态</h3>
+                            <div>
+                                <button class="btn btn-primary" onclick="batchUpgrade()">批量升级</button>
+                                <button class="btn btn-secondary" onclick="refreshList()">刷新</button>
+                            </div>
+                        </div>
+
+                        <table class="device-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="select-all" onchange="toggleSelectAll()"></th>
+                                    <th>设备编号</th>
+                                    <th>设备类型</th>
+                                    <th>当前版本</th>
+                                    <th>最新版本</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="device-table-body">
+                                <tr>
+                                    <td><input type="checkbox" class="device-select" data-device="ESS-Cabinet-01"></td>
+                                    <td>ESS-Cabinet-01</td>
+                                    <td>储能柜</td>
+                                    <td>v2.1.3</td>
+                                    <td>v2.1.5</td>
+                                    <td><span class="firmware-version version-outdated">待升级</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-update" onclick="upgradeDevice('ESS-Cabinet-01')">升级</button>
+                                            <button class="btn-action btn-info" onclick="showDeviceInfo('ESS-Cabinet-01')">详情</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" class="device-select" data-device="PCS-01"></td>
+                                    <td>PCS-01</td>
+                                    <td>变流器</td>
+                                    <td>v1.8.2</td>
+                                    <td>v1.8.2</td>
+                                    <td><span class="firmware-version version-latest">最新版本</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-rollback" onclick="rollbackDevice('PCS-01')">回滚</button>
+                                            <button class="btn-action btn-info" onclick="showDeviceInfo('PCS-01')">详情</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" class="device-select" data-device="BMS-01"></td>
+                                    <td>BMS-01</td>
+                                    <td>BMS</td>
+                                    <td>v3.2.1</td>
+                                    <td>v3.2.4</td>
+                                    <td><span class="firmware-version version-outdated">待升级</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-update" onclick="upgradeDevice('BMS-01')">升级</button>
+                                            <button class="btn-action btn-info" onclick="showDeviceInfo('BMS-01')">详情</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" class="device-select" data-device="EMS-01"></td>
+                                    <td>EMS-01</td>
+                                    <td>EMS</td>
+                                    <td>升级中...</td>
+                                    <td>v4.1.0</td>
+                                    <td><span class="firmware-version version-unknown">升级中</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-action btn-info" onclick="showUpgradeProgress('EMS-01')">进度</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 固件管理面板 -->
+                    <div class="firmware-panel">
+                        <!-- 固件上传 -->
+                        <div class="upload-panel">
+                            <h3>上传固件</h3>
+                            <div class="upload-area" onclick="document.getElementById('firmware-file').click()">
+                                <div class="upload-icon">📁</div>
+                                <div class="upload-text">点击或拖拽文件到此处上传</div>
+                                <div class="upload-hint">支持 .bin, .hex, .fw 格式</div>
+                            </div>
+                            <input type="file" id="firmware-file" class="file-input" accept=".bin,.hex,.fw" onchange="handleFileUpload(this)">
+                        </div>
+
+                        <!-- 升级进度 -->
+                        <div class="upgrade-progress" id="upgrade-progress">
+                            <div class="progress-header">
+                                <h3>升级进度</h3>
+                                <button class="btn btn-secondary" onclick="hideProgress()">×</button>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-text" id="progress-text">准备升级...</div>
+                        </div>
+
+                        <!-- 固件库 -->
+                        <div class="firmware-list">
+                            <h3>固件库</h3>
+                            
+                            <div class="firmware-item">
+                                <div class="firmware-header">
+                                    <span class="firmware-name">储能柜固件</span>
+                                    <span class="firmware-version-tag">v2.1.5</span>
+                                </div>
+                                <div class="firmware-details">
+                                    更新时间: 2024-01-20<br>
+                                    文件大小: 2.3 MB<br>
+                                    适用设备: ESS-Cabinet系列
+                                </div>
+                                <div class="firmware-actions">
+                                    <button class="btn-action btn-update" onclick="deployFirmware('ESS', 'v2.1.5')">部署</button>
+                                    <button class="btn-action btn-info" onclick="showFirmwareInfo('ESS', 'v2.1.5')">详情</button>
+                                </div>
+                            </div>
+
+                            <div class="firmware-item">
+                                <div class="firmware-header">
+                                    <span class="firmware-name">变流器固件</span>
+                                    <span class="firmware-version-tag">v1.8.2</span>
+                                </div>
+                                <div class="firmware-details">
+                                    更新时间: 2024-01-18<br>
+                                    文件大小: 1.8 MB<br>
+                                    适用设备: PCS系列
+                                </div>
+                                <div class="firmware-actions">
+                                    <button class="btn-action btn-update" onclick="deployFirmware('PCS', 'v1.8.2')">部署</button>
+                                    <button class="btn-action btn-info" onclick="showFirmwareInfo('PCS', 'v1.8.2')">详情</button>
+                                </div>
+                            </div>
+
+                            <div class="firmware-item">
+                                <div class="firmware-header">
+                                    <span class="firmware-name">BMS固件</span>
+                                    <span class="firmware-version-tag">v3.2.4</span>
+                                </div>
+                                <div class="firmware-details">
+                                    更新时间: 2024-01-22<br>
+                                    文件大小: 1.2 MB<br>
+                                    适用设备: BMS系列
+                                </div>
+                                <div class="firmware-actions">
+                                    <button class="btn-action btn-update" onclick="deployFirmware('BMS', 'v3.2.4')">部署</button>
+                                    <button class="btn-action btn-info" onclick="showFirmwareInfo('BMS', 'v3.2.4')">详情</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设备详情模态框 -->
+    <div id="device-info-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="device-info-title">设备固件详情</h3>
+                <button onclick="closeModal('device-info-modal')" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>设备编号</label>
+                    <input type="text" id="info-device-id" readonly>
+                </div>
+                <div class="form-group">
+                    <label>当前版本</label>
+                    <input type="text" id="info-current-version" readonly>
+                </div>
+                <div class="form-group">
+                    <label>最新版本</label>
+                    <input type="text" id="info-latest-version" readonly>
+                </div>
+                <div class="form-group">
+                    <label>上次升级时间</label>
+                    <input type="text" id="info-last-upgrade" readonly>
+                </div>
+                <div class="form-group">
+                    <label>升级历史</label>
+                    <textarea id="info-upgrade-history" rows="5" readonly></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 设置拖拽上传
+            setupDragUpload();
+        });
+
+        // 设置拖拽上传
+        function setupDragUpload() {
+            const uploadArea = document.querySelector('.upload-area');
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload({ files });
+                }
+            });
+        }
+
+        // 筛选设备
+        function filterDevices() {
+            const deviceType = document.getElementById('device-type-filter').value;
+            const firmwareStatus = document.getElementById('firmware-status-filter').value;
+            const station = document.getElementById('station-filter').value;
+            
+            console.log('筛选条件:', { deviceType, firmwareStatus, station });
+            // 实现筛选逻辑
+        }
+
+        // 全选/取消全选
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('select-all');
+            const deviceSelects = document.querySelectorAll('.device-select');
+            
+            deviceSelects.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+        }
+
+        // 文件上传处理
+        function handleFileUpload(input) {
+            const files = input.files || input;
+            if (files.length === 0) return;
+            
+            const file = files[0];
+            const allowedTypes = ['.bin', '.hex', '.fw'];
+            const fileExt = file.name.substring(file.name.lastIndexOf('.'));
+            
+            if (!allowedTypes.includes(fileExt)) {
+                showMessage('不支持的文件格式', 'error');
+                return;
+            }
+            
+            console.log('上传固件文件:', file.name);
+            showMessage(`固件文件 ${file.name} 上传成功`, 'success');
+            
+            // 模拟上传进度
+            simulateUpload(file.name);
+        }
+
+        // 模拟上传进度
+        function simulateUpload(fileName) {
+            const progressDiv = document.getElementById('upgrade-progress');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            progressDiv.style.display = 'block';
+            progressText.textContent = `上传 ${fileName}...`;
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    progressText.textContent = '上传完成';
+                    setTimeout(() => {
+                        hideProgress();
+                    }, 2000);
+                }
+                
+                progressFill.style.width = progress + '%';
+                progressText.textContent = `上传中... ${Math.round(progress)}%`;
+            }, 200);
+        }
+
+        // 升级设备
+        function upgradeDevice(deviceId) {
+            if (confirm(`确定要升级设备 ${deviceId} 的固件吗？`)) {
+                console.log(`升级设备固件: ${deviceId}`);
+                showMessage(`${deviceId} 固件升级开始`, 'success');
+                
+                // 显示升级进度
+                showUpgradeProgress(deviceId);
+            }
+        }
+
+        // 批量升级
+        function batchUpgrade() {
+            const selectedDevices = [];
+            document.querySelectorAll('.device-select:checked').forEach(checkbox => {
+                selectedDevices.push(checkbox.dataset.device);
+            });
+            
+            if (selectedDevices.length === 0) {
+                showMessage('请选择要升级的设备', 'warning');
+                return;
+            }
+            
+            if (confirm(`确定要批量升级 ${selectedDevices.length} 个设备的固件吗？`)) {
+                console.log('批量升级设备:', selectedDevices);
+                showMessage(`批量升级已开始，共 ${selectedDevices.length} 个设备`, 'success');
+                
+                // 显示批量升级进度
+                showBatchUpgradeProgress(selectedDevices);
+            }
+        }
+
+        // 回滚设备
+        function rollbackDevice(deviceId) {
+            if (confirm(`确定要回滚设备 ${deviceId} 的固件到上一版本吗？`)) {
+                console.log(`回滚设备固件: ${deviceId}`);
+                showMessage(`${deviceId} 固件回滚开始`, 'success');
+            }
+        }
+
+        // 显示设备信息
+        function showDeviceInfo(deviceId) {
+            document.getElementById('device-info-title').textContent = `${deviceId} - 固件详情`;
+            
+            // 模拟加载设备信息
+            const deviceInfo = {
+                'ESS-Cabinet-01': {
+                    currentVersion: 'v2.1.3',
+                    latestVersion: 'v2.1.5',
+                    lastUpgrade: '2024-01-15 14:30',
+                    history: 'v2.1.3 (2024-01-15)\nv2.1.0 (2024-01-10)\nv2.0.8 (2024-01-05)'
+                },
+                'PCS-01': {
+                    currentVersion: 'v1.8.2',
+                    latestVersion: 'v1.8.2',
+                    lastUpgrade: '2024-01-18 10:15',
+                    history: 'v1.8.2 (2024-01-18)\nv1.8.1 (2024-01-12)\nv1.8.0 (2024-01-08)'
+                }
+            };
+            
+            const info = deviceInfo[deviceId] || {};
+            document.getElementById('info-device-id').value = deviceId;
+            document.getElementById('info-current-version').value = info.currentVersion || '';
+            document.getElementById('info-latest-version').value = info.latestVersion || '';
+            document.getElementById('info-last-upgrade').value = info.lastUpgrade || '';
+            document.getElementById('info-upgrade-history').value = info.history || '';
+            
+            document.getElementById('device-info-modal').style.display = 'flex';
+        }
+
+        // 显示升级进度
+        function showUpgradeProgress(deviceId) {
+            const progressDiv = document.getElementById('upgrade-progress');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            progressDiv.style.display = 'block';
+            progressText.textContent = `正在升级 ${deviceId}...`;
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    progressText.textContent = '升级完成';
+                    setTimeout(() => {
+                        hideProgress();
+                        refreshList();
+                    }, 2000);
+                }
+                
+                progressFill.style.width = progress + '%';
+                progressText.textContent = `升级中... ${Math.round(progress)}%`;
+            }, 500);
+        }
+
+        // 显示批量升级进度
+        function showBatchUpgradeProgress(devices) {
+            const progressDiv = document.getElementById('upgrade-progress');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            progressDiv.style.display = 'block';
+            
+            let currentDevice = 0;
+            let deviceProgress = 0;
+            
+            const upgradeNextDevice = () => {
+                if (currentDevice >= devices.length) {
+                    progressText.textContent = '批量升级完成';
+                    setTimeout(() => {
+                        hideProgress();
+                        refreshList();
+                    }, 2000);
+                    return;
+                }
+                
+                const device = devices[currentDevice];
+                deviceProgress = 0;
+                
+                const deviceInterval = setInterval(() => {
+                    deviceProgress += Math.random() * 15;
+                    if (deviceProgress >= 100) {
+                        deviceProgress = 100;
+                        clearInterval(deviceInterval);
+                        currentDevice++;
+                        setTimeout(upgradeNextDevice, 500);
+                    }
+                    
+                    const totalProgress = ((currentDevice + deviceProgress / 100) / devices.length) * 100;
+                    progressFill.style.width = totalProgress + '%';
+                    progressText.textContent = `升级 ${device}... (${currentDevice + 1}/${devices.length})`;
+                }, 300);
+            };
+            
+            upgradeNextDevice();
+        }
+
+        // 隐藏进度条
+        function hideProgress() {
+            document.getElementById('upgrade-progress').style.display = 'none';
+        }
+
+        // 部署固件
+        function deployFirmware(type, version) {
+            if (confirm(`确定要部署 ${type} 固件 ${version} 吗？`)) {
+                console.log(`部署固件: ${type} ${version}`);
+                showMessage(`${type} 固件 ${version} 部署成功`, 'success');
+            }
+        }
+
+        // 显示固件信息
+        function showFirmwareInfo(type, version) {
+            alert(`固件详情:\n类型: ${type}\n版本: ${version}\n\n这里可以显示详细的固件信息和更新日志`);
+        }
+
+        // 刷新列表
+        function refreshList() {
+            console.log('刷新设备列表');
+            showMessage('设备列表已刷新', 'success');
+        }
+
+        // 关闭模态框
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

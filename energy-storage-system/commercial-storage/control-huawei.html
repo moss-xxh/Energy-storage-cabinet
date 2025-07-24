@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>华为FusionSolar控制 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="./sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* 控制页面样式继承 */
+        .control-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .control-section {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .control-value {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: all 200ms ease;
+            background: white;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: #e60012;
+            box-shadow: 0 0 0 3px rgba(230, 0, 18, 0.1);
+        }
+
+        .control-unit {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            min-width: 40px;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 200ms ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #e60012;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #cc0010;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        /* 华为品牌特定样式 */
+        .brand-header {
+            background: linear-gradient(135deg, #e60012 0%, #ff4444 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* AI模式卡片 */
+        .ai-mode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .ai-mode-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 200ms ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .ai-mode-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .ai-mode-card.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .ai-mode-card.active::after {
+            content: '✓';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 20px;
+            height: 20px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        .ai-mode-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e60012;
+            color: white;
+            border-radius: 50%;
+            font-size: 1.5rem;
+        }
+
+        .mode-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .mode-desc {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* 云端同步状态 */
+        .cloud-sync {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .sync-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
+        }
+
+        /* AI优化面板 */
+        .ai-panel {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .ai-metric {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .ai-metric:last-child {
+            border-bottom: none;
+        }
+
+        .ai-metric-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .ai-metric-value {
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* SmartString监控 */
+        .string-monitor {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .string-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .string-unit {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            text-align: center;
+            transition: all 200ms ease;
+            cursor: pointer;
+        }
+
+        .string-unit:hover {
+            border-color: #e60012;
+            box-shadow: 0 2px 8px rgba(230, 0, 18, 0.1);
+        }
+
+        .string-unit.active {
+            background: #fff5f5;
+            border-color: #e60012;
+        }
+
+        .string-unit.warning {
+            background: #fffbeb;
+            border-color: #f59e0b;
+        }
+
+        .string-id {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .string-status {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .string-soc {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0.5rem 0;
+        }
+
+        /* 数字孪生 */
+        .digital-twin {
+            background: #1e293b;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .twin-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .twin-stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .twin-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+
+        .twin-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* 开关控件 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .switch-slider {
+            background-color: #e60012;
+        }
+
+        input:checked + .switch-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .string-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .ai-mode-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .twin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+    <div class="main-content">
+<!-- 侧边栏 -->
+    <!-- 主内容区 -->
+    <main class="content main-content">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="menu-toggle" onclick="sidebar.toggle()" style="display: none; padding: 0.5rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #4b5563;">☰</button>
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="window.location.href='control.html'">
+                    <span>←</span>
+                    <span>返回控制中心</span>
+                </button>
+                <h1 class="page-title">华为FusionSolar控制系统</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 页面内容 -->
+        <div class="page-content">
+            <!-- 品牌信息头部 -->
+            <div class="brand-header">
+                <div class="brand-info">
+                    <div>
+                        <h2>Huawei FusionSolar ESS</h2>
+                        <p class="model-info">型号: Luna2000-2MWh | 容量: 2.0MWh | 固件: FusionSolar V200R001C50</p>
+                    </div>
+                </div>
+                <div class="brand-actions">
+                    <button class="btn btn-secondary" style="background: white; color: #e60012;">
+                        <span>📊</span>
+                        <span>AI分析报告</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 云端协同状态 -->
+            <div class="cloud-sync">
+                <div class="sync-status">
+                    <span class="sync-indicator"></span>
+                    <span style="font-weight: 600;">云端协同已连接</span>
+                    <span style="font-size: 0.875rem; color: #64748b; margin-left: auto;">最后同步: 5秒前</span>
+                </div>
+                <div style="display: flex; gap: 2rem; font-size: 0.875rem; color: #64748b;">
+                    <span>云端算力: 华为云ModelArts</span>
+                    <span>AI模型: FusionSolar-AI-V3.2</span>
+                    <span>数据中心: 华东节点</span>
+                </div>
+            </div>
+
+            <!-- 通用运行模式选择 -->
+            <section class="control-section" style="background: #f8fafc; border: 2px solid #3b82f6;">
+                <div class="section-header" style="background: #eff6ff;">
+                    <h2 class="section-title" style="color: #1e40af;">通用运行模式</h2>
+                    <span style="font-size: 0.875rem; color: #64748b;">所有品牌共同支持的标准模式</span>
+                </div>
+                <div class="section-content">
+                    <div class="ai-mode-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                        <div class="ai-mode-card active" onclick="selectMode(this, 'peak')">
+                            <div class="ai-mode-icon" style="background: #3b82f6;">📊</div>
+                            <div class="mode-name">削峰填谷</div>
+                            <div class="mode-desc">峰谷电价套利，低充高放</div>
+                        </div>
+                        <div class="ai-mode-card" onclick="selectMode(this, 'demand')">
+                            <div class="ai-mode-icon" style="background: #3b82f6;">⚡</div>
+                            <div class="mode-name">需求响应</div>
+                            <div class="mode-desc">响应电网调度指令</div>
+                        </div>
+                        <div class="ai-mode-card" onclick="selectMode(this, 'backup')">
+                            <div class="ai-mode-icon" style="background: #3b82f6;">🔋</div>
+                            <div class="mode-name">备用电源</div>
+                            <div class="mode-desc">应急备电，保障供电</div>
+                        </div>
+                        <div class="ai-mode-card" onclick="selectMode(this, 'manual')">
+                            <div class="ai-mode-icon" style="background: #3b82f6;">🎛️</div>
+                            <div class="mode-name">手动控制</div>
+                            <div class="mode-desc">自定义充放电参数</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 华为特色AI模式 -->
+            <section class="control-section" style="margin-top: 1.5rem;">
+                <div class="section-header" style="background: #fff5f5;">
+                    <h2 class="section-title" style="color: #e60012;">华为AI智能特色</h2>
+                </div>
+                <div class="section-content">
+                    <div class="ai-mode-grid">
+                        <div class="ai-mode-card" onclick="selectMode(this, 'ai-smart')">
+                            <div class="ai-mode-icon">🤖</div>
+                            <div class="mode-name">AI智能优化</div>
+                            <div class="mode-desc">深度学习多目标优化</div>
+                        </div>
+                        <div class="ai-mode-card" onclick="selectMode(this, 'cloud-edge')">
+                            <div class="ai-mode-icon">☁️</div>
+                            <div class="mode-name">云边协同</div>
+                            <div class="mode-desc">ModelArts云端计算</div>
+                        </div>
+                        <div class="ai-mode-card" onclick="selectMode(this, 'digital-twin')">
+                            <div class="ai-mode-icon">🔮</div>
+                            <div class="mode-name">数字孪生</div>
+                            <div class="mode-desc">99.2%精度实时同步</div>
+                        </div>
+                        <div class="ai-mode-card" onclick="selectMode(this, 'green-ai')">
+                            <div class="ai-mode-icon">🌱</div>
+                            <div class="mode-name">绿色AI</div>
+                            <div class="mode-desc">碳中和优先策略</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI优化指标 -->
+            <div class="ai-panel">
+                <h3 style="font-weight: 600; margin-bottom: 1rem;">AI优化效果</h3>
+                <div class="ai-metric">
+                    <span class="ai-metric-label">收益提升</span>
+                    <span class="ai-metric-value" style="color: #22c55e;">
+                        +23.5%
+                        <span style="font-size: 0.75rem; color: #64748b;">相比传统策略</span>
+                    </span>
+                </div>
+                <div class="ai-metric">
+                    <span class="ai-metric-label">预测准确率</span>
+                    <span class="ai-metric-value">96.8%</span>
+                </div>
+                <div class="ai-metric">
+                    <span class="ai-metric-label">电池寿命延长</span>
+                    <span class="ai-metric-value">+18个月</span>
+                </div>
+                <div class="ai-metric">
+                    <span class="ai-metric-label">系统效率</span>
+                    <span class="ai-metric-value">95.2%</span>
+                </div>
+            </div>
+
+            <!-- SmartString智能组串监控 -->
+            <div class="string-monitor">
+                <h3 style="font-weight: 600;">SmartString智能组串管理</h3>
+                <div class="string-grid">
+                    <div class="string-unit active" onclick="selectString(this, 'string-1')">
+                        <div class="string-id">组串#1</div>
+                        <div class="string-soc">85%</div>
+                        <div class="string-status">正常运行</div>
+                    </div>
+                    <div class="string-unit" onclick="selectString(this, 'string-2')">
+                        <div class="string-id">组串#2</div>
+                        <div class="string-soc">83%</div>
+                        <div class="string-status">正常运行</div>
+                    </div>
+                    <div class="string-unit warning" onclick="selectString(this, 'string-3')">
+                        <div class="string-id">组串#3</div>
+                        <div class="string-soc">79%</div>
+                        <div class="string-status">温度偏高</div>
+                    </div>
+                    <div class="string-unit" onclick="selectString(this, 'string-4')">
+                        <div class="string-id">组串#4</div>
+                        <div class="string-soc">84%</div>
+                        <div class="string-status">正常运行</div>
+                    </div>
+                    <div class="string-unit" onclick="selectString(this, 'string-5')">
+                        <div class="string-id">组串#5</div>
+                        <div class="string-soc">82%</div>
+                        <div class="string-status">正常运行</div>
+                    </div>
+                    <div class="string-unit" onclick="selectString(this, 'string-6')">
+                        <div class="string-id">组串#6</div>
+                        <div class="string-soc">86%</div>
+                        <div class="string-status">正常运行</div>
+                    </div>
+                    <div class="string-unit" onclick="selectString(this, 'string-7')">
+                        <div class="string-id">组串#7</div>
+                        <div class="string-soc">81%</div>
+                        <div class="string-status">正常运行</div>
+                    </div>
+                    <div class="string-unit" onclick="selectString(this, 'string-8')">
+                        <div class="string-id">组串#8</div>
+                        <div class="string-soc">84%</div>
+                        <div class="string-status">正常运行</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 数字孪生状态 -->
+            <div class="digital-twin">
+                <h3 style="font-weight: 600; margin-bottom: 0.5rem;">数字孪生实时同步</h3>
+                <p style="font-size: 0.875rem; opacity: 0.8;">基于华为云ModelArts平台的实时数字孪生模型</p>
+                <div class="twin-grid">
+                    <div class="twin-stat">
+                        <div class="twin-label">模型精度</div>
+                        <div class="twin-value">99.2%</div>
+                    </div>
+                    <div class="twin-stat">
+                        <div class="twin-label">同步延迟</div>
+                        <div class="twin-value"><100ms</div>
+                    </div>
+                    <div class="twin-stat">
+                        <div class="twin-label">预测时间窗</div>
+                        <div class="twin-value">72小时</div>
+                    </div>
+                    <div class="twin-stat">
+                        <div class="twin-label">故障预警</div>
+                        <div class="twin-value">0个</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI调度控制 -->
+            <section class="control-section" id="ai-control">
+                <div class="section-header">
+                    <h2 class="section-title">AI智能调度控制</h2>
+                    <div class="section-status">
+                        <span class="status-dot" style="background: #22c55e;"></span>
+                        <span>AI控制已启用</span>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="control-grid">
+                        <div class="control-item">
+                            <label class="control-label">负载预测算法</label>
+                            <div class="control-value">
+                                <select class="control-input">
+                                    <option>深度强化学习(DRL)</option>
+                                    <option>长短期记忆网络(LSTM)</option>
+                                    <option>图神经网络(GNN)</option>
+                                    <option>混合AI模型</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">优化目标权重</label>
+                            <div class="control-value">
+                                <select class="control-input">
+                                    <option>经济收益优先</option>
+                                    <option>碳排放最小化</option>
+                                    <option>电池寿命优先</option>
+                                    <option>平衡优化</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">AI决策置信度阈值</label>
+                            <div class="control-value">
+                                <input type="number" class="control-input" value="85" min="70" max="99">
+                                <span class="control-unit">%</span>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">模型更新频率</label>
+                            <div class="control-value">
+                                <select class="control-input">
+                                    <option>每小时</option>
+                                    <option>每天</option>
+                                    <option>每周</option>
+                                    <option>手动触发</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 云边协同控制 -->
+            <section class="control-section" id="cloud-edge-control" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">云边协同控制</h2>
+                </div>
+                <div class="section-content">
+                    <div class="control-grid">
+                        <div class="control-item">
+                            <label class="control-label">边缘计算节点</label>
+                            <div class="control-value">
+                                <select class="control-input">
+                                    <option>本地Atlas边缘服务器</option>
+                                    <option>区域边缘节点</option>
+                                    <option>混合计算模式</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">云端服务</label>
+                            <div class="control-value">
+                                <select class="control-input">
+                                    <option>华为云EI服务</option>
+                                    <option>ModelArts平台</option>
+                                    <option>私有云部署</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">数据同步策略</label>
+                            <div class="control-value">
+                                <select class="control-input">
+                                    <option>实时同步</option>
+                                    <option>增量同步</option>
+                                    <option>定时批量同步</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">离线运行模式</label>
+                            <div class="control-value">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 高级参数设置 -->
+            <section class="control-section">
+                <div class="section-header">
+                    <h2 class="section-title">高级参数设置</h2>
+                </div>
+                <div class="section-content">
+                    <div class="control-grid">
+                        <div class="control-item">
+                            <label class="control-label">最大充电功率</label>
+                            <div class="control-value">
+                                <input type="number" class="control-input" value="1000" step="10">
+                                <span class="control-unit">kW</span>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">最大放电功率</label>
+                            <div class="control-value">
+                                <input type="number" class="control-input" value="1000" step="10">
+                                <span class="control-unit">kW</span>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">AI优化SOC范围</label>
+                            <div class="control-value">
+                                <input type="number" class="control-input" value="15" min="10" max="30">
+                                <span class="control-unit">%</span>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">智能温控</label>
+                            <div class="control-value">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-actions" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0;">
+                        <button class="btn btn-primary" onclick="applySettings()">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13.5 5.5L6.5 12.5L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            应用设置
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetSettings()">重置</button>
+                        <button class="btn btn-secondary" onclick="downloadAIModel()">下载AI模型</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+        </div>
+<script>
+        // 华为特定功能
+        let currentMode = 'peak';
+        let selectedString = 'string-1';
+
+        // 选择运行模式
+        function selectMode(element, mode) {
+            document.querySelectorAll('.ai-mode-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            element.classList.add('active');
+            currentMode = mode;
+            
+            // 根据模式调整参数
+            updateModeParameters(mode);
+        }
+
+        // 选择组串
+        function selectString(element, stringId) {
+            document.querySelectorAll('.string-unit').forEach(unit => {
+                unit.classList.remove('active');
+            });
+            element.classList.add('active');
+            selectedString = stringId;
+            
+            // 显示组串详细信息
+            showStringDetails(stringId);
+        }
+
+        // 更新模式参数
+        function updateModeParameters(mode) {
+            const modeConfig = {
+                'smart-schedule': {
+                    algorithm: 'DRL-DDPG',
+                    optimization: '多目标优化',
+                    latency: '50ms'
+                },
+                'cloud-edge': {
+                    algorithm: 'Federated-Learning',
+                    optimization: '分布式计算',
+                    latency: '100ms'
+                },
+                'multi-site': {
+                    algorithm: 'Multi-Agent-RL',
+                    optimization: '协同优化',
+                    latency: '200ms'
+                },
+                'self-learning': {
+                    algorithm: 'Online-Learning',
+                    optimization: '自适应优化',
+                    latency: '150ms'
+                },
+                'green-energy': {
+                    algorithm: 'Green-AI',
+                    optimization: '碳中和优先',
+                    latency: '100ms'
+                },
+                'manual': {
+                    algorithm: '手动控制',
+                    optimization: '用户定义',
+                    latency: 'N/A'
+                }
+            };
+
+            const config = modeConfig[mode];
+            console.log(`切换到${mode}模式，配置:`, config);
+            
+            // 显示/隐藏特定控制面板
+            const aiControl = document.getElementById('ai-control');
+            const cloudEdgeControl = document.getElementById('cloud-edge-control');
+            
+            if (mode === 'cloud-edge') {
+                aiControl.style.display = 'none';
+                cloudEdgeControl.style.display = 'block';
+            } else {
+                aiControl.style.display = 'block';
+                cloudEdgeControl.style.display = 'none';
+            }
+        }
+
+        // 显示组串详情
+        function showStringDetails(stringId) {
+            console.log(`显示组串${stringId}详情`);
+            // 实际项目中从服务器获取数据
+        }
+
+        // 应用设置
+        function applySettings() {
+            const settings = {
+                mode: currentAIMode,
+                algorithm: document.querySelector('select').value,
+                // 收集其他参数...
+            };
+            
+            console.log('应用华为AI设置:', settings);
+            alert('AI智能调度设置已应用');
+        }
+
+        // 重置设置
+        function resetSettings() {
+            if (confirm('确定要重置为默认设置吗？')) {
+                location.reload();
+            }
+        }
+
+        // 下载AI模型
+        function downloadAIModel() {
+            alert('正在从华为云下载最新AI模型...');
+        }
+
+        // 实时更新云端同步状态
+        function updateCloudSync() {
+            const now = new Date();
+            const syncText = document.querySelector('.sync-status span:last-child');
+            if (syncText) {
+                syncText.textContent = `最后同步: ${Math.floor(Math.random() * 10) + 1}秒前`;
+            }
+        }
+
+        // 更新AI优化指标
+        function updateAIMetrics() {
+            // 模拟数据变化
+            const revenue = 23.5 + (Math.random() - 0.5) * 0.5;
+            const accuracy = 96.8 + (Math.random() - 0.5) * 0.2;
+            const efficiency = 95.2 + (Math.random() - 0.5) * 0.1;
+            
+            // 更新界面显示
+            console.log(`AI指标更新: 收益+${revenue.toFixed(1)}%, 准确率${accuracy.toFixed(1)}%`);
+        }
+
+        // 初始化数字孪生
+        function initDigitalTwin() {
+            console.log('初始化华为数字孪生系统');
+            // 连接到华为云ModelArts
+        }
+
+        // 周期性更新
+        setInterval(() => {
+            updateCloudSync();
+            updateAIMetrics();
+        }, 5000);
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initDigitalTwin();
+            updateCloudSync();
+        });
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="./sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    </style>
+</body>
+</html>

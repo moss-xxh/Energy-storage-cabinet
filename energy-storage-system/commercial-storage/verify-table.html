@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>验证表格</title>
+    <script>
+        function checkTable() {
+            // 打开station-management.html
+            fetch('./station-management.html')
+                .then(response => response.text())
+                .then(html => {
+                    // 查找表格头部
+                    const tableMatch = html.match(/<table class="station-table">[\s\S]*?<\/thead>/);
+                    if (tableMatch) {
+                        document.getElementById('table-content').innerHTML = tableMatch[0];
+                        
+                        // 统计排序图标
+                        const upArrows = (tableMatch[0].match(/↑/g) || []).length;
+                        const downArrows = (tableMatch[0].match(/↓/g) || []).length;
+                        
+                        document.getElementById('result').innerHTML = `
+                            <h2>找到的排序图标：</h2>
+                            <p>上箭头(↑): ${upArrows}个</p>
+                            <p>下箭头(↓): ${downArrows}个</p>
+                            <h3>表格头部HTML：</h3>
+                            <pre>${tableMatch[0].replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+                        `;
+                    }
+                });
+        }
+    </script>
+</head>
+<body onload="checkTable()">
+    <h1>验证表格头部</h1>
+    <div id="table-content"></div>
+    <div id="result"></div>
+</body>
+</html>

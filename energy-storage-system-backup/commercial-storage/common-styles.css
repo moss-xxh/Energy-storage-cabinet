@@ -1,0 +1,310 @@
+/* 公共样式 - 侧边栏和导航 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.5;
+    color: #1e293b;
+    background: #EBEDF5;
+    min-height: 100vh;
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 100vh;
+    background: white;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    transition: transform 300ms ease;
+    z-index: 100;
+}
+
+.sidebar-header {
+    padding: 1rem 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.logo img {
+    height: auto;
+    width: 100%;
+    max-width: 220px;
+    max-height: 50px;
+    object-fit: contain;
+}
+
+.sidebar-menu {
+    flex: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
+}
+
+/* 一级菜单项 */
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: #64748b;
+    text-decoration: none;
+    transition: all 150ms ease;
+    position: relative;
+}
+
+.menu-item:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.menu-item.active {
+    background: #eff6ff;
+    color: #3562E3;
+}
+
+.menu-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: #3562E3;
+}
+
+/* 一级菜单（带子菜单） */
+.menu-group {
+    margin-bottom: 0;
+}
+
+.menu-parent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    color: #64748b;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    position: relative;
+}
+
+.menu-parent:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.menu-parent.expanded {
+    background: transparent;
+    color: #3562E3;
+}
+
+.menu-arrow {
+    transition: transform 0.2s ease;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.menu-parent.expanded .menu-arrow {
+    transform: rotate(90deg);
+    color: #64748b;
+}
+
+/* 二级菜单 */
+.submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: transparent;
+}
+
+.submenu.open {
+    max-height: 300px;
+}
+
+.submenu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1.5rem 0.625rem 3.5rem;
+    color: #64748b;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    position: relative;
+}
+
+.submenu-item:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.submenu-item.active {
+    background: #eff6ff;
+    color: #3562E3;
+}
+
+.submenu-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: #3562E3;
+}
+
+/* 菜单图标 */
+.menu-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* 品牌菜单样式 */
+.menu-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 0.5rem 1.5rem;
+}
+
+.menu-section-title {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+}
+
+/* 顶部导航栏 */
+.navbar {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #64748b;
+    transition: all 150ms ease;
+}
+
+.nav-button:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+/* 主内容区域 */
+.main-content,
+.content {
+    margin-left: 240px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-content,
+    .content {
+        margin-left: 0;
+    }
+    
+    .main-content.sidebar-active,
+    .content.sidebar-active {
+        margin-left: 240px;
+    }
+}
+
+/* 防止页面切换时的抖动 */
+.sidebar,
+.sidebar * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 确保菜单状态在页面切换时保持一致 */
+.submenu {
+    will-change: max-height;
+}
+
+.menu-parent,
+.menu-item,
+.submenu-item {
+    user-select: none;
+}

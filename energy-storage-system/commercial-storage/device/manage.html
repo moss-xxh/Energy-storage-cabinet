@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备台账 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .device-filters {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 160px;
+        }
+
+        .device-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .device-table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .device-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .device-table th,
+        .device-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .device-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .device-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.online {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-badge.offline {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-badge.maintenance {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .device-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">设备台账</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-header">
+                <h1>设备台账</h1>
+                <p>设备信息管理与维护记录</p>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="device-stats">
+                <div class="stat-card">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">设备总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">148</div>
+                    <div class="stat-label">在线设备</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">离线设备</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">维护中</div>
+                </div>
+            </div>
+
+            <!-- 筛选条件 -->
+            <div class="device-filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>设备类型</label>
+                        <select id="device-type-filter">
+                            <option value="">全部类型</option>
+                            <option value="储能柜">储能柜</option>
+                            <option value="变流器">变流器</option>
+                            <option value="电池管理系统">电池管理系统</option>
+                            <option value="能量管理系统">能量管理系统</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>运行状态</label>
+                        <select id="status-filter">
+                            <option value="">全部状态</option>
+                            <option value="online">在线</option>
+                            <option value="offline">离线</option>
+                            <option value="maintenance">维护中</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>所属电站</label>
+                        <select id="station-filter">
+                            <option value="">全部电站</option>
+                            <option value="上海工业园储能站">上海工业园储能站</option>
+                            <option value="深圳华为储能电站">深圳华为储能电站</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>设备编号</label>
+                        <input type="text" id="device-id-search" placeholder="输入设备编号">
+                    </div>
+                    <div class="filter-group" style="justify-content: flex-end;">
+                        <label>&nbsp;</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-primary" onclick="searchDevices()">搜索</button>
+                            <button class="btn btn-secondary" onclick="resetFilters()">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 设备表格 -->
+            <div class="device-table-container">
+                <div class="table-header">
+                    <h3>设备列表</h3>
+                    <div>
+                        <button class="btn btn-primary" onclick="showAddDeviceModal()">添加设备</button>
+                        <button class="btn btn-secondary" onclick="exportDevices()">导出数据</button>
+                    </div>
+                </div>
+
+                <table class="device-table">
+                    <thead>
+                        <tr>
+                            <th>设备编号</th>
+                            <th>设备名称</th>
+                            <th>设备类型</th>
+                            <th>所属电站</th>
+                            <th>运行状态</th>
+                            <th>最后更新</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="device-table-body">
+                        <tr>
+                            <td>ESS-Cabinet-01</td>
+                            <td>储能柜001</td>
+                            <td>储能柜</td>
+                            <td>上海工业园储能站</td>
+                            <td><span class="status-badge online">在线</span></td>
+                            <td>2024-01-24 14:30</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-view" onclick="viewDevice('ESS-Cabinet-01')">查看</button>
+                                    <button class="btn-action btn-edit" onclick="editDevice('ESS-Cabinet-01')">编辑</button>
+                                    <button class="btn-action btn-delete" onclick="deleteDevice('ESS-Cabinet-01')">删除</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PCS-01</td>
+                            <td>变流器001</td>
+                            <td>变流器</td>
+                            <td>上海工业园储能站</td>
+                            <td><span class="status-badge online">在线</span></td>
+                            <td>2024-01-24 14:28</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-view" onclick="viewDevice('PCS-01')">查看</button>
+                                    <button class="btn-action btn-edit" onclick="editDevice('PCS-01')">编辑</button>
+                                    <button class="btn-action btn-delete" onclick="deleteDevice('PCS-01')">删除</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BMS-01</td>
+                            <td>电池管理系统001</td>
+                            <td>电池管理系统</td>
+                            <td>深圳华为储能电站</td>
+                            <td><span class="status-badge offline">离线</span></td>
+                            <td>2024-01-24 12:15</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-view" onclick="viewDevice('BMS-01')">查看</button>
+                                    <button class="btn-action btn-edit" onclick="editDevice('BMS-01')">编辑</button>
+                                    <button class="btn-action btn-delete" onclick="deleteDevice('BMS-01')">删除</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>EMS-01</td>
+                            <td>能量管理系统001</td>
+                            <td>能量管理系统</td>
+                            <td>上海工业园储能站</td>
+                            <td><span class="status-badge maintenance">维护中</span></td>
+                            <td>2024-01-24 09:45</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-view" onclick="viewDevice('EMS-01')">查看</button>
+                                    <button class="btn-action btn-edit" onclick="editDevice('EMS-01')">编辑</button>
+                                    <button class="btn-action btn-delete" onclick="deleteDevice('EMS-01')">删除</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <button onclick="changePage('prev')">&laquo; 上一页</button>
+                    <button class="active">1</button>
+                    <button onclick="changePage(2)">2</button>
+                    <button onclick="changePage(3)">3</button>
+                    <button onclick="changePage('next')">下一页 &raquo;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设备详情/编辑模态框 -->
+    <div id="device-modal" class="device-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">设备详情</h3>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="device-form">
+                    <div class="form-group">
+                        <label>设备编号</label>
+                        <input type="text" id="device-id" required>
+                    </div>
+                    <div class="form-group">
+                        <label>设备名称</label>
+                        <input type="text" id="device-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>设备类型</label>
+                        <select id="device-type" required>
+                            <option value="">请选择设备类型</option>
+                            <option value="储能柜">储能柜</option>
+                            <option value="变流器">变流器</option>
+                            <option value="电池管理系统">电池管理系统</option>
+                            <option value="能量管理系统">能量管理系统</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>所属电站</label>
+                        <select id="station-id" required>
+                            <option value="">请选择电站</option>
+                            <option value="1">上海工业园储能站</option>
+                            <option value="2">深圳华为储能电站</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>制造商</label>
+                        <input type="text" id="manufacturer">
+                    </div>
+                    <div class="form-group">
+                        <label>设备型号</label>
+                        <input type="text" id="model">
+                    </div>
+                    <div class="form-group">
+                        <label>安装日期</label>
+                        <input type="date" id="install-date">
+                    </div>
+                    <div class="form-group">
+                        <label>通讯地址</label>
+                        <input type="text" id="comm-address">
+                    </div>
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea id="notes" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 搜索设备
+        function searchDevices() {
+            const filters = {
+                type: document.getElementById('device-type-filter').value,
+                status: document.getElementById('status-filter').value,
+                station: document.getElementById('station-filter').value,
+                deviceId: document.getElementById('device-id-search').value
+            };
+            
+            console.log('搜索条件:', filters);
+            // 这里实现实际的搜索逻辑
+        }
+
+        // 重置筛选条件
+        function resetFilters() {
+            document.getElementById('device-type-filter').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('station-filter').value = '';
+            document.getElementById('device-id-search').value = '';
+            searchDevices();
+        }
+
+        // 显示添加设备模态框
+        function showAddDeviceModal() {
+            document.getElementById('modal-title').textContent = '添加设备';
+            document.getElementById('device-form').reset();
+            document.getElementById('device-modal').style.display = 'flex';
+        }
+
+        // 查看设备
+        function viewDevice(deviceId) {
+            document.getElementById('modal-title').textContent = '设备详情';
+            // 加载设备数据
+            loadDeviceData(deviceId);
+            document.getElementById('device-modal').style.display = 'flex';
+            // 禁用表单编辑
+            setFormReadonly(true);
+        }
+
+        // 编辑设备
+        function editDevice(deviceId) {
+            document.getElementById('modal-title').textContent = '编辑设备';
+            // 加载设备数据
+            loadDeviceData(deviceId);
+            document.getElementById('device-modal').style.display = 'flex';
+            setFormReadonly(false);
+        }
+
+        // 删除设备
+        function deleteDevice(deviceId) {
+            if (confirm(`确定要删除设备 ${deviceId} 吗？`)) {
+                console.log('删除设备:', deviceId);
+                // 实现删除逻辑
+            }
+        }
+
+        // 加载设备数据
+        function loadDeviceData(deviceId) {
+            // 模拟数据
+            const deviceData = {
+                'ESS-Cabinet-01': {
+                    id: 'ESS-Cabinet-01',
+                    name: '储能柜001',
+                    type: '储能柜',
+                    station: '1',
+                    manufacturer: '华为技术有限公司',
+                    model: 'ESS-5000-S',
+                    installDate: '2024-01-15',
+                    commAddress: '192.168.1.100',
+                    notes: '主要储能设备'
+                }
+            };
+
+            const data = deviceData[deviceId] || {};
+            document.getElementById('device-id').value = data.id || '';
+            document.getElementById('device-name').value = data.name || '';
+            document.getElementById('device-type').value = data.type || '';
+            document.getElementById('station-id').value = data.station || '';
+            document.getElementById('manufacturer').value = data.manufacturer || '';
+            document.getElementById('model').value = data.model || '';
+            document.getElementById('install-date').value = data.installDate || '';
+            document.getElementById('comm-address').value = data.commAddress || '';
+            document.getElementById('notes').value = data.notes || '';
+        }
+
+        // 设置表单只读
+        function setFormReadonly(readonly) {
+            const form = document.getElementById('device-form');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.disabled = readonly;
+            });
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.style.display = readonly ? 'none' : 'inline-block';
+            }
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('device-modal').style.display = 'none';
+        }
+
+        // 导出设备数据
+        function exportDevices() {
+            console.log('导出设备数据');
+            // 实现导出功能
+        }
+
+        // 分页
+        function changePage(page) {
+            console.log('切换到页面:', page);
+            // 实现分页逻辑
+        }
+
+        // 表单提交
+        document.getElementById('device-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            console.log('保存设备数据:', Object.fromEntries(formData));
+            closeModal();
+        });
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

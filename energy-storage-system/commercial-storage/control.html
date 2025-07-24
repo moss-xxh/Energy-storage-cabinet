@@ -1,0 +1,3814 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>控制 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="./sidebar.css">
+    <style>
+        /* 控制页面特定样式 */
+
+        /* 页面标题 */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        /* 控制面板样式 */
+        .control-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .control-section {
+            background: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: visible;
+        }
+
+        .section-header {
+            padding: 0;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .section-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .status-dot.inactive {
+            background: #e2e8f0;
+        }
+
+        .section-content {
+            padding: 0;
+        }
+
+        /* 控制网格 */
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .control-value {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 输入控件样式 */
+        .control-input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        .control-unit {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        /* 开关控件 */
+        .switch-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .switch-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .switch.active {
+            background: #3b82f6;
+        }
+
+        .switch-handle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .switch.active .switch-handle {
+            left: 22px;
+        }
+
+        .switch-label {
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        /* 按钮样式 */
+        .control-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #3b82f6;
+            background: white;
+            color: #3b82f6;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .control-btn.primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .control-btn.primary:hover {
+            background: #2563eb;
+        }
+
+        /* 监控卡片样式 */
+        .monitor-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .monitor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .monitor-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .monitor-badge {
+            padding: 0.25rem 0.75rem;
+            background: #f3f4f6;
+            color: #374151;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .monitor-badge.active {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .monitor-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .monitor-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 选择框样式 */
+        .select-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .control-select {
+            appearance: none;
+            padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 200px;
+        }
+
+        .control-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #64748b;
+        }
+
+        /* 标签页样式 */
+        .tabs {
+            display: flex;
+            gap: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 0.75rem 0;
+            color: #64748b;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover {
+            color: #374151;
+        }
+
+        .tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        /* 内容包装器 */
+        .content-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 面包屑导航 */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .breadcrumb-separator {
+            color: #cbd5e1;
+        }
+
+        .breadcrumb-current {
+            color: #374151;
+            font-weight: 500;
+        }
+
+        /* 操作栏 */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-group {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* 储能柜选择器 */
+        .cabinet-selector {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* 搜索框样式 */
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            min-width: 300px;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        /* 可搜索选择器样式 */
+        .searchable-select {
+            position: relative;
+            display: inline-block;
+        }
+
+        .searchable-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            background: white;
+            min-width: 250px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .searchable-select-trigger:hover {
+            border-color: #cbd5e1;
+        }
+
+        .searchable-select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 0.25rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 50;
+        }
+
+        .searchable-select-dropdown.show {
+            display: block;
+        }
+
+        .searchable-select-search {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .searchable-select-search input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .searchable-select-options {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .searchable-select-option {
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background 0.15s ease;
+        }
+
+        .searchable-select-option:hover {
+            background: #f3f4f6;
+        }
+
+        .searchable-select-option.selected {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        /* 修正内容区域布局 */
+        .container {
+            width: 100%;
+        }
+
+                .content {
+            flex: 1;
+            padding: 24px;
+            background: #EBEDF4;
+        }
+
+        @media (min-width: 1024px) {
+            .content {
+                padding: 2rem;
+            }
+        }
+    
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            background: #EBEDF4;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        /* 页面内容 */
+                        .page-content {
+            max-width: 1193px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    
+        /* 工作模式网格 */
+        .work-mode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .mode-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-card.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .mode-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mode-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .mode-desc {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .mode-check {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .mode-card.active .mode-check {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content">
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">电站控制</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 页面内容 -->
+        <div class="page-content">
+            
+        <!-- 内容区域 -->
+        <div class="content">
+            <div class="page-content">
+            <!-- 工作模式选择 -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.25rem; font-weight: 600; color: #1e293b; margin: 0;" data-lang="control.workMode">设备工作模式</h2>
+                
+                <div style="display: flex; align-items: center; gap: 2rem;">
+                    <!-- 储能柜选择器 -->
+                    <div class="searchable-select" style="position: relative; min-width: 150px;">
+                        <input type="text" 
+                               id="cabinet-search-input" 
+                               placeholder="搜索或选择储能柜" 
+                               style="padding: 0.5rem 2rem 0.5rem 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; background: white; font-size: 0.875rem; width: 100%;"
+                               autocomplete="off">
+                        <svg class="dropdown-icon" style="position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; pointer-events: none; color: #6b7280;" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                        <div id="cabinet-dropdown" class="dropdown-list" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e2e8f0; border-radius: 0.375rem; margin-top: 0.25rem; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+                            <div class="dropdown-item" data-value="cabinet1" data-demand="80" data-remaining="2000" style="padding: 0.5rem 0.75rem; cursor: pointer; font-size: 0.875rem;">储能柜1</div>
+                            <div class="dropdown-item" data-value="cabinet2" data-demand="65" data-remaining="3500" style="padding: 0.5rem 0.75rem; cursor: pointer; font-size: 0.875rem;">储能柜2</div>
+                            <div class="dropdown-item" data-value="cabinet3" data-demand="90" data-remaining="1000" style="padding: 0.5rem 0.75rem; cursor: pointer; font-size: 0.875rem;">储能柜3</div>
+                            <div class="dropdown-item" data-value="cabinet4" data-demand="45" data-remaining="5500" style="padding: 0.5rem 0.75rem; cursor: pointer; font-size: 0.875rem;">储能柜4</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 需量和剩余信息 -->
+                    <div id="cabinet-info" style="display: flex; gap: 1.5rem; align-items: center; font-size: 0.875rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: #64748b;">需量:</span>
+                            <span id="demand-display" style="font-weight: 600; color: #f59e0b;">80%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: #64748b;">剩余:</span>
+                            <span id="remaining-display" style="font-weight: 600; color: #3b82f6;">2000kW</span>
+                        </div>
+                    </div>
+                    
+                    <!-- VPP切换按钮 -->
+                    <button onclick="enableVPPMode(!vppModeEnabled)" style="padding: 0.5rem 1rem; background: #f59e0b; color: white; border: none; border-radius: 6px; font-size: 0.875rem; cursor: pointer; font-weight: 500; transition: all 0.2s ease;">
+                        切换VPP
+                    </button>
+                </div>
+            </div>
+            <div class="work-mode-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="mode-card active" onclick="selectWorkMode(this, 'self-consumption')">
+                    <div class="mode-icon">☀️</div>
+                    <div class="mode-title" data-lang="mode.selfConsumption">自发自用</div>
+                    <div class="mode-desc" data-lang="mode.selfConsumptionDesc">优先使用自发电</div>
+                    <div class="mode-check">✓</div>
+                </div>
+                <div class="mode-card" onclick="selectWorkMode(this, 'economic')">
+                    <div class="mode-icon">💰</div>
+                    <div class="mode-title" data-lang="mode.economic">经济模式</div>
+                    <div class="mode-desc" data-lang="mode.economicDesc">智能套利优化</div>
+                    <div class="mode-check">✓</div>
+                </div>
+                <div class="mode-card" onclick="selectWorkMode(this, 'emergency')">
+                    <div class="mode-icon">🚨</div>
+                    <div class="mode-title" data-lang="mode.emergency">应急模式</div>
+                    <div class="mode-desc" data-lang="mode.emergencyDesc">关键负荷保障</div>
+                    <div class="mode-check">✓</div>
+                </div>
+                <div class="mode-card vpp-disabled" id="vpp-mode-card" onclick="selectWorkMode(this, 'vpp')">
+                    <div class="mode-icon">🌐</div>
+                    <div class="mode-title" data-lang="mode.vpp">VPP模式</div>
+                    <div class="mode-desc" data-lang="mode.vppDesc">虚拟电厂聚合</div>
+                    <div class="mode-check">✓</div>
+                </div>
+            </div>
+
+        <style>
+            /* Work Mode Cards */
+            .mode-card {
+                background: white;
+                border: 2px solid #e2e8f0;
+                border-radius: 0.5rem;
+                padding: 1.25rem;
+                cursor: pointer;
+                text-align: center;
+                transition: all 200ms ease;
+                position: relative;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+            
+            .mode-card:hover {
+                border-color: #60a5fa;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            }
+            
+            .mode-card.active {
+                background: #eff6ff;
+                border-color: #3b82f6;
+            }
+            
+            .mode-icon {
+                font-size: 3rem;
+                margin-bottom: 0.5rem;
+                display: block;
+            }
+            
+            .mode-title {
+                font-weight: 600;
+                color: #1e293b;
+                margin-bottom: 0.25rem;
+                font-size: 1rem;
+            }
+            
+            .mode-desc {
+                font-size: 0.75rem;
+                color: #64748b;
+                margin: 0;
+            }
+            
+            .mode-check {
+                position: absolute;
+                top: 0.5rem;
+                right: 0.5rem;
+                width: 20px;
+                height: 20px;
+                background: #3b82f6;
+                color: white;
+                border-radius: 50%;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.75rem;
+            }
+            
+            .mode-card.active .mode-check {
+                display: flex;
+            }
+            
+            /* 自发自用模式特定样式 */
+            .control-description {
+                font-size: 0.75rem;
+                color: #64748b;
+                margin-top: 0.25rem;
+                line-height: 1.4;
+            }
+            
+            .control-status {
+                margin-left: 0.75rem;
+                font-size: 0.875rem;
+                color: #22c55e;
+                font-weight: 500;
+            }
+            
+            .full-width {
+                grid-column: 1 / -1;
+            }
+            
+            /* SOC范围显示器 */
+            .soc-range-display {
+                margin-top: 0.5rem;
+            }
+            
+            .soc-bar {
+                position: relative;
+                height: 24px;
+                background: #e2e8f0;
+                border-radius: 12px;
+                margin-bottom: 0.75rem;
+                overflow: hidden;
+            }
+            
+            .soc-range {
+                height: 100%;
+                background: linear-gradient(90deg, #22c55e 0%, #3b82f6 50%, #f59e0b 100%);
+                border-radius: 12px;
+                position: relative;
+                transition: all 0.3s ease;
+            }
+            
+            .soc-labels {
+                display: flex;
+                justify-content: space-between;
+                position: absolute;
+                top: 2px;
+                left: 0;
+                right: 0;
+                bottom: 2px;
+                align-items: center;
+                padding: 0 8px;
+            }
+            
+            .soc-min, .soc-max {
+                background: white;
+                color: #1e293b;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            
+            .soc-info {
+                font-size: 0.75rem;
+                color: #64748b;
+                text-align: center;
+                line-height: 1.4;
+            }
+
+            /* 24小时时段选择器样式 */
+            .time-selector-section {
+                margin-bottom: 2rem;
+            }
+            
+            .time-selector-section h4 {
+                margin-bottom: 1rem;
+                color: #1e293b;
+                font-size: 1rem;
+                font-weight: 600;
+            }
+            
+            /* 图例样式 */
+            .period-legend {
+                display: flex;
+                gap: 1.5rem;
+                margin-bottom: 1rem;
+                justify-content: center;
+            }
+            
+            .legend-item {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                cursor: pointer;
+                padding: 0.5rem 0.75rem;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+                font-size: 0.875rem;
+                color: #374151;
+            }
+            
+            .legend-item:hover {
+                background: #f3f4f6;
+            }
+            
+            .legend-item.active {
+                background: #e5e7eb;
+                font-weight: 500;
+            }
+            
+            .legend-color {
+                width: 20px;
+                height: 20px;
+                border-radius: 4px;
+                border: 1px solid #e5e7eb;
+            }
+            
+            .legend-color.peak-color {
+                background: #fee2e2;
+                border-color: #f87171;
+            }
+            
+            .legend-color.valley-color {
+                background: #dcfce7;
+                border-color: #86efac;
+            }
+            
+            .legend-color.normal-color {
+                background: #dbeafe;
+                border-color: #93c5fd;
+            }
+            
+            .legend-color.clear-color {
+                background: #f3f4f6;
+                border-color: #d1d5db;
+            }
+
+            .time-selector-container {
+                background: #f8f9fa;
+                border-radius: 8px;
+                padding: 20px;
+                margin-top: 15px;
+            }
+
+            .time-scale {
+                display: grid;
+                grid-template-columns: 60px repeat(4, 1fr);
+                margin-bottom: 10px;
+                font-size: 12px;
+                color: #666;
+            }
+
+            .time-scale-item {
+                text-align: center;
+            }
+
+            .time-scale-item:first-child {
+                text-align: left;
+            }
+
+            .hour-selector {
+                display: grid;
+                grid-template-columns: 60px repeat(24, 1fr);
+                gap: 0;
+                align-items: center;
+            }
+
+            .hour-label {
+                font-size: 12px;
+                color: #666;
+                text-align: right;
+                padding-right: 10px;
+                font-weight: 500;
+            }
+
+            .hour-cell {
+                height: 40px;
+                background: white;
+                border: 1px solid #ddd;
+                border-right: none;
+                cursor: pointer;
+                position: relative;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: 500;
+            }
+            
+            .hour-cell:last-child {
+                border-right: 1px solid #ddd;
+            }
+            
+            .hour-cell:first-child {
+                border-radius: 4px 0 0 4px;
+            }
+            
+            .hour-cell:last-child {
+                border-radius: 0 4px 4px 0;
+            }
+
+            .hour-cell:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .hour-cell.peak {
+                background: #fee2e2;
+                border-color: #f87171;
+                color: #dc2626;
+            }
+
+            .hour-cell.valley {
+                background: #dcfce7;
+                border-color: #86efac;
+                color: #16a34a;
+            }
+
+            .hour-cell.normal {
+                background: #dbeafe;
+                border-color: #93c5fd;
+                color: #2563eb;
+            }
+
+            .hour-cell .hour-number {
+                font-size: 10px;
+                color: #999;
+                position: absolute;
+                top: 2px;
+                left: 50%;
+                transform: translateX(-50%);
+                transition: opacity 0.2s ease;
+            }
+            
+            /* Hide hour numbers when cell has a period type */
+            .hour-cell.peak .hour-number,
+            .hour-cell.valley .hour-number,
+            .hour-cell.normal .hour-number {
+                opacity: 0;
+            }
+            
+            .hour-cell .period-text {
+                font-size: 14px;
+                font-weight: 600;
+            }
+            
+            /* Prevent text selection during drag */
+            .hour-selector {
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+            }
+
+            /* 开关样式 */
+            .switch input:checked + .slider {
+                background-color: #3b82f6;
+            }
+
+            .switch .slider:before {
+                position: absolute;
+                content: "";
+                height: 20px;
+                width: 20px;
+                left: 3px;
+                bottom: 3px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+
+            .switch input:checked + .slider:before {
+                transform: translateX(24px);
+            }
+
+            .hour-labels {
+                display: grid;
+                grid-template-columns: 60px repeat(24, 1fr);
+                gap: 0;
+                margin-top: 5px;
+                font-size: 10px;
+                color: #999;
+            }
+
+            .hour-labels > div {
+                text-align: center;
+            }
+
+            .quick-actions {
+                margin-top: 1rem;
+                display: flex;
+                gap: 0.75rem;
+            }
+            
+            /* Tab 样式 - 简约设计，与界面风格统一 */
+            .mode-tabs {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            
+            .tab-nav {
+                display: flex;
+                gap: 0;
+                margin-bottom: 0;
+                border-bottom: 2px solid #e2e8f0;
+                padding-bottom: -2px;
+            }
+            
+            .tab-button {
+                padding: 0.75rem 3rem 0.75rem 1.5rem;
+                border: none;
+                position: relative;
+                background: none;
+                cursor: pointer;
+                color: #64748b;
+                font-weight: 500;
+                transition: all 150ms ease;
+                position: relative;
+                border-bottom: 2px solid transparent;
+                margin-bottom: -2px;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.875rem;
+            }
+            
+            .tab-button:hover {
+                color: #1e293b;
+            }
+            
+            .tab-button.active {
+                color: #3562E3;
+                border-bottom-color: #3562E3;
+                background: none !important;
+            }
+            
+            .tab-icon {
+                font-size: 1rem;
+            }
+
+            /* Tab 内容区域 */
+            .tab-content-wrapper {
+                padding: 0;
+                margin-top: 2rem;
+            }
+            
+            .tab-panel {
+                display: none;
+            }
+            
+            .tab-panel.active {
+                display: block;
+            }
+            
+            /* 移除原有的 margin-top */
+            .tab-panel h2 {
+                margin-top: 0 !important;
+            }
+            
+            /* 编辑按钮样式 */
+            .tab-edit-btn {
+                position: absolute;
+                top: 50%;
+                right: 0.75rem;
+                transform: translateY(-50%);
+                padding: 0.25rem 0.75rem;
+                background: #f1f5f9;
+                border: 1px solid #e2e8f0;
+                border-radius: 4px;
+                cursor: pointer;
+                color: #64748b;
+                font-size: 0.75rem;
+                font-weight: 500;
+                display: none;
+                transition: all 0.2s ease;
+                z-index: 10;
+            }
+            
+            .tab-button.active .tab-edit-btn {
+                display: block;
+            }
+            
+            .tab-edit-btn:hover {
+                color: #3b82f6;
+                background: #e0e7ff;
+                border-color: #3b82f6;
+            }
+            
+            .tab-edit-btn.editing {
+                color: white;
+                background: #22c55e;
+                border-color: #22c55e;
+            }
+            
+            /* 只读模式样式 */
+            .readonly-mode input,
+            .readonly-mode select,
+            .readonly-mode textarea,
+            .readonly-mode .switch input {
+                pointer-events: none;
+                opacity: 0.7;
+            }
+            
+            .readonly-mode .control-input {
+                background: #f8fafc;
+                cursor: not-allowed;
+            }
+            
+            /* 经济模式只读时禁用所有交互元素 */
+            .readonly-mode .switch {
+                pointer-events: none;
+                opacity: 0.7;
+            }
+            
+            .readonly-mode .legend-item {
+                pointer-events: none;
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+            
+            .readonly-mode .hour-grid {
+                pointer-events: none;
+                opacity: 0.7;
+            }
+            
+            .readonly-mode .hour-selector {
+                pointer-events: none;
+                opacity: 0.7;
+            }
+            
+            .readonly-mode .time-selector-section {
+                pointer-events: none;
+                opacity: 0.8;
+            }
+            
+            /* 共享参数特定的只读模式样式 */
+            .shared-params-section.readonly-mode input[type="checkbox"],
+            .shared-params-section.readonly-mode .checkbox-item input {
+                pointer-events: none;
+                cursor: not-allowed;
+            }
+            
+            .shared-params-section.readonly-mode .checkbox-item {
+                opacity: 0.7;
+            }
+            
+            .shared-params-section.readonly-mode .switch {
+                opacity: 0.7;
+                pointer-events: none;
+            }
+            
+            /* 保存确认对话框 */
+            .save-dialog {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                border-radius: 0.5rem;
+                box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+                padding: 1.5rem;
+                min-width: 300px;
+            }
+            
+            .save-dialog-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+            
+            /* 可搜索下拉框样式 */
+            .dropdown-item:hover {
+                background: #f3f4f6;
+            }
+            
+            .dropdown-item.active {
+                background: #eff6ff;
+                color: #3b82f6;
+            }
+            
+            /* 通用设置编辑按钮样式 */
+            .shared-edit-btn {
+                padding: 0.25rem 0.75rem;
+                background: #3b82f6;
+                border: 1px solid #3b82f6;
+                border-radius: 4px;
+                cursor: pointer;
+                color: white;
+                font-size: 0.75rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+            
+            .shared-edit-btn:hover {
+                background: #2563eb;
+                border-color: #2563eb;
+            }
+            
+            .shared-edit-btn.editing {
+                background: #22c55e;
+                border-color: #22c55e;
+            }
+            
+            /* VPP模式禁用样式 */
+            .mode-card.vpp-disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            
+            .mode-card.vpp-disabled:hover {
+                transform: none;
+                border-color: #e2e8f0;
+            }
+            
+            .mode-card.vpp-active {
+                background: #fef3c7;
+                border-color: #f59e0b;
+            }
+            
+            .mode-card.vpp-active .mode-desc {
+                color: #f59e0b;
+                font-weight: 600;
+            }
+            
+            /* 共享参数区域样式 */
+            .shared-params-section {
+                margin-top: 0;
+                margin-bottom: 0;
+                background: #f8f9fa;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+            }
+            
+            .shared-params-section h3 {
+                color: #3b82f6;
+                margin-bottom: 1rem;
+            }
+            
+            .shared-params-section .control-section {
+                background: transparent;
+                border: none;
+            }
+
+        </style>
+
+        <!-- 控制面板 -->
+        <div class="control-sections" id="control-sections">
+            <!-- 模式设置 Tab 导航 -->
+            <div class="mode-tabs">
+                <div class="tab-nav">
+                    <button class="tab-button active" onclick="switchModeTab('self-consumption')" data-lang="mode.selfConsumption">
+                        <span class="tab-icon">☀️</span>
+                        <span>自发自用</span>
+                        <button class="tab-edit-btn" onclick="toggleEditMode('self-consumption', event)" title="编辑">
+                            编辑
+                        </button>
+                    </button>
+                    <button class="tab-button" onclick="switchModeTab('economic')" data-lang="mode.economic">
+                        <span class="tab-icon">💰</span>
+                        <span>经济模式</span>
+                        <button class="tab-edit-btn" onclick="toggleEditMode('economic', event)" title="编辑">
+                            编辑
+                        </button>
+                    </button>
+                    <button class="tab-button" onclick="switchModeTab('emergency')" data-lang="mode.emergency">
+                        <span class="tab-icon">🚨</span>
+                        <span>应急模式</span>
+                        <button class="tab-edit-btn" onclick="toggleEditMode('emergency', event)" title="编辑">
+                            编辑
+                        </button>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 共享参数区域 -->
+            <div style="background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; padding: 1.5rem; margin-top: 24px;">
+                <div class="shared-params-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1rem; font-weight: 600; color: #1e293b; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🔧</span>
+                        <span data-lang="shared.commonSettings">通用设置</span>
+                    </h3>
+                    <button class="shared-edit-btn" onclick="toggleSharedEditMode(event)" title="编辑">
+                        编辑
+                    </button>
+                </div>
+                <div class="shared-params-section">
+                <section class="control-section">
+                    <div class="section-content">
+                        <div class="control-grid">
+                            <!-- 充电停止SOC - 滑块 -->
+                            <div class="control-item">
+                                <label class="control-label" data-lang="selfConsumption.chargeStopSoc">充电停止SOC</label>
+                                <div class="control-value">
+                                    <div class="slider-container">
+                                        <input type="range" class="control-slider" value="95" min="0" max="100" id="charge-stop-soc-slider" oninput="updateSliderValue(this, 'charge-stop-soc-value')">
+                                        <input type="number" class="slider-value-input" id="charge-stop-soc-value" value="95" min="0" max="100" oninput="updateSliderFromInput(this, 'charge-stop-soc-slider')">
+                                        <span class="control-unit">%</span>
+                                    </div>
+                                </div>
+                                <div class="control-description" data-lang="selfConsumption.chargeStopSocDesc">防止过充</div>
+                            </div>
+                            
+                            <!-- 放电停止SOC - 滑块 -->
+                            <div class="control-item">
+                                <label class="control-label" data-lang="selfConsumption.dischargeStopSoc">放电停止SOC</label>
+                                <div class="control-value">
+                                    <div class="slider-container">
+                                        <input type="range" class="control-slider" value="20" min="5" max="100" id="discharge-stop-soc-slider" oninput="updateSliderValue(this, 'discharge-stop-soc-value')">
+                                        <input type="number" class="slider-value-input" id="discharge-stop-soc-value" value="20" min="5" max="100" oninput="updateSliderFromInput(this, 'discharge-stop-soc-slider')">
+                                        <span class="control-unit">%</span>
+                                    </div>
+                                </div>
+                                <div class="control-description" data-lang="selfConsumption.dischargeStopSocDesc">防止过放</div>
+                            </div>
+                            
+                            <!-- 余电上网开关 -->
+                            <div class="control-item">
+                                <label class="control-label" data-lang="selfConsumption.excessPvExport">余电上网</label>
+                                <div class="control-value">
+                                    <label class="switch">
+                                        <input type="checkbox" id="excess-pv-export-shared" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                    <span class="control-status" data-lang="selfConsumption.exportEnabled">允许</span>
+                                </div>
+                                <div class="control-description" data-lang="selfConsumption.excessPvExportDesc">当光伏发电超过负荷需求且电池已满时，允许余电上网销售</div>
+                            </div>
+                            
+                            <!-- 电池充电功率 -->
+                            <div class="control-item">
+                                <label class="control-label" data-lang="shared.batteryChargePower">电池充电功率</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="500" min="0" max="6000" id="battery-charge-power">
+                                    <span class="control-unit">W</span>
+                                </div>
+                                <div class="control-description" data-lang="shared.batteryPowerDesc">可设置范围0——6000W</div>
+                            </div>
+                            
+                            <!-- 电池放电功率 -->
+                            <div class="control-item">
+                                <label class="control-label" data-lang="shared.batteryDischargePower">电池放电功率</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="500" min="0" max="6000" id="battery-discharge-power">
+                                    <span class="control-unit">W</span>
+                                </div>
+                                <div class="control-description" data-lang="shared.batteryPowerDesc">可设置范围0——6000W</div>
+                            </div>
+                            
+                            <!-- 需量设置小标题 -->
+                            <div class="control-item full-width" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
+                                <div style="display: flex; align-items: center; gap: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0;">
+                                    <h4 style="font-size: 1rem; font-weight: 600; color: #374151; margin: 0;">
+                                        需量设置
+                                    </h4>
+                                    <label class="switch">
+                                        <input type="checkbox" id="demand-settings-enabled" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                    <span class="status-text" style="font-size: 0.875rem; color: #3b82f6;" data-lang="shared.enabled">已启用</span>
+                                </div>
+                            </div>
+                            
+                            <!-- 需量控制设置 -->
+                            <div class="control-item">
+                                <label class="control-label" data-lang="demand.contractCapacity">合同容量</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="1000" min="100" max="10000" id="contract-capacity">
+                                    <span class="control-unit">kW</span>
+                                </div>
+                                <div class="control-description" data-lang="demand.contractCapacityDesc">与电网签订的最大需量合同容量</div>
+                            </div>
+                            
+                            <div class="control-item">
+                                <label class="control-label" data-lang="demand.warningPercentage">预警百分比</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="90" min="50" max="100" id="warning-percentage">
+                                    <span class="control-unit">%</span>
+                                </div>
+                                <div class="control-description" data-lang="demand.warningPercentageDesc">当需量达到合同容量的此百分比时触发预警</div>
+                            </div>
+                            
+                            <div class="control-item">
+                                <label class="control-label" data-lang="demand.calculationPeriod">需量计算周期</label>
+                                <div class="control-value">
+                                    <select class="control-input" id="demand-calculation-period">
+                                        <option value="15" data-lang="demand.period15">15分钟</option>
+                                        <option value="30" data-lang="demand.period30">30分钟</option>
+                                        <option value="60" data-lang="demand.period60">60分钟</option>
+                                    </select>
+                                </div>
+                                <div class="control-description" data-lang="demand.calculationPeriodDesc">电网计费的需量统计周期</div>
+                            </div>
+                            
+                            <div class="control-item full-width">
+                                <label class="control-label" data-lang="demand.overLimitStrategy">需量超限处理策略</label>
+                                <div class="control-value">
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" id="strategy-discharge" checked>
+                                            <span class="checkbox-label" data-lang="demand.emergencyDischarge">紧急放电 (立即以最大功率放电)</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" id="strategy-load-shedding">
+                                            <span class="checkbox-label" data-lang="demand.loadShedding">负荷切除 (自动切除非关键负荷)</span>
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" id="strategy-alarm" checked>
+                                            <span class="checkbox-label" data-lang="demand.alarmNotify">告警通知 (发送超限预警)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-description" data-lang="demand.overLimitStrategyDesc">当预测需量将超过目标值时的处理措施</div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- 编辑模式按钮 -->
+            <div class="shared-edit-actions" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; text-align: right;">
+                <button class="cancel-btn" onclick="cancelSharedEdit()" style="padding: 0.5rem 1.5rem; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; margin-right: 0.75rem; font-size: 0.875rem;">
+                    取消
+                </button>
+                <button class="save-btn" onclick="saveSharedEdit()" style="padding: 0.5rem 1.5rem; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">
+                    保存
+                </button>
+            </div>
+            </div>
+
+            <!-- Tab 内容区域 -->
+            <div class="tab-content-wrapper">
+                <!-- 自发自用模式参数 -->
+                <div class="tab-panel active" id="self-consumption-panel">
+                </div>
+
+            <!-- 经济模式设置 -->
+            <div class="tab-panel" id="economic-panel">
+                <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <h2 style="font-size: 1.25rem; font-weight: 600; color: #1e293b; margin-bottom: 1rem; margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.5rem;">💰</span>
+                        <span data-lang="mode.economic">经济模式</span>
+                    </h2>
+                    <!-- 经济模式核心设置 -->
+                    <section class="control-section">
+                    <div class="section-content">
+                        <!-- 24小时时段选择器 -->
+                        <div class="time-selector-section">
+                            <!-- 图例 -->
+                            <div class="period-legend">
+                                <div class="legend-item peak-legend" onclick="selectPeriodType('peak')">
+                                    <span class="legend-color peak-color"></span>
+                                    <span data-lang="economic.peakType">峰时段</span>
+                                </div>
+                                <div class="legend-item valley-legend" onclick="selectPeriodType('valley')">
+                                    <span class="legend-color valley-color"></span>
+                                    <span data-lang="economic.valleyType">谷时段</span>
+                                </div>
+                                <div class="legend-item normal-legend" onclick="selectPeriodType('normal')">
+                                    <span class="legend-color normal-color"></span>
+                                    <span data-lang="economic.normalType">平时段</span>
+                                </div>
+                            </div>
+                            
+                            <div class="time-selector-container">
+                                <!-- 时间刻度 -->
+                                <div class="time-scale">
+                                    <div class="time-scale-item"></div>
+                                    <div class="time-scale-item"></div>
+                                    <div class="time-scale-item"></div>
+                                    <div class="time-scale-item"></div>
+                                    <div class="time-scale-item"></div>
+                                </div>
+                                
+                                <!-- 24小时选择格 -->
+                                <div class="hour-selector" id="hour-selector">
+                                    <!-- 将通过JavaScript生成24个小时格 -->
+                                </div>
+                                
+                                <!-- 时间标签 -->
+                                <div class="hour-labels">
+                                    <!-- 将通过JavaScript生成小时标签 -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 电网充电设置 -->
+                        <div style="margin-top: 20px; display: flex; align-items: center; gap: 1rem;">
+                            <label style="font-size: 0.875rem; color: #1e293b; font-weight: 600; white-space: nowrap;" data-lang="economic.gridCharging">是否允许电网给电池充电</label>
+                            <label class="switch">
+                                <input type="checkbox" id="grid-charging-enabled">
+                                <span class="switch-slider"></span>
+                            </label>
+                            <span style="font-size: 0.875rem; color: #64748b; font-weight: 500;" id="grid-charging-status" data-lang="economic.gridChargingNotAllowed">不允许</span>
+                        </div>
+                        
+                        <!-- 平时段优先级策略 -->
+                        <div style="margin-top: 20px; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <label style="font-size: 0.875rem; color: #1e293b; font-weight: 600; white-space: nowrap;" data-lang="economic.normalPriority">平时段优先级策略</label>
+                                <select style="width: 150px; padding: 0.5rem 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; font-size: 0.875rem; background: white; cursor: pointer;" id="normal-priority-strategy">
+                                    <option value="charge-first" data-lang="economic.chargeFirst">充电优先</option>
+                                    <option value="export-first" data-lang="economic.exportFirst">上网优先</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    </section>
+                    <!-- 经济模式编辑按钮 -->
+                    <div class="economic-edit-actions" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; text-align: right;">
+                        <button class="cancel-btn" onclick="cancelEconomicEdit()" style="padding: 0.5rem 1.5rem; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; margin-right: 0.75rem; font-size: 0.875rem;">
+                            取消
+                        </button>
+                        <button class="save-btn" onclick="saveEconomicEdit()" style="padding: 0.5rem 1.5rem; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">
+                            保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            </div> <!-- end tab-content -->
+
+        </div>
+        </div>
+    </main>
+
+        </div>
+<script>
+        // 语言数据
+        const translations = {
+            zh: {
+                // 菜单
+                'menu.station': '电站',
+                'menu.stationManagement': '电站管理',
+                'menu.control': '控制',
+                'menu.priceSettings': '电价设置',
+                'menu.dataAnalysis': '数据分析',
+                'menu.alarmManagement': '告警管理',
+                'menu.deviceManagement': '设备管理',
+                'menu.userManagement': '用户管理',
+                'menu.reportCenter': '报表中心',
+                'menu.systemSettings': '系统设置',
+                'menu.brandControlSystem': '品牌控制系统',
+                'menu.sungrow': '阳光电源',
+                'menu.huawei': '华为智能',
+                'menu.tesla': '特斯拉',
+                
+                // 页面
+                'page.deviceControl': '设备控制',
+                
+                // 工作模式
+                'control.workMode': '设备工作模式',
+                'control.workModeDesc': '选择储能系统的运行模式',
+                'control.selectCabinet': '选择储能柜',
+                'mode.selfConsumption': '自发自用',
+                'mode.selfConsumptionDesc': '优先使用自发电',
+                'mode.economic': '经济模式',
+                'mode.economicDesc': '智能套利优化',
+                'mode.emergency': '应急模式',
+                'mode.emergencyDesc': '关键负荷保障',
+                'mode.demand': '需量控制',
+                'mode.demandDesc': '削峰限容优化',
+                'mode.vpp': 'VPP模式',
+                'mode.vppDesc': '虚拟电厂聚合',
+                
+                // 共享参数
+                'shared.commonSettings': '通用设置',
+                'shared.maxSoc': '最大SOC限制',
+                'shared.maxSocDesc': '所有模式下电池充电的最大SOC限制',
+                'shared.minSoc': '最小SOC限制',
+                'shared.minSocDesc': '所有模式下电池放电的最小SOC限制',
+                'shared.maxChargePower': '最大充电功率',
+                'shared.maxChargePowerDesc': '系统最大充电功率限制',
+                'shared.maxDischargePower': '最大放电功率',
+                'shared.maxDischargePowerDesc': '系统最大放电功率限制',
+                'shared.batteryChargePower': '电池充电功率',
+                'shared.batteryDischargePower': '电池放电功率',
+                'shared.batteryPowerDesc': '可设置范围0——6000W',
+                'shared.tempProtection': '温度保护',
+                'shared.tempProtectionDesc': '启用电池温度保护功能',
+                'shared.enabled': '已启用',
+                'shared.disabled': '已禁用',
+                'shared.commProtocol': '通信协议',
+                'shared.commProtocolDesc': '与外部系统的通信协议',
+                'shared.modbus': 'Modbus TCP',
+                'shared.canbus': 'CAN Bus',
+                'shared.ethercat': 'EtherCAT',
+                
+                // 自发自用模式
+                'selfConsumption.coreSettings': '自发自用模式设置',
+                'selfConsumption.chargeStopSoc': '充电停止SOC',
+                'selfConsumption.chargeStopSocDesc': '防止过充',
+                'selfConsumption.dischargeStopSoc': '放电停止SOC',
+                'selfConsumption.dischargeStopSocDesc': '防止过放（设置越高，停电期间使用能源越多）',
+                'selfConsumption.excessPvExport': '余电上网',
+                'selfConsumption.exportEnabled': '允许',
+                'selfConsumption.exportDisabled': '不允许',
+                'selfConsumption.excessPvExportDesc': '当光伏发电超过负荷需求且电池已满时，允许余电上网销售',
+                'selfConsumption.socRange': 'SOC工作范围',
+                'selfConsumption.socRangeInfo': '电池将在此SOC范围内工作，确保最佳性能和寿命',
+                'selfConsumption.exportSettings': '保存配置',
+                
+                // 经济模式
+                'economic.coreSettings': '经济模式设置',
+                'economic.timePeriodTitle': '电价时段设置',
+                'economic.timePeriodDesc': '设置峰谷电价时段，系统将在谷时段充电，峰时段放电，实现套利收益最大化',
+                'economic.peakPeriod': '峰时段设置',
+                'economic.peakTime': '峰时段（高电价）',
+                'economic.peakPrice': '峰时电价',
+                'economic.valleyPeriod': '谷时段设置',
+                'economic.valleyTime': '谷时段（低电价）',
+                'economic.valleyPrice': '谷时电价',
+                'economic.normalPeriod': '平时段设置',
+                'economic.normalTime': '平时段（标准电价）',
+                'economic.normalPrice': '平时电价',
+                'economic.normalNote': '平时段为除峰谷时段外的其他时间',
+                'economic.timeRange': '时间段',
+                'economic.addTimeSlot': '+ 添加时段',
+                'economic.timePreview': '24小时时段预览',
+                'economic.peakLegend': '峰时段',
+                'economic.valleyLegend': '谷时段',
+                'economic.normalLegend': '平时段',
+                'economic.exportSettings': '保存配置',
+                'economic.selectPeriodType': '选择时段类型',
+                'economic.peakType': '峰时段',
+                'economic.valleyType': '谷时段',
+                'economic.normalType': '平时段',
+                'economic.clearType': '清除',
+                'economic.hourlySelector': '24小时时段设置',
+                'economic.clearAll': '全部清除',
+                'economic.commercialPreset': '工商业预设',
+                'economic.industrialPreset': '工业预设',
+                'economic.priceSettings': '电价设置',
+                'economic.periodStats': '时段统计',
+                'economic.peakHours': '峰时段时长：',
+                'economic.valleyHours': '谷时段时长：',
+                'economic.normalHours': '平时段时长：',
+                'economic.normalPriority': '平时段优先级策略',
+                'economic.normalPriorityDesc': '设置平时段电池的充放电优先级策略',
+                'economic.chargeFirst': '充电优先',
+                'economic.exportFirst': '上网优先',
+                'economic.gridCharging': '是否允许电网给电池充电',
+                'economic.gridChargingAllowed': '允许',
+                'economic.gridChargingNotAllowed': '不允许',
+                
+                // 应急模式
+                'emergency.backupSocReserve': '备电SOC保留',
+                'emergency.backupSocReserveDesc': '预留电池容量用于应急供电，确保关键负荷供电安全',
+                'emergency.criticalLoadPower': '关键负荷功率',
+                'emergency.criticalLoadPowerDesc': '应急模式下需要保障的关键负荷总功率',
+                'emergency.backupDurationTarget': '备电时长目标',
+                'emergency.backupDurationTargetDesc': '期望的应急供电持续时间',
+                'emergency.gridFailureDetection': '电网故障检测',
+                'emergency.detectionEnabled': '已启用',
+                'emergency.detectionDisabled': '已禁用',
+                'emergency.gridFailureDetectionDesc': '自动检测电网故障并切换至应急供电模式',
+                'emergency.switchResponseTime': '切换响应时间',
+                'emergency.switchResponseTimeDesc': '从电网故障到应急供电的切换时间',
+                'emergency.ultraFast': '超快速 (≤10ms)',
+                'emergency.fast': '快速 (≤20ms)',
+                'emergency.standard': '标准 (≤50ms)',
+                'emergency.autoChargeStrategy': '自动充电策略',
+                'emergency.autoChargeStrategyDesc': '应急备电SOC的维持策略',
+                'emergency.alwaysCharge': '始终保持',
+                'emergency.weatherForecast': '天气预警',
+                'emergency.scheduled': '定时充电',
+                'emergency.manual': '手动控制',
+                'emergency.loadPriorityManagement': '负荷优先级管理',
+                'emergency.loadPriorityDesc': '根据电池容量自动管理负荷供电优先级',
+                'emergency.testMode': '测试模式',
+                
+                // 需量控制模式
+                'demand.coreSettings': '需量控制设置',
+                'demand.contractCapacity': '合同容量',
+                'demand.contractCapacityDesc': '与电网签订的最大需量合同容量',
+                'demand.targetDemand': '需量目标值',
+                'demand.targetDemandDesc': '需量控制的目标上限，建议设置为合同容量的90%',
+                'demand.controlAccuracy': '控制精度',
+                'demand.controlAccuracyDesc': '需量控制的精度要求，影响电池动作频率',
+                'demand.highAccuracy': '高精度 (±2%)',
+                'demand.mediumAccuracy': '标准 (±5%)',
+                'demand.lowAccuracy': '宽松 (±10%)',
+                'demand.demandPeriod': '需量计算周期',
+                'demand.demandPeriodDesc': '电网计费的需量统计周期',
+                'demand.period15min': '15分钟',
+                'demand.period30min': '30分钟',
+                'demand.period60min': '60分钟',
+                'demand.predictionAlgorithm': '负荷预测算法',
+                'demand.predictionAlgorithmDesc': '用于预测未来负荷趋势的算法',
+                'demand.aiPrediction': 'AI智能预测',
+                'demand.historicalAverage': '历史平均',
+                'demand.realtimeTracking': '实时跟踪',
+                'demand.responseSpeed': '响应速度',
+                'demand.responseSpeedDesc': '控制策略的响应特性，影响电池寿命',
+                'demand.aggressive': '激进 (快速响应)',
+                'demand.balanced': '平衡',
+                'demand.conservative': '保守 (平滑控制)',
+                'demand.overLimitHandling': '需量超限处理策略',
+                'demand.overLimitHandlingDesc': '当预测需量将超过目标值时的处理措施',
+                'demand.emergencyDischarge': '紧急放电 (立即以最大功率放电)',
+                'demand.loadShedding': '负荷切除 (自动切除非关键负荷)',
+                'demand.alertNotification': '告警通知 (发送超限预警)',
+                'demand.realtimeMonitor': '实时需量监控',
+                'demand.exportSettings': '导出配置',
+                
+                'selfConsumption.basicSettings': '基本设置',
+                'selfConsumption.pvPriority': '光伏优先级',
+                'selfConsumption.pvFirst': '光伏优先',
+                'selfConsumption.batteryFirst': '电池优先',
+                'selfConsumption.balanced': '均衡模式',
+                'selfConsumption.selfConsumptionRatio': '自发自用比例目标',
+                'selfConsumption.gridImportLimit': '电网购电限制',
+                'selfConsumption.excessPvMode': '余电处理',
+                'selfConsumption.storageFirst': '优先储存',
+                'selfConsumption.sellFirst': '优先上网',
+                'selfConsumption.noExport': '禁止上网',
+                'selfConsumption.socManagement': 'SOC管理',
+                'selfConsumption.chargeSocTarget': '充电目标SOC',
+                'selfConsumption.dischargeSocMin': '放电最低SOC',
+                'selfConsumption.socSafetyMargin': 'SOC安全裕度',
+                'selfConsumption.adaptiveSoc': '自适应SOC管理',
+                'selfConsumption.powerControl': '功率控制',
+                'selfConsumption.maxChargePower': '最大充电功率',
+                'selfConsumption.maxDischargePower': '最大放电功率',
+                'selfConsumption.powerRampRate': '功率爬坡速率',
+                'selfConsumption.loadFollowing': '负荷跟踪',
+                'selfConsumption.timeStrategy': '时间策略',
+                'selfConsumption.controlCycle': '控制周期',
+                'selfConsumption.forecastWindow': '预测窗口',
+                'selfConsumption.weatherForecast': '天气预测集成',
+                'selfConsumption.seasonalAdjust': '季节性调整',
+                'selfConsumption.optimization': '优化目标',
+                'selfConsumption.primaryObjective': '主要目标',
+                'selfConsumption.maxSelfConsumption': '最大自发自用',
+                'selfConsumption.minGridImport': '最小电网购电',
+                'selfConsumption.batteryHealth': '电池健康优先',
+                'selfConsumption.costOptimal': '成本最优',
+                'selfConsumption.learningAlgorithm': '学习算法',
+                'selfConsumption.adaptiveLearning': '自适应学习',
+                'selfConsumption.performanceTracking': '性能跟踪',
+                'selfConsumption.exportConfig': '导出配置',
+                
+                // 状态
+                'status.systemStatus': '系统状态',
+                'status.running': '运行中',
+                'status.currentPower': '当前功率',
+                'status.operationMode': '运行模式',
+                
+                // 控制
+                'control.basicControl': '基本控制',
+                'control.enabled': '已启用',
+                'control.operationMode': '运行模式',
+                'control.targetPower': '目标功率',
+                'control.chargeDischarge': '充放电控制',
+                'control.charging': '充电',
+                'control.discharging': '放电',
+                'control.standby': '待机',
+                'control.systemStartStop': '系统启停',
+                'control.applySettings': '应用设置',
+                'control.reset': '重置',
+                
+                // 高级参数
+                'control.advancedParams': '高级参数',
+                'control.maxChargePower': '最大充电功率',
+                'control.maxDischargePower': '最大放电功率',
+                'control.socUpperLimit': 'SOC上限',
+                'control.socLowerLimit': 'SOC下限',
+                'control.tempProtection': '温度保护',
+                'control.overloadProtection': '过载保护',
+                
+                // 调度策略
+                'control.scheduleStrategy': '调度策略',
+                'control.scheduleMode': '调度模式',
+                'control.responseSpeed': '响应速度',
+                'control.priority': '优先级',
+                'control.autoOptimize': '自动优化',
+                
+                // 运行模式
+                'mode.autoSchedule': '自动调度',
+                'mode.manualControl': '手动控制',
+                'mode.remoteSchedule': '远程调度',
+                'mode.localControl': '本地控制',
+                
+                // 调度模式
+                'schedule.peakValley': '峰谷套利',
+                'schedule.demandResponse': '需求响应',
+                'schedule.ancillaryService': '辅助服务',
+                'schedule.custom': '自定义策略',
+                
+                // 速度
+                'speed.fast': '快速响应',
+                'speed.standard': '标准响应',
+                'speed.slow': '缓慢响应',
+                
+                // 优先级
+                'priority.high': '高',
+                'priority.medium': '中',
+                'priority.low': '低'
+            },
+            en: {
+                // Menu
+                'menu.station': 'Station',
+                'menu.stationManagement': 'Station Management',
+                'menu.control': 'Control',
+                'menu.priceSettings': 'Price Settings',
+                'menu.dataAnalysis': 'Data Analysis',
+                'menu.alarmManagement': 'Alarm Management',
+                'menu.deviceManagement': 'Device Management',
+                'menu.userManagement': 'User Management',
+                'menu.reportCenter': 'Report Center',
+                'menu.systemSettings': 'System Settings',
+                'menu.brandControlSystem': 'Brand Control Systems',
+                'menu.sungrow': 'Sungrow',
+                'menu.huawei': 'Huawei Smart',
+                'menu.tesla': 'Tesla',
+                
+                // Page
+                'page.deviceControl': 'Device Control',
+                
+                // Work Modes
+                'control.workMode': 'Device Operation Mode',
+                'control.workModeDesc': 'Select energy storage system operation mode',
+                'control.selectCabinet': 'Select Storage Cabinet',
+                'mode.selfConsumption': 'Self-consumption',
+                'mode.selfConsumptionDesc': 'Prioritize self-generated power',
+                'mode.economic': 'Economic Mode',
+                'mode.economicDesc': 'Smart arbitrage optimization',
+                'mode.emergency': 'Emergency Mode',
+                'mode.emergencyDesc': 'Critical load protection',
+                'mode.demand': 'Demand Control',
+                'mode.demandDesc': 'Peak shaving optimization',
+                'mode.vpp': 'VPP Mode',
+                'mode.vppDesc': 'Virtual power plant aggregation',
+                
+                // Shared Parameters
+                'shared.commonSettings': 'Common Settings',
+                'shared.maxSoc': 'Maximum SOC Limit',
+                'shared.maxSocDesc': 'Maximum SOC limit for battery charging in all modes',
+                'shared.minSoc': 'Minimum SOC Limit',
+                'shared.minSocDesc': 'Minimum SOC limit for battery discharging in all modes',
+                'shared.maxChargePower': 'Maximum Charge Power',
+                'shared.maxChargePowerDesc': 'System maximum charge power limit',
+                'shared.maxDischargePower': 'Maximum Discharge Power',
+                'shared.maxDischargePowerDesc': 'System maximum discharge power limit',
+                'shared.batteryChargePower': 'Battery Charge Power',
+                'shared.batteryDischargePower': 'Battery Discharge Power',
+                'shared.batteryPowerDesc': 'Settable range 0-6000W',
+                'shared.tempProtection': 'Temperature Protection',
+                'shared.tempProtectionDesc': 'Enable battery temperature protection function',
+                'shared.enabled': 'Enabled',
+                'shared.disabled': 'Disabled',
+                'shared.commProtocol': 'Communication Protocol',
+                'shared.commProtocolDesc': 'Communication protocol with external systems',
+                'shared.modbus': 'Modbus TCP',
+                'shared.canbus': 'CAN Bus',
+                'shared.ethercat': 'EtherCAT',
+                
+                // Self-consumption Mode
+                'selfConsumption.coreSettings': 'Self-consumption Mode Settings',
+                'selfConsumption.chargeStopSoc': 'Charge Stop SOC',
+                'selfConsumption.chargeStopSocDesc': 'Battery stops charging when SOC reaches this level',
+                'selfConsumption.dischargeStopSoc': 'Discharge Stop SOC',
+                'selfConsumption.dischargeStopSocDesc': 'Prevent over-discharge (Higher setting allows more energy use during outage)',
+                'selfConsumption.excessPvExport': 'Excess PV Export',
+                'selfConsumption.exportEnabled': 'Allowed',
+                'selfConsumption.exportDisabled': 'Not Allowed',
+                'selfConsumption.excessPvExportDesc': 'Allow excess PV power to be exported to grid when load is satisfied and battery is full',
+                'selfConsumption.socRange': 'SOC Working Range',
+                'selfConsumption.socRangeInfo': 'Battery will operate within this SOC range for optimal performance and longevity',
+                'selfConsumption.exportSettings': 'Save Configuration',
+                
+                // Economic Mode
+                'economic.coreSettings': 'Economic Mode Settings',
+                'economic.timePeriodTitle': 'Electricity Tariff Time Periods',
+                'economic.timePeriodDesc': 'Set peak and valley electricity tariff periods. System will charge during valley periods and discharge during peak periods to maximize arbitrage profits',
+                'economic.peakPeriod': 'Peak Period Settings',
+                'economic.peakTime': 'Peak Period (High Tariff)',
+                'economic.peakPrice': 'Peak Tariff',
+                'economic.valleyPeriod': 'Valley Period Settings',
+                'economic.valleyTime': 'Valley Period (Low Tariff)',
+                'economic.valleyPrice': 'Valley Tariff',
+                'economic.normalPeriod': 'Normal Period Settings',
+                'economic.normalTime': 'Normal Period (Standard Tariff)',
+                'economic.normalPrice': 'Normal Tariff',
+                'economic.normalNote': 'Normal period covers all hours except peak and valley periods',
+                'economic.timeRange': 'Time Range',
+                'economic.addTimeSlot': '+ Add Time Slot',
+                'economic.timePreview': '24-Hour Period Preview',
+                'economic.peakLegend': 'Peak Period',
+                'economic.valleyLegend': 'Valley Period',
+                'economic.normalLegend': 'Normal Period',
+                'economic.exportSettings': 'Save Configuration',
+                'economic.normalPriority': 'Normal Period Priority Strategy',
+                'economic.normalPriorityDesc': 'Set the charge/discharge priority strategy for normal periods',
+                'economic.chargeFirst': 'Charge First',
+                'economic.exportFirst': 'Export First',
+                'economic.gridCharging': 'Allow Grid to Charge Battery',
+                'economic.gridChargingAllowed': 'Allowed',
+                'economic.gridChargingNotAllowed': 'Not Allowed',
+                
+                // Emergency Mode
+                'emergency.backupSocReserve': 'Backup SOC Reserve',
+                'emergency.backupSocReserveDesc': 'Reserve battery capacity for emergency power supply to ensure critical load safety',
+                'emergency.criticalLoadPower': 'Critical Load Power',
+                'emergency.criticalLoadPowerDesc': 'Total power of critical loads to be protected in emergency mode',
+                'emergency.backupDurationTarget': 'Backup Duration Target',
+                'emergency.backupDurationTargetDesc': 'Expected emergency power supply duration',
+                'emergency.gridFailureDetection': 'Grid Failure Detection',
+                'emergency.detectionEnabled': 'Enabled',
+                'emergency.detectionDisabled': 'Disabled',
+                'emergency.gridFailureDetectionDesc': 'Automatically detect grid failures and switch to emergency power mode',
+                'emergency.switchResponseTime': 'Switch Response Time',
+                'emergency.switchResponseTimeDesc': 'Time from grid failure to emergency power supply',
+                'emergency.ultraFast': 'Ultra Fast (≤10ms)',
+                'emergency.fast': 'Fast (≤20ms)',
+                'emergency.standard': 'Standard (≤50ms)',
+                'emergency.autoChargeStrategy': 'Auto Charge Strategy',
+                'emergency.autoChargeStrategyDesc': 'Strategy for maintaining emergency backup SOC',
+                'emergency.alwaysCharge': 'Always Maintain',
+                'emergency.weatherForecast': 'Weather Alert',
+                'emergency.scheduled': 'Scheduled Charge',
+                'emergency.manual': 'Manual Control',
+                'emergency.loadPriorityManagement': 'Load Priority Management',
+                'emergency.loadPriorityDesc': 'Automatically manage load power priority based on battery capacity',
+                'emergency.testMode': 'Test Mode',
+                
+                // Demand Control Mode
+                'demand.coreSettings': 'Demand Control Settings',
+                'demand.contractCapacity': 'Contract Capacity',
+                'demand.contractCapacityDesc': 'Maximum demand contract capacity with the grid',
+                'demand.targetDemand': 'Target Demand',
+                'demand.targetDemandDesc': 'Target upper limit for demand control, recommended at 90% of contract capacity',
+                'demand.controlAccuracy': 'Control Accuracy',
+                'demand.controlAccuracyDesc': 'Demand control accuracy requirement, affects battery action frequency',
+                'demand.highAccuracy': 'High Accuracy (±2%)',
+                'demand.mediumAccuracy': 'Standard (±5%)',
+                'demand.lowAccuracy': 'Relaxed (±10%)',
+                'demand.demandPeriod': 'Demand Period',
+                'demand.demandPeriodDesc': 'Grid billing demand calculation period',
+                'demand.period15min': '15 minutes',
+                'demand.period30min': '30 minutes',
+                'demand.period60min': '60 minutes',
+                'demand.predictionAlgorithm': 'Load Prediction Algorithm',
+                'demand.predictionAlgorithmDesc': 'Algorithm for predicting future load trends',
+                'demand.aiPrediction': 'AI Intelligent Prediction',
+                'demand.historicalAverage': 'Historical Average',
+                'demand.realtimeTracking': 'Real-time Tracking',
+                'demand.responseSpeed': 'Response Speed',
+                'demand.responseSpeedDesc': 'Control strategy response characteristics, affects battery life',
+                'demand.aggressive': 'Aggressive (Fast Response)',
+                'demand.balanced': 'Balanced',
+                'demand.conservative': 'Conservative (Smooth Control)',
+                'demand.overLimitHandling': 'Over-limit Handling Strategy',
+                'demand.overLimitHandlingDesc': 'Actions when predicted demand will exceed target value',
+                'demand.emergencyDischarge': 'Emergency Discharge (Immediate max power discharge)',
+                'demand.loadShedding': 'Load Shedding (Auto-cut non-critical loads)',
+                'demand.alertNotification': 'Alert Notification (Send over-limit warning)',
+                'demand.realtimeMonitor': 'Real-time Demand Monitor',
+                'demand.exportSettings': 'Export Configuration',
+                
+                'selfConsumption.basicSettings': 'Basic Settings',
+                'selfConsumption.pvPriority': 'PV Priority',
+                'selfConsumption.pvFirst': 'PV First',
+                'selfConsumption.batteryFirst': 'Battery First',
+                'selfConsumption.balanced': 'Balanced Mode',
+                'selfConsumption.selfConsumptionRatio': 'Self-consumption Ratio Target',
+                'selfConsumption.gridImportLimit': 'Grid Import Limit',
+                'selfConsumption.excessPvMode': 'Excess PV Handling',
+                'selfConsumption.storageFirst': 'Storage First',
+                'selfConsumption.sellFirst': 'Grid Export First',
+                'selfConsumption.noExport': 'No Grid Export',
+                'selfConsumption.socManagement': 'SOC Management',
+                'selfConsumption.chargeSocTarget': 'Charge Target SOC',
+                'selfConsumption.dischargeSocMin': 'Minimum Discharge SOC',
+                'selfConsumption.socSafetyMargin': 'SOC Safety Margin',
+                'selfConsumption.adaptiveSoc': 'Adaptive SOC Management',
+                'selfConsumption.powerControl': 'Power Control',
+                'selfConsumption.maxChargePower': 'Max Charge Power',
+                'selfConsumption.maxDischargePower': 'Max Discharge Power',
+                'selfConsumption.powerRampRate': 'Power Ramp Rate',
+                'selfConsumption.loadFollowing': 'Load Following',
+                'selfConsumption.timeStrategy': 'Time Strategy',
+                'selfConsumption.controlCycle': 'Control Cycle',
+                'selfConsumption.forecastWindow': 'Forecast Window',
+                'selfConsumption.weatherForecast': 'Weather Forecast Integration',
+                'selfConsumption.seasonalAdjust': 'Seasonal Adjustment',
+                'selfConsumption.optimization': 'Optimization Targets',
+                'selfConsumption.primaryObjective': 'Primary Objective',
+                'selfConsumption.maxSelfConsumption': 'Maximize Self-consumption',
+                'selfConsumption.minGridImport': 'Minimize Grid Import',
+                'selfConsumption.batteryHealth': 'Battery Health Priority',
+                'selfConsumption.costOptimal': 'Cost Optimal',
+                'selfConsumption.learningAlgorithm': 'Learning Algorithm',
+                'selfConsumption.adaptiveLearning': 'Adaptive Learning',
+                'selfConsumption.performanceTracking': 'Performance Tracking',
+                'selfConsumption.exportConfig': 'Export Configuration',
+                
+                // Status
+                'status.systemStatus': 'System Status',
+                'status.running': 'Running',
+                'status.currentPower': 'Current Power',
+                'status.operationMode': 'Operation Mode',
+                
+                // Control
+                'control.basicControl': 'Basic Control',
+                'control.enabled': 'Enabled',
+                'control.operationMode': 'Operation Mode',
+                'control.targetPower': 'Target Power',
+                'control.chargeDischarge': 'Charge/Discharge Control',
+                'control.charging': 'Charging',
+                'control.discharging': 'Discharging',
+                'control.standby': 'Standby',
+                'control.systemStartStop': 'System Start/Stop',
+                'control.applySettings': 'Apply Settings',
+                'control.reset': 'Reset',
+                
+                // Advanced Parameters
+                'control.advancedParams': 'Advanced Parameters',
+                'control.maxChargePower': 'Max Charge Power',
+                'control.maxDischargePower': 'Max Discharge Power',
+                'control.socUpperLimit': 'SOC Upper Limit',
+                'control.socLowerLimit': 'SOC Lower Limit',
+                'control.tempProtection': 'Temperature Protection',
+                'control.overloadProtection': 'Overload Protection',
+                
+                // Schedule Strategy
+                'control.scheduleStrategy': 'Schedule Strategy',
+                'control.scheduleMode': 'Schedule Mode',
+                'control.responseSpeed': 'Response Speed',
+                'control.priority': 'Priority',
+                'control.autoOptimize': 'Auto Optimize',
+                
+                // Operation Modes
+                'mode.autoSchedule': 'Auto Schedule',
+                'mode.manualControl': 'Manual Control',
+                'mode.remoteSchedule': 'Remote Schedule',
+                'mode.localControl': 'Local Control',
+                
+                // Schedule Modes
+                'schedule.peakValley': 'Peak-Valley Arbitrage',
+                'schedule.demandResponse': 'Demand Response',
+                'schedule.ancillaryService': 'Ancillary Service',
+                'schedule.custom': 'Custom Strategy',
+                
+                // Speed
+                'speed.fast': 'Fast Response',
+                'speed.standard': 'Standard Response',
+                'speed.slow': 'Slow Response',
+                
+                // Priority
+                'priority.high': 'High',
+                'priority.medium': 'Medium',
+                'priority.low': 'Low'
+            }
+        };
+
+        // 更新语言函数
+        function updateLanguage() {
+            const lang = localStorage.getItem('language') || 'zh';
+            const elements = document.querySelectorAll('[data-lang]');
+            
+            // 更新HTML lang属性
+            document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+            document.body.setAttribute('lang', lang);
+            
+            // 更新页面标题
+            document.title = lang === 'zh' ? '控制 - 工商储能管理系统' : 'Control - C&I Energy Storage System';
+            
+            elements.forEach(element => {
+                const key = element.getAttribute('data-lang');
+                if (translations[lang] && translations[lang][key]) {
+                    if (element.tagName === 'SELECT') {
+                        // 对于下拉框，只更新当前选中的显示
+                        const selectedIndex = element.selectedIndex;
+                        element.querySelectorAll('option').forEach((option, index) => {
+                            const optionKey = option.getAttribute('data-lang');
+                            if (optionKey && translations[lang][optionKey]) {
+                                option.textContent = translations[lang][optionKey];
+                            }
+                        });
+                        element.selectedIndex = selectedIndex;
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+        }
+
+        // 页面加载时更新语言
+        document.addEventListener('DOMContentLoaded', updateLanguage);
+        
+        // 修改语言切换按钮的行为
+        const originalToggleLanguage = window.toggleLanguage;
+        window.toggleLanguage = function() {
+            originalToggleLanguage();
+            updateLanguage();
+        };
+        
+        // 工作模式选择
+        let currentWorkMode = 'self-consumption';
+        let vppModeEnabled = false; // VPP模式是否由上层启用
+        let editModes = {
+            'self-consumption': false,
+            'economic': false,
+            'emergency': false
+        };
+        let sharedEditMode = false;
+        let hasUnsavedChanges = false;
+        let hasUnsavedSharedChanges = false;
+        
+        function selectWorkMode(element, mode) {
+            // 检查是否是VPP模式
+            if (mode === 'vpp' && !vppModeEnabled) {
+                alert('VPP模式需要由上层系统开启');
+                return;
+            }
+            
+            // 如果当前是VPP模式且在调度中，不允许切换到其他模式
+            if (currentWorkMode === 'vpp' && vppModeEnabled) {
+                alert('VPP模式调度中，无法切换到其他模式');
+                return;
+            }
+            
+            // 移除所有卡片的激活状态
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // 激活选中的卡片
+            element.classList.add('active');
+            
+            currentWorkMode = mode;
+            console.log('切换到工作模式:', mode);
+            
+            // 切换到对应的tab
+            if (mode !== 'vpp') {
+                switchModeTab(mode);
+            }
+        }
+        
+        // 模拟上层系统启用VPP模式
+        function enableVPPMode(enabled) {
+            vppModeEnabled = enabled;
+            const vppCard = document.getElementById('vpp-mode-card');
+            
+            if (enabled) {
+                vppCard.classList.remove('vpp-disabled');
+                vppCard.classList.add('vpp-active');
+                vppCard.querySelector('.mode-desc').textContent = '调度中';
+                
+                // 自动切换到VPP模式
+                selectWorkMode(vppCard, 'vpp');
+            } else {
+                vppCard.classList.add('vpp-disabled');
+                vppCard.classList.remove('vpp-active');
+                const lang = localStorage.getItem('language') || 'zh';
+                vppCard.querySelector('.mode-desc').textContent = translations[lang]['mode.vppDesc'] || '虚拟电厂聚合';
+                
+                // 如果当前是VPP模式，切换到自发自用模式
+                if (currentWorkMode === 'vpp') {
+                    const firstCard = document.querySelector('.mode-card:first-child');
+                    selectWorkMode(firstCard, 'self-consumption');
+                }
+            }
+        }
+        
+        function scrollToModeSettings(mode) {
+            // 滚动到对应模式的设置区域
+            const settingsId = mode + '-settings';
+            const settingsElement = document.getElementById(settingsId);
+            if (settingsElement) {
+                settingsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // 添加高亮效果
+                settingsElement.style.transition = 'all 0.3s ease';
+                settingsElement.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.3)';
+                settingsElement.style.borderRadius = '8px';
+                
+                // 3秒后移除高亮效果
+                setTimeout(() => {
+                    settingsElement.style.boxShadow = 'none';
+                }, 3000);
+            }
+        }
+        
+        function updateUIForMode(mode) {
+            // 根据不同的工作模式，可以更新页面上的其他元素
+            const modeDescriptions = {
+                'self-consumption': '系统将优先使用自发电力，减少电网用电，实现能源自给自足',
+                'economic': '系统将根据电价和市场信号进行智能充放电，实现经济效益最大化',
+                'emergency': '系统将保持高电量状态，为关键负荷提供可靠的应急供电保障',
+                'vpp': '系统将参与虚拟电厂聚合调度，与其他分布式能源协同优化运行'
+            };
+            
+            // 可以更新状态显示等
+            console.log('当前模式说明:', modeDescriptions[mode]);
+        }
+        
+        // 自发自用模式专用功能
+        function updateSocRange() {
+            const chargeStopInput = document.getElementById('charge-stop-soc');
+            const dischargeStopInput = document.getElementById('discharge-stop-soc');
+            
+            if (!chargeStopInput || !dischargeStopInput) return;
+            
+            const chargeStopSoc = chargeStopInput.value;
+            const dischargeStopSoc = dischargeStopInput.value;
+            
+            const socRange = document.getElementById('soc-working-range');
+            const socMinLabel = document.getElementById('soc-min-label');
+            const socMaxLabel = document.getElementById('soc-max-label');
+            
+            if (socRange && socMinLabel && socMaxLabel) {
+                // 计算SOC范围的位置和宽度
+                const minSoc = parseInt(dischargeStopSoc);
+                const maxSoc = parseInt(chargeStopSoc);
+                const rangeWidth = maxSoc - minSoc;
+                
+                // 更新SOC范围条的样式
+                socRange.style.left = `${minSoc}%`;
+                socRange.style.width = `${rangeWidth}%`;
+                
+                // 更新标签
+                socMinLabel.textContent = `${minSoc}%`;
+                socMaxLabel.textContent = `${maxSoc}%`;
+                
+                // 验证SOC范围的合理性
+                if (maxSoc <= minSoc) {
+                    socRange.style.background = '#ef4444';
+                    console.warn('充电停止SOC必须大于放电停止SOC');
+                } else {
+                    socRange.style.background = 'linear-gradient(90deg, #22c55e 0%, #3b82f6 50%, #f59e0b 100%)';
+                }
+            }
+        }
+        
+        function updateExportStatus() {
+            const exportCheckbox = document.getElementById('excess-pv-export-shared');
+            if (!exportCheckbox) return;
+            
+            const statusText = exportCheckbox.closest('.control-item').querySelector('.control-status');
+            
+            if (statusText) {
+                const lang = localStorage.getItem('language') || 'zh';
+                if (exportCheckbox.checked) {
+                    statusText.textContent = translations[lang]['selfConsumption.exportEnabled'] || '允许';
+                    statusText.style.color = '#3b82f6';
+                } else {
+                    statusText.textContent = translations[lang]['selfConsumption.exportDisabled'] || '不允许';
+                    statusText.style.color = '#94a3b8';
+                }
+            }
+        }
+        
+        // 更新滑块值显示和填充效果
+        function updateSliderValue(slider, valueId) {
+            const valueElement = document.getElementById(valueId);
+            valueElement.value = slider.value;
+            updateSliderFill(slider);
+        }
+        
+        // 更新滑块填充效果
+        function updateSliderFill(slider) {
+            const value = parseInt(slider.value);
+            const min = parseInt(slider.min);
+            const max = parseInt(slider.max);
+            const percentage = ((value - min) / (max - min)) * 100;
+            
+            if (slider.id === 'charge-stop-soc-slider') {
+                // 充电滑块：0到滑块位置填充蓝色
+                slider.style.setProperty('--fill-color', '#3b82f6');
+                slider.style.setProperty('--fill-width', percentage + '%');
+            } else if (slider.id === 'discharge-stop-soc-slider') {
+                // 放电滑块：从滑块位置到100%填充蓝色
+                slider.style.setProperty('--fill-color', '#3b82f6');
+                slider.style.setProperty('--fill-width', (100 - percentage) + '%');
+                // 调整填充位置从右侧开始
+                slider.style.setProperty('--fill-position', percentage + '%');
+            }
+        }
+        
+        // 从输入框更新滑块
+        function updateSliderFromInput(input, sliderId) {
+            const slider = document.getElementById(sliderId);
+            const value = parseInt(input.value);
+            const min = parseInt(input.min);
+            const max = parseInt(input.max);
+            
+            // 验证输入值范围
+            if (value >= min && value <= max) {
+                slider.value = value;
+                updateSliderFill(slider);
+            } else {
+                // 如果超出范围，恢复到滑块当前值
+                input.value = slider.value;
+            }
+        }
+        
+        function applySettings() {
+            const chargeStopSoc = document.getElementById('charge-stop-soc-slider').value;
+            const dischargeStopSoc = document.getElementById('discharge-stop-soc-slider').value;
+            const excessPvExport = document.getElementById('excess-pv-export-shared').checked;
+            
+            // 验证参数
+            if (parseInt(chargeStopSoc) <= parseInt(dischargeStopSoc)) {
+                alert('充电停止SOC必须大于放电停止SOC');
+                return;
+            }
+            
+            const settings = {
+                mode: 'self-consumption',
+                chargeStopSoc: parseInt(chargeStopSoc),
+                dischargeStopSoc: parseInt(dischargeStopSoc),
+                excessPvExport: excessPvExport,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('应用自发自用模式设置:', settings);
+            
+            // 这里可以发送到后端API
+            // fetch('/api/control/settings', { method: 'POST', body: JSON.stringify(settings) });
+            
+            alert('设置已应用');
+        }
+        
+        function resetSettings() {
+            document.getElementById('charge-stop-soc').value = 95;
+            document.getElementById('discharge-stop-soc').value = 20;
+            document.getElementById('excess-pv-export').checked = true;
+            
+            updateSocRange();
+            updateExportStatus();
+            
+            console.log('设置已重置为默认值');
+        }
+        
+        function exportSettings() {
+            const settings = {
+                mode: 'self-consumption',
+                chargeStopSoc: document.getElementById('charge-stop-soc').value,
+                dischargeStopSoc: document.getElementById('discharge-stop-soc').value,
+                excessPvExport: document.getElementById('excess-pv-export').checked,
+                exportTime: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(settings, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = 'self-consumption-settings.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            console.log('配置已导出');
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 绑定事件监听器
+            const chargeStopInput = document.getElementById('charge-stop-soc');
+            const dischargeStopInput = document.getElementById('discharge-stop-soc');
+            const exportCheckbox = document.getElementById('excess-pv-export-shared');
+            
+            if (chargeStopInput) {
+                chargeStopInput.addEventListener('input', updateSocRange);
+            }
+            if (dischargeStopInput) {
+                dischargeStopInput.addEventListener('input', updateSocRange);
+            }
+            if (exportCheckbox) {
+                exportCheckbox.addEventListener('change', updateExportStatus);
+            }
+            
+            // 初始化显示
+            updateSocRange();
+            updateExportStatus();
+            updateTimelinePreview();
+            
+            // 经济模式的初始化将在切换到该tab时进行
+            
+            // 绑定应急模式事件
+            const gridDetectionCheckbox = document.getElementById('grid-failure-detection');
+            if (gridDetectionCheckbox) {
+                gridDetectionCheckbox.addEventListener('change', updateGridDetectionStatus);
+                updateGridDetectionStatus(); // 初始化状态
+            }
+        });
+        
+        // 经济模式专用功能
+        let currentPeriodType = null; // 当前选中的时段类型
+        let hourData = new Array(24).fill(''); // 存储每个小时的时段类型
+        let isDragging = false;
+        let dragStartHour = null;
+        let selectedPeriodType = null;
+        
+        // 时段类型标签
+        const periodTypeLabels = {
+            'peak': '峰',
+            'valley': '谷',
+            'normal': '平'
+        };
+        
+        // 初始化24小时选择器
+        function initHourSelector() {
+            const hourSelector = document.getElementById('hour-selector');
+            if (!hourSelector) return;
+            
+            // 清空现有内容，避免重复
+            hourSelector.innerHTML = '';
+            
+            // 时间刻度已移除
+            
+            // 添加第一行：时段标签
+            const label = document.createElement('div');
+            label.className = 'hour-label';
+            label.textContent = '时段';
+            hourSelector.appendChild(label);
+            
+            // 生成24个小时格子
+            for (let hour = 0; hour < 24; hour++) {
+                const cell = document.createElement('div');
+                cell.className = 'hour-cell';
+                cell.dataset.hour = hour;
+                
+                // 添加小时数字
+                const hourNumber = document.createElement('div');
+                hourNumber.className = 'hour-number';
+                hourNumber.textContent = hour.toString();
+                cell.appendChild(hourNumber);
+                
+                // 添加时段文字（初始为空）
+                const periodText = document.createElement('div');
+                periodText.className = 'period-text';
+                cell.appendChild(periodText);
+                
+                hourSelector.appendChild(cell);
+                
+                // 鼠标事件处理
+                cell.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    isDragging = true;
+                    dragStartHour = hour;
+                    selectedPeriodType = currentPeriodType;
+                    
+                    // 应用当前时段类型到起始格子
+                    setHourPeriod(hour, currentPeriodType);
+                });
+                
+                cell.addEventListener('mouseenter', () => {
+                    if (isDragging && dragStartHour !== null) {
+                        // 计算拖动范围
+                        const start = Math.min(dragStartHour, hour);
+                        const end = Math.max(dragStartHour, hour);
+                        
+                        // 清除所有临时高亮
+                        document.querySelectorAll('.hour-cell').forEach(c => {
+                            c.classList.remove('temp-highlight');
+                        });
+                        
+                        // 应用到拖动范围内的所有格子
+                        for (let h = start; h <= end; h++) {
+                            setHourPeriod(h, selectedPeriodType);
+                        }
+                    }
+                });
+                
+                cell.addEventListener('click', (e) => {
+                    if (!isDragging) {
+                        // 单击切换
+                        toggleHour(hour);
+                    }
+                });
+            }
+            
+            // 添加小时标签行
+            const hourLabelsContainer = document.querySelector('#economic-panel .hour-labels');
+            if (hourLabelsContainer) {
+                hourLabelsContainer.innerHTML = '<div></div>'; // 空占位
+                for (let hour = 0; hour < 24; hour++) {
+                    const label = document.createElement('div');
+                    label.textContent = `${hour}:00`;
+                    label.style.fontSize = '12px';
+                    label.style.color = '#666';
+                    label.style.textAlign = 'center';
+                    hourLabelsContainer.appendChild(label);
+                }
+            }
+            
+            // 全局鼠标事件
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                dragStartHour = null;
+                selectedPeriodType = null;
+            });
+            
+            // 防止文本选择
+            hourSelector.addEventListener('selectstart', (e) => {
+                e.preventDefault();
+            });
+        }
+        
+        // 设置小时的时段类型
+        function setHourPeriod(hour, periodType) {
+            const cell = document.querySelector(`[data-hour="${hour}"]`);
+            if (!cell) return;
+            
+            hourData[hour] = periodType;
+            
+            // 清除原有类并应用新类
+            cell.classList.remove('peak', 'valley', 'normal');
+            if (periodType) {
+                cell.classList.add(periodType);
+                cell.querySelector('.period-text').textContent = periodTypeLabels[periodType] || '';
+            } else {
+                cell.querySelector('.period-text').textContent = '';
+            }
+            
+            updatePeriodStatistics();
+        }
+        
+        // 选择时段类型
+        function selectPeriodType(type) {
+            currentPeriodType = type;
+            
+            // 更新图例状态
+            document.querySelectorAll('.legend-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const activeItem = document.querySelector(`.legend-item.${type}-legend`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+        }
+        
+        // 切换小时的时段类型（单击）
+        function toggleHour(hour) {
+            const cell = document.querySelector(`[data-hour="${hour}"]`);
+            if (!cell) return;
+            
+            // 如果点击的是相同类型，则清除
+            if (hourData[hour] === currentPeriodType) {
+                hourData[hour] = '';
+                cell.className = 'hour-cell';
+                cell.querySelector('.period-text').textContent = '';
+            } else {
+                // 设置新的时段类型
+                setHourPeriod(hour, currentPeriodType);
+            }
+        }
+        
+        // 清除所有时段
+        function clearAllHours() {
+            hourData.fill('');
+            document.querySelectorAll('.hour-cell').forEach(cell => {
+                cell.className = 'hour-cell';
+                const periodText = cell.querySelector('.period-text');
+                if (periodText) {
+                    periodText.textContent = '';
+                }
+            });
+            updatePeriodStatistics();
+        }
+        
+        // 加载预设配置
+        function loadPreset(presetType) {
+            clearAllHours();
+            
+            if (presetType === 'commercial') {
+                // 工商业预设：峰时段 8-11, 18-22；谷时段 23-7
+                for (let h = 8; h <= 11; h++) hourData[h] = 'peak';
+                for (let h = 18; h <= 22; h++) hourData[h] = 'peak';
+                for (let h = 23; h <= 23; h++) hourData[h] = 'valley';
+                for (let h = 0; h <= 7; h++) hourData[h] = 'valley';
+                // 其余为平时段
+                for (let h = 0; h < 24; h++) {
+                    if (!hourData[h]) hourData[h] = 'normal';
+                }
+            } else if (presetType === 'industrial') {
+                // 工业预设：峰时段 9-12, 17-21；谷时段 0-6
+                for (let h = 9; h <= 12; h++) hourData[h] = 'peak';
+                for (let h = 17; h <= 21; h++) hourData[h] = 'peak';
+                for (let h = 0; h <= 6; h++) hourData[h] = 'valley';
+                // 其余为平时段
+                for (let h = 0; h < 24; h++) {
+                    if (!hourData[h]) hourData[h] = 'normal';
+                }
+            }
+            
+            // 更新显示
+            hourData.forEach((type, hour) => {
+                const cell = document.querySelector(`[data-hour="${hour}"]`);
+                if (cell && type) {
+                    cell.className = `hour-cell ${type}`;
+                    const periodTexts = {
+                        'peak': '峰',
+                        'valley': '谷',
+                        'normal': '平'
+                    };
+                    cell.querySelector('.period-text').textContent = periodTexts[type] || '';
+                }
+            });
+            
+            updatePeriodStatistics();
+        }
+        
+        // 更新时段统计
+        function updatePeriodStatistics() {
+            const stats = {
+                peak: 0,
+                valley: 0,
+                normal: 0
+            };
+            
+            hourData.forEach(type => {
+                if (type && stats.hasOwnProperty(type)) {
+                    stats[type]++;
+                }
+            });
+            
+            // 统计已更新，可用于其他用途
+            console.log('时段统计:', stats);
+        }
+        
+        let timeSlotCounter = { peak: 2, valley: 1 };
+        
+        function addTimeSlot(periodType) {
+            const container = document.getElementById(`${periodType}-time-slots`);
+            const slotNumber = ++timeSlotCounter[periodType];
+            
+            const timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.innerHTML = `
+                <label data-lang="economic.timeRange">时间段${slotNumber}:</label>
+                <input type="time" class="time-input" value="00:00" id="${periodType}-start-${slotNumber}">
+                <span>-</span>
+                <input type="time" class="time-input" value="00:00" id="${periodType}-end-${slotNumber}">
+                <button class="btn-remove" onclick="removeTimeSlot(this)" title="删除时段">×</button>
+            `;
+            
+            container.appendChild(timeSlot);
+            
+            // 绑定事件监听器
+            const startInput = timeSlot.querySelector(`#${periodType}-start-${slotNumber}`);
+            const endInput = timeSlot.querySelector(`#${periodType}-end-${slotNumber}`);
+            startInput.addEventListener('change', updateTimelinePreview);
+            endInput.addEventListener('change', updateTimelinePreview);
+            
+            updateTimelinePreview();
+        }
+        
+        function removeTimeSlot(button) {
+            const timeSlot = button.parentElement;
+            const container = timeSlot.parentElement;
+            
+            // 检查是否至少保留一个时段（对于峰谷时段）
+            const remainingSlots = container.querySelectorAll('.time-slot').length;
+            if (remainingSlots <= 1 && (container.id === 'peak-time-slots' || container.id === 'valley-time-slots')) {
+                alert('至少需要保留一个时段');
+                return;
+            }
+            
+            timeSlot.remove();
+            updateTimelinePreview();
+        }
+        
+        function updateTimelinePreview() {
+            const timeline = document.getElementById('time-timeline');
+            if (!timeline) return;
+            
+            timeline.innerHTML = '';
+            
+            // 创建24小时时间轴
+            for (let hour = 0; hour < 24; hour++) {
+                const hourElement = document.createElement('div');
+                hourElement.className = 'timeline-hour';
+                hourElement.style.flex = '1';
+                hourElement.textContent = hour.toString().padStart(2, '0');
+                
+                // 判断时段类型
+                const periodType = getHourPeriodType(hour);
+                hourElement.classList.add(periodType);
+                
+                timeline.appendChild(hourElement);
+            }
+        }
+        
+        function getHourPeriodType(hour) {
+            // 检查峰时段
+            if (isHourInPeriod(hour, 'peak')) {
+                return 'peak';
+            }
+            
+            // 检查谷时段
+            if (isHourInPeriod(hour, 'valley')) {
+                return 'valley';
+            }
+            
+            // 默认为平时段
+            return 'normal';
+        }
+        
+        function isHourInPeriod(hour, periodType) {
+            const slots = document.querySelectorAll(`#${periodType}-time-slots .time-slot`);
+            
+            for (const slot of slots) {
+                const startInput = slot.querySelector('.time-input:first-of-type');
+                const endInput = slot.querySelector('.time-input:last-of-type');
+                
+                if (!startInput || !endInput || !startInput.value || !endInput.value) continue;
+                
+                const startHour = parseInt(startInput.value.split(':')[0]);
+                const endHour = parseInt(endInput.value.split(':')[0]);
+                
+                // 处理跨日期的时段（如23:00-07:00）
+                if (startHour > endHour) {
+                    if (hour >= startHour || hour < endHour) {
+                        return true;
+                    }
+                } else {
+                    if (hour >= startHour && hour < endHour) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+        
+        function applyEconomicSettings() {
+            const settings = {
+                mode: 'economic',
+                hourlyPeriods: hourData,
+                timestamp: new Date().toISOString()
+            };
+            
+            // 检查是否设置了时段
+            const hasAnyPeriod = hourData.some(type => type !== '');
+            if (!hasAnyPeriod) {
+                alert('请至少设置一个时段');
+                return;
+            }
+            
+            console.log('应用经济模式设置:', settings);
+            
+            // 这里可以发送到后端API
+            // fetch('/api/control/economic-settings', { method: 'POST', body: JSON.stringify(settings) });
+            
+            alert('经济模式设置已应用');
+        }
+        
+        function getTimePeriods(periodType) {
+            const slots = document.querySelectorAll(`#${periodType}-time-slots .time-slot`);
+            const periods = [];
+            
+            slots.forEach(slot => {
+                const startInput = slot.querySelector('.time-input:first-of-type');
+                const endInput = slot.querySelector('.time-input:last-of-type');
+                
+                if (startInput && endInput && startInput.value && endInput.value) {
+                    periods.push({
+                        start: startInput.value,
+                        end: endInput.value
+                    });
+                }
+            });
+            
+            return periods;
+        }
+        
+        function hasTimeOverlap(periods1, periods2) {
+            for (const p1 of periods1) {
+                for (const p2 of periods2) {
+                    if (isTimeOverlap(p1, p2)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        
+        function isTimeOverlap(period1, period2) {
+            const start1 = timeToMinutes(period1.start);
+            const end1 = timeToMinutes(period1.end);
+            const start2 = timeToMinutes(period2.start);
+            const end2 = timeToMinutes(period2.end);
+            
+            // 处理跨日的情况
+            const end1Adjusted = end1 < start1 ? end1 + 24 * 60 : end1;
+            const end2Adjusted = end2 < start2 ? end2 + 24 * 60 : end2;
+            
+            return !(end1Adjusted <= start2 || end2Adjusted <= start1);
+        }
+        
+        function timeToMinutes(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+        
+        function resetEconomicSettings() {
+            // 重置时段为默认工商业配置
+            loadPreset('commercial');
+            
+            console.log('经济模式设置已重置为默认值');
+        }
+        
+        function resetTimePeriods(periodType, periods) {
+            const container = document.getElementById(`${periodType}-time-slots`);
+            container.innerHTML = '';
+            
+            periods.forEach((period, index) => {
+                const slotNumber = index + 1;
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                timeSlot.innerHTML = `
+                    <label data-lang="economic.timeRange">时间段${slotNumber}:</label>
+                    <input type="time" class="time-input" value="${period.start}" id="${periodType}-start-${slotNumber}">
+                    <span>-</span>
+                    <input type="time" class="time-input" value="${period.end}" id="${periodType}-end-${slotNumber}">
+                    <button class="btn-remove" onclick="removeTimeSlot(this)" title="删除时段">×</button>
+                `;
+                container.appendChild(timeSlot);
+                
+                // 绑定事件监听器
+                const startInput = timeSlot.querySelector(`#${periodType}-start-${slotNumber}`);
+                const endInput = timeSlot.querySelector(`#${periodType}-end-${slotNumber}`);
+                startInput.addEventListener('change', updateTimelinePreview);
+                endInput.addEventListener('change', updateTimelinePreview);
+            });
+            
+            timeSlotCounter[periodType] = periods.length;
+        }
+        
+        function exportEconomicSettings() {
+            const settings = {
+                mode: 'economic',
+                hourlyPeriods: hourData,
+                exportTime: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(settings, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = 'economic-mode-settings.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            console.log('经济模式配置已导出');
+        }
+        
+        // 应急模式功能
+        function updateGridDetectionStatus() {
+            const checkbox = document.getElementById('grid-failure-detection');
+            if (!checkbox) return;
+            
+            const statusText = checkbox.closest('.control-item').querySelector('.control-status');
+            
+            if (statusText) {
+                const lang = localStorage.getItem('language') || 'zh';
+                if (checkbox.checked) {
+                    statusText.textContent = translations[lang]['emergency.detectionEnabled'] || '已启用';
+                    statusText.style.color = '#22c55e';
+                } else {
+                    statusText.textContent = translations[lang]['emergency.detectionDisabled'] || '已禁用';
+                    statusText.style.color = '#ef4444';
+                }
+            }
+        }
+        
+        function applyEmergencySettings() {
+            const settings = {
+                mode: 'emergency',
+                backupSocReserve: document.getElementById('backup-soc-reserve').value,
+                criticalLoadPower: document.getElementById('critical-load-power').value,
+                backupDurationTarget: document.getElementById('backup-duration-target').value,
+                gridFailureDetection: document.getElementById('grid-failure-detection').checked,
+                switchResponseTime: document.getElementById('switch-response-time').value,
+                autoChargeStrategy: document.getElementById('auto-charge-strategy').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('应用应急模式设置:', settings);
+            
+            // 验证备电容量是否足够
+            const socReserve = parseInt(settings.backupSocReserve);
+            const loadPower = parseInt(settings.criticalLoadPower);
+            const duration = parseInt(settings.backupDurationTarget);
+            
+            // 假设电池容量为 100kWh (实际应从系统配置获取)
+            const batteryCapacity = 100000; // Wh
+            const requiredEnergy = loadPower * duration; // Wh
+            const availableEnergy = batteryCapacity * (socReserve / 100); // Wh
+            
+            if (requiredEnergy > availableEnergy) {
+                const maxDuration = Math.floor(availableEnergy / loadPower);
+                alert(`警告：当前备电SOC (${socReserve}%) 仅能支撑 ${maxDuration} 小时，低于目标时长 ${duration} 小时`);
+            }
+            
+            alert('应急模式设置已应用');
+        }
+        
+        function resetEmergencySettings() {
+            document.getElementById('backup-soc-reserve').value = 80;
+            document.getElementById('critical-load-power').value = 5000;
+            document.getElementById('backup-duration-target').value = 4;
+            document.getElementById('grid-failure-detection').checked = true;
+            document.getElementById('switch-response-time').value = '20';
+            document.getElementById('auto-charge-strategy').value = 'forecast';
+            
+            updateGridDetectionStatus();
+            
+            console.log('应急模式设置已重置为默认值');
+        }
+        
+        function testEmergencyMode() {
+            if (confirm('确定要进入应急模式测试吗？系统将模拟电网故障并切换至应急供电模式。')) {
+                console.log('开始应急模式测试...');
+                
+                // 模拟测试过程
+                alert('应急模式测试开始\n\n1. 模拟电网故障...\n2. 切换至应急供电 (20ms)\n3. 关键负荷供电正常\n4. 预计可持续 4.2 小时\n\n测试完成！');
+            }
+        }
+        
+        // 需量控制模式功能
+        function applyDemandSettings() {
+            const settings = {
+                mode: 'demand',
+                contractCapacity: document.getElementById('contract-capacity').value,
+                targetDemand: document.getElementById('target-demand').value,
+                demandPeriod: document.getElementById('demand-period').value,
+                predictionAlgorithm: document.getElementById('prediction-algorithm').value,
+                emergencyDischarge: document.getElementById('emergency-discharge').checked,
+                loadShedding: document.getElementById('load-shedding').checked,
+                alertNotification: document.getElementById('alert-notification').checked,
+                timestamp: new Date().toISOString()
+            };
+            
+            // 验证目标需量是否合理
+            const contractCap = parseInt(settings.contractCapacity);
+            const targetDemand = parseInt(settings.targetDemand);
+            
+            if (targetDemand > contractCap) {
+                alert('警告：需量目标值不能超过合同容量！');
+                return;
+            }
+            
+            if (targetDemand > contractCap * 0.95) {
+                alert('提示：需量目标值接近合同容量，可能存在超限风险，建议设置为合同容量的90%以下');
+            }
+            
+            console.log('应用需量控制设置:', settings);
+            alert('需量控制设置已应用');
+        }
+        
+        function resetDemandSettings() {
+            const contractCap = 1000;
+            document.getElementById('contract-capacity').value = contractCap;
+            document.getElementById('target-demand').value = contractCap * 0.9; // 90% of contract
+            document.getElementById('demand-period').value = '15';
+            document.getElementById('prediction-algorithm').value = 'ai';
+            document.getElementById('emergency-discharge').checked = true;
+            document.getElementById('load-shedding').checked = false;
+            document.getElementById('alert-notification').checked = true;
+            
+            console.log('需量控制设置已重置为默认值');
+        }
+        
+        function exportDemandSettings() {
+            const settings = {
+                mode: 'demand',
+                contractCapacity: document.getElementById('contract-capacity').value,
+                targetDemand: document.getElementById('target-demand').value,
+                demandPeriod: document.getElementById('demand-period').value,
+                predictionAlgorithm: document.getElementById('prediction-algorithm').value,
+                emergencyDischarge: document.getElementById('emergency-discharge').checked,
+                loadShedding: document.getElementById('load-shedding').checked,
+                alertNotification: document.getElementById('alert-notification').checked,
+                exportTime: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(settings, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = 'demand-control-settings.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            console.log('需量控制配置已导出');
+        }
+        
+        // Tab 切换功能
+        function switchModeTab(tabId, skipConfirmation = false) {
+            // 检查是否有未保存的更改
+            const currentActiveTab = document.querySelector('.tab-button.active');
+            const currentTabId = currentActiveTab ? getCurrentTabId(currentActiveTab) : null;
+            
+            // 检查当前tab的编辑模式
+            if (!skipConfirmation && currentTabId && editModes[currentTabId] && hasUnsavedChanges) {
+                showSaveConfirmation(() => {
+                    // 保存操作
+                    saveCurrentTabSettings();
+                    proceedWithTabSwitch(tabId);
+                }, () => {
+                    // 取消保存，直接切换
+                    hasUnsavedChanges = false;
+                    proceedWithTabSwitch(tabId);
+                });
+                return;
+            }
+            
+            // 检查共享设置的编辑模式
+            if (!skipConfirmation && sharedEditMode && hasUnsavedSharedChanges) {
+                showSaveConfirmation(() => {
+                    // 保存共享设置
+                    saveSharedEdit();
+                    proceedWithTabSwitch(tabId);
+                }, () => {
+                    // 取消保存，直接切换
+                    hasUnsavedSharedChanges = false;
+                    const editBtn = document.querySelector('.shared-edit-btn');
+                    const sharedSection = document.querySelector('.shared-params-section');
+                    exitSharedEditMode(editBtn, sharedSection);
+                    proceedWithTabSwitch(tabId);
+                });
+                return;
+            }
+            
+            proceedWithTabSwitch(tabId);
+        }
+        
+        function proceedWithTabSwitch(tabId) {
+            // 退出当前tab的编辑模式
+            const currentActiveTab = document.querySelector('.tab-button.active');
+            const currentTabId = currentActiveTab ? getCurrentTabId(currentActiveTab) : null;
+            
+            if (currentTabId && editModes[currentTabId]) {
+                // 找到当前tab的编辑按钮并退出编辑模式
+                const currentEditBtn = currentActiveTab.querySelector('.tab-edit-btn');
+                const currentPanel = document.getElementById(currentTabId + '-panel');
+                if (currentEditBtn && currentPanel) {
+                    exitEditMode(currentTabId, currentEditBtn, currentPanel);
+                }
+            }
+            
+            // 如果共享设置处于编辑模式，也退出
+            if (sharedEditMode) {
+                const sharedEditBtn = document.querySelector('.shared-edit-btn');
+                const sharedSection = document.querySelector('.shared-params-section');
+                if (sharedEditBtn && sharedSection) {
+                    hasUnsavedSharedChanges = false;
+                    exitSharedEditMode(sharedEditBtn, sharedSection);
+                }
+            }
+
+            // 移除所有 tab button 的 active 状态
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // 隐藏所有 tab panel
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // 激活对应的 tab button
+            const targetButton = Array.from(document.querySelectorAll('.tab-button')).find(btn => 
+                btn.onclick && btn.onclick.toString().includes(`'${tabId}'`)
+            );
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
+            
+            // 显示对应的 tab panel
+            const panelId = tabId + '-panel';
+            const panel = document.getElementById(panelId);
+            if (panel) {
+                panel.classList.add('active');
+                
+                // 新tab始终以只读模式开始
+                panel.classList.add('readonly-mode');
+                
+                // 如果切换到经济模式，初始化时间选择器
+                if (tabId === 'economic') {
+                    setTimeout(() => {
+                        initHourSelector();
+                        // 不默认选中任何时段类型
+                        initGridChargingSwitch(); // 初始化电网充电开关
+                    }, 100);
+                }
+            }
+            
+            console.log('切换到模式设置:', tabId);
+        }
+        
+        // 获取当前tab的ID
+        function getCurrentTabId(button) {
+            if (!button) return null;
+            const onclick = button.getAttribute('onclick');
+            if (!onclick) return null;
+            const match = onclick.match(/switchModeTab\('([^']+)'\)/);
+            return match ? match[1] : null;
+        }
+        
+        // 切换编辑模式
+        function toggleEditMode(tabId, event) {
+            event.stopPropagation(); // 防止触发tab切换
+            
+            const editBtn = event.target.closest('.tab-edit-btn');
+            const panel = document.getElementById(tabId + '-panel');
+            
+            if (editModes[tabId]) {
+                // 退出编辑模式
+                const hasChanges = (tabId === 'economic') ? 
+                    (hasUnsavedChanges || hasUnsavedSharedChanges) : 
+                    hasUnsavedChanges;
+                    
+                if (hasChanges) {
+                    showSaveConfirmation(() => {
+                        // 保存
+                        saveCurrentTabSettings();
+                        exitEditMode(tabId, editBtn, panel);
+                    }, () => {
+                        // 不保存
+                        hasUnsavedChanges = false;
+                        if (tabId === 'economic') {
+                            hasUnsavedSharedChanges = false;
+                        }
+                        exitEditMode(tabId, editBtn, panel);
+                    });
+                } else {
+                    exitEditMode(tabId, editBtn, panel);
+                }
+            } else {
+                // 进入编辑模式
+                enterEditMode(tabId, editBtn, panel);
+            }
+        }
+        
+        function enterEditMode(tabId, editBtn, panel) {
+            editModes[tabId] = true;
+            editBtn.classList.add('editing');
+            panel.classList.remove('readonly-mode');
+            hasUnsavedChanges = false; // 重置未保存状态
+            
+            // 监听变化 - 使用捕获阶段确保所有输入都被监听
+            panel.addEventListener('input', handleInputChange, true);
+            panel.addEventListener('change', handleInputChange, true);
+            panel.addEventListener('click', handleInputChange, true);
+            
+            // 如果是经济模式，同时进入共享设置编辑模式并显示保存按钮
+            if (tabId === 'economic') {
+                const sharedEditBtn = document.querySelector('.shared-edit-btn');
+                const sharedSection = document.querySelector('.shared-params-section');
+                if (sharedEditBtn && sharedSection && !sharedEditMode) {
+                    enterSharedEditMode(sharedEditBtn, sharedSection);
+                }
+                
+                // 显示经济模式的取消和保存按钮
+                const economicActions = document.querySelector('.economic-edit-actions');
+                if (economicActions) {
+                    economicActions.style.display = 'block';
+                }
+            }
+        }
+        
+        function exitEditMode(tabId, editBtn, panel) {
+            editModes[tabId] = false;
+            editBtn.classList.remove('editing');
+            panel.classList.add('readonly-mode');
+            hasUnsavedChanges = false; // 重置未保存状态
+            
+            // 移除监听
+            panel.removeEventListener('input', handleInputChange, true);
+            panel.removeEventListener('change', handleInputChange, true);
+            panel.removeEventListener('click', handleInputChange, true);
+            
+            // 如果是经济模式，同时退出共享设置编辑模式并隐藏保存按钮
+            if (tabId === 'economic') {
+                if (sharedEditMode) {
+                    const sharedEditBtn = document.querySelector('.shared-edit-btn');
+                    const sharedSection = document.querySelector('.shared-params-section');
+                    if (sharedEditBtn && sharedSection) {
+                        hasUnsavedSharedChanges = false;
+                        exitSharedEditMode(sharedEditBtn, sharedSection);
+                    }
+                }
+                
+                // 隐藏经济模式的取消和保存按钮
+                const economicActions = document.querySelector('.economic-edit-actions');
+                if (economicActions) {
+                    economicActions.style.display = 'none';
+                }
+            }
+        }
+        
+        function handleInputChange() {
+            hasUnsavedChanges = true;
+        }
+        
+        function handleSharedInputChange() {
+            hasUnsavedSharedChanges = true;
+        }
+        
+        // 显示保存确认对话框
+        function showSaveConfirmation(onSave, onCancel) {
+            // 创建遮罩层
+            const overlay = document.createElement('div');
+            overlay.className = 'save-dialog-overlay';
+            
+            // 创建对话框
+            const dialog = document.createElement('div');
+            dialog.className = 'save-dialog';
+            dialog.innerHTML = `
+                <h3 style="margin-bottom: 1rem; color: #1e293b;">提示</h3>
+                <p style="margin-bottom: 1.5rem; color: #64748b;">你还没有保存，是否保存？</p>
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                    <button class="btn btn-secondary" onclick="handleSaveCancel()">取消</button>
+                    <button class="btn btn-primary" onclick="handleSaveConfirm()">确认</button>
+                
+            </div>
+        </div>
+    </div>
+            `;
+            
+            // 定义全局函数
+            window.handleSaveConfirm = () => {
+                document.body.removeChild(overlay);
+                document.body.removeChild(dialog);
+                onSave();
+            };
+            
+            window.handleSaveCancel = () => {
+                document.body.removeChild(overlay);
+                document.body.removeChild(dialog);
+                onCancel();
+            };
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(dialog);
+        }
+        
+        // 保存当前tab的设置
+        function saveCurrentTabSettings() {
+            const currentTab = document.querySelector('.tab-button.active');
+            const tabId = getCurrentTabId(currentTab);
+            
+            console.log('保存设置:', tabId);
+            hasUnsavedChanges = false;
+            
+            // 如果是经济模式，同时保存共享设置
+            if (tabId === 'economic' && sharedEditMode) {
+                saveSharedSettings();
+            }
+            
+            // 这里可以添加实际的保存逻辑
+            alert('设置已保存');
+        }
+        
+        // 切换共享参数编辑模式
+        function toggleSharedEditMode(event) {
+            const editBtn = event.target;
+            const sharedSection = document.querySelector('.shared-params-section');
+            
+            // 进入编辑模式
+            enterSharedEditMode(editBtn, sharedSection);
+        }
+        
+        function enterSharedEditMode(editBtn, section) {
+            sharedEditMode = true;
+            editBtn.style.display = 'none'; // 隐藏编辑按钮
+            section.classList.remove('readonly-mode');
+            hasUnsavedSharedChanges = false; // 重置共享设置的未保存状态
+            
+            // 显示取消和保存按钮
+            const actionsDiv = document.querySelector('.shared-edit-actions');
+            if (actionsDiv) {
+                actionsDiv.style.display = 'block';
+            }
+            
+            // 监听变化
+            section.addEventListener('input', handleSharedInputChange);
+            section.addEventListener('change', handleSharedInputChange);
+        }
+        
+        function exitSharedEditMode(editBtn, section) {
+            sharedEditMode = false;
+            editBtn.style.display = ''; // 显示编辑按钮
+            section.classList.add('readonly-mode');
+            
+            // 隐藏取消和保存按钮
+            const actionsDiv = document.querySelector('.shared-edit-actions');
+            if (actionsDiv) {
+                actionsDiv.style.display = 'none';
+            }
+            
+            // 移除监听
+            section.removeEventListener('input', handleSharedInputChange);
+            section.removeEventListener('change', handleSharedInputChange);
+        }
+        
+        function saveSharedSettings() {
+            console.log('保存通用设置');
+            hasUnsavedSharedChanges = false;
+            // 直接保存，不显示提示
+        }
+        
+        // 取消共享参数编辑
+        function cancelSharedEdit() {
+            const editBtn = document.querySelector('.shared-edit-btn');
+            const sharedSection = document.querySelector('.shared-params-section');
+            
+            if (hasUnsavedSharedChanges) {
+                if (confirm('您有未保存的更改，确定要取消吗？')) {
+                    hasUnsavedSharedChanges = false;
+                    exitSharedEditMode(editBtn, sharedSection);
+                }
+            } else {
+                exitSharedEditMode(editBtn, sharedSection);
+            }
+        }
+        
+        // 保存共享参数编辑
+        function saveSharedEdit() {
+            const editBtn = document.querySelector('.shared-edit-btn');
+            const sharedSection = document.querySelector('.shared-params-section');
+            
+            saveSharedSettings();
+            exitSharedEditMode(editBtn, sharedSection);
+        }
+        
+        // 取消经济模式编辑
+        function cancelEconomicEdit() {
+            const tabEditBtn = document.querySelector('.tab-button.active .tab-edit-btn');
+            const panel = document.getElementById('economic-panel');
+            
+            if (hasUnsavedChanges || hasUnsavedSharedChanges) {
+                if (confirm('您有未保存的更改，确定要取消吗？')) {
+                    hasUnsavedChanges = false;
+                    hasUnsavedSharedChanges = false;
+                    exitEditMode('economic', tabEditBtn, panel);
+                }
+            } else {
+                exitEditMode('economic', tabEditBtn, panel);
+            }
+        }
+        
+        // 保存经济模式编辑
+        function saveEconomicEdit() {
+            const tabEditBtn = document.querySelector('.tab-button.active .tab-edit-btn');
+            const panel = document.getElementById('economic-panel');
+            
+            // 保存经济模式设置和共享设置
+            saveCurrentTabSettings();
+            exitEditMode('economic', tabEditBtn, panel);
+        }
+        
+        // 初始化可搜索下拉框
+        function initSearchableSelect() {
+            const searchInput = document.getElementById('cabinet-search-input');
+            const dropdown = document.getElementById('cabinet-dropdown');
+            const dropdownItems = dropdown.querySelectorAll('.dropdown-item');
+            let selectedValue = null;
+            
+            // 点击输入框显示下拉列表
+            searchInput.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdown.style.display = 'block';
+                highlightCurrentSelection();
+            });
+            
+            // 输入框搜索功能
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                let hasVisibleItems = false;
+                
+                dropdownItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        hasVisibleItems = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                dropdown.style.display = hasVisibleItems ? 'block' : 'none';
+            });
+            
+            // 点击下拉项
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.textContent;
+                    const demand = this.getAttribute('data-demand');
+                    const remaining = this.getAttribute('data-remaining');
+                    
+                    searchInput.value = text;
+                    selectedValue = value;
+                    dropdown.style.display = 'none';
+                    
+                    console.log(`选择储能柜: ${value}, 需量: ${demand}%, 剩余: ${remaining}kW`);
+                    
+                    // 更新右侧显示
+                    updateCabinetInfo(demand, remaining);
+                    
+                    // 移除所有active类
+                    dropdownItems.forEach(i => i.classList.remove('active'));
+                    // 添加当前选中的active类
+                    this.classList.add('active');
+                });
+            });
+            
+            // 点击外部关闭下拉框
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.searchable-select')) {
+                    dropdown.style.display = 'none';
+                }
+            });
+            
+            // 高亮当前选中项
+            function highlightCurrentSelection() {
+                dropdownItems.forEach(item => {
+                    if (item.getAttribute('data-value') === selectedValue) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+            
+            // 设置默认选中第一项
+            if (dropdownItems.length > 0) {
+                const firstItem = dropdownItems[0];
+                searchInput.value = firstItem.textContent;
+                selectedValue = firstItem.getAttribute('data-value');
+                firstItem.classList.add('active');
+                
+                // 初始化右侧显示
+                const demand = firstItem.getAttribute('data-demand');
+                const remaining = firstItem.getAttribute('data-remaining');
+                updateCabinetInfo(demand, remaining);
+            }
+        }
+        
+        // 更新储能柜信息显示
+        function updateCabinetInfo(demand, remaining) {
+            const demandDisplay = document.getElementById('demand-display');
+            const remainingDisplay = document.getElementById('remaining-display');
+            
+            if (demandDisplay) {
+                demandDisplay.textContent = demand + '%';
+            }
+            if (remainingDisplay) {
+                remainingDisplay.textContent = remaining + 'kW';
+            }
+        }
+        
+        // 初始化电网充电开关
+        function initGridChargingSwitch() {
+            const gridChargingCheckbox = document.getElementById('grid-charging-enabled');
+            const statusText = document.getElementById('grid-charging-status');
+            
+            if (gridChargingCheckbox && statusText) {
+                // 默认设置为关闭
+                gridChargingCheckbox.checked = false;
+                updateGridChargingStatus(false);
+                
+                // 添加事件监听器
+                gridChargingCheckbox.addEventListener('change', function() {
+                    updateGridChargingStatus(this.checked);
+                    console.log('电网充电设置:', this.checked ? '启用' : '禁用');
+                });
+            }
+        }
+        
+        // 更新电网充电状态显示
+        function updateGridChargingStatus(enabled) {
+            const statusText = document.getElementById('grid-charging-status');
+            if (!statusText) return;
+            
+            const lang = localStorage.getItem('language') || 'zh';
+            
+            if (enabled) {
+                statusText.textContent = translations[lang]['economic.gridChargingAllowed'] || '允许';
+                statusText.setAttribute('data-lang', 'economic.gridChargingAllowed');
+                statusText.style.color = '#3b82f6'; // 蓝色
+            } else {
+                statusText.textContent = translations[lang]['economic.gridChargingNotAllowed'] || '不允许';
+                statusText.setAttribute('data-lang', 'economic.gridChargingNotAllowed');
+                statusText.style.color = '#94a3b8'; // 灰色
+            }
+        }
+        
+        // 共享参数功能
+        function updateSharedTempProtectionStatus() {
+            const checkbox = document.getElementById('shared-temp-protection');
+            if (!checkbox) return;
+            
+            const statusText = checkbox.closest('.control-item').querySelector('.control-status');
+            
+            if (statusText) {
+                const lang = localStorage.getItem('language') || 'zh';
+                if (checkbox.checked) {
+                    statusText.textContent = translations[lang]['shared.enabled'] || '已启用';
+                    statusText.style.color = '#22c55e';
+                } else {
+                    statusText.textContent = translations[lang]['shared.disabled'] || '已禁用';
+                    statusText.style.color = '#ef4444';
+                }
+            }
+        }
+        
+        // 需量设置开关功能
+        function updateDemandSettingsStatus() {
+            const checkbox = document.getElementById('demand-settings-enabled');
+            if (!checkbox) return;
+            
+            const statusText = checkbox.closest('div').querySelector('.status-text');
+            
+            if (statusText) {
+                const lang = localStorage.getItem('language') || 'zh';
+                if (checkbox.checked) {
+                    statusText.textContent = translations[lang]['shared.enabled'] || '已启用';
+                    statusText.style.color = '#3b82f6';
+                } else {
+                    statusText.textContent = translations[lang]['shared.disabled'] || '已禁用';
+                    statusText.style.color = '#94a3b8';
+                }
+            }
+        }
+        
+        function getSharedSettings() {
+            return {
+                maxSoc: document.getElementById('shared-max-soc').value,
+                minSoc: document.getElementById('shared-min-soc').value,
+                maxChargePower: document.getElementById('shared-max-charge-power').value,
+                maxDischargePower: document.getElementById('shared-max-discharge-power').value,
+                tempProtection: document.getElementById('shared-temp-protection').checked,
+                commProtocol: document.getElementById('shared-comm-protocol').value
+            };
+        }
+        
+        function applySharedSettings() {
+            const sharedSettings = getSharedSettings();
+            
+            // 验证SOC范围合理性
+            const maxSoc = parseInt(sharedSettings.maxSoc);
+            const minSoc = parseInt(sharedSettings.minSoc);
+            
+            if (maxSoc <= minSoc) {
+                alert('警告：最大SOC必须大于最小SOC！');
+                return false;
+            }
+            
+            if (maxSoc - minSoc < 20) {
+                alert('提示：SOC工作范围过窄，建议保持至少20%的差值以确保系统正常运行');
+            }
+            
+            console.log('共享参数设置:', sharedSettings);
+            return sharedSettings;
+        }
+        
+        // 修改原有的应用设置函数，包含共享参数
+        const originalApplySettings = window.applySettings;
+        window.applySettings = function() {
+            const sharedSettings = applySharedSettings();
+            if (sharedSettings === false) return; // 验证失败
+            
+            // 合并共享设置和模式特定设置
+            const selfConsumptionSettings = {
+                mode: 'self-consumption',
+                ...sharedSettings,
+                chargeStopSoc: document.getElementById('charge-stop-soc').value,
+                dischargeStopSoc: document.getElementById('discharge-stop-soc').value,
+                excessPvExport: document.getElementById('excess-pv-export').checked,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('应用完整设置（共享+自发自用）:', selfConsumptionSettings);
+            alert('设置已应用');
+        };
+        
+        // 页面加载时初始化共享参数事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 原有的初始化代码...
+            
+            // 初始化滑块填充效果
+            const chargeSlider = document.getElementById('charge-stop-soc-slider');
+            const dischargeSlider = document.getElementById('discharge-stop-soc-slider');
+            
+            if (chargeSlider) {
+                updateSliderFill(chargeSlider);
+            }
+            if (dischargeSlider) {
+                updateSliderFill(dischargeSlider);
+            }
+            
+            // 初始化所有面板为只读模式
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.add('readonly-mode');
+            });
+            
+            // 初始化共享参数区域为只读模式
+            const sharedSection = document.querySelector('.shared-params-section');
+            if (sharedSection) {
+                sharedSection.classList.add('readonly-mode');
+            }
+            
+            // 初始化第一个tab为激活状态
+            const firstTab = document.querySelector('.tab-button');
+            if (firstTab) {
+                firstTab.classList.add('active');
+                const firstPanel = document.getElementById('self-consumption-panel');
+                if (firstPanel) {
+                    firstPanel.classList.add('active');
+                }
+            }
+            
+            // 初始化需量设置开关
+            const demandSettingsSwitch = document.getElementById('demand-settings-enabled');
+            if (demandSettingsSwitch) {
+                demandSettingsSwitch.addEventListener('change', function() {
+                    updateDemandSettingsStatus();
+                });
+                // 立即更新状态显示
+                updateDemandSettingsStatus();
+            }
+            
+            // 初始化可搜索储能柜选择器
+            initSearchableSelect();
+        });
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="./sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 1.5rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: #374151;
+            transition: all 0.2s ease;
+        }
+
+        .nav-button:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+        
+        /* 主内容区域调整 */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            background: #EBEDF4;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+    </div>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="./sidebar.js"></script>
+</body>
+</html>

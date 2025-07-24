@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分析 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="./sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .analysis-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .analysis-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #3b82f6;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .analysis-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .analysis-card.energy {
+            border-left-color: #10b981;
+        }
+
+        .analysis-card.efficiency {
+            border-left-color: #3b82f6;
+        }
+
+        .analysis-card.economic {
+            border-left-color: #f59e0b;
+        }
+
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .energy .card-icon {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .efficiency .card-icon {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .economic .card-icon {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-description {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .card-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .card-features li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">数据分析</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>数据分析</h1>
+                    <p>全面的能源数据分析与洞察</p>
+                </div>
+
+                <!-- 快速统计 -->
+                <div class="quick-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">2,456.8</div>
+                        <div class="stat-label">总能耗 (kWh)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">88.7%</div>
+                        <div class="stat-label">平均效率</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">¥389,440</div>
+                        <div class="stat-label">经济效益</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">31.3%</div>
+                        <div class="stat-label">投资回报率</div>
+                    </div>
+                </div>
+
+                <!-- 分析模块 -->
+                <div class="analysis-overview">
+                    <a href="./analysis/energy.html" class="analysis-card energy">
+                        <div class="card-icon">⚡</div>
+                        <h3 class="card-title">能耗分析</h3>
+                        <p class="card-description">
+                            深入分析系统能耗数据，包括充放电量、能效比等关键指标，帮助优化能源使用策略
+                        </p>
+                        <ul class="card-features">
+                            <li>实时能耗监控</li>
+                            <li>能耗趋势分析</li>
+                            <li>设备能耗对比</li>
+                            <li>能效优化建议</li>
+                        </ul>
+                    </a>
+
+                    <a href="./analysis/efficiency.html" class="analysis-card efficiency">
+                        <div class="card-icon">📈</div>
+                        <h3 class="card-title">效率分析</h3>
+                        <p class="card-description">
+                            评估系统运行效率，分析充放电效率、往复效率等性能指标，识别改进机会
+                        </p>
+                        <ul class="card-features">
+                            <li>效率趋势监控</li>
+                            <li>性能对比分析</li>
+                            <li>效率评级体系</li>
+                            <li>优化方案推荐</li>
+                        </ul>
+                    </a>
+
+                    <a href="./analysis/economic.html" class="analysis-card economic">
+                        <div class="card-icon">💰</div>
+                        <h3 class="card-title">经济性分析</h3>
+                        <p class="card-description">
+                            全面评估投资回报率、成本效益和经济表现，为商业决策提供数据支持
+                        </p>
+                        <ul class="card-features">
+                            <li>投资回报分析</li>
+                            <li>成本效益评估</li>
+                            <li>收益预测模型</li>
+                            <li>财务报表生成</li>
+                        </ul>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="./sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

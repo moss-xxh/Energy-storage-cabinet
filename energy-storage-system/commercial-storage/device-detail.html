@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备详情 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="./sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: #1e293b;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #3562E3;
+            text-decoration: none;
+        }
+
+        .content {
+            padding: 1.5rem;
+        }
+
+        /* 设备头部信息 */
+        .device-header {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .device-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .device-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .device-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .device-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .device-status.running {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .device-status.offline {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.running { background: #10b981; }
+        .status-dot.offline { background: #6b7280; }
+
+        .device-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        /* 标签页 */
+        .tabs {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .tab-header {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tab-button:hover {
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .tab-button.active {
+            color: #3562E3;
+            background: #f8fafc;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #3562E3;
+        }
+
+        .tab-content {
+            padding: 1.5rem;
+            min-height: 400px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* 实时数据样式 */
+        .realtime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .metric-card:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-unit {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 0.5rem;
+            font-size: 12px;
+        }
+
+        .trend-up {
+            color: #059669;
+        }
+
+        .trend-down {
+            color: #dc2626;
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* 历史数据表格 */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .history-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .history-table td {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .history-table tr:hover {
+            background: #f9fafb;
+        }
+
+        /* 告警样式 */
+        .alert-item {
+            padding: 0.75rem 1rem;
+            border-left: 4px solid;
+            margin-bottom: 0.5rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .alert-critical {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .alert-warning {
+            border-color: #d97706;
+            background: #fffbeb;
+        }
+
+        .alert-info {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .alert-time {
+            font-size: 12px;
+            color: #64748b;
+            float: right;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .device-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .realtime-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tab-header {
+                flex-wrap: wrap;
+            }
+
+            .tab-button {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="../../assets/logo.png" alt="Logo" style="max-height: 40px;">
+            </div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="../index.html" class="menu-item">
+                <span>🏠</span>
+                <span>首页</span>
+            </a>
+            <a href="station-management.html" class="menu-item">
+                <span>⚡</span>
+                <span>电站管理</span>
+            </a>
+            <a href="#" class="menu-item active">
+                <span>📊</span>
+                <span>设备监控</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span>📈</span>
+                <span>数据分析</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span>⚙️</span>
+                <span>系统设置</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">设备详情</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<header class="header">
+            <div class="breadcrumb">
+                <a href="station-management.html">电站管理</a>
+                <span>/</span>
+                <a href="station-detail.html">电站详情</a>
+                <span>/</span>
+                <span>设备详情</span>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- 设备头部信息 -->
+            <div class="device-header">
+                <div class="device-title-row">
+                    <div class="device-title">
+                        <h1 class="device-name" id="device-name">储能柜 ESS-Cabinet-01</h1>
+                        <div class="device-status running" id="device-status">
+                            <div class="status-dot running"></div>
+                            <span>运行中</span>
+                        </div>
+                    </div>
+                    <a href="station-detail.html" style="color: #64748b; text-decoration: none; font-size: 14px;">← 返回设备列表</a>
+                </div>
+                
+                <div class="device-info-grid">
+                    <div class="info-item">
+                        <span class="info-label">设备编号</span>
+                        <span class="info-value" id="device-id">ESS-Cabinet-01</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">设备类型</span>
+                        <span class="info-value" id="device-type">储能柜</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">制造商</span>
+                        <span class="info-value" id="manufacturer">华为技术有限公司</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">设备型号</span>
+                        <span class="info-value" id="model">ESS-5000-S</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">安装日期</span>
+                        <span class="info-value" id="install-date">2024-01-15</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">通讯地址</span>
+                        <span class="info-value" id="comm-address">192.168.1.100</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 标签页 -->
+            <div class="tabs">
+                <div class="tab-header">
+                    <button class="tab-button active" onclick="switchTab('realtime')">实时数据</button>
+                    <button class="tab-button" onclick="switchTab('history')">历史数据</button>
+                    <button class="tab-button" onclick="switchTab('alerts')">告警记录</button>
+                    <button class="tab-button" onclick="switchTab('maintenance')">维护记录</button>
+                </div>
+
+                <!-- 实时数据标签页 -->
+                <div class="tab-content">
+                    <div class="tab-panel active" id="realtime-panel">
+                        <div class="realtime-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">直流电压</div>
+                                <div class="metric-value" id="dc-voltage">750.5</div>
+                                <div class="metric-unit">V</div>
+                                <div class="metric-trend trend-up">
+                                    <span>↗</span>
+                                    <span>+2.3V</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">直流电流</div>
+                                <div class="metric-value" id="dc-current">12.8</div>
+                                <div class="metric-unit">A</div>
+                                <div class="metric-trend trend-down">
+                                    <span>↘</span>
+                                    <span>-0.5A</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">输出功率</div>
+                                <div class="metric-value" id="output-power">9.61</div>
+                                <div class="metric-unit">kW</div>
+                                <div class="metric-trend trend-up">
+                                    <span>↗</span>
+                                    <span>+0.3kW</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">SOC</div>
+                                <div class="metric-value" id="soc">78.5</div>
+                                <div class="metric-unit">%</div>
+                                <div class="metric-trend trend-down">
+                                    <span>↘</span>
+                                    <span>-1.2%</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">SOH</div>
+                                <div class="metric-value" id="soh">95.2</div>
+                                <div class="metric-unit">%</div>
+                                <div class="metric-trend" style="color: #64748b;">
+                                    <span>→</span>
+                                    <span>稳定</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">电池温度</div>
+                                <div class="metric-value" id="battery-temp">25.3</div>
+                                <div class="metric-unit">°C</div>
+                                <div class="metric-trend trend-up">
+                                    <span>↗</span>
+                                    <span>+0.8°C</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <div class="chart-title">功率曲线（最近24小时）</div>
+                            <div class="chart-placeholder">
+                                功率变化图表 - 集成Chart.js或ECharts
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <div class="chart-title">电压电流曲线（最近1小时）</div>
+                            <div class="chart-placeholder">
+                                电压电流实时曲线图表
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 历史数据标签页 -->
+                    <div class="tab-panel" id="history-panel">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="font-size: 18px; font-weight: 600;">历史运行数据</h3>
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <select style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px;">
+                                    <option>最近24小时</option>
+                                    <option>最近7天</option>
+                                    <option>最近30天</option>
+                                    <option>自定义时间</option>
+                                </select>
+                                <button style="padding: 6px 16px; background: #3562E3; color: white; border: none; border-radius: 6px; cursor: pointer;">导出数据</button>
+                            </div>
+                        </div>
+
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>功率 (kW)</th>
+                                    <th>电压 (V)</th>
+                                    <th>电流 (A)</th>
+                                    <th>SOC (%)</th>
+                                    <th>温度 (°C)</th>
+                                    <th>运行状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body">
+                                <tr>
+                                    <td>2024-01-24 14:30</td>
+                                    <td>9.61</td>
+                                    <td>750.5</td>
+                                    <td>12.8</td>
+                                    <td>78.5</td>
+                                    <td>25.3</td>
+                                    <td><span style="color: #059669;">正常放电</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-24 14:00</td>
+                                    <td>8.95</td>
+                                    <td>748.2</td>
+                                    <td>11.9</td>
+                                    <td>79.7</td>
+                                    <td>24.8</td>
+                                    <td><span style="color: #059669;">正常放电</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-24 13:30</td>
+                                    <td>-5.23</td>
+                                    <td>752.1</td>
+                                    <td>-6.9</td>
+                                    <td>75.2</td>
+                                    <td>23.9</td>
+                                    <td><span style="color: #2563eb;">正常充电</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-24 13:00</td>
+                                    <td>-7.88</td>
+                                    <td>754.6</td>
+                                    <td>-10.4</td>
+                                    <td>72.8</td>
+                                    <td>23.1</td>
+                                    <td><span style="color: #2563eb;">正常充电</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-24 12:30</td>
+                                    <td>0.00</td>
+                                    <td>748.9</td>
+                                    <td>0.0</td>
+                                    <td>72.8</td>
+                                    <td>22.5</td>
+                                    <td><span style="color: #64748b;">待机</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 告警记录标签页 -->
+                    <div class="tab-panel" id="alerts-panel">
+                        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 1rem;">告警记录</h3>
+                        
+                        <div class="alert-item alert-warning">
+                            <strong>温度告警</strong>
+                            <div>电池温度超过预设阈值 (28.5°C > 28°C)</div>
+                            <span class="alert-time">2024-01-24 14:25:30</span>
+                        </div>
+
+                        <div class="alert-item alert-info">
+                            <strong>SOC低告警已恢复</strong>
+                            <div>电池SOC已恢复到正常范围 (78.5% > 20%)</div>
+                            <span class="alert-time">2024-01-24 13:45:12</span>
+                        </div>
+
+                        <div class="alert-item alert-critical">
+                            <strong>通讯中断</strong>
+                            <div>设备通讯连接中断，持续时间: 3分钟</div>
+                            <span class="alert-time">2024-01-24 10:15:45</span>
+                        </div>
+
+                        <div class="alert-item alert-info">
+                            <strong>维护模式启动</strong>
+                            <div>设备进入计划维护模式</div>
+                            <span class="alert-time">2024-01-23 09:00:00</span>
+                        </div>
+                    </div>
+
+                    <!-- 维护记录标签页 -->
+                    <div class="tab-panel" id="maintenance-panel">
+                        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 1rem;">维护记录</h3>
+                        
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>维护时间</th>
+                                    <th>维护类型</th>
+                                    <th>维护内容</th>
+                                    <th>维护人员</th>
+                                    <th>维护结果</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-01-23 09:00</td>
+                                    <td>计划维护</td>
+                                    <td>电池容量校正、连接器检查</td>
+                                    <td>张工程师</td>
+                                    <td><span style="color: #059669;">完成</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-15 14:30</td>
+                                    <td>故障维修</td>
+                                    <td>更换温度传感器</td>
+                                    <td>李技术员</td>
+                                    <td><span style="color: #059669;">完成</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-01 10:00</td>
+                                    <td>年度检修</td>
+                                    <td>全系统检查、软件升级</td>
+                                    <td>王主管</td>
+                                    <td><span style="color: #059669;">完成</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2023-12-15 16:20</td>
+                                    <td>预防性维护</td>
+                                    <td>清洁散热器、紧固连接</td>
+                                    <td>刘技师</td>
+                                    <td><span style="color: #059669;">完成</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取URL参数
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // 设备类型映射
+        const deviceTypeMap = {
+            'ESS-Cabinet-01': {
+                name: '储能柜 ESS-Cabinet-01',
+                type: '储能柜',
+                manufacturer: '华为技术有限公司',
+                model: 'ESS-5000-S'
+            },
+            'PCS-01': {
+                name: '变流器 PCS-01',
+                type: '变流器',
+                manufacturer: '阳光电源股份有限公司',
+                model: 'SG125HV'
+            },
+            'BMS-01': {
+                name: '电池管理系统 BMS-01',
+                type: '电池管理系统',
+                manufacturer: '宁德时代新能源科技股份有限公司',
+                model: 'BMS-Pro-500'
+            },
+            'Battery-Rack-01': {
+                name: '电池簇 Battery-Rack-01',
+                type: '电池簇',
+                manufacturer: '比亚迪股份有限公司',
+                model: 'BYD-Battery-280Ah'
+            },
+            'EMS-01': {
+                name: '能量管理系统 EMS-01',
+                type: '能量管理系统',
+                manufacturer: '国电南瑞科技股份有限公司',
+                model: 'EMS-Smart-V2.0'
+            }
+        };
+
+        // 标签页切换
+        function switchTab(tabName) {
+            // 隐藏所有标签页内容
+            const panels = document.querySelectorAll('.tab-panel');
+            panels.forEach(panel => panel.classList.remove('active'));
+
+            // 移除所有按钮的active状态
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+
+            // 显示选中的标签页
+            document.getElementById(tabName + '-panel').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const deviceId = getUrlParameter('deviceId') || 'ESS-Cabinet-01';
+            const stationId = getUrlParameter('stationId') || '1';
+            
+            initializeDeviceInfo(deviceId);
+            startRealtimeDataUpdate();
+            
+            // 每5秒更新一次实时数据
+            setInterval(updateRealtimeData, 5000);
+        });
+
+        // 初始化设备信息
+        function initializeDeviceInfo(deviceId) {
+            const deviceInfo = deviceTypeMap[deviceId] || deviceTypeMap['ESS-Cabinet-01'];
+            
+            document.getElementById('device-name').textContent = deviceInfo.name;
+            document.getElementById('device-id').textContent = deviceId;
+            document.getElementById('device-type').textContent = deviceInfo.type;
+            document.getElementById('manufacturer').textContent = deviceInfo.manufacturer;
+            document.getElementById('model').textContent = deviceInfo.model;
+            
+            // 更新页面标题
+            document.title = `${deviceInfo.name} - 设备详情 - 工商储能管理系统`;
+        }
+
+        // 开始实时数据更新
+        function startRealtimeDataUpdate() {
+            updateRealtimeData();
+        }
+
+        // 更新实时数据
+        function updateRealtimeData() {
+            // 模拟实时数据
+            const data = generateRealtimeData();
+            
+            // 更新实时数据显示
+            document.getElementById('dc-voltage').textContent = data.voltage;
+            document.getElementById('dc-current').textContent = data.current;
+            document.getElementById('output-power').textContent = data.power;
+            document.getElementById('soc').textContent = data.soc;
+            document.getElementById('soh').textContent = data.soh;
+            document.getElementById('battery-temp').textContent = data.temperature;
+            
+            // 更新设备状态
+            updateDeviceStatus(data.status);
+        }
+
+        // 生成模拟实时数据
+        function generateRealtimeData() {
+            return {
+                voltage: (750 + Math.random() * 10 - 5).toFixed(1),
+                current: (12 + Math.random() * 4 - 2).toFixed(1),
+                power: (9.0 + Math.random() * 2).toFixed(2),
+                soc: (75 + Math.random() * 10).toFixed(1),
+                soh: (95 + Math.random() * 2).toFixed(1),
+                temperature: (25 + Math.random() * 3).toFixed(1),
+                status: Math.random() > 0.1 ? 'running' : 'offline'
+            };
+        }
+
+        // 更新设备状态
+        function updateDeviceStatus(status) {
+            const statusElement = document.getElementById('device-status');
+            const statusDot = statusElement.querySelector('.status-dot');
+            const statusText = statusElement.querySelector('span');
+            
+            // 移除所有状态类
+            statusElement.className = 'device-status ' + status;
+            statusDot.className = 'status-dot ' + status;
+            
+            // 更新状态文本
+            const statusTextMap = {
+                running: '运行中',
+                offline: '离线'
+            };
+            
+            statusText.textContent = statusTextMap[status] || '未知';
+        }
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="./sidebar.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!-- 侧边栏模板 - 可以复制到各个页面使用 -->
+<!-- 在页面的 <head> 中引入公共样式和脚本 -->
+<!-- <link rel="stylesheet" href="common-styles.css"> -->
+<!-- <script src="common-scripts.js"></script> -->
+
+<!-- 侧边栏 -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <img src="../logo.png" alt="AlwaysControl Technology Logo">
+        </div>
+    </div>
+    <nav class="sidebar-menu">
+        <!-- 电站管理（带二级菜单） -->
+        <div class="menu-group">
+            <div class="menu-parent" onclick="toggleSubmenu(this)">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span class="menu-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                    </span>
+                    <span>电站</span>
+                </div>
+                <span class="menu-arrow">▶</span>
+            </div>
+            <div class="submenu">
+                <a href="./station-management.html" class="submenu-item">
+                    <span>电站管理</span>
+                </a>
+                <a href="./control.html" class="submenu-item">
+                    <span>控制</span>
+                </a>
+                <a href="./price-settings.html" class="submenu-item">
+                    <span>电价设置</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 其他一级菜单 -->
+        <a href="./data-analysis.html" class="menu-item">
+            <span class="menu-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18"/>
+                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
+                </svg>
+            </span>
+            <span>数据分析</span>
+        </a>
+        <a href="#" class="menu-item">
+            <span class="menu-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </span>
+            <span>告警管理</span>
+        </a>
+        <a href="#" class="menu-item">
+            <span class="menu-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="12" y1="8" x2="12" y2="16"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+            </span>
+            <span>设备管理</span>
+        </a>
+        <a href="#" class="menu-item">
+            <span class="menu-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="8.5" cy="7" r="4"/>
+                    <line x1="20" y1="8" x2="20" y2="14"/>
+                    <line x1="23" y1="11" x2="17" y2="11"/>
+                </svg>
+            </span>
+            <span>用户管理</span>
+        </a>
+        <a href="#" class="menu-item">
+            <span class="menu-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                </svg>
+            </span>
+            <span>报表中心</span>
+        </a>
+        <a href="#" class="menu-item">
+            <span class="menu-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+                    <path d="M20.5 7.5L16 12l4.5 4.5M3.5 7.5L8 12l-4.5 4.5"/>
+                </svg>
+            </span>
+            <span>系统设置</span>
+        </a>
+        
+        <!-- 分隔线 -->
+        <div class="menu-divider"></div>
+        <div class="menu-section-title">品牌控制系统</div>
+        
+        <!-- 品牌控制菜单 -->
+        <a href="./control-sungrow.html" class="menu-item">
+            <span class="menu-icon" style="background: #ff6b00; color: white; border-radius: 4px; font-size: 14px;">☀️</span>
+            <span>阳光电源</span>
+        </a>
+        <a href="./control-huawei.html" class="menu-item">
+            <span class="menu-icon" style="background: #e60012; color: white; border-radius: 4px; font-size: 14px;">🌟</span>
+            <span>华为智能</span>
+        </a>
+        <a href="./control-tesla.html" class="menu-item">
+            <span class="menu-icon" style="background: #cc0000; color: white; border-radius: 4px; font-size: 14px;">⚡</span>
+            <span>特斯拉</span>
+        </a>
+    </nav>
+</aside>
+
+<!-- 顶部导航栏模板 -->
+<nav class="navbar">
+    <div class="navbar-left">
+        <button class="nav-button" onclick="toggleSidebar()">
+            <span>☰</span>
+        </button>
+        <button class="nav-button" onclick="goBack()" title="返回场景选择">
+            <span>←</span>
+        </button>
+        <h1 class="page-title">页面标题</h1>
+    </div>
+    <div class="navbar-right">
+        <button class="nav-button" onclick="toggleLanguage()">
+            <span>🌐</span>
+            <span id="lang-text">中文</span>
+        </button>
+        <button class="nav-button" onclick="toggleTheme()">
+            <span id="theme-icon">🌙</span>
+        </button>
+        <button class="nav-button">
+            <span>👤</span>
+            <span>管理员</span>
+        </button>
+    </div>
+</nav>

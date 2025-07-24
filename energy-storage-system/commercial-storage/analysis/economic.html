@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>经济性分析 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .economic-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .economic-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #10b981;
+        }
+
+        .economic-card.cost {
+            border-left-color: #ef4444;
+        }
+
+        .economic-card.revenue {
+            border-left-color: #10b981;
+        }
+
+        .economic-card.savings {
+            border-left-color: #3b82f6;
+        }
+
+        .economic-card.roi {
+            border-left-color: #f59e0b;
+        }
+
+        .economic-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .economic-label {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+        }
+
+        .economic-change {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .change-positive {
+            color: #059669;
+        }
+
+        .change-negative {
+            color: #dc2626;
+        }
+
+        .filters-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        .analysis-dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: #f8fafc;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .roi-calculator {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .calculator-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .calculator-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .calculator-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 16px;
+        }
+
+        .calculator-label {
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .calculator-value {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .cost-breakdown {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .breakdown-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .breakdown-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .breakdown-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        .breakdown-list li:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 16px;
+            color: #1e293b;
+        }
+
+        .economic-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .economic-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .economic-table th,
+        .economic-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .economic-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .amount-positive {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .amount-negative {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .amount-neutral {
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .performance-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .performance-excellent {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .performance-good {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .performance-fair {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .performance-poor {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">经济性分析</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>经济性分析</h1>
+                    <p>储能系统投资回报与经济效益分析</p>
+                </div>
+
+                <!-- 筛选面板 -->
+                <div class="filters-panel">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>分析周期</label>
+                            <select id="analysis-period">
+                                <option value="month">本月</option>
+                                <option value="quarter" selected>本季度</option>
+                                <option value="year">本年</option>
+                                <option value="custom">自定义</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>电站选择</label>
+                            <select id="station-select">
+                                <option value="">全部电站</option>
+                                <option value="station1">张江储能站</option>
+                                <option value="station2">浦东储能站</option>
+                                <option value="station3">徐汇储能站</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>币种</label>
+                            <select id="currency">
+                                <option value="cny">人民币 (¥)</option>
+                                <option value="usd">美元 ($)</option>
+                                <option value="eur">欧元 (€)</option>
+                            </select>
+                        </div>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="updateEconomicAnalysis()">更新分析</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 经济指标概览 -->
+                <div class="economic-summary">
+                    <div class="economic-card revenue">
+                        <div class="economic-value">¥1,245,680</div>
+                        <div class="economic-label">总收入</div>
+                        <div class="economic-change change-positive">
+                            ↑ 15.3% 较上期
+                        </div>
+                    </div>
+
+                    <div class="economic-card cost">
+                        <div class="economic-value">¥856,240</div>
+                        <div class="economic-label">总成本</div>
+                        <div class="economic-change change-positive">
+                            ↓ 3.2% 较上期
+                        </div>
+                    </div>
+
+                    <div class="economic-card savings">
+                        <div class="economic-value">¥389,440</div>
+                        <div class="economic-label">净收益</div>
+                        <div class="economic-change change-positive">
+                            ↑ 22.1% 较上期
+                        </div>
+                    </div>
+
+                    <div class="economic-card roi">
+                        <div class="economic-value">31.3%</div>
+                        <div class="economic-label">投资回报率</div>
+                        <div class="economic-change change-positive">
+                            ↑ 4.7% 较上期
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分析图表与ROI计算器 -->
+                <div class="analysis-dashboard">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">收益趋势分析</h3>
+                            <select onchange="updateRevenueChart(this.value)">
+                                <option value="monthly">按月</option>
+                                <option value="weekly">按周</option>
+                                <option value="daily">按日</option>
+                            </select>
+                        </div>
+                        <div class="chart-placeholder">
+                            📈 收益趋势图表
+                        </div>
+                    </div>
+
+                    <div class="roi-calculator">
+                        <h3 class="calculator-title">ROI计算器</h3>
+                        <div class="calculator-item">
+                            <span class="calculator-label">初始投资</span>
+                            <span class="calculator-value">¥2,500,000</span>
+                        </div>
+                        <div class="calculator-item">
+                            <span class="calculator-label">运营成本</span>
+                            <span class="calculator-value">¥156,000</span>
+                        </div>
+                        <div class="calculator-item">
+                            <span class="calculator-label">电费收益</span>
+                            <span class="calculator-value">¥485,600</span>
+                        </div>
+                        <div class="calculator-item">
+                            <span class="calculator-label">政策补贴</span>
+                            <span class="calculator-value">¥128,500</span>
+                        </div>
+                        <div class="calculator-item">
+                            <span class="calculator-label">预计回本周期</span>
+                            <span class="calculator-value">4.2年</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 成本收益分解 -->
+                <div class="cost-breakdown">
+                    <div class="breakdown-item">
+                        <h3 class="breakdown-title">成本构成</h3>
+                        <ul class="breakdown-list">
+                            <li>
+                                <span>设备折旧</span>
+                                <span>¥285,600</span>
+                            </li>
+                            <li>
+                                <span>运维费用</span>
+                                <span>¥156,800</span>
+                            </li>
+                            <li>
+                                <span>电费支出</span>
+                                <span>¥245,200</span>
+                            </li>
+                            <li>
+                                <span>人工成本</span>
+                                <span>¥168,640</span>
+                            </li>
+                            <li>
+                                <span>总成本</span>
+                                <span>¥856,240</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="breakdown-item">
+                        <h3 class="breakdown-title">收入构成</h3>
+                        <ul class="breakdown-list">
+                            <li>
+                                <span>峰谷套利</span>
+                                <span>¥685,400</span>
+                            </li>
+                            <li>
+                                <span>辅助服务</span>
+                                <span>¥285,600</span>
+                            </li>
+                            <li>
+                                <span>容量补偿</span>
+                                <span>¥146,180</span>
+                            </li>
+                            <li>
+                                <span>政府补贴</span>
+                                <span>¥128,500</span>
+                            </li>
+                            <li>
+                                <span>总收入</span>
+                                <span>¥1,245,680</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 经济效益对比图 -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">各电站经济效益对比</h3>
+                        <select onchange="updateComparisonChart(this.value)">
+                            <option value="revenue">收入对比</option>
+                            <option value="cost">成本对比</option>
+                            <option value="profit">利润对比</option>
+                            <option value="roi">ROI对比</option>
+                        </select>
+                    </div>
+                    <div class="chart-placeholder">
+                        📊 经济效益对比柱状图
+                    </div>
+                </div>
+
+                <!-- 详细经济数据表 -->
+                <div class="economic-table">
+                    <div class="table-header">
+                        <h3>经济效益详情</h3>
+                        <div>
+                            <button class="btn btn-secondary" onclick="exportEconomicData()">导出报告</button>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>电站名称</th>
+                                <th>投资成本</th>
+                                <th>运营收入</th>
+                                <th>运营成本</th>
+                                <th>净收益</th>
+                                <th>ROI</th>
+                                <th>回本周期</th>
+                                <th>经济表现</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>张江储能站</td>
+                                <td class="amount-negative">¥2,500,000</td>
+                                <td class="amount-positive">¥485,600</td>
+                                <td class="amount-negative">¥285,400</td>
+                                <td class="amount-positive">¥200,200</td>
+                                <td>8.0%</td>
+                                <td>4.2年</td>
+                                <td><span class="performance-badge performance-excellent">优秀</span></td>
+                            </tr>
+                            <tr>
+                                <td>浦东储能站</td>
+                                <td class="amount-negative">¥3,200,000</td>
+                                <td class="amount-positive">¥425,800</td>
+                                <td class="amount-negative">¥312,600</td>
+                                <td class="amount-positive">¥113,200</td>
+                                <td>3.5%</td>
+                                <td>5.8年</td>
+                                <td><span class="performance-badge performance-good">良好</span></td>
+                            </tr>
+                            <tr>
+                                <td>徐汇储能站</td>
+                                <td class="amount-negative">¥1,800,000</td>
+                                <td class="amount-positive">¥334,280</td>
+                                <td class="amount-negative">¥258,240</td>
+                                <td class="amount-positive">¥76,040</td>
+                                <td>4.2%</td>
+                                <td>6.2年</td>
+                                <td><span class="performance-badge performance-fair">一般</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 更新经济性分析
+        function updateEconomicAnalysis() {
+            const period = document.getElementById('analysis-period').value;
+            const station = document.getElementById('station-select').value;
+            const currency = document.getElementById('currency').value;
+            
+            console.log('更新经济性分析:', { period, station, currency });
+            showMessage('经济性分析数据已更新', 'success');
+        }
+
+        // 更新收益图表
+        function updateRevenueChart(type) {
+            console.log('更新收益图表:', type);
+            const typeText = type === 'monthly' ? '月' : type === 'weekly' ? '周' : '日';
+            showMessage(`切换到按${typeText}视图`, 'info');
+        }
+
+        // 更新对比图表
+        function updateComparisonChart(type) {
+            console.log('更新对比图表:', type);
+            const typeText = {
+                'revenue': '收入',
+                'cost': '成本',
+                'profit': '利润',
+                'roi': 'ROI'
+            }[type];
+            showMessage(`切换到${typeText}对比视图`, 'info');
+        }
+
+        // 导出经济数据
+        function exportEconomicData() {
+            console.log('导出经济分析报告');
+            showMessage('经济分析报告导出中...', 'info');
+            
+            setTimeout(() => {
+                showMessage('经济分析报告导出完成', 'success');
+            }, 2000);
+        }
+
+        // 监听筛选器变化
+        document.getElementById('analysis-period').addEventListener('change', updateEconomicAnalysis);
+        document.getElementById('station-select').addEventListener('change', updateEconomicAnalysis);
+        document.getElementById('currency').addEventListener('change', updateEconomicAnalysis);
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

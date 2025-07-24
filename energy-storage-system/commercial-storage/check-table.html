@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>检查表格</title>
+</head>
+<body>
+    <h1>检查表格头部</h1>
+    <iframe src="./station-management.html" width="100%" height="800px"></iframe>
+    
+    <script>
+        setTimeout(() => {
+            const iframe = document.querySelector('iframe');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            const table = iframeDoc.querySelector('.station-table');
+            
+            if (table) {
+                const headers = table.querySelectorAll('th');
+                console.log('找到表格头部数量:', headers.length);
+                
+                headers.forEach((th, index) => {
+                    const text = th.textContent.trim();
+                    const hasSortIcons = th.querySelectorAll('.sort-icon').length;
+                    console.log(`第${index + 1}列: ${text}, 排序图标数量: ${hasSortIcons}`);
+                });
+                
+                // 检查具体的排序图标
+                const utilSort = table.querySelector('th[data-sort="utilization"] .sort-icons');
+                const installedSort = table.querySelector('th[data-sort="installed"] .sort-icons');
+                const realtimeSort = table.querySelector('th[data-sort="realtime"] .sort-icons');
+                
+                console.log('利用率排序图标:', utilSort ? '存在' : '不存在');
+                console.log('装机功率排序图标:', installedSort ? '存在' : '不存在');
+                console.log('实时功率排序图标:', realtimeSort ? '存在' : '不存在');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

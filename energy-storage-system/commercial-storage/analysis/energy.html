@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>能耗分析 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .analysis-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: #f8fafc;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: #059669;
+        }
+
+        .stat-change.negative {
+            color: #dc2626;
+        }
+
+        .filters-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        .analysis-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .analysis-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .analysis-table th,
+        .analysis-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .analysis-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .energy-value {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .energy-unit {
+            font-size: 12px;
+            color: #64748b;
+            margin-left: 0.25rem;
+        }
+
+        .efficiency-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .efficiency-high {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .efficiency-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .efficiency-low {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">能耗分析</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>能耗分析</h1>
+                    <p>系统能耗数据统计与分析</p>
+                </div>
+
+                <!-- 筛选面板 -->
+                <div class="filters-panel">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>时间范围</label>
+                            <select id="time-range">
+                                <option value="today">今日</option>
+                                <option value="week">本周</option>
+                                <option value="month" selected>本月</option>
+                                <option value="quarter">本季度</option>
+                                <option value="year">本年</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>设备类型</label>
+                            <select id="device-type">
+                                <option value="">全部设备</option>
+                                <option value="battery">电池系统</option>
+                                <option value="pcs">PCS系统</option>
+                                <option value="hvac">空调系统</option>
+                                <option value="monitor">监控系统</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>电站</label>
+                            <select id="station-filter">
+                                <option value="">全部电站</option>
+                                <option value="station1">张江储能站</option>
+                                <option value="station2">浦东储能站</option>
+                                <option value="station3">徐汇储能站</option>
+                            </select>
+                        </div>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="updateAnalysis()">更新分析</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-number">2,456.8</div>
+                        <div class="stat-label">总能耗 (kWh)</div>
+                        <div class="stat-change positive">
+                            ↓ 5.2% 较上期
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1,892.3</div>
+                        <div class="stat-label">充电量 (kWh)</div>
+                        <div class="stat-change positive">
+                            ↑ 8.1% 较上期
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1,678.5</div>
+                        <div class="stat-label">放电量 (kWh)</div>
+                        <div class="stat-change positive">
+                            ↑ 6.7% 较上期
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">88.7%</div>
+                        <div class="stat-label">能效比</div>
+                        <div class="stat-change positive">
+                            ↑ 2.3% 较上期
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 图表分析 -->
+                <div class="analysis-dashboard">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">能耗趋势分析</h3>
+                            <select>
+                                <option>按小时</option>
+                                <option>按天</option>
+                                <option>按周</option>
+                            </select>
+                        </div>
+                        <div class="chart-placeholder">
+                            📈 能耗趋势图表
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">充放电分析</h3>
+                            <select>
+                                <option>功率对比</option>
+                                <option>电量对比</option>
+                            </select>
+                        </div>
+                        <div class="chart-placeholder">
+                            📊 充放电对比图表
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">设备能耗分布</h3>
+                            <select>
+                                <option>按设备类型</option>
+                                <option>按电站</option>
+                            </select>
+                        </div>
+                        <div class="chart-placeholder">
+                            🥧 能耗分布饼图
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">效率分析</h3>
+                            <select>
+                                <option>转换效率</option>
+                                <option>系统效率</option>
+                            </select>
+                        </div>
+                        <div class="chart-placeholder">
+                            📉 效率变化图表
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 详细数据表 -->
+                <div class="analysis-table">
+                    <div class="table-header">
+                        <h3>设备能耗详情</h3>
+                        <div>
+                            <button class="btn btn-secondary" onclick="exportData()">导出数据</button>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>设备名称</th>
+                                <th>设备类型</th>
+                                <th>所属电站</th>
+                                <th>总能耗</th>
+                                <th>充电量</th>
+                                <th>放电量</th>
+                                <th>效率</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PCS-01</td>
+                                <td>PCS系统</td>
+                                <td>张江储能站</td>
+                                <td><span class="energy-value">458.6</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="energy-value">356.2</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="energy-value">315.8</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="efficiency-badge efficiency-high">92.3%</span></td>
+                                <td><span class="status-badge active">正常</span></td>
+                            </tr>
+                            <tr>
+                                <td>BATT-01</td>
+                                <td>电池系统</td>
+                                <td>张江储能站</td>
+                                <td><span class="energy-value">1,245.2</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="energy-value">856.4</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="energy-value">762.1</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="efficiency-badge efficiency-high">89.0%</span></td>
+                                <td><span class="status-badge active">正常</span></td>
+                            </tr>
+                            <tr>
+                                <td>HVAC-01</td>
+                                <td>空调系统</td>
+                                <td>张江储能站</td>
+                                <td><span class="energy-value">156.8</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="energy-value">0</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="energy-value">0</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="efficiency-badge efficiency-medium">85.5%</span></td>
+                                <td><span class="status-badge active">正常</span></td>
+                            </tr>
+                            <tr>
+                                <td>PCS-02</td>
+                                <td>PCS系统</td>
+                                <td>浦东储能站</td>
+                                <td><span class="energy-value">423.7</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="energy-value">325.8</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="energy-value">298.4</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="efficiency-badge efficiency-medium">88.7%</span></td>
+                                <td><span class="status-badge active">正常</span></td>
+                            </tr>
+                            <tr>
+                                <td>BATT-02</td>
+                                <td>电池系统</td>
+                                <td>浦东储能站</td>
+                                <td><span class="energy-value">1,189.6</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="energy-value">789.3</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="energy-value">725.2</span><span class="energy-unit">kWh</span></td>
+                                <td><span class="efficiency-badge efficiency-low">81.8%</span></td>
+                                <td><span class="status-badge warning">告警</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 更新分析数据
+        function updateAnalysis() {
+            const timeRange = document.getElementById('time-range').value;
+            const deviceType = document.getElementById('device-type').value;
+            const station = document.getElementById('station-filter').value;
+            
+            console.log('更新能耗分析:', { timeRange, deviceType, station });
+            showMessage('能耗分析数据已更新', 'success');
+        }
+
+        // 导出数据
+        function exportData() {
+            console.log('导出能耗分析数据');
+            showMessage('能耗数据导出中...', 'info');
+            
+            setTimeout(() => {
+                showMessage('能耗数据导出完成', 'success');
+            }, 2000);
+        }
+
+        // 监听筛选器变化
+        document.getElementById('time-range').addEventListener('change', updateAnalysis);
+        document.getElementById('device-type').addEventListener('change', updateAnalysis);
+        document.getElementById('station-filter').addEventListener('change', updateAnalysis);
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

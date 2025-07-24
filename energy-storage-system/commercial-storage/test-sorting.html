@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试排序功能</title>
+    <style>
+        .station-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .station-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.875rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .station-table td {
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .th-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        
+        .sort-icons {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-left: 0.5rem;
+        }
+        
+        .sort-icon {
+            font-size: 0.75rem;
+            opacity: 0.4;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            line-height: 0.75rem;
+            padding: 2px 4px;
+        }
+        
+        .sort-icon:hover {
+            opacity: 0.8;
+        }
+        
+        .sort-icon.active {
+            opacity: 1;
+            color: #3562E3;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>测试表格排序</h1>
+    <table class="station-table">
+        <thead>
+            <tr>
+                <th>电站名称</th>
+                <th>模式</th>
+                <th>状态</th>
+                <th class="sortable" data-sort="utilization">
+                    <div class="th-content">
+                        <span>利用率</span>
+                        <div class="sort-icons">
+                            <span class="sort-icon sort-up" onclick="sortTable('utilization', 'asc')">↑</span>
+                            <span class="sort-icon sort-down" onclick="sortTable('utilization', 'desc')">↓</span>
+                        </div>
+                    </div>
+                </th>
+                <th class="sortable" data-sort="installed">
+                    <div class="th-content">
+                        <span>装机功率</span>
+                        <div class="sort-icons">
+                            <span class="sort-icon sort-up" onclick="sortTable('installed', 'asc')">↑</span>
+                            <span class="sort-icon sort-down" onclick="sortTable('installed', 'desc')">↓</span>
+                        </div>
+                    </div>
+                </th>
+                <th class="sortable" data-sort="realtime">
+                    <div class="th-content">
+                        <span>实时功率</span>
+                        <div class="sort-icons">
+                            <span class="sort-icon sort-up" onclick="sortTable('realtime', 'asc')">↑</span>
+                            <span class="sort-icon sort-down" onclick="sortTable('realtime', 'desc')">↓</span>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>上海工业园储能站</td>
+                <td>自发自用</td>
+                <td>在线</td>
+                <td><span class="station-utilization">72%</span></td>
+                <td>2.5 MW</td>
+                <td>1.8 MW</td>
+            </tr>
+            <tr>
+                <td>北京科技园储能站</td>
+                <td>经济模式</td>
+                <td>在线</td>
+                <td><span class="station-utilization">85%</span></td>
+                <td>3.0 MW</td>
+                <td>2.1 MW</td>
+            </tr>
+            <tr>
+                <td>深圳数据中心储能站</td>
+                <td>应急模式</td>
+                <td>离线</td>
+                <td><span class="station-utilization">0%</span></td>
+                <td>1.5 MW</td>
+                <td>0 MW</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <script>
+        let currentSort = { column: null, direction: null };
+        
+        function sortTable(column, direction) {
+            console.log('排序:', column, direction);
+            const table = document.querySelector('.station-table');
+            const tbody = table.querySelector('tbody');
+            
+            // 先移除所有active类
+            table.querySelectorAll('.sort-icon').forEach(icon => {
+                icon.classList.remove('active');
+            });
+            
+            // 判断是否点击相同的排序
+            if (currentSort.column === column && currentSort.direction === direction) {
+                // 取消排序
+                currentSort = { column: null, direction: null };
+                console.log('取消排序');
+                return;
+            }
+            
+            // 更新当前排序状态
+            currentSort = { column, direction };
+            
+            // 设置点击的箭头为active
+            const clickedTh = table.querySelector(`th[data-sort="${column}"]`);
+            if (clickedTh) {
+                const arrow = clickedTh.querySelector(`.sort-${direction === 'asc' ? 'up' : 'down'}`);
+                if (arrow) arrow.classList.add('active');
+            }
+            
+            // 执行排序
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            rows.sort((a, b) => {
+                let aValue = 0, bValue = 0;
+                
+                switch(column) {
+                    case 'utilization':
+                        const aUtil = a.cells[3].querySelector('.station-utilization');
+                        const bUtil = b.cells[3].querySelector('.station-utilization');
+                        aValue = aUtil ? parseInt(aUtil.textContent.replace('%', '')) : 0;
+                        bValue = bUtil ? parseInt(bUtil.textContent.replace('%', '')) : 0;
+                        break;
+                    case 'installed':
+                        aValue = parseFloat(a.cells[4].textContent.replace(' MW', '')) || 0;
+                        bValue = parseFloat(b.cells[4].textContent.replace(' MW', '')) || 0;
+                        break;
+                    case 'realtime':
+                        aValue = parseFloat(a.cells[5].textContent.replace(' MW', '')) || 0;
+                        bValue = parseFloat(b.cells[5].textContent.replace(' MW', '')) || 0;
+                        break;
+                }
+                
+                console.log('比较值:', aValue, bValue);
+                
+                // 根据方向排序
+                if (direction === 'asc') {
+                    return aValue - bValue; // 升序
+                } else {
+                    return bValue - aValue; // 降序
+                }
+            });
+            
+            // 重新排列行
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日志管理 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .logs-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card.total {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .stat-card.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .stat-card.warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .stat-card.info {
+            border-left: 4px solid #10b981;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .filters-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        .logs-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .logs-table th,
+        .logs-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .logs-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .logs-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .log-level {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .level-error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .level-warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .level-info {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .level-debug {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .level-success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .log-message {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .log-message:hover {
+            white-space: normal;
+            overflow: visible;
+        }
+
+        .log-source {
+            font-family: monospace;
+            font-size: 12px;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .btn-download {
+            background: #f0fdf4;
+            color: #059669;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .real-time-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            background: #d1d5db;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #3b82f6;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">日志管理</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>日志管理</h1>
+                    <p>系统运行日志查看与管理</p>
+                </div>
+
+                <!-- 统计概览 -->
+                <div class="logs-overview">
+                    <div class="stat-card total">
+                        <div class="stat-number">12,456</div>
+                        <div class="stat-label">总日志数</div>
+                    </div>
+                    <div class="stat-card error">
+                        <div class="stat-number">23</div>
+                        <div class="stat-label">错误日志</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">警告日志</div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-number">12,277</div>
+                        <div class="stat-label">信息日志</div>
+                    </div>
+                </div>
+
+                <!-- 筛选面板 -->
+                <div class="filters-panel">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>日志级别</label>
+                            <select id="log-level">
+                                <option value="">全部级别</option>
+                                <option value="error">错误</option>
+                                <option value="warning">警告</option>
+                                <option value="info">信息</option>
+                                <option value="debug">调试</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>日志源</label>
+                            <select id="log-source">
+                                <option value="">全部来源</option>
+                                <option value="system">系统</option>
+                                <option value="device">设备</option>
+                                <option value="user">用户操作</option>
+                                <option value="api">API调用</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>时间范围</label>
+                            <select id="time-range">
+                                <option value="today">今天</option>
+                                <option value="week">最近7天</option>
+                                <option value="month">最近30天</option>
+                                <option value="custom">自定义</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>关键词</label>
+                            <input type="text" id="keyword" placeholder="搜索日志内容">
+                        </div>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="searchLogs()">搜索</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 日志列表 -->
+                <div class="logs-container">
+                    <div class="table-header">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <h3>系统日志</h3>
+                            <div class="real-time-toggle">
+                                <span>实时刷新</span>
+                                <div class="toggle-switch" onclick="toggleRealTime(this)">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-secondary" onclick="clearLogs()">清空日志</button>
+                            <button class="btn btn-secondary" onclick="exportLogs()">导出日志</button>
+                        </div>
+                    </div>
+
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>级别</th>
+                                <th>来源</th>
+                                <th>消息</th>
+                                <th>用户</th>
+                                <th>IP地址</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-01-24 14:35:23</td>
+                                <td><span class="log-level level-error">错误</span></td>
+                                <td><span class="log-source">device.pcs</span></td>
+                                <td class="log-message">PCS-01设备通信超时，连接失败</td>
+                                <td>系统</td>
+                                <td>192.168.1.100</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-view" onclick="viewLogDetail('log1')">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-24 14:32:15</td>
+                                <td><span class="log-level level-warning">警告</span></td>
+                                <td><span class="log-source">system.auth</span></td>
+                                <td class="log-message">用户张工程师连续3次登录失败</td>
+                                <td>张工程师</td>
+                                <td>192.168.1.105</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-view" onclick="viewLogDetail('log2')">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-24 14:30:08</td>
+                                <td><span class="log-level level-info">信息</span></td>
+                                <td><span class="log-source">user.operation</span></td>
+                                <td class="log-message">用户李运维执行了设备重启操作</td>
+                                <td>李运维</td>
+                                <td>192.168.1.102</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-view" onclick="viewLogDetail('log3')">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-24 14:28:45</td>
+                                <td><span class="log-level level-success">成功</span></td>
+                                <td><span class="log-source">api.request</span></td>
+                                <td class="log-message">数据分析报表生成成功</td>
+                                <td>系统</td>
+                                <td>127.0.0.1</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-view" onclick="viewLogDetail('log4')">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-24 14:25:12</td>
+                                <td><span class="log-level level-debug">调试</span></td>
+                                <td><span class="log-source">system.monitor</span></td>
+                                <td class="log-message">定时任务执行完成，耗时125ms</td>
+                                <td>系统</td>
+                                <td>127.0.0.1</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-view" onclick="viewLogDetail('log5')">详情</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="pagination">
+                        <button onclick="changePage('prev')">&laquo; 上一页</button>
+                        <button class="active">1</button>
+                        <button onclick="changePage(2)">2</button>
+                        <button onclick="changePage(3)">3</button>
+                        <button onclick="changePage(4)">4</button>
+                        <button onclick="changePage(5)">5</button>
+                        <button onclick="changePage('next')">下一页 &raquo;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let realTimeRefresh = false;
+        let refreshInterval;
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 搜索日志
+        function searchLogs() {
+            const level = document.getElementById('log-level').value;
+            const source = document.getElementById('log-source').value;
+            const timeRange = document.getElementById('time-range').value;
+            const keyword = document.getElementById('keyword').value;
+            
+            console.log('搜索日志:', { level, source, timeRange, keyword });
+            showMessage('日志搜索完成', 'success');
+        }
+
+        // 切换实时刷新
+        function toggleRealTime(toggle) {
+            realTimeRefresh = !realTimeRefresh;
+            toggle.classList.toggle('active', realTimeRefresh);
+            
+            if (realTimeRefresh) {
+                showMessage('实时刷新已开启', 'success');
+                refreshInterval = setInterval(refreshLogs, 5000);
+            } else {
+                showMessage('实时刷新已关闭', 'info');
+                clearInterval(refreshInterval);
+            }
+        }
+
+        // 刷新日志
+        function refreshLogs() {
+            console.log('刷新日志数据');
+            // 这里应该从服务器获取最新日志
+        }
+
+        // 查看日志详情
+        function viewLogDetail(logId) {
+            console.log(`查看日志详情: ${logId}`);
+            showMessage(`正在查看日志 ${logId} 详情`, 'info');
+        }
+
+        // 清空日志
+        function clearLogs() {
+            if (confirm('确定要清空所有日志吗？此操作不可恢复！')) {
+                console.log('清空日志');
+                showMessage('日志已清空', 'success');
+            }
+        }
+
+        // 导出日志
+        function exportLogs() {
+            console.log('导出日志');
+            showMessage('日志导出中...', 'info');
+            
+            setTimeout(() => {
+                showMessage('日志导出完成', 'success');
+            }, 2000);
+        }
+
+        // 分页
+        function changePage(page) {
+            console.log('切换到页面:', page);
+        }
+
+        // 监听筛选器变化
+        document.getElementById('log-level').addEventListener('change', searchLogs);
+        document.getElementById('log-source').addEventListener('change', searchLogs);
+        document.getElementById('time-range').addEventListener('change', searchLogs);
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

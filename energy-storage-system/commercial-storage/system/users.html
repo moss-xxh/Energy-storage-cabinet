@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .filters-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 140px;
+        }
+
+        .user-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .user-table th,
+        .user-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .user-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .user-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #6b7280;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-badge.inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .btn-reset {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">用户管理</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>用户管理</h1>
+                    <p>系统用户账户管理</p>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="user-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">24</div>
+                        <div class="stat-label">总用户数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">20</div>
+                        <div class="stat-label">活跃用户</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">管理员</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">本月登录</div>
+                    </div>
+                </div>
+
+                <!-- 筛选面板 -->
+                <div class="filters-panel">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>用户状态</label>
+                            <select id="status-filter">
+                                <option value="">全部状态</option>
+                                <option value="active">活跃</option>
+                                <option value="inactive">禁用</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>用户角色</label>
+                            <select id="role-filter">
+                                <option value="">全部角色</option>
+                                <option value="admin">管理员</option>
+                                <option value="operator">操作员</option>
+                                <option value="viewer">查看者</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>关键词</label>
+                            <input type="text" id="keyword-search" placeholder="搜索用户名或邮箱">
+                        </div>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="searchUsers()">搜索</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 用户表格 -->
+                <div class="user-table">
+                    <div class="table-header">
+                        <h3>用户列表</h3>
+                        <div>
+                            <button class="btn btn-secondary" onclick="exportUsers()">导出</button>
+                            <button class="btn btn-primary" onclick="addUser()">添加用户</button>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>用户信息</th>
+                                <th>角色</th>
+                                <th>部门</th>
+                                <th>状态</th>
+                                <th>最后登录</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👤</div>
+                                        <div class="user-details">
+                                            <div class="user-name">张工程师</div>
+                                            <div class="user-email">zhang.engineer@company.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="role-badge">管理员</span></td>
+                                <td>技术部</td>
+                                <td><span class="status-badge active">活跃</span></td>
+                                <td>2024-01-24 14:30</td>
+                                <td>2024-01-01 09:00</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-edit" onclick="editUser('user1')">编辑</button>
+                                        <button class="btn-action btn-reset" onclick="resetPassword('user1')">重置密码</button>
+                                        <button class="btn-action btn-delete" onclick="deleteUser('user1')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👩</div>
+                                        <div class="user-details">
+                                            <div class="user-name">李运维</div>
+                                            <div class="user-email">li.operator@company.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="role-badge">操作员</span></td>
+                                <td>运维部</td>
+                                <td><span class="status-badge active">活跃</span></td>
+                                <td>2024-01-24 11:15</td>
+                                <td>2024-01-05 14:20</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-edit" onclick="editUser('user2')">编辑</button>
+                                        <button class="btn-action btn-reset" onclick="resetPassword('user2')">重置密码</button>
+                                        <button class="btn-action btn-delete" onclick="deleteUser('user2')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👨</div>
+                                        <div class="user-details">
+                                            <div class="user-name">王分析师</div>
+                                            <div class="user-email">wang.analyst@company.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="role-badge">查看者</span></td>
+                                <td>数据部</td>
+                                <td><span class="status-badge inactive">禁用</span></td>
+                                <td>2024-01-20 16:45</td>
+                                <td>2024-01-10 10:30</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-edit" onclick="editUser('user3')">编辑</button>
+                                        <button class="btn-action btn-reset" onclick="resetPassword('user3')">重置密码</button>
+                                        <button class="btn-action btn-delete" onclick="deleteUser('user3')">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="pagination">
+                        <button onclick="changePage('prev')">&laquo; 上一页</button>
+                        <button class="active">1</button>
+                        <button onclick="changePage(2)">2</button>
+                        <button onclick="changePage(3)">3</button>
+                        <button onclick="changePage('next')">下一页 &raquo;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 搜索用户
+        function searchUsers() {
+            const status = document.getElementById('status-filter').value;
+            const role = document.getElementById('role-filter').value;
+            const keyword = document.getElementById('keyword-search').value;
+            
+            console.log('搜索用户:', { status, role, keyword });
+            showMessage('用户搜索完成', 'success');
+        }
+
+        // 添加用户
+        function addUser() {
+            console.log('添加新用户');
+            showMessage('正在打开添加用户对话框', 'info');
+        }
+
+        // 编辑用户
+        function editUser(userId) {
+            console.log(`编辑用户: ${userId}`);
+            showMessage(`正在编辑用户 ${userId}`, 'info');
+        }
+
+        // 重置密码
+        function resetPassword(userId) {
+            if (confirm(`确定要重置用户 ${userId} 的密码吗？`)) {
+                console.log(`重置密码: ${userId}`);
+                showMessage(`用户 ${userId} 密码已重置`, 'success');
+            }
+        }
+
+        // 删除用户
+        function deleteUser(userId) {
+            if (confirm(`确定要删除用户 ${userId} 吗？`)) {
+                console.log(`删除用户: ${userId}`);
+                showMessage(`用户 ${userId} 已删除`, 'success');
+            }
+        }
+
+        // 导出用户
+        function exportUsers() {
+            console.log('导出用户数据');
+            showMessage('用户数据导出中...', 'info');
+            
+            setTimeout(() => {
+                showMessage('用户数据导出完成', 'success');
+            }, 2000);
+        }
+
+        // 分页
+        function changePage(page) {
+            console.log('切换到页面:', page);
+        }
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

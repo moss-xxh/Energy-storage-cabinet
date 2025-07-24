@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阳光电源控制 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="common-styles.css">
+    <style>
+        /* 阳光电源特定样式 */
+        .brand-header {
+            background: linear-gradient(135deg, #ff6b00 0%, #ff8533 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-logo {
+            width: 120px;
+            height: auto;
+        }
+
+        .model-info {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        /* 运行模式卡片 */
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .mode-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 200ms ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-card.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .mode-card.active::after {
+            content: '✓';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 20px;
+            height: 20px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        .mode-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ff6b00;
+            color: white;
+            border-radius: 50%;
+            font-size: 1.5rem;
+        }
+
+        .mode-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .mode-desc {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* 实时数据监控 */
+        .realtime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .realtime-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .realtime-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .realtime-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .realtime-unit {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        .realtime-trend {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .trend-up {
+            color: #22c55e;
+        }
+
+        .trend-down {
+            color: #ef4444;
+        }
+
+        /* PCS控制面板 */
+        .pcs-panel {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .pcs-header {
+            background: #f8fafc;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pcs-title {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .pcs-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .status-indicator.warning {
+            background: #f59e0b;
+        }
+
+        .status-indicator.error {
+            background: #ef4444;
+        }
+
+        .pcs-content {
+            padding: 1.5rem;
+        }
+
+        /* 充放电策略 */
+        .strategy-timeline {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-chart {
+            height: 200px;
+            background: #f8fafc;
+            border-radius: 0.375rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-axis {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* 高级设置 */
+        .advanced-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .parameter-group {
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        .parameter-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .parameter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .parameter-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .parameter-value {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mini-input {
+            width: 80px;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            text-align: right;
+        }
+
+        /* 告警状态 */
+        .alarm-banner {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alarm-icon {
+            color: #f59e0b;
+            font-size: 1.5rem;
+        }
+
+        .alarm-content {
+            flex: 1;
+        }
+
+        .alarm-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.25rem;
+        }
+
+        .alarm-desc {
+            font-size: 0.875rem;
+            color: #92400e;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .mode-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .realtime-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .advanced-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="../logo.png" alt="AlwaysControl Technology Logo">
+            </div>
+        </div>
+        <nav class="sidebar-menu">
+            <!-- 电站管理（带二级菜单） -->
+            <div class="menu-group">
+                <div class="menu-parent expanded" onclick="toggleSubmenu(this)">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span class="menu-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                            </svg>
+                        </span>
+                        <span>电站</span>
+                    </div>
+                    <span class="menu-arrow">▶</span>
+                </div>
+                <div class="submenu open">
+                    <a href="./station-management.html" class="submenu-item">
+                        <span>电站管理</span>
+                    </a>
+                    <a href="./control.html" class="submenu-item active">
+                        <span>控制</span>
+                    </a>
+                    <a href="./price-settings.html" class="submenu-item">
+                        <span>电价设置</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 其他一级菜单 -->
+            <a href="./data-analysis.html" class="menu-item">
+                <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3v18h18"/>
+                        <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
+                    </svg>
+                </span>
+                <span>数据分析</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                </span>
+                <span>告警管理</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="12" y1="8" x2="12" y2="16"/>
+                        <line x1="8" y1="12" x2="16" y2="12"/>
+                    </svg>
+                </span>
+                <span>设备管理</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="8.5" cy="7" r="4"/>
+                        <line x1="20" y1="8" x2="20" y2="14"/>
+                        <line x1="23" y1="11" x2="17" y2="11"/>
+                    </svg>
+                </span>
+                <span>用户管理</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                </span>
+                <span>报表中心</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+                        <path d="M20.5 7.5L16 12l4.5 4.5M3.5 7.5L8 12l-4.5 4.5"/>
+                    </svg>
+                </span>
+                <span>系统设置</span>
+            </a>
+            
+            <!-- 分隔线 -->
+            <div class="menu-divider"></div>
+            <div class="menu-section-title">品牌控制系统</div>
+            
+            <!-- 品牌控制菜单 -->
+            <a href="./control-sungrow.html" class="menu-item active">
+                <span class="menu-icon" style="background: #ff6b00; color: white; border-radius: 4px; font-size: 14px;">☀️</span>
+                <span>阳光电源</span>
+            </a>
+            <a href="./control-huawei.html" class="menu-item">
+                <span class="menu-icon" style="background: #e60012; color: white; border-radius: 4px; font-size: 14px;">🌟</span>
+                <span>华为智能</span>
+            </a>
+            <a href="./control-tesla.html" class="menu-item">
+                <span class="menu-icon" style="background: #cc0000; color: white; border-radius: 4px; font-size: 14px;">⚡</span>
+                <span>特斯拉</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="content">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="window.location.href='control.html'">
+                    <span>←</span>
+                    <span>返回控制中心</span>
+                </button>
+                <h1 class="page-title">阳光电源控制系统</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 页面内容 -->
+        <div class="page-content">
+            <!-- 品牌信息头部 -->
+            <div class="brand-header">
+                <div class="brand-info">
+                    <div>
+                        <h2>Sungrow PowerStack</h2>
+                        <p class="model-info">型号: ST2752UX-3450 | 容量: 3.45MWh | 固件: V3.2.1</p>
+                    </div>
+                </div>
+                <div class="brand-actions">
+                    <button class="btn btn-secondary" style="background: white; color: #ff6b00;">
+                        <span>📊</span>
+                        <span>导出报告</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 告警提示 -->
+            <div class="alarm-banner">
+                <span class="alarm-icon">⚠️</span>
+                <div class="alarm-content">
+                    <div class="alarm-title">温度告警</div>
+                    <div class="alarm-desc">电池簇3温度偏高(38.5°C)，系统已自动降低充电功率</div>
+                </div>
+                <button class="btn btn-secondary" style="font-size: 0.875rem;">查看详情</button>
+            </div>
+
+            <!-- 通用运行模式选择 -->
+            <section class="control-section" style="background: #f8fafc; border: 2px solid #3b82f6;">
+                <div class="section-header" style="background: #eff6ff;">
+                    <h2 class="section-title" style="color: #1e40af;">通用运行模式</h2>
+                    <span style="font-size: 0.875rem; color: #64748b;">所有品牌共同支持的标准模式</span>
+                </div>
+                <div class="section-content">
+                    <div class="mode-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                        <div class="mode-card active" onclick="selectMode(this, 'peak')">
+                            <div class="mode-icon" style="background: #3b82f6;">📊</div>
+                            <div class="mode-name">削峰填谷</div>
+                            <div class="mode-desc">峰谷电价套利，低充高放</div>
+                        </div>
+                        <div class="mode-card" onclick="selectMode(this, 'demand')">
+                            <div class="mode-icon" style="background: #3b82f6;">⚡</div>
+                            <div class="mode-name">需求响应</div>
+                            <div class="mode-desc">响应电网调度指令</div>
+                        </div>
+                        <div class="mode-card" onclick="selectMode(this, 'backup')">
+                            <div class="mode-icon" style="background: #3b82f6;">🔋</div>
+                            <div class="mode-name">备用电源</div>
+                            <div class="mode-desc">应急备电，保障供电</div>
+                        </div>
+                        <div class="mode-card" onclick="selectMode(this, 'manual')">
+                            <div class="mode-icon" style="background: #3b82f6;">🎛️</div>
+                            <div class="mode-name">手动控制</div>
+                            <div class="mode-desc">自定义充放电参数</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 阳光电源特色模式 -->
+            <section class="control-section" style="margin-top: 1.5rem;">
+                <div class="section-header" style="background: #fff5f0;">
+                    <h2 class="section-title" style="color: #ff6b00;">阳光电源特色功能</h2>
+                </div>
+                <div class="section-content">
+                    <div class="mode-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                        <div class="mode-card" onclick="selectMode(this, 'smart')">
+                            <div class="mode-icon">🤖</div>
+                            <div class="mode-name">AI智能调度</div>
+                            <div class="mode-desc">深度学习优化策略</div>
+                        </div>
+                        <div class="mode-card" onclick="selectMode(this, 'vpp')">
+                            <div class="mode-icon">🌐</div>
+                            <div class="mode-name">虚拟电厂VPP</div>
+                            <div class="mode-desc">聚合调度，辅助服务</div>
+                        </div>
+                        <div class="mode-card" onclick="selectMode(this, 'string')">
+                            <div class="mode-icon">🔗</div>
+                            <div class="mode-name">组串优化</div>
+                            <div class="mode-desc">智能组串均衡管理</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 实时运行数据 -->
+            <section class="control-section">
+                <div class="section-header">
+                    <h2 class="section-title">实时运行数据</h2>
+                    <span style="font-size: 0.875rem; color: #64748b;">更新时间: <span id="update-time">14:35:22</span></span>
+                </div>
+                <div class="section-content">
+                    <div class="realtime-grid">
+                        <div class="realtime-card">
+                            <div class="realtime-label">当前功率</div>
+                            <div class="realtime-value">
+                                1,250<span class="realtime-unit">kW</span>
+                            </div>
+                            <div class="realtime-trend trend-up">
+                                ↑ 充电中
+                            </div>
+                        </div>
+                        <div class="realtime-card">
+                            <div class="realtime-label">电池SOC</div>
+                            <div class="realtime-value">
+                                72.8<span class="realtime-unit">%</span>
+                            </div>
+                            <div class="realtime-trend trend-up">
+                                ↑ +2.3%/h
+                            </div>
+                        </div>
+                        <div class="realtime-card">
+                            <div class="realtime-label">可用容量</div>
+                            <div class="realtime-value">
+                                2.51<span class="realtime-unit">MWh</span>
+                            </div>
+                            <div class="realtime-trend">
+                                总容量: 3.45 MWh
+                            </div>
+                        </div>
+                        <div class="realtime-card">
+                            <div class="realtime-label">系统效率</div>
+                            <div class="realtime-value">
+                                94.6<span class="realtime-unit">%</span>
+                            </div>
+                            <div class="realtime-trend">
+                                双向效率 >90%
+                            </div>
+                        </div>
+                        <div class="realtime-card">
+                            <div class="realtime-label">电网频率</div>
+                            <div class="realtime-value">
+                                50.02<span class="realtime-unit">Hz</span>
+                            </div>
+                            <div class="realtime-trend" style="color: #22c55e;">
+                                ✓ 正常范围
+                            </div>
+                        </div>
+                        <div class="realtime-card">
+                            <div class="realtime-label">环境温度</div>
+                            <div class="realtime-value">
+                                28.5<span class="realtime-unit">°C</span>
+                            </div>
+                            <div class="realtime-trend">
+                                湿度: 65%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PCS控制 -->
+            <div class="pcs-panel">
+                <div class="pcs-header">
+                    <h3 class="pcs-title">PCS变流器控制</h3>
+                    <div class="pcs-status">
+                        <span class="status-indicator"></span>
+                        <span>4台在线运行</span>
+                    </div>
+                </div>
+                <div class="pcs-content">
+                    <div class="control-grid">
+                        <div class="control-item">
+                            <label class="control-label">有功功率设定</label>
+                            <div class="control-value">
+                                <input type="number" class="control-input" value="1250" step="10">
+                                <span class="control-unit">kW</span>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">无功功率设定</label>
+                            <div class="control-value">
+                                <input type="number" class="control-input" value="0" step="10">
+                                <span class="control-unit">kVar</span>
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">功率因数</label>
+                            <div class="control-value">
+                                <input type="number" class="control-input" value="0.99" min="0.8" max="1" step="0.01">
+                            </div>
+                        </div>
+                        <div class="control-item">
+                            <label class="control-label">电压控制模式</label>
+                            <div class="control-value">
+                                <select class="control-input">
+                                    <option>恒功率因数</option>
+                                    <option>恒无功功率</option>
+                                    <option>电压-无功下垂</option>
+                                    <option>恒电压控制</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 削峰填谷闭环控制 -->
+            <section class="control-section" id="peak-valley-control" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">削峰填谷闭环控制</h2>
+                    <div class="section-status">
+                        <span class="status-dot"></span>
+                        <span>闭环运行中</span>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <!-- 电价时段设置 -->
+                    <div class="parameter-group" style="background: white; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+                        <h4 class="parameter-title">电价时段设置</h4>
+                        <div class="control-grid" style="margin-top: 1rem;">
+                            <div class="control-item">
+                                <label class="control-label">峰时段</label>
+                                <div class="control-value" style="display: flex; gap: 0.5rem;">
+                                    <input type="time" class="control-input" value="10:00" style="width: auto;">
+                                    <span>至</span>
+                                    <input type="time" class="control-input" value="15:00" style="width: auto;">
+                                    <input type="number" class="control-input" value="1.2" step="0.01" style="width: 100px;">
+                                    <span class="control-unit">元/kWh</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">平时段</label>
+                                <div class="control-value" style="display: flex; gap: 0.5rem;">
+                                    <input type="time" class="control-input" value="07:00" style="width: auto;">
+                                    <span>至</span>
+                                    <input type="time" class="control-input" value="10:00" style="width: auto;">
+                                    <input type="number" class="control-input" value="0.8" step="0.01" style="width: 100px;">
+                                    <span class="control-unit">元/kWh</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">谷时段</label>
+                                <div class="control-value" style="display: flex; gap: 0.5rem;">
+                                    <input type="time" class="control-input" value="23:00" style="width: auto;">
+                                    <span>至</span>
+                                    <input type="time" class="control-input" value="07:00" style="width: auto;">
+                                    <input type="number" class="control-input" value="0.4" step="0.01" style="width: 100px;">
+                                    <span class="control-unit">元/kWh</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 闭环控制参数 -->
+                    <div class="parameter-group" style="background: white; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+                        <h4 class="parameter-title">闭环控制参数</h4>
+                        <div class="control-grid" style="margin-top: 1rem;">
+                            <div class="control-item">
+                                <label class="control-label">负荷预测算法</label>
+                                <div class="control-value">
+                                    <select class="control-input">
+                                        <option>LSTM神经网络</option>
+                                        <option>ARIMA时序分析</option>
+                                        <option>混合智能算法</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">预测时间窗口</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="24" min="1" max="168">
+                                    <span class="control-unit">小时</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">控制周期</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="15" min="5" max="60">
+                                    <span class="control-unit">分钟</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">SOC安全裕度</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="10" min="5" max="20">
+                                    <span class="control-unit">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 优化目标 -->
+                    <div class="parameter-group" style="background: white; padding: 1.5rem; border-radius: 0.5rem;">
+                        <h4 class="parameter-title">优化目标设置</h4>
+                        <div style="margin-top: 1rem;">
+                            <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
+                                <input type="checkbox" checked style="margin-right: 0.5rem;">
+                                <span>最大化峰谷套利收益</span>
+                            </label>
+                            <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
+                                <input type="checkbox" checked style="margin-right: 0.5rem;">
+                                <span>最小化需量电费</span>
+                            </label>
+                            <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
+                                <input type="checkbox" style="margin-right: 0.5rem;">
+                                <span>延长电池使用寿命</span>
+                            </label>
+                            <label style="display: flex; align-items: center; cursor: pointer;">
+                                <input type="checkbox" style="margin-right: 0.5rem;">
+                                <span>参与电力辅助服务</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 充放电策略 -->
+            <div class="strategy-timeline">
+                <div class="timeline-header">
+                    <h3 class="section-title">24小时充放电计划</h3>
+                    <button class="btn btn-secondary" onclick="editStrategy()">
+                        <span>✏️</span>
+                        <span>编辑策略</span>
+                    </button>
+                </div>
+                <div class="timeline-chart">
+                    <canvas id="strategyChart" style="width: 100%; height: 100%;"></canvas>
+                    <div class="time-axis">
+                        <span>00:00</span>
+                        <span>06:00</span>
+                        <span>12:00</span>
+                        <span>18:00</span>
+                        <span>24:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VPP虚拟电厂控制 -->
+            <section class="control-section" id="vpp-control" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">虚拟电厂(VPP)控制</h2>
+                    <div class="section-status">
+                        <span class="status-dot"></span>
+                        <span>已接入聚合平台</span>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="parameter-group" style="background: white; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+                        <h4 class="parameter-title">VPP参与设置</h4>
+                        <div class="control-grid" style="margin-top: 1rem;">
+                            <div class="control-item">
+                                <label class="control-label">聚合商平台</label>
+                                <div class="control-value">
+                                    <select class="control-input">
+                                        <option>国网虚拟电厂平台</option>
+                                        <option>南网调度平台</option>
+                                        <option>省级电力交易中心</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">可调度容量</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="1500">
+                                    <span class="control-unit">kW</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">响应时间</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="30">
+                                    <span class="control-unit">秒</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">参与市场</label>
+                                <div class="control-value">
+                                    <select class="control-input">
+                                        <option>调频辅助服务</option>
+                                        <option>备用容量市场</option>
+                                        <option>现货电能市场</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 智能运维功能 -->
+            <section class="control-section">
+                <div class="section-header">
+                    <h2 class="section-title">阳光智能运维</h2>
+                </div>
+                <div class="section-content">
+                    <div class="parameter-group" style="background: white; padding: 1.5rem; border-radius: 0.5rem;">
+                        <div class="control-grid">
+                            <div class="control-item">
+                                <label class="control-label">电池健康度SOH</label>
+                                <div class="control-value">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="flex: 1; background: #e2e8f0; height: 20px; border-radius: 10px; overflow: hidden;">
+                                            <div style="width: 96%; height: 100%; background: #22c55e;"></div>
+                                        </div>
+                                        <span style="font-weight: 600;">96%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">预计维护时间</label>
+                                <div class="control-value">
+                                    <span style="color: #64748b;">2024年6月15日</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">AI故障预测</label>
+                                <div class="control-value">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">自动均衡优化</label>
+                                <div class="control-value">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 高级参数设置 -->
+            <section class="control-section">
+                <div class="section-header">
+                    <h2 class="section-title">高级参数设置</h2>
+                </div>
+                <div class="section-content">
+                    <div class="advanced-grid">
+                        <div class="parameter-group">
+                            <h4 class="parameter-title">充电参数</h4>
+                            <div class="parameter-item">
+                                <span class="parameter-label">最大充电功率</span>
+                                <div class="parameter-value">
+                                    <input type="number" class="mini-input" value="1725">
+                                    <span class="control-unit">kW</span>
+                                </div>
+                            </div>
+                            <div class="parameter-item">
+                                <span class="parameter-label">充电截止SOC</span>
+                                <div class="parameter-value">
+                                    <input type="number" class="mini-input" value="95">
+                                    <span class="control-unit">%</span>
+                                </div>
+                            </div>
+                            <div class="parameter-item">
+                                <span class="parameter-label">充电电流限制</span>
+                                <div class="parameter-value">
+                                    <input type="number" class="mini-input" value="0.5">
+                                    <span class="control-unit">C</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="parameter-group">
+                            <h4 class="parameter-title">放电参数</h4>
+                            <div class="parameter-item">
+                                <span class="parameter-label">最大放电功率</span>
+                                <div class="parameter-value">
+                                    <input type="number" class="mini-input" value="1725">
+                                    <span class="control-unit">kW</span>
+                                </div>
+                            </div>
+                            <div class="parameter-item">
+                                <span class="parameter-label">放电截止SOC</span>
+                                <div class="parameter-value">
+                                    <input type="number" class="mini-input" value="10">
+                                    <span class="control-unit">%</span>
+                                </div>
+                            </div>
+                            <div class="parameter-item">
+                                <span class="parameter-label">放电电流限制</span>
+                                <div class="parameter-value">
+                                    <input type="number" class="mini-input" value="0.5">
+                                    <span class="control-unit">C</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="parameter-group">
+                            <h4 class="parameter-title">保护参数</h4>
+                            <div class="parameter-item">
+                                <span class="parameter-label">过温保护</span>
+                                <div class="parameter-value">
+                                    <input type="number" class="mini-input" value="45">
+                                    <span class="control-unit">°C</span>
+                                </div>
+                            </div>
+                            <div class="parameter-item">
+                                <span class="parameter-label">过流保护</span>
+                                <div class="parameter-value">
+                                    <input type="number" class="mini-input" value="120">
+                                    <span class="control-unit">%</span>
+                                </div>
+                            </div>
+                            <div class="parameter-item">
+                                <span class="parameter-label">电压偏差</span>
+                                <div class="parameter-value">
+                                    <input type="number" class="mini-input" value="10">
+                                    <span class="control-unit">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-actions">
+                        <button class="btn btn-primary" onclick="applySettings()">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13.5 5.5L6.5 12.5L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            应用设置
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetSettings()">恢复默认</button>
+                        <button class="btn btn-secondary" onclick="saveTemplate()">保存为模板</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="common-scripts.js"></script>
+    <script>
+        // 阳光电源特定功能
+        let currentMode = 'auto';
+        let strategyData = [];
+
+        // 选择运行模式
+        function selectMode(element, mode) {
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            element.classList.add('active');
+            currentMode = mode;
+            
+            // 根据模式调整参数
+            updateParametersForMode(mode);
+        }
+
+        // 根据模式更新参数
+        function updateParametersForMode(mode) {
+            const modeParams = {
+                // 通用模式参数
+                'peak': { maxPower: 1500, socHigh: 90, socLow: 20 },
+                'demand': { maxPower: 1725, socHigh: 100, socLow: 5 },
+                'backup': { maxPower: 1000, socHigh: 100, socLow: 50 },
+                'manual': { maxPower: 1250, socHigh: 95, socLow: 10 },
+                // 阳光特色模式
+                'smart': { maxPower: 1725, socHigh: 95, socLow: 10 },
+                'vpp': { maxPower: 1725, socHigh: 90, socLow: 15 },
+                'string': { maxPower: 1500, socHigh: 95, socLow: 15 }
+            };
+
+            const params = modeParams[mode];
+            if (params) {
+                // 更新界面参数
+                console.log(`切换到${mode}模式，参数:`, params);
+                
+                // 更新参数显示
+                document.querySelectorAll('input[type="number"]').forEach(input => {
+                    if (input.value === '1725' || input.value === '1500' || input.value === '1000' || input.value === '1250') {
+                        input.value = params.maxPower;
+                    }
+                });
+            }
+            
+            // 显示/隐藏特定模式的控制面板
+            const peakValleyControl = document.getElementById('peak-valley-control');
+            const vppControl = document.getElementById('vpp-control');
+            
+            // 隐藏所有特殊面板
+            if (peakValleyControl) peakValleyControl.style.display = 'none';
+            if (vppControl) vppControl.style.display = 'none';
+            
+            // 根据模式显示相应面板
+            if (mode === 'peak') {
+                if (peakValleyControl) peakValleyControl.style.display = 'block';
+            } else if (mode === 'vpp') {
+                if (vppControl) vppControl.style.display = 'block';
+            }
+        }
+
+        // 应用设置
+        function applySettings() {
+            const settings = {
+                mode: currentMode,
+                activePower: document.querySelector('input[value="1250"]').value,
+                reactivePower: document.querySelector('input[value="0"]').value,
+                // ... 收集其他参数
+            };
+
+            console.log('应用设置:', settings);
+            alert('设置已应用到阳光电源系统');
+        }
+
+        // 重置设置
+        function resetSettings() {
+            if (confirm('确定要恢复默认设置吗？')) {
+                location.reload();
+            }
+        }
+
+        // 保存模板
+        function saveTemplate() {
+            const templateName = prompt('请输入模板名称:');
+            if (templateName) {
+                console.log(`保存模板: ${templateName}`);
+                alert(`模板"${templateName}"已保存`);
+            }
+        }
+
+        // 编辑充放电策略
+        function editStrategy() {
+            alert('打开充放电策略编辑器');
+        }
+
+        // 实时数据更新
+        function updateRealtimeData() {
+            const now = new Date();
+            document.getElementById('update-time').textContent = 
+                now.toTimeString().split(' ')[0];
+
+            // 模拟数据变化
+            const powerValue = 1200 + Math.random() * 100;
+            const socValue = 72.8 + (Math.random() - 0.5) * 0.2;
+            
+            // 更新界面数据
+            // ... 实际项目中从API获取数据
+        }
+
+        // 每5秒更新一次数据
+        setInterval(updateRealtimeData, 5000);
+
+        // 初始化图表
+        function initStrategyChart() {
+            // 使用Canvas或其他图表库绘制充放电策略
+            const canvas = document.getElementById('strategyChart');
+            const ctx = canvas.getContext('2d');
+            
+            // 简单的充放电示意图
+            ctx.fillStyle = '#ff6b00';
+            ctx.fillRect(0, 50, 100, 50); // 充电时段
+            ctx.fillStyle = '#22c55e';
+            ctx.fillRect(150, 100, 100, 50); // 放电时段
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initStrategyChart();
+            updateRealtimeData();
+        });
+    </script>
+</body>
+</html>

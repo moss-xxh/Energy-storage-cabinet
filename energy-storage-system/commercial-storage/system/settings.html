@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .settings-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        .settings-nav {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #64748b;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #eff6ff;
+            color: #3b82f6;
+        }
+
+        .settings-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .setting-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .setting-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-name {
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .setting-desc {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: #d1d5db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #3b82f6;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 200px;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">系统设置</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>系统设置</h1>
+                    <p>系统配置与参数管理</p>
+                </div>
+
+                <div class="settings-container">
+                    <!-- 设置导航 -->
+                    <div class="settings-nav">
+                        <a href="#general" class="nav-item active" onclick="showSection('general')">常规设置</a>
+                        <a href="#notification" class="nav-item" onclick="showSection('notification')">通知设置</a>
+                        <a href="#security" class="nav-item" onclick="showSection('security')">安全设置</a>
+                        <a href="#data" class="nav-item" onclick="showSection('data')">数据设置</a>
+                        <a href="#backup" class="nav-item" onclick="showSection('backup')">备份设置</a>
+                    </div>
+
+                    <!-- 设置内容 -->
+                    <div class="settings-content">
+                        <!-- 常规设置 -->
+                        <div id="general-section" class="setting-section">
+                            <h2 class="section-title">常规设置</h2>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">系统名称</div>
+                                    <div class="setting-desc">设置系统显示名称</div>
+                                </div>
+                                <div class="setting-control">
+                                    <input type="text" value="工商储能管理系统" style="width: 250px;">
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">默认语言</div>
+                                    <div class="setting-desc">设置系统默认语言</div>
+                                </div>
+                                <div class="setting-control">
+                                    <select>
+                                        <option value="zh-CN">中文（简体）</option>
+                                        <option value="en-US">English</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">时区设置</div>
+                                    <div class="setting-desc">设置系统时区</div>
+                                </div>
+                                <div class="setting-control">
+                                    <select>
+                                        <option value="Asia/Shanghai">Asia/Shanghai (UTC+8)</option>
+                                        <option value="UTC">UTC (UTC+0)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">数据刷新间隔</div>
+                                    <div class="setting-desc">设置实时数据刷新频率</div>
+                                </div>
+                                <div class="setting-control">
+                                    <select>
+                                        <option value="5">5秒</option>
+                                        <option value="10" selected>10秒</option>
+                                        <option value="30">30秒</option>
+                                        <option value="60">1分钟</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 通知设置 -->
+                        <div id="notification-section" class="setting-section" style="display: none;">
+                            <h2 class="section-title">通知设置</h2>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">邮件通知</div>
+                                    <div class="setting-desc">启用或关闭邮件通知功能</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">短信通知</div>
+                                    <div class="setting-desc">启用或关闭短信通知功能</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="toggle-switch" onclick="toggleSwitch(this)">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">微信通知</div>
+                                    <div class="setting-desc">启用或关闭微信推送通知</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">SMTP服务器</div>
+                                    <div class="setting-desc">邮件服务器配置</div>
+                                </div>
+                                <div class="setting-control">
+                                    <input type="text" value="smtp.company.com" style="width: 200px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 安全设置 -->
+                        <div id="security-section" class="setting-section" style="display: none;">
+                            <h2 class="section-title">安全设置</h2>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">登录失败限制</div>
+                                    <div class="setting-desc">连续登录失败次数限制</div>
+                                </div>
+                                <div class="setting-control">
+                                    <select>
+                                        <option value="3">3次</option>
+                                        <option value="5" selected>5次</option>
+                                        <option value="10">10次</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">账户锁定时间</div>
+                                    <div class="setting-desc">账户锁定持续时间</div>
+                                </div>
+                                <div class="setting-control">
+                                    <select>
+                                        <option value="15">15分钟</option>
+                                        <option value="30" selected>30分钟</option>
+                                        <option value="60">1小时</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">会话超时</div>
+                                    <div class="setting-desc">用户会话超时时间</div>
+                                </div>
+                                <div class="setting-control">
+                                    <select>
+                                        <option value="30">30分钟</option>
+                                        <option value="60">1小时</option>
+                                        <option value="240" selected>4小时</option>
+                                        <option value="480">8小时</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">强制HTTPS</div>
+                                    <div class="setting-desc">强制使用HTTPS连接</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 数据设置 -->
+                        <div id="data-section" class="setting-section" style="display: none;">
+                            <h2 class="section-title">数据设置</h2>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">数据保留期限</div>
+                                    <div class="setting-desc">历史数据保存时间</div>
+                                </div>
+                                <div class="setting-control">
+                                    <select>
+                                        <option value="30">30天</option>
+                                        <option value="90">90天</option>
+                                        <option value="365" selected>1年</option>
+                                        <option value="1095">3年</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">自动数据清理</div>
+                                    <div class="setting-desc">自动清理过期数据</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">数据压缩</div>
+                                    <div class="setting-desc">启用数据压缩存储</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 备份设置 -->
+                        <div id="backup-section" class="setting-section" style="display: none;">
+                            <h2 class="section-title">备份设置</h2>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">自动备份</div>
+                                    <div class="setting-desc">启用自动数据备份</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                                        <div class="toggle-slider"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">备份频率</div>
+                                    <div class="setting-desc">设置备份执行频率</div>
+                                </div>
+                                <div class="setting-control">
+                                    <select>
+                                        <option value="daily" selected>每天</option>
+                                        <option value="weekly">每周</option>
+                                        <option value="monthly">每月</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">备份保留</div>
+                                    <div class="setting-desc">备份文件保留数量</div>
+                                </div>
+                                <div class="setting-control">
+                                    <select>
+                                        <option value="7" selected>7个</option>
+                                        <option value="14">14个</option>
+                                        <option value="30">30个</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-name">立即备份</div>
+                                    <div class="setting-desc">手动执行数据备份</div>
+                                </div>
+                                <div class="setting-control">
+                                    <button class="btn btn-primary" onclick="performBackup()">开始备份</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 保存按钮 -->
+                        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+                            <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+                            <button class="btn btn-secondary" onclick="resetSettings()">重置设置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 显示指定设置区域
+        function showSection(sectionName) {
+            // 隐藏所有区域
+            document.querySelectorAll('.setting-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // 显示指定区域
+            document.getElementById(sectionName + '-section').style.display = 'block';
+            
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // 切换开关
+        function toggleSwitch(switchElement) {
+            switchElement.classList.toggle('active');
+        }
+
+        // 保存设置
+        function saveSettings() {
+            showMessage('设置保存中...', 'info');
+            
+            // 模拟保存过程
+            setTimeout(() => {
+                showMessage('设置保存成功', 'success');
+            }, 1500);
+        }
+
+        // 重置设置
+        function resetSettings() {
+            if (confirm('确定要重置所有设置到默认值吗？')) {
+                showMessage('设置已重置', 'success');
+            }
+        }
+
+        // 执行备份
+        function performBackup() {
+            showMessage('开始备份数据...', 'info');
+            
+            // 模拟备份过程
+            setTimeout(() => {
+                showMessage('数据备份完成', 'success');
+            }, 3000);
+        }
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

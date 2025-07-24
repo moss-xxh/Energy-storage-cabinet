@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>报表模板 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .template-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .template-preview {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .template-info {
+            padding: 1.5rem;
+        }
+
+        .template-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .template-description {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .template-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-use {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-preview {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-edit {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">报表模板</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>报表模板</h1>
+                    <p>管理和编辑报表模板</p>
+                </div>
+
+                <div class="template-header">
+                    <h2>可用模板</h2>
+                    <div>
+                        <button class="btn btn-secondary" onclick="importTemplate()">导入模板</button>
+                        <button class="btn btn-primary" onclick="createTemplate()">创建模板</button>
+                    </div>
+                </div>
+
+                <div class="template-grid">
+                    <!-- 模板卡片 -->
+                    <div class="template-card">
+                        <div class="template-preview">📊</div>
+                        <div class="template-info">
+                            <h3 class="template-name">能耗分析报表</h3>
+                            <p class="template-description">包含能耗趋势、效率分析、成本统计等数据的综合性报表模板</p>
+                            <div class="template-meta">
+                                <span>创建时间: 2024-01-15</span>
+                                <span>使用次数: 25</span>
+                            </div>
+                            <div class="template-actions">
+                                <button class="btn-action btn-use" onclick="useTemplate('energy-analysis')">使用</button>
+                                <button class="btn-action btn-preview" onclick="previewTemplate('energy-analysis')">预览</button>
+                                <button class="btn-action btn-edit" onclick="editTemplate('energy-analysis')">编辑</button>
+                                <button class="btn-action btn-delete" onclick="deleteTemplate('energy-analysis')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="template-card">
+                        <div class="template-preview">⚠️</div>
+                        <div class="template-info">
+                            <h3 class="template-name">告警统计报表</h3>
+                            <p class="template-description">展示告警发生频率、处理时间、严重程度分布等告警相关统计信息</p>
+                            <div class="template-meta">
+                                <span>创建时间: 2024-01-10</span>
+                                <span>使用次数: 18</span>
+                            </div>
+                            <div class="template-actions">
+                                <button class="btn-action btn-use" onclick="useTemplate('alarm-stats')">使用</button>
+                                <button class="btn-action btn-preview" onclick="previewTemplate('alarm-stats')">预览</button>
+                                <button class="btn-action btn-edit" onclick="editTemplate('alarm-stats')">编辑</button>
+                                <button class="btn-action btn-delete" onclick="deleteTemplate('alarm-stats')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="template-card">
+                        <div class="template-preview">⚙️</div>
+                        <div class="template-info">
+                            <h3 class="template-name">设备运行报表</h3>
+                            <p class="template-description">设备运行状态、可用率、维护记录等设备相关数据的统计报表</p>
+                            <div class="template-meta">
+                                <span>创建时间: 2024-01-08</span>
+                                <span>使用次数: 32</span>
+                            </div>
+                            <div class="template-actions">
+                                <button class="btn-action btn-use" onclick="useTemplate('device-operation')">使用</button>
+                                <button class="btn-action btn-preview" onclick="previewTemplate('device-operation')">预览</button>
+                                <button class="btn-action btn-edit" onclick="editTemplate('device-operation')">编辑</button>
+                                <button class="btn-action btn-delete" onclick="deleteTemplate('device-operation')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="template-card">
+                        <div class="template-preview">💰</div>
+                        <div class="template-info">
+                            <h3 class="template-name">经济效益报表</h3>
+                            <p class="template-description">投资回报率、收益分析、成本效益等经济指标的详细分析报表</p>
+                            <div class="template-meta">
+                                <span>创建时间: 2024-01-05</span>
+                                <span>使用次数: 15</span>
+                            </div>
+                            <div class="template-actions">
+                                <button class="btn-action btn-use" onclick="useTemplate('economic-benefit')">使用</button>
+                                <button class="btn-action btn-preview" onclick="previewTemplate('economic-benefit')">预览</button>
+                                <button class="btn-action btn-edit" onclick="editTemplate('economic-benefit')">编辑</button>
+                                <button class="btn-action btn-delete" onclick="deleteTemplate('economic-benefit')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 使用模板
+        function useTemplate(templateId) {
+            console.log(`使用模板: ${templateId}`);
+            window.location.href = `./create.html?template=${templateId}`;
+        }
+
+        // 预览模板
+        function previewTemplate(templateId) {
+            console.log(`预览模板: ${templateId}`);
+            showMessage(`正在打开模板预览: ${templateId}`, 'info');
+        }
+
+        // 编辑模板
+        function editTemplate(templateId) {
+            console.log(`编辑模板: ${templateId}`);
+            showMessage(`正在打开模板编辑器: ${templateId}`, 'info');
+        }
+
+        // 删除模板
+        function deleteTemplate(templateId) {
+            if (confirm(`确定要删除模板 ${templateId} 吗？`)) {
+                console.log(`删除模板: ${templateId}`);
+                showMessage(`模板 ${templateId} 已删除`, 'success');
+            }
+        }
+
+        // 导入模板
+        function importTemplate() {
+            console.log('导入模板');
+            showMessage('模板导入功能待实现', 'info');
+        }
+
+        // 创建模板
+        function createTemplate() {
+            console.log('创建新模板');
+            showMessage('正在打开模板创建器', 'info');
+        }
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

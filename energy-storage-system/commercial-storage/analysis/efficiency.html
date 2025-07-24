@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>效率分析 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .efficiency-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .efficiency-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .efficiency-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #3b82f6;
+        }
+
+        .efficiency-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .efficiency-label {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+        }
+
+        .efficiency-trend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 14px;
+        }
+
+        .trend-positive {
+            color: #059669;
+        }
+
+        .trend-negative {
+            color: #dc2626;
+        }
+
+        .trend-neutral {
+            color: #64748b;
+        }
+
+        .progress-ring {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            position: relative;
+        }
+
+        .progress-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 8;
+        }
+
+        .progress-ring .bg-circle {
+            stroke: #e5e7eb;
+        }
+
+        .progress-ring .progress-circle {
+            stroke: #3b82f6;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.3s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: #f8fafc;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .efficiency-metrics {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .metric-item:last-child {
+            border-bottom: none;
+        }
+
+        .metric-name {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .metric-value {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metric-number {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .metric-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-good {
+            background: #10b981;
+        }
+
+        .status-warning {
+            background: #f59e0b;
+        }
+
+        .status-poor {
+            background: #ef4444;
+        }
+
+        .filters-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        .efficiency-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .efficiency-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .efficiency-table th,
+        .efficiency-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .efficiency-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .efficiency-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .efficiency-excellent {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .efficiency-good {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .efficiency-fair {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .efficiency-poor {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">效率分析</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>效率分析</h1>
+                    <p>系统运行效率监控与分析</p>
+                </div>
+
+                <!-- 筛选面板 -->
+                <div class="filters-panel">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>时间范围</label>
+                            <select id="time-range">
+                                <option value="today">今日</option>
+                                <option value="week">本周</option>
+                                <option value="month" selected>本月</option>
+                                <option value="quarter">本季度</option>
+                                <option value="year">本年</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>电站选择</label>
+                            <select id="station-filter">
+                                <option value="">全部电站</option>
+                                <option value="station1">张江储能站</option>
+                                <option value="station2">浦东储能站</option>
+                                <option value="station3">徐汇储能站</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>效率类型</label>
+                            <select id="efficiency-type">
+                                <option value="all">全部类型</option>
+                                <option value="charge">充电效率</option>
+                                <option value="discharge">放电效率</option>
+                                <option value="roundtrip">往复效率</option>
+                            </select>
+                        </div>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="updateEfficiencyAnalysis()">更新分析</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 效率概览 -->
+                <div class="efficiency-overview">
+                    <div class="efficiency-card">
+                        <div class="progress-ring">
+                            <svg>
+                                <circle class="bg-circle" cx="40" cy="40" r="30"></circle>
+                                <circle class="progress-circle" cx="40" cy="40" r="30" 
+                                        stroke-dasharray="188.5" stroke-dashoffset="28.3"></circle>
+                            </svg>
+                            <div class="progress-text">85%</div>
+                        </div>
+                        <div class="efficiency-label">总体效率</div>
+                        <div class="efficiency-trend trend-positive">
+                            ↑ 2.3% 较上期
+                        </div>
+                    </div>
+
+                    <div class="efficiency-card">
+                        <div class="efficiency-value">92.4%</div>
+                        <div class="efficiency-label">充电效率</div>
+                        <div class="efficiency-trend trend-positive">
+                            ↑ 1.8% 较上期
+                        </div>
+                    </div>
+
+                    <div class="efficiency-card">
+                        <div class="efficiency-value">88.7%</div>
+                        <div class="efficiency-label">放电效率</div>
+                        <div class="efficiency-trend trend-neutral">
+                            - 0.2% 较上期
+                        </div>
+                    </div>
+
+                    <div class="efficiency-card">
+                        <div class="efficiency-value">81.9%</div>
+                        <div class="efficiency-label">往复效率</div>
+                        <div class="efficiency-trend trend-positive">
+                            ↑ 1.5% 较上期
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分析图表与指标 -->
+                <div class="analysis-grid">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">效率趋势分析</h3>
+                            <select onchange="updateChart(this.value)">
+                                <option value="daily">按日</option>
+                                <option value="hourly">按小时</option>
+                                <option value="weekly">按周</option>
+                            </select>
+                        </div>
+                        <div class="chart-placeholder">
+                            📈 效率趋势图表
+                        </div>
+                    </div>
+
+                    <div class="efficiency-metrics">
+                        <div class="chart-header">
+                            <h3 class="chart-title">关键指标</h3>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">平均效率</span>
+                            <div class="metric-value">
+                                <span class="metric-number">85.2%</span>
+                                <div class="metric-status status-good"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">最高效率</span>
+                            <div class="metric-value">
+                                <span class="metric-number">94.8%</span>
+                                <div class="metric-status status-good"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">最低效率</span>
+                            <div class="metric-value">
+                                <span class="metric-number">72.3%</span>
+                                <div class="metric-status status-warning"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">效率方差</span>
+                            <div class="metric-value">
+                                <span class="metric-number">8.2%</span>
+                                <div class="metric-status status-good"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">低效时长</span>
+                            <div class="metric-value">
+                                <span class="metric-number">12.5h</span>
+                                <div class="metric-status status-warning"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 效率对比图表 -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">设备效率对比</h3>
+                        <select onchange="updateComparisonChart(this.value)">
+                            <option value="device">按设备</option>
+                            <option value="station">按电站</option>
+                            <option value="type">按类型</option>
+                        </select>
+                    </div>
+                    <div class="chart-placeholder">
+                        📊 设备效率对比柱状图
+                    </div>
+                </div>
+
+                <!-- 详细数据表 -->
+                <div class="efficiency-table">
+                    <div class="table-header">
+                        <h3>设备效率详情</h3>
+                        <div>
+                            <button class="btn btn-secondary" onclick="exportEfficiencyData()">导出数据</button>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>设备名称</th>
+                                <th>设备类型</th>
+                                <th>所属电站</th>
+                                <th>充电效率</th>
+                                <th>放电效率</th>
+                                <th>往复效率</th>
+                                <th>运行时长</th>
+                                <th>效率等级</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PCS-01</td>
+                                <td>PCS系统</td>
+                                <td>张江储能站</td>
+                                <td>94.2%</td>
+                                <td>92.8%</td>
+                                <td>87.5%</td>
+                                <td>23.5h</td>
+                                <td><span class="efficiency-badge efficiency-excellent">优秀</span></td>
+                            </tr>
+                            <tr>
+                                <td>BATT-01</td>
+                                <td>电池系统</td>
+                                <td>张江储能站</td>
+                                <td>96.8%</td>
+                                <td>95.2%</td>
+                                <td>92.1%</td>
+                                <td>22.8h</td>
+                                <td><span class="efficiency-badge efficiency-excellent">优秀</span></td>
+                            </tr>
+                            <tr>
+                                <td>PCS-02</td>
+                                <td>PCS系统</td>
+                                <td>浦东储能站</td>
+                                <td>89.3%</td>
+                                <td>87.6%</td>
+                                <td>78.2%</td>
+                                <td>24.0h</td>
+                                <td><span class="efficiency-badge efficiency-good">良好</span></td>
+                            </tr>
+                            <tr>
+                                <td>BATT-02</td>
+                                <td>电池系统</td>
+                                <td>浦东储能站</td>
+                                <td>85.7%</td>
+                                <td>82.4%</td>
+                                <td>70.6%</td>
+                                <td>20.2h</td>
+                                <td><span class="efficiency-badge efficiency-fair">一般</span></td>
+                            </tr>
+                            <tr>
+                                <td>PCS-03</td>
+                                <td>PCS系统</td>
+                                <td>徐汇储能站</td>
+                                <td>76.8%</td>
+                                <td>74.2%</td>
+                                <td>57.0%</td>
+                                <td>18.5h</td>
+                                <td><span class="efficiency-badge efficiency-poor">较差</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 更新效率分析
+        function updateEfficiencyAnalysis() {
+            const timeRange = document.getElementById('time-range').value;
+            const station = document.getElementById('station-filter').value;
+            const efficiencyType = document.getElementById('efficiency-type').value;
+            
+            console.log('更新效率分析:', { timeRange, station, efficiencyType });
+            showMessage('效率分析数据已更新', 'success');
+        }
+
+        // 更新图表
+        function updateChart(type) {
+            console.log('更新趋势图表:', type);
+            showMessage(`切换到${type === 'daily' ? '日' : type === 'hourly' ? '小时' : '周'}视图`, 'info');
+        }
+
+        // 更新对比图表
+        function updateComparisonChart(type) {
+            console.log('更新对比图表:', type);
+            const typeText = type === 'device' ? '设备' : type === 'station' ? '电站' : '类型';
+            showMessage(`切换到按${typeText}对比视图`, 'info');
+        }
+
+        // 导出效率数据
+        function exportEfficiencyData() {
+            console.log('导出效率分析数据');
+            showMessage('效率数据导出中...', 'info');
+            
+            setTimeout(() => {
+                showMessage('效率数据导出完成', 'success');
+            }, 2000);
+        }
+
+        // 监听筛选器变化
+        document.getElementById('time-range').addEventListener('change', updateEfficiencyAnalysis);
+        document.getElementById('station-filter').addEventListener('change', updateEfficiencyAnalysis);
+        document.getElementById('efficiency-type').addEventListener('change', updateEfficiencyAnalysis);
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建报表 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .create-form {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            font-size: 1.125rem;
+            font-weight: 600;    
+            color: #1e293b;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .data-source-section {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-preview {
+            border: 2px dashed #d1d5db;
+            border-radius: 6px;
+            padding: 2rem;
+            text-align: center;
+            color: #64748b;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">创建报表</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>创建报表</h1>
+                    <p>自定义报表生成器</p>
+                </div>
+
+                <form class="create-form" id="report-form">
+                    <!-- 基本信息 -->
+                    <div class="form-section">
+                        <h3>基本信息</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>报表名称 *</label>
+                                <input type="text" id="report-name" required placeholder="输入报表名称">
+                            </div>
+                            <div class="form-group">
+                                <label>报表类型 *</label>
+                                <select id="report-type" required>
+                                    <option value="">请选择类型</option>
+                                    <option value="daily">日报</option>
+                                    <option value="weekly">周报</option>
+                                    <option value="monthly">月报</option>
+                                    <option value="custom">自定义</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>报表描述</label>
+                            <textarea id="report-description" placeholder="输入报表描述"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- 数据源 -->
+                    <div class="form-section">
+                        <h3>数据源选择</h3>
+                        <div class="data-source-section">
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="data-energy" checked>
+                                    <label for="data-energy">能耗数据</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="data-power">
+                                    <label for="data-power">功率数据</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="data-device">
+                                    <label for="data-device">设备状态</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="data-alarm">
+                                    <label for="data-alarm">告警信息</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="data-economic">
+                                    <label for="data-economic">经济数据</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="data-efficiency">
+                                    <label for="data-efficiency">效率指标</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 时间设置 -->
+                    <div class="form-section">
+                        <h3>时间设置</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>开始时间 *</label>
+                                <input type="datetime-local" id="start-time" required>
+                            </div>
+                            <div class="form-group">
+                                <label>结束时间 *</label>
+                                <input type="datetime-local" id="end-time" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>生成频率</label>
+                                <select id="frequency">
+                                    <option value="once">仅一次</option>
+                                    <option value="daily">每日</option>
+                                    <option value="weekly">每周</option>
+                                    <option value="monthly">每月</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>生成时间</label>
+                                <input type="time" id="generate-time" value="08:00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 格式设置 -->
+                    <div class="form-section">
+                        <h3>输出格式</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>文件格式 *</label>
+                                <select id="output-format" required>
+                                    <option value="pdf">PDF</option>
+                                    <option value="excel">Excel</option>
+                                    <option value="word">Word</option>
+                                    <option value="html">HTML</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>图表样式</label>
+                                <select id="chart-style">
+                                    <option value="modern">现代风格</option>
+                                    <option value="classic">经典风格</option>
+                                    <option value="minimal">简约风格</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 预览 -->
+                    <div class="form-section">
+                        <h3>报表预览</h3>
+                        <div class="chart-preview">
+                            <p>选择数据源后将显示报表预览</p>
+                            <button type="button" class="btn btn-secondary" onclick="generatePreview()">生成预览</button>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='./list.html'">取消</button>
+                        <button type="button" class="btn btn-secondary" onclick="saveAsDraft()">保存草稿</button>
+                        <button type="submit" class="btn btn-primary">创建报表</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 设置默认时间
+            setDefaultTime();
+        });
+
+        // 设置默认时间
+        function setDefaultTime() {
+            const now = new Date();
+            const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+            
+            document.getElementById('start-time').value = yesterday.toISOString().slice(0, 16);
+            document.getElementById('end-time').value = now.toISOString().slice(0, 16);
+        }
+
+        // 生成预览
+        function generatePreview() {
+            const selectedData = [];
+            document.querySelectorAll('.checkbox-item input:checked').forEach(checkbox => {
+                selectedData.push(checkbox.id);
+            });
+            
+            if (selectedData.length === 0) {
+                showMessage('请选择至少一个数据源', 'warning');
+                return;
+            }
+            
+            showMessage('正在生成预览...', 'info');
+            
+            setTimeout(() => {
+                const preview = document.querySelector('.chart-preview');
+                preview.innerHTML = `
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 4px;">
+                        <h4>报表预览</h4>
+                        <p>已选择数据源: ${selectedData.length} 个</p>
+                        <p>预计生成时间: 2-3分钟</p>
+                        <p>预计文件大小: 3.2 MB</p>
+                    </div>
+                `;
+                showMessage('预览生成完成', 'success');
+            }, 2000);
+        }
+
+        // 保存草稿
+        function saveAsDraft() {
+            const formData = collectFormData();
+            console.log('保存草稿:', formData);
+            showMessage('草稿已保存', 'success');
+        }
+
+        // 收集表单数据
+        function collectFormData() {
+            const selectedData = [];
+            document.querySelectorAll('.checkbox-item input:checked').forEach(checkbox => {
+                selectedData.push(checkbox.id);
+            });
+            
+            return {
+                name: document.getElementById('report-name').value,
+                type: document.getElementById('report-type').value,
+                description: document.getElementById('report-description').value,
+                dataSources: selectedData,
+                startTime: document.getElementById('start-time').value,
+                endTime: document.getElementById('end-time').value,
+                frequency: document.getElementById('frequency').value,
+                generateTime: document.getElementById('generate-time').value,
+                outputFormat: document.getElementById('output-format').value,
+                chartStyle: document.getElementById('chart-style').value
+            };
+        }
+
+        // 表单提交
+        document.getElementById('report-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = collectFormData();
+            
+            if (!formData.name || !formData.type || !formData.startTime || !formData.endTime) {
+                showMessage('请填写必填字段', 'error');
+                return;
+            }
+            
+            if (formData.dataSources.length === 0) {
+                showMessage('请选择至少一个数据源', 'warning');
+                return;
+            }
+            
+            console.log('创建报表:', formData);
+            showMessage('报表创建中，请稍候...', 'info');
+            
+            // 模拟报表生成过程
+            setTimeout(() => {
+                showMessage('报表创建成功', 'success');
+                setTimeout(() => {
+                    window.location.href = './list.html';
+                }, 1500);
+            }, 3000);
+        });
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

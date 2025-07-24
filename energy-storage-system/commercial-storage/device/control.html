@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>远程控制 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .control-header {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .control-filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 160px;
+        }
+
+        .control-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .device-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #3b82f6;
+        }
+
+        .device-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .device-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .device-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .device-status.online {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .device-status.offline {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .device-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+        }
+
+        .info-label {
+            color: #64748b;
+        }
+
+        .info-value {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .control-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .control-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .btn-start {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-start:hover {
+            background: #059669;
+        }
+
+        .btn-stop {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-stop:hover {
+            background: #dc2626;
+        }
+
+        .btn-charge {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-charge:hover {
+            background: #2563eb;
+        }
+
+        .btn-discharge {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-discharge:hover {
+            background: #d97706;
+        }
+
+        .btn-reset {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #4b5563;
+        }
+
+        .btn-config {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .btn-config:hover {
+            background: #7c3aed;
+        }
+
+        .control-btn:disabled {
+            background: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .batch-control {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .batch-control h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .batch-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .batch-select {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">远程控制</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>远程控制</h1>
+                    <p>设备远程控制与操作管理</p>
+                </div>
+
+                <!-- 筛选控制 -->
+                <div class="control-header">
+                    <div class="control-filters">
+                        <div class="filter-group">
+                            <label>电站选择</label>
+                            <select id="station-filter">
+                                <option value="">全部电站</option>
+                                <option value="1">上海工业园储能站</option>
+                                <option value="2">深圳华为储能电站</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>设备类型</label>
+                            <select id="device-type-filter">
+                                <option value="">全部类型</option>
+                                <option value="储能柜">储能柜</option>
+                                <option value="变流器">变流器</option>
+                                <option value="BMS">电池管理系统</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>运行状态</label>
+                            <select id="status-filter">
+                                <option value="">全部状态</option>
+                                <option value="online">在线</option>
+                                <option value="offline">离线</option>
+                            </select>
+                        </div>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="filterDevices()">筛选</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 批量控制 -->
+                <div class="batch-control">
+                    <h3>批量控制</h3>
+                    <div class="batch-actions">
+                        <div class="batch-select">
+                            <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                            <label for="select-all">全选</label>
+                        </div>
+                        <button class="control-btn btn-start" onclick="batchControl('start')">批量启动</button>
+                        <button class="control-btn btn-stop" onclick="batchControl('stop')">批量停止</button>
+                        <button class="control-btn btn-charge" onclick="batchControl('charge')">批量充电</button>
+                        <button class="control-btn btn-discharge" onclick="batchControl('discharge')">批量放电</button>
+                        <button class="control-btn btn-reset" onclick="batchControl('reset')">批量复位</button>
+                    </div>
+                </div>
+
+                <!-- 设备控制面板 -->
+                <div class="control-dashboard" id="device-dashboard">
+                    <!-- 储能柜控制卡片 -->
+                    <div class="device-card">
+                        <div class="device-header">
+                            <div>
+                                <input type="checkbox" class="device-select" data-device="ESS-Cabinet-01">
+                                <span class="device-name">储能柜001</span>
+                            </div>
+                            <span class="device-status online">在线</span>
+                        </div>
+                        <div class="device-info">
+                            <div class="info-row">
+                                <span class="info-label">设备编号:</span>
+                                <span class="info-value">ESS-Cabinet-01</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">当前功率:</span>
+                                <span class="info-value">450 kW</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">SOC:</span>
+                                <span class="info-value">68%</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">运行模式:</span>
+                                <span class="info-value">充电模式</span>
+                            </div>
+                        </div>
+                        <div class="control-buttons">
+                            <button class="control-btn btn-start" onclick="deviceControl('ESS-Cabinet-01', 'start')">启动</button>
+                            <button class="control-btn btn-stop" onclick="deviceControl('ESS-Cabinet-01', 'stop')">停止</button>
+                            <button class="control-btn btn-charge" onclick="deviceControl('ESS-Cabinet-01', 'charge')">充电</button>
+                            <button class="control-btn btn-discharge" onclick="deviceControl('ESS-Cabinet-01', 'discharge')">放电</button>
+                            <button class="control-btn btn-reset" onclick="deviceControl('ESS-Cabinet-01', 'reset')">复位</button>
+                            <button class="control-btn btn-config" onclick="showConfigModal('ESS-Cabinet-01')">配置</button>
+                        </div>
+                    </div>
+
+                    <!-- 变流器控制卡片 -->
+                    <div class="device-card">
+                        <div class="device-header">
+                            <div>
+                                <input type="checkbox" class="device-select" data-device="PCS-01">
+                                <span class="device-name">变流器001</span>
+                            </div>
+                            <span class="device-status online">在线</span>
+                        </div>
+                        <div class="device-info">
+                            <div class="info-row">
+                                <span class="info-label">设备编号:</span>
+                                <span class="info-value">PCS-01</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">输出功率:</span>
+                                <span class="info-value">320 kW</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">电压:</span>
+                                <span class="info-value">380 V</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">频率:</span>
+                                <span class="info-value">50.0 Hz</span>
+                            </div>
+                        </div>
+                        <div class="control-buttons">
+                            <button class="control-btn btn-start" onclick="deviceControl('PCS-01', 'start')">启动</button>
+                            <button class="control-btn btn-stop" onclick="deviceControl('PCS-01', 'stop')">停止</button>
+                            <button class="control-btn btn-charge" onclick="deviceControl('PCS-01', 'charge')">充电</button>
+                            <button class="control-btn btn-discharge" onclick="deviceControl('PCS-01', 'discharge')">放电</button>
+                            <button class="control-btn btn-reset" onclick="deviceControl('PCS-01', 'reset')">复位</button>
+                            <button class="control-btn btn-config" onclick="showConfigModal('PCS-01')">配置</button>
+                        </div>
+                    </div>
+
+                    <!-- BMS控制卡片 -->
+                    <div class="device-card">
+                        <div class="device-header">
+                            <div>
+                                <input type="checkbox" class="device-select" data-device="BMS-01">
+                                <span class="device-name">电池管理系统001</span>
+                            </div>
+                            <span class="device-status offline">离线</span>
+                        </div>
+                        <div class="device-info">
+                            <div class="info-row">
+                                <span class="info-label">设备编号:</span>
+                                <span class="info-value">BMS-01</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">电池温度:</span>
+                                <span class="info-value">-- °C</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">SOC:</span>
+                                <span class="info-value">-- %</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">SOH:</span>
+                                <span class="info-value">-- %</span>
+                            </div>
+                        </div>
+                        <div class="control-buttons">
+                            <button class="control-btn btn-start" onclick="deviceControl('BMS-01', 'start')" disabled>启动</button>
+                            <button class="control-btn btn-stop" onclick="deviceControl('BMS-01', 'stop')" disabled>停止</button>
+                            <button class="control-btn btn-charge" onclick="deviceControl('BMS-01', 'charge')" disabled>充电</button>
+                            <button class="control-btn btn-discharge" onclick="deviceControl('BMS-01', 'discharge')" disabled>放电</button>
+                            <button class="control-btn btn-reset" onclick="deviceControl('BMS-01', 'reset')">复位</button>
+                            <button class="control-btn btn-config" onclick="showConfigModal('BMS-01')" disabled>配置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设备配置模态框 -->
+    <div id="config-modal" class="control-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="config-title">设备配置</h3>
+                <button onclick="closeConfigModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="config-form">
+                    <div class="form-group">
+                        <label>设备编号</label>
+                        <input type="text" id="config-device-id" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>额定功率 (kW)</label>
+                        <input type="number" id="config-power" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>最大充电功率 (kW)</label>
+                        <input type="number" id="config-max-charge" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>最大放电功率 (kW)</label>
+                        <input type="number" id="config-max-discharge" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>SOC上限 (%)</label>
+                        <input type="number" id="config-soc-max" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>SOC下限 (%)</label>
+                        <input type="number" id="config-soc-min" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>运行模式</label>
+                        <select id="config-mode">
+                            <option value="auto">自动模式</option>
+                            <option value="manual">手动模式</option>
+                            <option value="charge">充电模式</option>
+                            <option value="discharge">放电模式</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeConfigModal()">取消</button>
+                        <button type="submit" class="btn btn-primary">保存配置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+        });
+
+        // 筛选设备
+        function filterDevices() {
+            const station = document.getElementById('station-filter').value;
+            const type = document.getElementById('device-type-filter').value;
+            const status = document.getElementById('status-filter').value;
+            
+            console.log('筛选条件:', { station, type, status });
+            // 实现筛选逻辑
+        }
+
+        // 全选/取消全选
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('select-all');
+            const deviceSelects = document.querySelectorAll('.device-select');
+            
+            deviceSelects.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+        }
+
+        // 单设备控制
+        function deviceControl(deviceId, action) {
+            const actionMap = {
+                'start': '启动',
+                'stop': '停止',
+                'charge': '充电',
+                'discharge': '放电',
+                'reset': '复位'
+            };
+            
+            const actionName = actionMap[action] || action;
+            
+            if (confirm(`确定要${actionName}设备 ${deviceId} 吗？`)) {
+                console.log(`设备控制: ${deviceId} - ${action}`);
+                showMessage(`${deviceId} ${actionName}指令已发送`, 'success');
+                
+                // 模拟控制结果
+                setTimeout(() => {
+                    updateDeviceStatus(deviceId, action);
+                }, 1000);
+            }
+        }
+
+        // 批量控制
+        function batchControl(action) {
+            const selectedDevices = [];
+            document.querySelectorAll('.device-select:checked').forEach(checkbox => {
+                selectedDevices.push(checkbox.dataset.device);
+            });
+            
+            if (selectedDevices.length === 0) {
+                showMessage('请选择要控制的设备', 'warning');
+                return;
+            }
+            
+            const actionMap = {
+                'start': '启动',
+                'stop': '停止',
+                'charge': '充电',
+                'discharge': '放电',
+                'reset': '复位'
+            };
+            
+            const actionName = actionMap[action] || action;
+            
+            if (confirm(`确定要批量${actionName} ${selectedDevices.length} 个设备吗？`)) {
+                console.log(`批量控制: ${selectedDevices} - ${action}`);
+                showMessage(`批量${actionName}指令已发送到 ${selectedDevices.length} 个设备`, 'success');
+                
+                // 模拟批量控制结果
+                selectedDevices.forEach((deviceId, index) => {
+                    setTimeout(() => {
+                        updateDeviceStatus(deviceId, action);
+                    }, (index + 1) * 500);
+                });
+            }
+        }
+
+        // 更新设备状态
+        function updateDeviceStatus(deviceId, action) {
+            // 这里可以实现设备状态的实时更新
+            console.log(`设备 ${deviceId} 状态已更新: ${action}`);
+        }
+
+        // 显示配置模态框
+        function showConfigModal(deviceId) {
+            document.getElementById('config-title').textContent = `${deviceId} - 设备配置`;
+            document.getElementById('config-device-id').value = deviceId;
+            
+            // 模拟加载设备配置
+            loadDeviceConfig(deviceId);
+            
+            document.getElementById('config-modal').style.display = 'flex';
+        }
+
+        // 加载设备配置
+        function loadDeviceConfig(deviceId) {
+            // 模拟配置数据
+            const configs = {
+                'ESS-Cabinet-01': {
+                    power: 500,
+                    maxCharge: 450,
+                    maxDischarge: 450,
+                    socMax: 95,
+                    socMin: 10,
+                    mode: 'auto'
+                },
+                'PCS-01': {
+                    power: 350,
+                    maxCharge: 350,
+                    maxDischarge: 350,
+                    socMax: 90,
+                    socMin: 15,
+                    mode: 'manual'
+                }
+            };
+            
+            const config = configs[deviceId] || {};
+            document.getElementById('config-power').value = config.power || '';
+            document.getElementById('config-max-charge').value = config.maxCharge || '';
+            document.getElementById('config-max-discharge').value = config.maxDischarge || '';
+            document.getElementById('config-soc-max').value = config.socMax || '';
+            document.getElementById('config-soc-min').value = config.socMin || '';
+            document.getElementById('config-mode').value = config.mode || 'auto';
+        }
+
+        // 关闭配置模态框
+        function closeConfigModal() {
+            document.getElementById('config-modal').style.display = 'none';
+        }
+
+        // 配置表单提交
+        document.getElementById('config-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const deviceId = document.getElementById('config-device-id').value;
+            const config = {
+                power: document.getElementById('config-power').value,
+                maxCharge: document.getElementById('config-max-charge').value,
+                maxDischarge: document.getElementById('config-max-discharge').value,
+                socMax: document.getElementById('config-soc-max').value,
+                socMin: document.getElementById('config-soc-min').value,
+                mode: document.getElementById('config-mode').value
+            };
+            
+            console.log(`保存设备配置: ${deviceId}`, config);
+            showMessage(`${deviceId} 配置保存成功`, 'success');
+            closeConfigModal();
+        });
+
+        // 定时更新设备状态
+        setInterval(() => {
+            // 模拟实时数据更新
+            updateRealTimeData();
+        }, 5000);
+
+        function updateRealTimeData() {
+            // 更新功率、SOC等实时数据
+            console.log('更新实时数据...');
+        }
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>

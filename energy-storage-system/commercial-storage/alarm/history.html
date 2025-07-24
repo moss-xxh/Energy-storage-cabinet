@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史告警 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-btn {
+            padding: 6px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chart-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        .filters-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 140px;
+        }
+
+        .history-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .history-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .history-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .severity-badge.critical {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .severity-badge.major {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .severity-badge.minor {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .severity-badge.warning {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+<div class="main-content">
+
+                <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">历史告警</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+<div class="content">
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>历史告警</h1>
+                    <p>告警历史记录与趋势分析</p>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="history-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">1,256</div>
+                        <div class="stat-label">总告警数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">98.5%</div>
+                        <div class="stat-label">处理率</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">15.3</div>
+                        <div class="stat-label">平均处理时间(分钟)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">本月告警</div>
+                    </div>
+                </div>
+
+                <!-- 告警趋势图表 -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">告警趋势分析</h3>
+                        <div class="chart-controls">
+                            <button class="chart-btn active" onclick="switchChart('daily')">日</button>
+                            <button class="chart-btn" onclick="switchChart('weekly')">周</button>
+                            <button class="chart-btn" onclick="switchChart('monthly')">月</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="alarm-trend-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 筛选面板 -->
+                <div class="filters-panel">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>时间范围</label>
+                            <select id="time-range">
+                                <option value="7d">最近7天</option>
+                                <option value="30d" selected>最近30天</option>
+                                <option value="3m">最近3个月</option>
+                                <option value="1y">最近1年</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>严重程度</label>
+                            <select id="severity-filter">
+                                <option value="">全部级别</option>
+                                <option value="critical">严重</option>
+                                <option value="major">主要</option>
+                                <option value="minor">次要</option>
+                                <option value="warning">警告</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>设备类型</label>
+                            <select id="device-filter">
+                                <option value="">全部设备</option>
+                                <option value="ess">储能柜</option>
+                                <option value="pcs">变流器</option>
+                                <option value="bms">BMS</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>开始日期</label>
+                            <input type="date" id="start-date" value="2023-12-25">
+                        </div>
+                        <div class="filter-group">
+                            <label>结束日期</label>
+                            <input type="date" id="end-date" value="2024-01-24">
+                        </div>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="searchHistory()">查询</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 历史告警表格 -->
+                <div class="history-table">
+                    <div class="table-header">
+                        <h3>历史告警记录</h3>
+                        <div>
+                            <button class="btn btn-secondary" onclick="exportHistory()">导出</button>
+                            <button class="btn btn-primary" onclick="refreshHistory()">刷新</button>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>告警标题</th>
+                                <th>严重程度</th>
+                                <th>设备/对象</th>
+                                <th>发生时间</th>
+                                <th>解决时间</th>
+                                <th>持续时间</th>
+                                <th>处理人</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>电池温度过高</td>
+                                <td><span class="severity-badge critical">严重</span></td>
+                                <td>ESS-Cabinet-01</td>
+                                <td>2024-01-23 14:35:22</td>
+                                <td>2024-01-23 14:58:15</td>
+                                <td>22分53秒</td>
+                                <td>张工程师</td>
+                            </tr>
+                            <tr>
+                                <td>变流器通信故障</td>
+                                <td><span class="severity-badge major">主要</span></td>
+                                <td>PCS-01</td>
+                                <td>2024-01-22 09:20:15</td>
+                                <td>2024-01-22 10:45:32</td>
+                                <td>1小时25分17秒</td>
+                                <td>李技术员</td>
+                            </tr>
+                            <tr>
+                                <td>SOC低于安全值</td>
+                                <td><span class="severity-badge warning">警告</span></td>
+                                <td>BMS-01</td>
+                                <td>2024-01-21 16:45:08</td>
+                                <td>2024-01-21 17:12:25</td>
+                                <td>27分17秒</td>
+                                <td>王运维</td>
+                            </tr>
+                            <tr>
+                                <td>功率波动异常</td>
+                                <td><span class="severity-badge minor">次要</span></td>
+                                <td>EMS-01</td>
+                                <td>2024-01-20 11:30:45</td>
+                                <td>2024-01-20 12:15:22</td>
+                                <td>44分37秒</td>
+                                <td>系统自动</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="pagination">
+                        <button onclick="changePage('prev')">&laquo; 上一页</button>
+                        <button class="active">1</button>
+                        <button onclick="changePage(2)">2</button>
+                        <button onclick="changePage(3)">3</button>
+                        <button onclick="changePage('next')">下一页 &raquo;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let alarmTrendChart;
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 初始化图表
+            initTrendChart();
+        });
+
+        // 初始化趋势图表
+        function initTrendChart() {
+            const ctx = document.getElementById('alarm-trend-chart').getContext('2d');
+            
+            alarmTrendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1/18', '1/19', '1/20', '1/21', '1/22', '1/23', '1/24'],
+                    datasets: [{
+                        label: '严重',
+                        data: [2, 1, 3, 0, 1, 2, 1],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: '主要',
+                        data: [3, 2, 1, 4, 2, 3, 2],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: '次要',
+                        data: [1, 3, 2, 1, 3, 1, 2],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: '警告',
+                        data: [2, 1, 1, 2, 1, 2, 1],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '告警数量'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 切换图表时间维度
+        function switchChart(period) {
+            document.querySelectorAll('.chart-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            let labels, data1, data2, data3, data4;
+            
+            switch(period) {
+                case 'daily':
+                    labels = ['1/18', '1/19', '1/20', '1/21', '1/22', '1/23', '1/24'];
+                    data1 = [2, 1, 3, 0, 1, 2, 1];
+                    data2 = [3, 2, 1, 4, 2, 3, 2];
+                    data3 = [1, 3, 2, 1, 3, 1, 2];
+                    data4 = [2, 1, 1, 2, 1, 2, 1];
+                    break;
+                case 'weekly':
+                    labels = ['第1周', '第2周', '第3周', '第4周'];
+                    data1 = [8, 6, 10, 4];
+                    data2 = [15, 12, 18, 10];
+                    data3 = [12, 8, 15, 7];
+                    data4 = [6, 8, 10, 5];
+                    break;
+                case 'monthly':
+                    labels = ['10月', '11月', '12月', '1月'];
+                    data1 = [28, 32, 25, 18];
+                    data2 = [45, 52, 38, 35];
+                    data3 = [32, 28, 42, 25];
+                    data4 = [18, 22, 28, 15];
+                    break;
+            }
+
+            alarmTrendChart.data.labels = labels;
+            alarmTrendChart.data.datasets[0].data = data1;
+            alarmTrendChart.data.datasets[1].data = data2;
+            alarmTrendChart.data.datasets[2].data = data3;
+            alarmTrendChart.data.datasets[3].data = data4;
+            alarmTrendChart.update();
+        }
+
+        // 搜索历史记录
+        function searchHistory() {
+            const timeRange = document.getElementById('time-range').value;
+            const severity = document.getElementById('severity-filter').value;
+            const device = document.getElementById('device-filter').value;
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            console.log('搜索历史告警:', { timeRange, severity, device, startDate, endDate });
+            showMessage('历史告警搜索完成', 'success');
+        }
+
+        // 导出历史记录
+        function exportHistory() {
+            console.log('导出历史告警数据');
+            showMessage('历史告警数据导出中...', 'info');
+            
+            setTimeout(() => {
+                showMessage('历史告警数据导出完成', 'success');
+            }, 2000);
+        }
+
+        // 刷新历史记录
+        function refreshHistory() {
+            console.log('刷新历史告警数据');
+            showMessage('历史告警数据刷新中...', 'info');
+            
+            setTimeout(() => {
+                showMessage('历史告警数据已刷新', 'success');
+            }, 1500);
+        }
+
+        // 分页
+        function changePage(page) {
+            console.log('切换到页面:', page);
+        }
+    </script>
+
+    <!-- 引入侧边栏脚本 -->
+    <script src="../sidebar.js"></script>
+
+    <style>
+        /* 移动端菜单按钮样式 */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+    
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+    </style>
+</body>
+</html>
