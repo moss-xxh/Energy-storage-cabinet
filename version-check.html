@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>版本检查</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .update-info {
+            background: #10b981;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .links-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .link-group {
+            margin-bottom: 20px;
+        }
+        .link-group h3 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        .link-list {
+            list-style: none;
+            padding: 0;
+        }
+        .link-list li {
+            margin-bottom: 8px;
+        }
+        .link-list a {
+            color: #2563eb;
+            text-decoration: none;
+            padding: 8px 12px;
+            display: inline-block;
+            background: #f3f4f6;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .link-list a:hover {
+            background: #2563eb;
+            color: white;
+        }
+        .timestamp {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>能源储能管理系统 - 版本检查</h1>
+    </div>
+    
+    <div class="update-info">
+        <p class="timestamp">🚀 最新更新时间：2025年7月25日 17:55</p>
+        <p>如果您看到上面的时间，说明已经是最新版本！</p>
+    </div>
+    
+    <div class="links-section">
+        <div class="link-group">
+            <h3>✨ 最新更新内容</h3>
+            <ul>
+                <li>✅ 告警管理菜单重新排序</li>
+                <li>✅ 电价模板页面全新卡片式设计</li>
+                <li>✅ 首页改为电站数据分析视图</li>
+                <li>✅ 删除了场景选择功能</li>
+                <li>✅ 优化了导航栏和响应式布局</li>
+            </ul>
+        </div>
+        
+        <div class="link-group">
+            <h3>🔗 系统入口</h3>
+            <ul class="link-list">
+                <li><a href="./index.html">登录页面</a></li>
+                <li><a href="./energy-storage-system/commercial-storage/index.html">管理系统首页（查看电站数据分析）</a></li>
+            </ul>
+        </div>
+        
+        <div class="link-group">
+            <h3>📄 更新的主要页面</h3>
+            <ul class="link-list">
+                <li><a href="./energy-storage-system/commercial-storage/price-settings.html">电价模板管理（全新卡片式界面）</a></li>
+                <li><a href="./energy-storage-system/commercial-storage/alarm/analysis.html">告警分析（已调整为第一位）</a></li>
+                <li><a href="./energy-storage-system/commercial-storage/station-management.html">电站管理</a></li>
+                <li><a href="./energy-storage-system/commercial-storage/control.html">设备控制</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // 显示本地时间
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            console.log('页面加载时间：', now.toLocaleString('zh-CN'));
+        });
+    </script>
+</body>
+</html>
