@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>企业管理 - 工商储能管理系统</title>
     <link rel="stylesheet" href="../sidebar.css">
+    <link rel="stylesheet" href="../navbar.css">
+    <link rel="stylesheet" href="../responsive.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -225,35 +227,6 @@
             color: #2c3e50;
         }
 
-        .api-status {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .status-dot.pending {
-            background: #fbbf24;
-        }
-
-        .status-dot.approved {
-            background: #10b981;
-        }
-
-        .status-dot.rejected {
-            background: #ef4444;
-        }
 
         .api-content {
             display: none;
@@ -378,6 +351,79 @@
             background: #218838;
         }
 
+
+        .enterprise-name-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .enterprise-name-input {
+            font-size: 16px;
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 8px 12px;
+            border: 2px solid #3b82f6;
+            border-radius: 4px;
+            background: white;
+            min-width: 300px;
+            outline: none;
+        }
+
+        .enterprise-name-input:focus {
+            border-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .enterprise-name-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-edit, .btn-save, .btn-cancel {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            min-width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-edit:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .btn-save {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .btn-save:hover {
+            background: #218838;
+            border-color: #1e7e34;
+        }
+
+        .btn-cancel {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .btn-cancel:hover {
+            background: #c82333;
+            border-color: #bd2130;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 margin-left: 0;
@@ -445,50 +491,25 @@
                 <button class="btn btn-secondary" onclick="editEnterpriseInfo()">编辑信息</button>
             </div>
             <div class="info-grid">
-                <div class="info-item">
+                <div class="info-item" style="max-width: 600px;">
                     <span class="info-label">企业名称</span>
-                    <span class="info-value" id="enterpriseName">杭州阳光新能源科技有限公司</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">企业编号</span>
-                    <span class="info-value" id="enterpriseCode">ENT2024012401</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">统一社会信用代码</span>
-                    <span class="info-value">91330100MA2H3N8K9T</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">联系电话</span>
-                    <span class="info-value">0571-88888888</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">企业邮箱</span>
-                    <span class="info-value">contact@sunshineenergy.com</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">注册地址</span>
-                    <span class="info-value">浙江省杭州市西湖区文三路398号</span>
+                    <div class="enterprise-name-container">
+                        <span class="info-value" id="enterpriseName">杭州阳光新能源科技有限公司</span>
+                        <input type="text" id="enterpriseNameInput" class="enterprise-name-input" style="display: none;" value="杭州阳光新能源科技有限公司">
+                        <div class="enterprise-name-actions">
+                            <button class="btn-edit" onclick="startEditName()" id="editNameBtn" title="编辑企业名称">✏️</button>
+                            <button class="btn-save" onclick="saveEnterpriseName()" id="saveNameBtn" style="display: none;" title="保存">✓</button>
+                            <button class="btn-cancel" onclick="cancelEditName()" id="cancelNameBtn" style="display: none;" title="取消">✕</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
+
         <div class="api-section">
             <div class="api-header">
-                <h2 class="api-title">第三方API接入</h2>
-                <div class="api-status">
-                    <div class="status-item">
-                        <span class="status-dot pending"></span>
-                        <span>待审核</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-dot approved"></span>
-                        <span>已通过</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-dot rejected"></span>
-                        <span>已拒绝</span>
-                    </div>
-                </div>
+                <h2 class="api-title">令牌</h2>
             </div>
 
             <!-- 未申请状态 -->
@@ -583,6 +604,7 @@
     </div>
 
     <script src="../sidebar.js"></script>
+    <script src="../navbar.js"></script>
     <script>
         let currentEnterpriseId = '1';
 
@@ -643,7 +665,97 @@
         }
 
         function editEnterpriseInfo() {
-            showMessage('编辑企业信息功能开发中', 'info');
+            startEditName();
+        }
+
+        // Start editing enterprise name
+        function startEditName() {
+            const nameSpan = document.getElementById('enterpriseName');
+            const nameInput = document.getElementById('enterpriseNameInput');
+            const editBtn = document.getElementById('editNameBtn');
+            const saveBtn = document.getElementById('saveNameBtn');
+            const cancelBtn = document.getElementById('cancelNameBtn');
+            
+            // Set input value to current name
+            nameInput.value = nameSpan.textContent;
+            
+            // Show input, hide span
+            nameSpan.style.display = 'none';
+            nameInput.style.display = 'block';
+            
+            // Show save/cancel buttons, hide edit button
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'flex';
+            cancelBtn.style.display = 'flex';
+            
+            // Focus on input
+            nameInput.focus();
+            nameInput.select();
+        }
+
+        // Save enterprise name
+        function saveEnterpriseName() {
+            const nameSpan = document.getElementById('enterpriseName');
+            const nameInput = document.getElementById('enterpriseNameInput');
+            const editBtn = document.getElementById('editNameBtn');
+            const saveBtn = document.getElementById('saveNameBtn');
+            const cancelBtn = document.getElementById('cancelNameBtn');
+            
+            const newName = nameInput.value.trim();
+            
+            if (!newName) {
+                showMessage('企业名称不能为空', 'error');
+                return;
+            }
+            
+            if (newName.length < 2) {
+                showMessage('企业名称至少需要2个字符', 'error');
+                return;
+            }
+            
+            // Update the name
+            nameSpan.textContent = newName;
+            
+            // Update related elements
+            document.getElementById('selectedEnterprise').textContent = newName;
+            
+            // Update dropdown active item
+            const activeDropdownItem = document.querySelector('.dropdown-item.active');
+            if (activeDropdownItem) {
+                activeDropdownItem.textContent = newName;
+            }
+            
+            // Show span, hide input
+            nameSpan.style.display = 'block';
+            nameInput.style.display = 'none';
+            
+            // Show edit button, hide save/cancel buttons
+            editBtn.style.display = 'flex';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            
+            showMessage('企业名称已更新', 'success');
+        }
+
+        // Cancel editing enterprise name
+        function cancelEditName() {
+            const nameSpan = document.getElementById('enterpriseName');
+            const nameInput = document.getElementById('enterpriseNameInput');
+            const editBtn = document.getElementById('editNameBtn');
+            const saveBtn = document.getElementById('saveNameBtn');
+            const cancelBtn = document.getElementById('cancelNameBtn');
+            
+            // Show span, hide input
+            nameSpan.style.display = 'block';
+            nameInput.style.display = 'none';
+            
+            // Show edit button, hide save/cancel buttons
+            editBtn.style.display = 'flex';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            
+            // Reset input value
+            nameInput.value = nameSpan.textContent;
         }
 
         function viewApiDocs() {
@@ -711,6 +823,7 @@
             }, 3000);
         }
 
+
         // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const selector = document.querySelector('.enterprise-selector');
@@ -719,6 +832,18 @@
             if (!selector.contains(event.target)) {
                 dropdown.classList.remove('show');
             }
+        });
+
+        // Add keyboard support for enterprise name editing
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameInput = document.getElementById('enterpriseNameInput');
+            nameInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    saveEnterpriseName();
+                } else if (event.key === 'Escape') {
+                    cancelEditName();
+                }
+            });
         });
     </script>
 </body>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试电价设置</title>
+</head>
+<body>
+    <h1>电价设置测试页面</h1>
+    <button onclick="testAddNewCard()">测试添加新卡片</button>
+    <button onclick="testEditCard()">测试编辑卡片</button>
+    
+    <div id="output"></div>
+
+    <script>
+        function testAddNewCard() {
+            console.log('测试添加新卡片功能');
+            document.getElementById('output').innerHTML = '添加新卡片功能被调用';
+            
+            // 测试是否能找到相关元素
+            const modalTitle = document.getElementById('modalTitle');
+            const priceForm = document.getElementById('priceForm');
+            const configModal = document.getElementById('configModal');
+            
+            console.log('modalTitle:', modalTitle);
+            console.log('priceForm:', priceForm);
+            console.log('configModal:', configModal);
+            
+            if (!modalTitle) {
+                console.error('找不到 modalTitle 元素');
+            }
+            if (!priceForm) {
+                console.error('找不到 priceForm 元素');
+            }
+            if (!configModal) {
+                console.error('找不到 configModal 元素');
+            }
+        }
+        
+        function testEditCard() {
+            console.log('测试编辑卡片功能');
+            document.getElementById('output').innerHTML = '编辑卡片功能被调用';
+        }
+        
+        // 测试基本JavaScript功能
+        console.log('JavaScript 正在运行');
+        document.getElementById('output').innerHTML = 'JavaScript 已加载';
+    </script>
+</body>
+</html>

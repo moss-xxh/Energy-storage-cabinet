@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>收益报表 - 工商储能管理系统</title>
     <link rel="stylesheet" href="../sidebar.css">
+    <link rel="stylesheet" href="../navbar.css">
+    <link rel="stylesheet" href="../responsive.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -28,252 +30,302 @@
             min-height: 100vh;
         }
 
-        .page-header {
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin: -20px -20px 20px -20px;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .navbar-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        /* 操作栏 */
+        .report-actions {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ddd;
+            margin-bottom: 1rem;
         }
 
-        .page-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .query-section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .query-row {
+        .search-left {
             display: flex;
+            gap: 1rem;
             align-items: center;
-            gap: 15px;
             flex-wrap: wrap;
         }
 
-        .query-item {
+        .search-right {
             display: flex;
+            gap: 0.75rem;
             align-items: center;
-            gap: 8px;
         }
 
-        .query-item label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 0;
+        .action-row {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .station-selector,
+        .time-dimension,
+        .date-range {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .station-selector label,
+        .time-dimension label,
+        .date-range label {
+            font-weight: 500;
+            color: #374151;
             white-space: nowrap;
+            min-width: 75px;
         }
 
-        .query-item select,
-        .query-item input {
-            padding: 6px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .station-selector select,
+        .time-dimension select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
             font-size: 14px;
-            min-width: 120px;
+            min-width: 150px;
         }
 
-        .btn-query {
-            padding: 6px 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
+        .station-selector select {
+            min-width: 200px;
+        }
+
+        .date-range input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
             font-size: 14px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-query:hover {
-            background: #0056b3;
-        }
-
-        .action-bar {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #D6D8DE;
+            width: 150px;
         }
 
         .action-buttons {
             display: flex;
-            gap: 10px;
+            gap: 0.5rem;
         }
 
-        .btn-action {
-            padding: 8px 16px;
-            background: white;
-            color: #333;
-            border: 1px solid #D6D8DE;
-            border-radius: 4px;
-            font-size: 14px;
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
+            transition: all 0.2s ease;
+            display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 0.5rem;
+            border: 1px solid #D6D8DE;
         }
 
-        .btn-action:hover {
-            background: #f8f9fa;
-            border-color: #adb5bd;
-        }
-
-        .btn-action.primary {
-            background: #007bff;
+        .btn-primary {
+            background: #3562E3;
             color: white;
-            border-color: #007bff;
+            border-color: #3562E3;
         }
 
-        .btn-action.primary:hover {
-            background: #0056b3;
-            border-color: #0056b3;
+        .btn-primary:hover {
+            background: #2951d3;
+            border-color: #2951d3;
         }
 
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #D6D8DE;
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #9ca3af;
+            color: #1e293b;
+        }
+        
+        .btn span {
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        /* 数据表格 */
+        .data-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
             margin-bottom: 20px;
         }
 
-        .summary-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            text-align: center;
+        .data-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .summary-card .value {
-            font-size: 32px;
+        .data-title {
+            font-size: 20px;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 5px;
         }
 
-        .summary-card .label {
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            color: #374151;
+            padding: 15px 12px;
+            text-align: center;
+            font-weight: 500;
             font-size: 14px;
-            color: #666;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .summary-card .trend {
-            font-size: 12px;
-            margin-top: 10px;
+        .data-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #374151;
         }
 
-        .trend.up {
-            color: #28a745;
+        .data-table tbody tr:hover {
+            background: #f8fafc;
         }
 
-        .trend.down {
-            color: #dc3545;
+        .data-table .summary-row {
+            background: #eff6ff;
+            font-weight: 600;
         }
 
-        .revenue-card {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
+        .data-table .summary-row td {
+            color: #1e40af;
         }
 
-        .revenue-card .value {
-            color: white;
-        }
-
-        .revenue-card .label {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .revenue-card .trend {
-            color: white;
-        }
-
+        /* 图表区域 */
         .chart-section {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .chart-container {
             background: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-header {
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 20px;
         }
 
         .chart-title {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 15px;
         }
 
-        .data-table-section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            padding: 10px;
         }
 
-        .table {
-            font-size: 14px;
-        }
-
-        .table thead th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        .revenue-positive {
-            color: #28a745;
-            font-weight: 600;
-        }
-
-        .revenue-negative {
-            color: #dc3545;
-            font-weight: 600;
-        }
-
+        /* 响应式 */
         @media (max-width: 768px) {
             .main-content {
                 margin-left: 0;
                 padding: 10px;
             }
 
-            .chart-section {
-                grid-template-columns: 1fr;
+            .navbar {
+                margin: -10px -10px 10px -10px;
+                padding: 0 1rem;
             }
 
-            .query-row {
+            .search-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-left {
                 flex-direction: column;
                 align-items: stretch;
-            }
-
-            .query-item {
                 width: 100%;
             }
 
-            .query-item select,
-            .query-item input {
+            .search-right {
                 width: 100%;
+                justify-content: flex-end;
+            }
+
+            .station-selector,
+            .time-dimension,
+            .date-range {
+                width: 100%;
+            }
+
+            .station-selector select,
+            .time-dimension select,
+            .date-range input {
+                width: 100%;
+            }
+
+            .data-section, .chart-section {
+                padding: 20px;
             }
         }
     </style>
@@ -282,285 +334,292 @@
     <div id="sidebar-container"></div>
     
     <div class="main-content">
-        <div class="page-header">
-            <h1 class="page-title">收益报表</h1>
-        </div>
-
-        <div class="query-section">
-            <div class="query-row">
-                <div class="query-item">
-                    <label>电站选择：</label>
-                    <select id="stationSelect">
-                        <option value="">全部电站</option>
-                        <option value="1">朝阳路工业园储能站</option>
-                        <option value="2">城西配电站</option>
-                        <option value="3">经开区储能站</option>
-                    </select>
-                </div>
-                <div class="query-item">
-                    <label>收益类型：</label>
-                    <select id="revenueTypeSelect">
-                        <option value="">全部类型</option>
-                        <option value="peak-valley">峰谷套利</option>
-                        <option value="demand">需量管理</option>
-                        <option value="frequency">调频服务</option>
-                        <option value="capacity">容量电费</option>
-                    </select>
-                </div>
-                <div class="query-item">
-                    <label>日期范围：</label>
-                    <input type="date" id="startDate" value="2024-01-01">
-                    <span style="margin: 0 5px;">至</span>
-                    <input type="date" id="endDate" value="2024-01-31">
-                </div>
-                <button class="btn-query" onclick="queryData()">查询</button>
-            </div>
-        </div>
-
-        <div class="action-bar">
-            <div class="date-info">
-                数据更新时间：2024-01-24 15:30:00
-            </div>
-            <div class="action-buttons">
-                <button class="btn-action" onclick="showSubscriptionModal()">
-                    <span>📧</span> 订阅
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="goHome()" title="首页">
+                    <span>🏠</span>
                 </button>
-                <button class="btn-action" onclick="exportReport()">
-                    <span>📥</span> 导出
+                <h1 class="navbar-title">收益报表</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
                 </button>
-                <button class="btn-action primary" onclick="refreshData()">
-                    <span>🔄</span> 刷新
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
                 </button>
+                <div class="user-dropdown">
+                    <button class="nav-button user-menu-btn" onclick="toggleUserMenu()">
+                        <span>👤</span>
+                        <span>管理员</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 操作栏 -->
+        <div class="report-actions">
+            <div class="search-row">
+                <div class="search-left">
+                    <div class="station-selector">
+                        <label>电站：</label>
+                        <select id="stationSelect" onchange="changeStation()">
+                            <option value="all">全部</option>
+                            <option value="station1">北京亦庄储能电站</option>
+                            <option value="station2">上海临港储能电站</option>
+                            <option value="station3">深圳前海储能电站</option>
+                            <option value="station4">杭州滨江储能电站</option>
+                        </select>
+                    </div>
+                    <div class="time-dimension">
+                        <label>时间维度：</label>
+                        <select id="timeDimension" onchange="changeTimeDimension()">
+                            <option value="day">日报</option>
+                            <option value="month" selected>月报</option>
+                            <option value="year">年报</option>
+                        </select>
+                    </div>
+                    <div class="date-range">
+                        <label>统计时间：</label>
+                        <input type="month" id="selectedMonth" value="2025-07">
+                    </div>
+                </div>
+                <div class="search-right">
+                    <button class="btn btn-primary" onclick="queryData()">查询</button>
+                    <button class="btn btn-secondary" onclick="resetSearch()">重置</button>
+                </div>
+            </div>
+            <div class="action-row">
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="showSubscriptionModal()">订阅</button>
+                    <button class="btn btn-secondary" onclick="showExportOptions()">导出</button>
+                </div>
             </div>
         </div>
 
-        <div class="summary-cards">
-            <div class="summary-card revenue-card">
-                <div class="value">¥1,234,567</div>
-                <div class="label">本月总收益</div>
-                <div class="trend">↑ 18.5% 同比增长</div>
+        <!-- 数据表格 -->
+        <div class="data-section">
+            <div class="data-header">
+                <h2 class="data-title">收益数据统计</h2>
             </div>
-            <div class="summary-card">
-                <div class="value">¥38,520</div>
-                <div class="label">今日收益</div>
-                <div class="trend up">↑ 12.3% 环比增长</div>
-            </div>
-            <div class="summary-card">
-                <div class="value">¥0.85</div>
-                <div class="label">度电收益</div>
-                <div class="trend up">↑ 5.2% 较上月</div>
-            </div>
-            <div class="summary-card">
-                <div class="value">15.8%</div>
-                <div class="label">投资回报率</div>
-                <div class="trend up">↑ 2.1% 较上月</div>
-            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>装机容量</th>
+                        <th>电网耗电 (kWh)</th>
+                        <th>账单 (￥)</th>
+                        <th>馈电量 (kWh)</th>
+                        <th>收入 (￥)</th>
+                        <th>净收益(元)</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBody">
+                    <tr>
+                        <td>2025-07-01</td>
+                        <td>60kW/107kWh</td>
+                        <td>18.86</td>
+                        <td>0</td>
+                        <td>0.06</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>2025-07-02</td>
+                        <td>60kW/107kWh</td>
+                        <td>18.58</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>2025-07-03</td>
+                        <td>60kW/107kWh</td>
+                        <td>19.36</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>2025-07-04</td>
+                        <td>60kW/107kWh</td>
+                        <td>21.45</td>
+                        <td>0</td>
+                        <td>15.23</td>
+                        <td>125.8</td>
+                        <td>125.8</td>
+                    </tr>
+                    <tr>
+                        <td>2025-07-05</td>
+                        <td>60kW/107kWh</td>
+                        <td>20.12</td>
+                        <td>0</td>
+                        <td>18.76</td>
+                        <td>152.4</td>
+                        <td>152.4</td>
+                    </tr>
+                    <tr class="summary-row">
+                        <td>合计</td>
+                        <td>-</td>
+                        <td>1557.5</td>
+                        <td>0</td>
+                        <td>952.78</td>
+                        <td>7856.2</td>
+                        <td>7856.2</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
+        <!-- 图表区域 -->
         <div class="chart-section">
-            <div class="chart-container">
-                <h3 class="chart-title">收益趋势分析</h3>
-                <canvas id="revenueTrendChart" height="300"></canvas>
+            <div class="chart-header">
+                <h2 class="chart-title">收益趋势图</h2>
             </div>
             <div class="chart-container">
-                <h3 class="chart-title">收益来源分布</h3>
-                <canvas id="revenueSourceChart" height="300"></canvas>
+                <canvas id="revenueChart"></canvas>
             </div>
-        </div>
-
-        <div class="data-table-section" style="margin-bottom: 20px;">
-            <h3 class="chart-title">日收益明细</h3>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>日期</th>
-                        <th>峰谷套利</th>
-                        <th>需量管理</th>
-                        <th>调频服务</th>
-                        <th>容量电费</th>
-                        <th>总收益</th>
-                        <th>同比</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>2024-01-24</td>
-                        <td class="revenue-positive">¥28,350</td>
-                        <td class="revenue-positive">¥5,620</td>
-                        <td class="revenue-positive">¥3,200</td>
-                        <td class="revenue-positive">¥1,350</td>
-                        <td class="revenue-positive">¥38,520</td>
-                        <td><span class="badge badge-success">+12.3%</span></td>
-                    </tr>
-                    <tr>
-                        <td>2024-01-23</td>
-                        <td class="revenue-positive">¥26,890</td>
-                        <td class="revenue-positive">¥5,200</td>
-                        <td class="revenue-positive">¥2,980</td>
-                        <td class="revenue-positive">¥1,350</td>
-                        <td class="revenue-positive">¥36,420</td>
-                        <td><span class="badge badge-success">+8.5%</span></td>
-                    </tr>
-                    <tr>
-                        <td>2024-01-22</td>
-                        <td class="revenue-positive">¥25,670</td>
-                        <td class="revenue-positive">¥4,850</td>
-                        <td class="revenue-positive">¥3,500</td>
-                        <td class="revenue-positive">¥1,350</td>
-                        <td class="revenue-positive">¥35,370</td>
-                        <td><span class="badge badge-success">+5.2%</span></td>
-                    </tr>
-                    <tr>
-                        <td>2024-01-21</td>
-                        <td class="revenue-positive">¥22,120</td>
-                        <td class="revenue-positive">¥4,500</td>
-                        <td class="revenue-positive">¥2,800</td>
-                        <td class="revenue-positive">¥1,350</td>
-                        <td class="revenue-positive">¥30,770</td>
-                        <td><span class="badge badge-danger">-2.1%</span></td>
-                    </tr>
-                    <tr>
-                        <td>2024-01-20</td>
-                        <td class="revenue-positive">¥20,890</td>
-                        <td class="revenue-positive">¥4,200</td>
-                        <td class="revenue-positive">¥2,650</td>
-                        <td class="revenue-positive">¥1,350</td>
-                        <td class="revenue-positive">¥29,090</td>
-                        <td><span class="badge badge-danger">-5.3%</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="data-table-section">
-            <h3 class="chart-title">电站收益排名</h3>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>排名</th>
-                        <th>电站名称</th>
-                        <th>本月收益</th>
-                        <th>度电收益</th>
-                        <th>收益率</th>
-                        <th>状态</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>朝阳路工业园储能站</td>
-                        <td class="revenue-positive">¥567,890</td>
-                        <td>¥0.92/kWh</td>
-                        <td>18.5%</td>
-                        <td><span class="badge badge-success">优秀</span></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>城西配电站</td>
-                        <td class="revenue-positive">¥423,456</td>
-                        <td>¥0.85/kWh</td>
-                        <td>16.2%</td>
-                        <td><span class="badge badge-success">良好</span></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>经开区储能站</td>
-                        <td class="revenue-positive">¥243,221</td>
-                        <td>¥0.78/kWh</td>
-                        <td>14.8%</td>
-                        <td><span class="badge badge-warning">一般</span></td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 
     <script src="../sidebar.js"></script>
-    <script src="./subscription-modal-v2.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            initCharts();
-        });
+        // 切换电站
+        function changeStation() {
+            queryData();
+        }
 
-        function initCharts() {
-            // 收益趋势图
-            const trendCtx = document.getElementById('revenueTrendChart').getContext('2d');
-            new Chart(trendCtx, {
-                type: 'line',
-                data: {
-                    labels: Array.from({length: 31}, (_, i) => `1月${i + 1}日`),
-                    datasets: [
-                        {
-                            label: '日收益',
-                            data: generateData(31, 25000, 40000),
-                            borderColor: '#28a745',
-                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: '累计收益',
-                            data: generateCumulativeData(31, 25000, 40000),
-                            borderColor: '#007bff',
-                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                            fill: false,
-                            tension: 0.4,
-                            yAxisID: 'y1'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
-                            title: {
-                                display: true,
-                                text: '日收益 (元)'
-                            }
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            title: {
-                                display: true,
-                                text: '累计收益 (元)'
-                            },
-                            grid: {
-                                drawOnChartArea: false,
-                            }
-                        }
-                    }
-                }
+        // 切换时间维度
+        function changeTimeDimension() {
+            const timeDimension = document.getElementById('timeDimension').value;
+            const selectedMonth = document.getElementById('selectedMonth');
+            
+            if (timeDimension === 'day') {
+                selectedMonth.type = 'date';
+                selectedMonth.value = new Date().toISOString().split('T')[0];
+            } else if (timeDimension === 'month') {
+                selectedMonth.type = 'month';
+                selectedMonth.value = new Date().toISOString().slice(0, 7);
+            } else if (timeDimension === 'year') {
+                selectedMonth.type = 'number';
+                selectedMonth.value = new Date().getFullYear();
+                selectedMonth.setAttribute('min', '2020');
+                selectedMonth.setAttribute('max', '2030');
+            }
+            
+            queryData();
+        }
+
+        // 重置搜索
+        function resetSearch() {
+            document.getElementById('stationSelect').value = 'all';
+            document.getElementById('timeDimension').value = 'month';
+            document.getElementById('selectedMonth').value = new Date().toISOString().slice(0, 7);
+            queryData();
+        }
+
+        // 显示订阅模态框
+        function showSubscriptionModal() {
+            showMessage('订阅功能开发中...', 'info');
+        }
+
+        // 显示导出选项
+        function showExportOptions() {
+            exportData();
+        }
+
+        // 查询数据
+        function queryData() {
+            const station = document.getElementById('stationSelect').value;
+            const timeDimension = document.getElementById('timeDimension').value;
+            const selectedMonth = document.getElementById('selectedMonth').value;
+            
+            console.log('查询参数:', {
+                station,
+                timeDimension,
+                selectedMonth
             });
+            
+            // 这里应该调用API获取数据
+            updateTable();
+            updateChart();
+            
+            showMessage('数据已更新', 'success');
+        }
 
-            // 收益来源饼图
-            const sourceCtx = document.getElementById('revenueSourceChart').getContext('2d');
-            new Chart(sourceCtx, {
-                type: 'doughnut',
+        // 导出数据
+        function exportData() {
+            showMessage('正在导出数据...', 'info');
+            
+            // 模拟导出过程
+            setTimeout(() => {
+                showMessage('数据导出成功', 'success');
+            }, 1500);
+        }
+
+        // 更新表格数据
+        function updateTable() {
+            // 这里应该根据查询参数更新表格数据
+            console.log('更新表格数据');
+        }
+
+        // 更新图表
+        function updateChart() {
+            try {
+                const canvas = document.getElementById('revenueChart');
+                if (!canvas) {
+                    console.error('Canvas element not found');
+                    return;
+                }
+                
+                const ctx = canvas.getContext('2d');
+                
+                // 销毁现有图表
+                if (window.revenueChart && typeof window.revenueChart.destroy === 'function') {
+                    window.revenueChart.destroy();
+                }
+                
+                // 创建新图表
+                window.revenueChart = new Chart(ctx, {
+                type: 'bar',
                 data: {
-                    labels: ['峰谷套利', '需量管理', '调频服务', '容量电费'],
+                    labels: ['07-01', '07-02', '07-03', '07-04', '07-05', '07-06', '07-07', '07-08', '07-09', '07-10', '07-11', '07-12', '07-13', '07-14', '07-15', '07-16', '07-17', '07-18', '07-19', '07-20', '07-21', '07-22', '07-23', '07-24', '07-25'],
                     datasets: [{
-                        data: [68.5, 18.2, 9.8, 3.5],
-                        backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#6c757d']
+                        label: '电网耗电',
+                        data: [18.86, 18.58, 19.36, 21.45, 20.12, 19.78, 17.65, 16.89, 44.23, 88.45, 87.23, 89.67, 86.45, 85.23, 88.56, 86.78, 87.34, 85.67, 86.89, 87.45, 86.23, 85.78, 86.45, 85.23, 52.45],
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#2563eb',
+                        borderWidth: 1
+                    }, {
+                        label: '馈电量',
+                        data: [0, 0, 0, 15.23, 18.76, 16.45, 14.23, 13.56, 22.34, 65.23, 63.45, 64.78, 62.34, 61.23, 63.45, 62.78, 63.12, 61.89, 62.45, 63.23, 62.78, 61.45, 62.89, 61.34, 37.45],
+                        backgroundColor: '#10b981',
+                        borderColor: '#059669',
+                        borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'kWh'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '时间'
+                            }
+                        }
+                    },
                     plugins: {
                         legend: {
                             position: 'bottom'
@@ -568,73 +627,41 @@
                     }
                 }
             });
-        }
-
-        function generateData(count, min, max) {
-            return Array.from({length: count}, () => 
-                Math.floor(Math.random() * (max - min + 1)) + min
-            );
-        }
-
-        function generateCumulativeData(count, min, max) {
-            let cumulative = 0;
-            return Array.from({length: count}, () => {
-                cumulative += Math.floor(Math.random() * (max - min + 1)) + min;
-                return cumulative;
-            });
-        }
-
-        function queryData() {
-            showMessage('正在查询数据...', 'info');
-            setTimeout(() => {
-                showMessage('查询完成', 'success');
-                initCharts();
-            }, 1000);
-        }
-
-        function showSubscriptionModal() {
-            if (window.subscriptionModalV2) {
-                window.subscriptionModalV2.show();
-            } else {
-                showMessage('订阅功能正在加载...', 'info');
+            } catch (error) {
+                console.error('Error creating chart:', error);
             }
         }
 
-        function exportReport() {
-            showMessage('正在导出报表...', 'info');
-            setTimeout(() => {
-                showMessage('报表导出成功', 'success');
-            }, 2000);
-        }
-
-        function refreshData() {
-            showMessage('正在刷新数据...', 'info');
-            setTimeout(() => {
-                showMessage('数据刷新成功', 'success');
-                initCharts();
-            }, 1500);
-        }
-
+        // 显示消息
         function showMessage(message, type) {
             const alertClass = type === 'success' ? 'alert-success' : 
                               type === 'error' ? 'alert-danger' : 'alert-info';
             
             const alertHtml = `
-                <div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+                <div class="alert ${alertClass}" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 250px;">
                     ${message}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
             `;
             
-            const alertElement = $(alertHtml);
-            $('body').append(alertElement);
+            const alertElement = document.createElement('div');
+            alertElement.innerHTML = alertHtml;
+            document.body.appendChild(alertElement);
             
             setTimeout(() => {
-                alertElement.alert('close');
+                document.body.removeChild(alertElement);
             }, 3000);
         }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 延迟初始化，确保DOM完全加载
+            setTimeout(function() {
+                // 初始化图表
+                updateChart();
+                // 初始化数据
+                queryData();
+            }, 100);
+        });
     </script>
 </body>
 </html>

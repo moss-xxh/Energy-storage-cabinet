@@ -24,19 +24,14 @@ class Sidebar {
                 icon: '⚙️',
                 children: [
                     { name: '设备控制', href: './control.html' },
-                    { name: '设备列表', href: './monitoring/device-list.html' },
-                    { name: '设备1', href: './device/device1.html' },
+                    { 
+                        name: '设备列表', 
+                        href: './monitoring/device-list.html',
+                        children: [
+                            { name: '设备1', href: './device/device1.html' }
+                        ]
+                    },
                     { name: '设备群控', href: './group-control.html' }
-                ]
-            },
-            {
-                id: 'analysis',
-                name: '数据分析',
-                icon: '📊',
-                children: [
-                    { name: '能耗分析', href: './analysis/energy.html' },
-                    { name: '效率分析', href: './analysis/efficiency.html' },
-                    { name: '经济性分析', href: './analysis/economic.html' }
                 ]
             },
             {
@@ -56,9 +51,9 @@ class Sidebar {
                 name: '告警管理',
                 icon: '🔔',
                 children: [
-                    { name: '告警规则', href: './alarm/rules.html' },
+                    { name: '告警分析', href: './alarm/analysis.html' },
                     { name: '告警列表', href: './alarm/list.html' },
-                    { name: '告警分析', href: './alarm/analysis.html' }
+                    { name: '告警规则', href: './alarm/rules.html' }
                 ]
             },
             {
@@ -66,13 +61,9 @@ class Sidebar {
                 name: '报表中心',
                 icon: '📋',
                 children: [
-                    { name: '电站报告', href: './report/station-report.html' },
-                    { name: '逆变器报表', href: './report/inverter-report.html' },
-                    { name: '储能报表', href: './report/storage-report.html' },
-                    { name: '发电量报表', href: './report/power-generation.html' },
+                    { name: '电站报表', href: './report/station-report.html' },
                     { name: '收益报表', href: './report/revenue-report.html' },
-                    { name: '自定义报表', href: './report/custom-report.html' },
-                    { name: '报表列表', href: './report/list.html' }
+                    { name: '自定义报表', href: './report/custom-report.html' }
                 ]
             },
             {
@@ -81,11 +72,9 @@ class Sidebar {
                 icon: '🔧',
                 children: [
                     { name: '企业管理', href: './system/enterprise.html' },
-                    { name: '电价模板', href: './system/electricity-price-template.html' },
                     { name: '菜单管理', href: './system/menus.html' },
                     { name: '用户管理', href: './system/users.html' },
                     { name: '角色管理', href: './system/roles.html' },
-                    { name: '系统设置', href: './system/settings.html' },
                     { name: '日志管理', href: './system/logs.html' }
                 ]
             }
@@ -158,22 +147,47 @@ class Sidebar {
                     </div>
                     <div class="submenu ${isExpanded ? 'open' : ''}">
                         ${menu.children.map(child => {
-                            // 动态调整路径
-                            let href = child.href;
-                            if (href.startsWith('./')) {
-                                // 根目录的文件
-                                if (!href.includes('/')) {
-                                    href = pathPrefix + href.substring(2);
-                                } else {
-                                    // 子目录的文件
+                            // 如果子菜单还有子菜单（3级菜单）
+                            if (child.children) {
+                                const childId = `${menu.id}-${child.name.replace(/\s+/g, '')}`;
+                                const isChildExpanded = this.expandedMenus.includes(childId);
+                                let href = child.href;
+                                if (href.startsWith('./')) {
                                     href = pathPrefix + href.substring(2);
                                 }
+                                return `
+                                    <div class="submenu-item-with-children">
+                                        <a href="${href}" class="submenu-item ${this.isCurrentPage(child.href) ? 'active' : ''}" data-menu-id="${childId}">
+                                            ${child.name}
+                                            <span class="submenu-arrow ${isChildExpanded ? 'expanded' : ''}" onclick="event.preventDefault(); this.closest('.sidebar').dispatchEvent(new CustomEvent('toggleSubmenu', {detail: '${childId}'}))">▶</span>
+                                        </a>
+                                        <div class="sub-submenu ${isChildExpanded ? 'open' : ''}">
+                                            ${child.children.map(grandchild => {
+                                                let grandchildHref = grandchild.href;
+                                                if (grandchildHref.startsWith('./')) {
+                                                    grandchildHref = pathPrefix + grandchildHref.substring(2);
+                                                }
+                                                return `
+                                                    <a href="${grandchildHref}" class="sub-submenu-item ${this.isCurrentPage(grandchild.href) ? 'active' : ''}">
+                                                        ${grandchild.name}
+                                                    </a>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                    </div>
+                                `;
+                            } else {
+                                // 普通的2级菜单项
+                                let href = child.href;
+                                if (href.startsWith('./')) {
+                                    href = pathPrefix + href.substring(2);
+                                }
+                                return `
+                                    <a href="${href}" class="submenu-item ${this.isCurrentPage(child.href) ? 'active' : ''}">
+                                        ${child.name}
+                                    </a>
+                                `;
                             }
-                            return `
-                                <a href="${href}" class="submenu-item ${this.isCurrentPage(child.href) ? 'active' : ''}">
-                                    ${child.name}
-                                </a>
-                            `;
                         }).join('')}
                     </div>
                 </div>
@@ -202,9 +216,20 @@ class Sidebar {
             document.body.insertBefore(this.create(), document.body.firstChild);
         }
 
+        // 插入遮罩层
+        const overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        overlay.addEventListener('click', () => this.toggle());
+        document.body.appendChild(overlay);
+
         // 绑定菜单点击事件
         document.querySelectorAll('.menu-item:not(.menu-link)').forEach(item => {
             item.addEventListener('click', (e) => this.toggleMenu(e));
+        });
+
+        // 绑定3级菜单切换事件
+        document.querySelector('.sidebar').addEventListener('toggleSubmenu', (e) => {
+            this.toggleSubmenu(e.detail);
         });
 
         // 设置当前页面的激活状态
@@ -232,6 +257,27 @@ class Sidebar {
         this.saveExpandedState();
     }
 
+    // 切换3级子菜单
+    toggleSubmenu(menuId) {
+        const submenuItem = document.querySelector(`[data-menu-id="${menuId}"]`);
+        const arrow = submenuItem.querySelector('.submenu-arrow');
+        const subSubmenu = submenuItem.parentElement.querySelector('.sub-submenu');
+        
+        arrow.classList.toggle('expanded');
+        subSubmenu.classList.toggle('open');
+        
+        // 保存展开状态
+        if (subSubmenu.classList.contains('open')) {
+            if (!this.expandedMenus.includes(menuId)) {
+                this.expandedMenus.push(menuId);
+            }
+        } else {
+            this.expandedMenus = this.expandedMenus.filter(id => id !== menuId);
+        }
+        
+        this.saveExpandedState();
+    }
+
     // 设置当前页面的激活菜单
     setActiveMenu() {
         const currentPath = window.location.pathname;
@@ -249,7 +295,7 @@ class Sidebar {
             // 如果有子菜单
             else if (menu.children) {
                 menu.children.forEach(child => {
-                    if (child.href.includes(currentFile)) {
+                    if (child.href && child.href.includes(currentFile)) {
                         // 展开父菜单
                         const menuItem = document.querySelector(`[data-menu-id="${menu.id}"]`);
                         const submenu = menuItem.nextElementSibling;
@@ -260,6 +306,36 @@ class Sidebar {
                             this.expandedMenus.push(menu.id);
                             this.saveExpandedState();
                         }
+                    }
+                    
+                    // 如果子菜单还有子菜单（3级菜单）
+                    if (child.children) {
+                        child.children.forEach(grandchild => {
+                            if (grandchild.href && grandchild.href.includes(currentFile)) {
+                                // 展开父菜单
+                                const menuItem = document.querySelector(`[data-menu-id="${menu.id}"]`);
+                                const submenu = menuItem.nextElementSibling;
+                                menuItem.classList.add('expanded');
+                                submenu.classList.add('open');
+                                
+                                // 展开子菜单
+                                const childId = `${menu.id}-${child.name.replace(/\s+/g, '')}`;
+                                const childMenuItem = document.querySelector(`[data-menu-id="${childId}"]`);
+                                const childArrow = childMenuItem.querySelector('.submenu-arrow');
+                                const subSubmenu = childMenuItem.parentElement.querySelector('.sub-submenu');
+                                
+                                childArrow.classList.add('expanded');
+                                subSubmenu.classList.add('open');
+                                
+                                if (!this.expandedMenus.includes(menu.id)) {
+                                    this.expandedMenus.push(menu.id);
+                                }
+                                if (!this.expandedMenus.includes(childId)) {
+                                    this.expandedMenus.push(childId);
+                                }
+                                this.saveExpandedState();
+                            }
+                        });
                     }
                 });
             }
@@ -287,7 +363,9 @@ class Sidebar {
     // 切换侧边栏显示/隐藏（移动端）
     toggle() {
         const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
         sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
     }
 }
 

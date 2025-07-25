@@ -1552,93 +1552,8 @@
         }
     </style>
 
-    <!-- 账号信息模态框 -->
-    <div id="accountInfoModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">账号信息</h2>
-                <button class="close-btn" onclick="closeAccountModal()">&times;</button>
-            </div>
-            
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>用户名</label>
-                    <input type="text" value="管理员" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <label>邮箱</label>
-                    <input type="email" value="admin@example.com" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <label>角色</label>
-                    <input type="text" value="系统管理员" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <label>最后登录时间</label>
-                    <input type="text" value="2024-03-15 14:30:25" readonly>
-                </div>
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="showPasswordModal()">修改密码</button>
-                <button type="button" class="btn btn-secondary" onclick="closeAccountModal()">关闭</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- 修改密码模态框 -->
-    <div id="passwordModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">修改密码</h2>
-                <button class="close-btn" onclick="closePasswordModal()">&times;</button>
-            </div>
-            
-            <form id="passwordForm">
-                <div class="form-group">
-                    <label for="oldPassword">当前密码 <span class="required">*</span></label>
-                    <input type="password" id="oldPassword" name="oldPassword" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="newPassword">新密码 <span class="required">*</span></label>
-                    <input type="password" id="newPassword" name="newPassword" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="confirmPassword">确认新密码 <span class="required">*</span></label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required>
-                </div>
-            </form>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">取消</button>
-                <button type="button" class="btn btn-primary" onclick="savePassword()">保存</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- 退出确认模态框 -->
-    <div id="logoutConfirmModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">确认退出</h2>
-                <button class="close-btn" onclick="closeLogoutModal()">&times;</button>
-            </div>
-            
-            <div class="modal-body">
-                <p>您确定要退出系统吗？</p>
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeLogoutModal()">取消</button>
-                <button type="button" class="btn btn-danger" onclick="performLogout()">确认退出</button>
-            </div>
-        </div>
-    </div>
 
     <script>
         // 用户下拉菜单功能
@@ -1656,76 +1571,8 @@
             }
         }
 
-        // 显示账号信息
-        function showAccountInfo() {
-            document.getElementById('userDropdownMenu').classList.remove('show');
-            document.querySelector('.user-menu-btn').classList.remove('active');
-            document.getElementById('accountInfoModal').classList.add('show');
-        }
 
-        // 关闭账号信息模态框
-        function closeAccountModal() {
-            document.getElementById('accountInfoModal').classList.remove('show');
-        }
 
-        // 显示修改密码模态框
-        function showPasswordModal() {
-            document.getElementById('accountInfoModal').classList.remove('show');
-            document.getElementById('passwordModal').classList.add('show');
-        }
-
-        // 关闭修改密码模态框
-        function closePasswordModal() {
-            document.getElementById('passwordModal').classList.remove('show');
-            document.getElementById('passwordForm').reset();
-        }
-
-        // 保存密码
-        function savePassword() {
-            const oldPassword = document.getElementById('oldPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            if (!oldPassword || !newPassword || !confirmPassword) {
-                showMessage('请填写所有必填字段', 'error');
-                return;
-            }
-
-            if (newPassword !== confirmPassword) {
-                showMessage('新密码和确认密码不匹配', 'error');
-                return;
-            }
-
-            if (newPassword.length < 6) {
-                showMessage('新密码长度不能少于6位', 'error');
-                return;
-            }
-
-            // 这里应该调用后端API修改密码
-            showMessage('密码修改成功', 'success');
-            closePasswordModal();
-        }
-
-        // 确认退出
-        function confirmLogout() {
-            document.getElementById('userDropdownMenu').classList.remove('show');
-            document.querySelector('.user-menu-btn').classList.remove('active');
-            document.getElementById('logoutConfirmModal').classList.add('show');
-        }
-
-        // 关闭退出确认模态框
-        function closeLogoutModal() {
-            document.getElementById('logoutConfirmModal').classList.remove('show');
-        }
-
-        // 执行退出
-        function performLogout() {
-            // 这里应该调用后端API退出登录
-            showMessage('正在退出...', 'info');
-            setTimeout(() => {
-                window.location.href = '../../index.html';
-            }, 1000);
-        }
 
         // 点击外部关闭下拉菜单
         document.addEventListener('click', function(event) {

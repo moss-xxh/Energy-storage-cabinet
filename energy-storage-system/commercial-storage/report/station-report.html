@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>电站报告 - 工商储能管理系统</title>
+    <title>电站报告 - 工商储能管理系统 (已更新)</title>
     <link rel="stylesheet" href="../sidebar.css">
+    <link rel="stylesheet" href="../navbar.css">
+    <link rel="stylesheet" href="../responsive.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -22,6 +24,22 @@
             color: #1f2937;
             margin: 0;
             padding: 0;
+        }
+        
+        /* 新增的明显标记 - 2025-07-25 16:25更新 */
+        body::before {
+            content: "⚠️ 页面已更新 - 2025-07-25 16:25 ⚠️";
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff0000;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 9999;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .main-content {
@@ -576,8 +594,8 @@
             <!-- 报告头部 -->
             <div class="report-header">
                 <div class="report-header-content">
-                    <h1 class="report-title">电站运行报告</h1>
-                    <p class="report-subtitle">北京亦庄储能电站 - 综合运行分析报告</p>
+                    <h1 class="report-title">工商储能站运行报告</h1>
+                    <p class="report-subtitle">北京亦庄储能柜站点 - 综合运营分析报告</p>
                     <div class="report-meta">
                         <div class="meta-item">
                             <span class="meta-label">报告期间</span>
@@ -585,11 +603,11 @@
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">装机容量</span>
-                            <span class="meta-value">50MW/100MWh</span>
+                            <span class="meta-value">60kW/107kWh</span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-label">设备数量</span>
-                            <span class="meta-value">125台</span>
+                            <span class="meta-label">设备类型</span>
+                            <span class="meta-value">工商储能柜</span>
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">运行时长</span>
@@ -603,10 +621,10 @@
             <div class="kpi-grid">
                 <div class="kpi-card positive">
                     <div class="kpi-header">
-                        <span class="kpi-title">总发电量</span>
-                        <div class="kpi-icon green">⚡</div>
+                        <span class="kpi-title">月度节省成本</span>
+                        <div class="kpi-icon green">💵</div>
                     </div>
-                    <div class="kpi-value">2,856.7 <span style="font-size: 1rem; color: #64748b;">MWh</span></div>
+                    <div class="kpi-value">8.56 <span style="font-size: 1rem; color: #64748b;">万元</span></div>
                     <div class="kpi-trend trend-up">
                         <span>↗</span>
                         <span>较上月 +12.3%</span>
@@ -615,49 +633,49 @@
 
                 <div class="kpi-card positive">
                     <div class="kpi-header">
-                        <span class="kpi-title">储能放电量</span>
+                        <span class="kpi-title">充放电效率</span>
                         <div class="kpi-icon blue">🔋</div>
                     </div>
-                    <div class="kpi-value">1,924.5 <span style="font-size: 1rem; color: #64748b;">MWh</span></div>
+                    <div class="kpi-value">91.2 <span style="font-size: 1rem; color: #64748b;">%</span></div>
                     <div class="kpi-trend trend-up">
                         <span>↗</span>
-                        <span>较上月 +8.7%</span>
+                        <span>较上月 +0.8%</span>
                     </div>
                 </div>
 
                 <div class="kpi-card positive">
                     <div class="kpi-header">
-                        <span class="kpi-title">系统效率</span>
-                        <div class="kpi-icon green">📈</div>
+                        <span class="kpi-title">电池SOH</span>
+                        <div class="kpi-icon green">🔋</div>
                     </div>
-                    <div class="kpi-value">94.2 <span style="font-size: 1rem; color: #64748b;">%</span></div>
-                    <div class="kpi-trend trend-up">
-                        <span>↗</span>
-                        <span>较上月 +1.2%</span>
+                    <div class="kpi-value">96.5 <span style="font-size: 1rem; color: #64748b;">%</span></div>
+                    <div class="kpi-trend trend-down">
+                        <span>↘</span>
+                        <span>较上月 -0.2%</span>
                     </div>
                 </div>
 
                 <div class="kpi-card warning">
                     <div class="kpi-header">
-                        <span class="kpi-title">设备可用率</span>
-                        <div class="kpi-icon yellow">🛠️</div>
+                        <span class="kpi-title">峰谷套利率</span>
+                        <div class="kpi-icon yellow">📈</div>
                     </div>
-                    <div class="kpi-value">96.8 <span style="font-size: 1rem; color: #64748b;">%</span></div>
-                    <div class="kpi-trend trend-down">
-                        <span>↘</span>
-                        <span>较上月 -2.1%</span>
+                    <div class="kpi-value">2.1 <span style="font-size: 1rem; color: #64748b;">次/日</span></div>
+                    <div class="kpi-trend trend-up">
+                        <span>↗</span>
+                        <span>较上月 +0.3次</span>
                     </div>
                 </div>
 
                 <div class="kpi-card positive">
                     <div class="kpi-header">
-                        <span class="kpi-title">电费收入</span>
-                        <div class="kpi-icon green">💰</div>
+                        <span class="kpi-title">峰时负载率</span>
+                        <div class="kpi-icon green">⚡</div>
                     </div>
-                    <div class="kpi-value">¥187.3 <span style="font-size: 1rem; color: #64748b;">万</span></div>
+                    <div class="kpi-value">78.5 <span style="font-size: 1rem; color: #64748b;">%</span></div>
                     <div class="kpi-trend trend-up">
                         <span>↗</span>
-                        <span>较上月 +15.6%</span>
+                        <span>较上月 +5.2%</span>
                     </div>
                 </div>
 
@@ -666,42 +684,46 @@
                         <span class="kpi-title">告警次数</span>
                         <div class="kpi-icon red">⚠️</div>
                     </div>
-                    <div class="kpi-value">23 <span style="font-size: 1rem; color: #64748b;">次</span></div>
-                    <div class="kpi-trend trend-up">
-                        <span>↗</span>
-                        <span>较上月 +4次</span>
+                    <div class="kpi-value">15 <span style="font-size: 1rem; color: #64748b;">次</span></div>
+                    <div class="kpi-trend trend-down">
+                        <span>↘</span>
+                        <span>较上月 -3次</span>
                     </div>
                 </div>
             </div>
 
             <!-- 数据指标 -->
             <div class="metrics-section">
-                <!-- 发电信息 -->
+                <!-- 电站信息 -->
                 <div class="metrics-group">
                     <h3 class="metrics-group-title">
-                        <span class="metrics-icon">⚡</span>
-                        发电信息
+                        <span class="metrics-icon">🏢</span>
+                        电站信息
                     </h3>
                     <div class="metrics-grid">
                         <div class="metric-item">
-                            <span class="metric-label">装机功率</span>
-                            <span class="metric-value">50 <span class="metric-unit">MW</span></span>
+                            <span class="metric-label">建站日期</span>
+                            <span class="metric-value">2023-08-15</span>
                         </div>
                         <div class="metric-item">
-                            <span class="metric-label">日发电量</span>
-                            <span class="metric-value">92.8 <span class="metric-unit">MWh</span></span>
+                            <span class="metric-label">并网日期</span>
+                            <span class="metric-value">2023-09-20</span>
                         </div>
                         <div class="metric-item">
-                            <span class="metric-label">总发电量</span>
-                            <span class="metric-value">2,856.7 <span class="metric-unit">MWh</span></span>
+                            <span class="metric-label">装机容量</span>
+                            <span class="metric-value">60kW/107kWh</span>
                         </div>
                         <div class="metric-item">
-                            <span class="metric-label">日发电等效小时</span>
-                            <span class="metric-value">1.86 <span class="metric-unit">h</span></span>
+                            <span class="metric-label">电站地址</span>
+                            <span class="metric-value">北京亦庄经济开发区</span>
                         </div>
                         <div class="metric-item">
-                            <span class="metric-label">功率</span>
-                            <span class="metric-value">38.5 <span class="metric-unit">MW</span></span>
+                            <span class="metric-label">运行天数</span>
+                            <span class="metric-value">462 <span class="metric-unit">天</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">健康状态</span>
+                            <span class="metric-value">优良</span>
                         </div>
                     </div>
                 </div>
@@ -715,19 +737,98 @@
                     <div class="metrics-grid">
                         <div class="metric-item">
                             <span class="metric-label">日充电量</span>
-                            <span class="metric-value">85.2 <span class="metric-unit">MWh</span></span>
+                            <span class="metric-value">185.2 <span class="metric-unit">kWh</span></span>
                         </div>
                         <div class="metric-item">
                             <span class="metric-label">累计充电量</span>
-                            <span class="metric-value">2,625.4 <span class="metric-unit">MWh</span></span>
+                            <span class="metric-value">85.5 <span class="metric-unit">MWh</span></span>
                         </div>
                         <div class="metric-item">
                             <span class="metric-label">日放电量</span>
-                            <span class="metric-value">78.6 <span class="metric-unit">MWh</span></span>
+                            <span class="metric-value">168.9 <span class="metric-unit">kWh</span></span>
                         </div>
                         <div class="metric-item">
                             <span class="metric-label">累计放电量</span>
-                            <span class="metric-value">2,421.8 <span class="metric-unit">MWh</span></span>
+                            <span class="metric-value">77.9 <span class="metric-unit">MWh</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">充放电效率</span>
+                            <span class="metric-value">91.2 <span class="metric-unit">%</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">循环次数</span>
+                            <span class="metric-value">862 <span class="metric-unit">次</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第二行指标 -->
+            <div class="metrics-section">
+                <!-- 电池信息 -->
+                <div class="metrics-group">
+                    <h3 class="metrics-group-title">
+                        <span class="metrics-icon">🔋</span>
+                        电池信息
+                    </h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-label">SOC状态</span>
+                            <span class="metric-value">72 <span class="metric-unit">%</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">SOH健康度</span>
+                            <span class="metric-value">96.5 <span class="metric-unit">%</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">平均温度</span>
+                            <span class="metric-value">27.8 <span class="metric-unit">℃</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">温差</span>
+                            <span class="metric-value">2.3 <span class="metric-unit">℃</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">电压范围</span>
+                            <span class="metric-value">315-325 <span class="metric-unit">V</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">内阻</span>
+                            <span class="metric-value">1.85 <span class="metric-unit">mΩ</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 负载与成本 -->
+                <div class="metrics-group">
+                    <h3 class="metrics-group-title">
+                        <span class="metrics-icon">💰</span>
+                        负载与成本
+                    </h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-label">峰时负载</span>
+                            <span class="metric-value">48.5 <span class="metric-unit">kW</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">谷时负载</span>
+                            <span class="metric-value">12.3 <span class="metric-unit">kW</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">日均负载率</span>
+                            <span class="metric-value">68.5 <span class="metric-unit">%</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">日电费节省</span>
+                            <span class="metric-value">2,856 <span class="metric-unit">元</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">月度成本节省</span>
+                            <span class="metric-value">8.56 <span class="metric-unit">万元</span></span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">投资回收期</span>
+                            <span class="metric-value">4.2 <span class="metric-unit">年</span></span>
                         </div>
                     </div>
                 </div>
@@ -1244,6 +1345,7 @@
     
     <!-- 引入侧边栏脚本 -->
     <script src="../sidebar.js"></script>
+    <script src="../navbar.js"></script>
     
     <!-- 引入订阅模态框组件 -->
     <script src="subscription-modal-v2.js"></script>

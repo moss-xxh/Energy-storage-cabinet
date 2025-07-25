@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>首页 - 工商储能管理系统</title>
     <link rel="stylesheet" href="./sidebar.css">
+    <link rel="stylesheet" href="./navbar.css">
+    <link rel="stylesheet" href="./responsive.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -321,227 +323,6 @@
             cursor: pointer;
         }
 
-        /* 底部区域 */
-        .bottom-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        /* 告警列表 */
-        .alert-card {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .view-all {
-            font-size: 14px;
-            color: #1890ff;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .alert-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .alert-item:last-child {
-            border-bottom: none;
-        }
-
-        .alert-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 16px;
-        }
-
-        .alert-icon.warning { background: #fff7e6; color: #fa8c16; }
-        .alert-icon.error { background: #fff1f0; color: #f5222d; }
-
-        .alert-content {
-            flex: 1;
-        }
-
-        .alert-title {
-            font-size: 14px;
-            color: #333;
-            margin-bottom: 4px;
-        }
-
-        .alert-desc {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .alert-time {
-            font-size: 12px;
-            color: #999;
-        }
-
-        /* 电站排行 */
-        .ranking-card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-            border: 1px solid #e5e7eb;
-        }
-
-        .ranking-tabs {
-            display: flex;
-            gap: 8px;
-        }
-
-        .ranking-tab {
-            padding: 6px 16px;
-            border: 1px solid #e5e7eb;
-            background: white;
-            border-radius: 6px;
-            font-size: 13px;
-            color: #6b7280;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .ranking-tab:hover {
-            background: #f9fafb;
-            border-color: #d1d5db;
-        }
-
-        .ranking-tab.active {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
-        }
-
-        .ranking-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .ranking-item {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 16px 20px;
-            background: #f9fafb;
-            border-radius: 10px;
-            border: 1px solid #f3f4f6;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .ranking-item:hover {
-            background: #f3f4f6;
-            border-color: #e5e7eb;
-            transform: translateX(4px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .ranking-number {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-
-        .ranking-item:nth-child(1) .ranking-number {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            color: white;
-        }
-
-        .ranking-item:nth-child(2) .ranking-number {
-            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
-            color: #374151;
-        }
-
-        .ranking-item:nth-child(3) .ranking-number {
-            background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
-            color: #7c2d12;
-        }
-
-        .ranking-item:nth-child(n+4) .ranking-number {
-            background: #f3f4f6;
-            color: #6b7280;
-            border: 1px solid #e5e7eb;
-        }
-
-        .ranking-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .ranking-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .ranking-desc {
-            font-size: 13px;
-            color: #6b7280;
-        }
-
-        .ranking-value {
-            text-align: right;
-            flex-shrink: 0;
-        }
-
-        .ranking-main {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1f2937;
-        }
-
-        .ranking-trend {
-            font-size: 13px;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .ranking-trend.up {
-            color: #10b981;
-        }
-
-        .ranking-trend.down {
-            color: #ef4444;
-        }
 
         @keyframes pulse {
             0% {
@@ -599,17 +380,34 @@
                 <div class="metric-card">
                     <div class="metric-top">
                         <div class="metric-left">
-                            <span class="metric-label">实时功率</span>
+                            <span class="metric-label">电站总数</span>
                             <div class="metric-main">
-                                <span class="metric-value">15.6</span>
+                                <span class="metric-value">12</span>
+                                <span class="metric-unit">座</span>
+                            </div>
+                        </div>
+                        <div class="metric-icon">🏢</div>
+                    </div>
+                    <div class="metric-bottom">
+                        <span class="metric-sub-label">在线电站</span>
+                        <span class="metric-badge positive">10座</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <div class="metric-left">
+                            <span class="metric-label">总装机容量</span>
+                            <div class="metric-main">
+                                <span class="metric-value">450</span>
                                 <span class="metric-unit">MW</span>
                             </div>
                         </div>
                         <div class="metric-icon">⚡</div>
                     </div>
                     <div class="metric-bottom">
-                        <span class="metric-sub-label">峰值功率</span>
-                        <span class="metric-sub-value">28.5 MW</span>
+                        <span class="metric-sub-label">平均负荷率</span>
+                        <span class="metric-sub-value">87.3%</span>
                     </div>
                 </div>
 
@@ -622,28 +420,11 @@
                                 <span class="metric-unit">MWh</span>
                             </div>
                         </div>
-                        <div class="metric-icon">☀️</div>
-                    </div>
-                    <div class="metric-bottom">
-                        <span class="metric-sub-label">本月发电量</span>
-                        <span class="metric-sub-value">68,345 MWh</span>
-                    </div>
-                </div>
-
-                <div class="metric-card">
-                    <div class="metric-top">
-                        <div class="metric-left">
-                            <span class="metric-label">当前容量</span>
-                            <div class="metric-main">
-                                <span class="metric-value">1,285</span>
-                                <span class="metric-unit">MWh</span>
-                            </div>
-                        </div>
                         <div class="metric-icon">🔋</div>
                     </div>
                     <div class="metric-bottom">
-                        <span class="metric-sub-label">容量百分比</span>
-                        <span class="metric-badge positive">85.6%</span>
+                        <span class="metric-sub-label">平均效率</span>
+                        <span class="metric-sub-value">94.2%</span>
                     </div>
                 </div>
 
@@ -658,25 +439,27 @@
                         <div class="metric-icon">💰</div>
                     </div>
                     <div class="metric-bottom">
-                        <span class="metric-sub-label">累计收益</span>
-                        <span class="metric-sub-value">¥856.8万</span>
+                        <span class="metric-sub-label">平均电价</span>
+                        <span class="metric-sub-value">¥0.82/kWh</span>
                     </div>
                 </div>
             </div>
 
+
+
             <!-- 图表区域 -->
             <div class="charts-row">
-                <!-- 24小时功率曲线 -->
+                <!-- 电站功率对比 -->
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h3 class="chart-title">24小时功率曲线</h3>
-                        <select class="time-selector">
-                            <option>今日</option>
-                            <option>昨日</option>
-                            <option>本周</option>
+                        <h3 class="chart-title">电站实时功率对比</h3>
+                        <select class="time-selector" onchange="updateStationChart(this.value)">
+                            <option value="power">功率对比</option>
+                            <option value="efficiency">运行效率</option>
+                            <option value="revenue">收益分析</option>
                         </select>
                     </div>
-                    <div id="powerChart" style="height: 280px;"></div>
+                    <div id="stationChart" style="height: 280px;"></div>
                 </div>
 
                 <!-- 电站状态分布 -->
@@ -688,154 +471,11 @@
                 </div>
             </div>
 
-            <!-- 底部区域 -->
-            <div class="bottom-row">
-                <!-- 电站排行 -->
-                <div class="ranking-card">
-                    <div class="section-header">
-                        <h3 class="section-title">电站排行</h3>
-                        <div class="ranking-tabs">
-                            <button class="ranking-tab active" data-type="revenue">收益</button>
-                            <button class="ranking-tab" data-type="soc">SOC</button>
-                            <button class="ranking-tab" data-type="utilization">利用率</button>
-                        </div>
-                    </div>
-                    <div class="ranking-list" id="revenue-ranking">
-                        <div class="ranking-item">
-                            <div class="ranking-number">1</div>
-                            <div class="ranking-info">
-                                <div class="ranking-name">朝阳路工业园储能站</div>
-                                <div class="ranking-desc">今日收益</div>
-                            </div>
-                            <div class="ranking-value">
-                                <div class="ranking-main">¥12,580</div>
-                            </div>
-                        </div>
-                        <div class="ranking-item">
-                            <div class="ranking-number">2</div>
-                            <div class="ranking-info">
-                                <div class="ranking-name">经开区储能站</div>
-                                <div class="ranking-desc">今日收益</div>
-                            </div>
-                            <div class="ranking-value">
-                                <div class="ranking-main">¥10,234</div>
-                            </div>
-                        </div>
-                        <div class="ranking-item">
-                            <div class="ranking-number">3</div>
-                            <div class="ranking-info">
-                                <div class="ranking-name">城西配电站</div>
-                                <div class="ranking-desc">今日收益</div>
-                            </div>
-                            <div class="ranking-value">
-                                <div class="ranking-main">¥8,956</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ranking-list" id="soc-ranking" style="display: none;">
-                        <div class="ranking-item">
-                            <div class="ranking-number">1</div>
-                            <div class="ranking-info">
-                                <div class="ranking-name">城西配电站</div>
-                                <div class="ranking-desc">当前SOC</div>
-                            </div>
-                            <div class="ranking-value">
-                                <div class="ranking-main">92.5%</div>
-                            </div>
-                        </div>
-                        <div class="ranking-item">
-                            <div class="ranking-number">2</div>
-                            <div class="ranking-info">
-                                <div class="ranking-name">朝阳路工业园储能站</div>
-                                <div class="ranking-desc">当前SOC</div>
-                            </div>
-                            <div class="ranking-value">
-                                <div class="ranking-main">85.6%</div>
-                            </div>
-                        </div>
-                        <div class="ranking-item">
-                            <div class="ranking-number">3</div>
-                            <div class="ranking-info">
-                                <div class="ranking-name">经开区储能站</div>
-                                <div class="ranking-desc">当前SOC</div>
-                            </div>
-                            <div class="ranking-value">
-                                <div class="ranking-main">78.3%</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ranking-list" id="utilization-ranking" style="display: none;">
-                        <div class="ranking-item">
-                            <div class="ranking-number">1</div>
-                            <div class="ranking-info">
-                                <div class="ranking-name">经开区储能站</div>
-                                <div class="ranking-desc">设备利用率</div>
-                            </div>
-                            <div class="ranking-value">
-                                <div class="ranking-main">96.8%</div>
-                            </div>
-                        </div>
-                        <div class="ranking-item">
-                            <div class="ranking-number">2</div>
-                            <div class="ranking-info">
-                                <div class="ranking-name">朝阳路工业园储能站</div>
-                                <div class="ranking-desc">设备利用率</div>
-                            </div>
-                            <div class="ranking-value">
-                                <div class="ranking-main">94.2%</div>
-                            </div>
-                        </div>
-                        <div class="ranking-item">
-                            <div class="ranking-number">3</div>
-                            <div class="ranking-info">
-                                <div class="ranking-name">城西配电站</div>
-                                <div class="ranking-desc">设备利用率</div>
-                            </div>
-                            <div class="ranking-value">
-                                <div class="ranking-main">89.5%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 最新告警 -->
-                <div class="alert-card">
-                    <div class="section-header">
-                        <h3 class="section-title">最新告警</h3>
-                        <a href="#" class="view-all">查看全部 →</a>
-                    </div>
-                    <div class="alert-list">
-                        <div class="alert-item">
-                            <div class="alert-icon warning">⚠️</div>
-                            <div class="alert-content">
-                                <div class="alert-title">朝阳路工业园储能站 - 温度偏高</div>
-                                <div class="alert-desc">电池组#3温度达到38.5°C，超过预警阈值</div>
-                            </div>
-                            <div class="alert-time">10分钟前</div>
-                        </div>
-                        <div class="alert-item">
-                            <div class="alert-icon error">🔴</div>
-                            <div class="alert-content">
-                                <div class="alert-title">城西配电站 - PCS通信异常</div>
-                                <div class="alert-desc">PCS#2通信中断，请检查网络连接</div>
-                            </div>
-                            <div class="alert-time">25分钟前</div>
-                        </div>
-                        <div class="alert-item">
-                            <div class="alert-icon warning">⚠️</div>
-                            <div class="alert-content">
-                                <div class="alert-title">经开区储能站 - SOC偏低</div>
-                                <div class="alert-desc">当前SOC仅12%，建议尽快充电</div>
-                            </div>
-                            <div class="alert-time">1小时前</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
     <script src="./sidebar.js"></script>
+    <script src="./navbar.js"></script>
     <script>
         // 切换语言
         function toggleLanguage() {
@@ -865,58 +505,49 @@
             window.location.href = '../scenario-selection.html';
         }
 
-        // 初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            initPowerChart();
-            initStatusChart();
-            initRankingTabs();
-        });
-
-        // 初始化排行榜切换
-        function initRankingTabs() {
-            const tabs = document.querySelectorAll('.ranking-tab');
-            const rankings = {
-                'revenue': document.getElementById('revenue-ranking'),
-                'soc': document.getElementById('soc-ranking'),
-                'utilization': document.getElementById('utilization-ranking')
-            };
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // 移除所有active类
-                    tabs.forEach(t => t.classList.remove('active'));
-                    // 隐藏所有排行榜
-                    Object.values(rankings).forEach(r => r.style.display = 'none');
-                    
-                    // 激活当前tab
-                    this.classList.add('active');
-                    // 显示对应排行榜
-                    const type = this.dataset.type;
-                    if (rankings[type]) {
-                        rankings[type].style.display = 'flex';
-                    }
-                });
-            });
+        // 刷新数据
+        function refreshData() {
+            // 模拟数据刷新
+            console.log('刷新运行数据');
+            // 这里可以添加实际的数据刷新逻辑
         }
 
-        // 24小时功率曲线图
-        function initPowerChart() {
-            const powerChart = echarts.init(document.getElementById('powerChart'));
-            const hours = [];
-            for (let i = 0; i < 24; i++) {
-                hours.push(i + ':00');
-            }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initStationChart();
+            initStatusChart();
+        });
+
+
+        // 电站数据图表
+        let stationChart = null;
+        
+        function initStationChart() {
+            stationChart = echarts.init(document.getElementById('stationChart'));
+            showStationPowerChart();
+            
+            window.addEventListener('resize', () => {
+                stationChart.resize();
+            });
+        }
+        
+        // 电站功率对比图
+        function showStationPowerChart() {
+            const stations = ['朝阳路工业园', '经开区储能站', '城西配电站', '滨海新区站', '高新区站', '产业园储能站'];
+            const currentPower = [5.2, 4.8, 3.5, 2.9, 3.2, 4.1]; // 当前功率
+            const maxPower = [6.0, 5.5, 4.0, 3.5, 4.0, 5.0]; // 额定功率
             
             const option = {
                 grid: {
                     top: 30,
-                    right: 20,
+                    right: 30,
                     bottom: 60,
-                    left: 50
+                    left: 80
                 },
                 legend: {
                     bottom: 0,
-                    data: ['光伏发电', '储能充放电', '负载需求'],
+                    data: ['当前功率', '额定功率'],
                     textStyle: {
                         fontSize: 12,
                         color: '#666'
@@ -924,7 +555,7 @@
                 },
                 xAxis: {
                     type: 'category',
-                    data: hours,
+                    data: stations,
                     axisLine: {
                         lineStyle: {
                             color: '#e8e8e8'
@@ -936,7 +567,7 @@
                     axisLabel: {
                         color: '#999',
                         fontSize: 11,
-                        interval: 2
+                        rotate: 15
                     }
                 },
                 yAxis: {
@@ -965,55 +596,27 @@
                 },
                 series: [
                     {
-                        name: '光伏发电',
-                        type: 'line',
-                        smooth: true,
-                        symbol: 'none',
-                        areaStyle: {
+                        name: '当前功率',
+                        type: 'bar',
+                        barWidth: 20,
+                        itemStyle: {
+                            borderRadius: [4, 4, 0, 0],
                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                { offset: 0, color: 'rgba(250, 173, 20, 0.3)' },
-                                { offset: 1, color: 'rgba(250, 173, 20, 0.05)' }
+                                { offset: 0, color: '#1890ff' },
+                                { offset: 1, color: '#69c0ff' }
                             ])
                         },
-                        lineStyle: {
-                            color: '#faad14',
-                            width: 2
-                        },
-                        data: [0, 0, 0, 0, 0, 0.5, 2, 5, 8, 10, 12, 13, 12.5, 11, 9, 7, 4, 2, 0.5, 0, 0, 0, 0, 0]
+                        data: currentPower
                     },
                     {
-                        name: '储能充放电',
-                        type: 'line',
-                        smooth: true,
-                        symbol: 'none',
-                        areaStyle: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                { offset: 0, color: 'rgba(24, 144, 255, 0.3)' },
-                                { offset: 1, color: 'rgba(24, 144, 255, 0.05)' }
-                            ])
+                        name: '额定功率',
+                        type: 'bar',
+                        barWidth: 20,
+                        itemStyle: {
+                            borderRadius: [4, 4, 0, 0],
+                            color: '#f0f0f0'
                         },
-                        lineStyle: {
-                            color: '#1890ff',
-                            width: 2
-                        },
-                        data: [2, 2, 2, 2, 3, 3, 2, 1, -2, -3, -1, 0, 1, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2]
-                    },
-                    {
-                        name: '负载需求',
-                        type: 'line',
-                        smooth: true,
-                        symbol: 'none',
-                        areaStyle: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                { offset: 0, color: 'rgba(82, 196, 26, 0.3)' },
-                                { offset: 1, color: 'rgba(82, 196, 26, 0.05)' }
-                            ])
-                        },
-                        lineStyle: {
-                            color: '#52c41a',
-                            width: 2
-                        },
-                        data: [3, 3, 3, 3, 4, 5, 6, 7, 8, 8, 9, 9, 8, 8, 7, 6, 5, 4, 4, 3, 3, 3, 3, 3]
+                        data: maxPower
                     }
                 ],
                 tooltip: {
@@ -1024,14 +627,294 @@
                     textStyle: {
                         color: '#666',
                         fontSize: 12
+                    },
+                    formatter: function(params) {
+                        let html = params[0].name + '<br/>';
+                        params.forEach(param => {
+                            html += param.marker + param.seriesName + ': ' + param.value + ' MW<br/>';
+                        });
+                        if (params[0] && params[1]) {
+                            const rate = (params[0].value / params[1].value * 100).toFixed(1);
+                            html += '<span style="color: #1890ff">负荷率: ' + rate + '%</span>';
+                        }
+                        return html;
                     }
                 }
             };
-            powerChart.setOption(option);
-
-            window.addEventListener('resize', () => {
-                powerChart.resize();
-            });
+            stationChart.setOption(option);
+        }
+        
+        // 电站效率对比图
+        function showStationEfficiencyChart() {
+            const stations = ['朝阳路工业园', '经开区储能站', '城西配电站', '滨海新区站', '高新区站', '产业园储能站'];
+            const efficiency = [96.5, 94.8, 92.3, 89.7, 93.2, 95.1];
+            
+            const option = {
+                grid: {
+                    top: 30,
+                    right: 30,
+                    bottom: 60,
+                    left: 80
+                },
+                xAxis: {
+                    type: 'category',
+                    data: stations,
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e8e8e8'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#999',
+                        fontSize: 11,
+                        rotate: 15
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '运行效率(%)',
+                    min: 85,
+                    max: 100,
+                    nameTextStyle: {
+                        color: '#666',
+                        fontSize: 12,
+                        padding: [0, 0, 10, 0]
+                    },
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#f0f0f0'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#999',
+                        fontSize: 11
+                    }
+                },
+                series: [
+                    {
+                        name: '运行效率',
+                        type: 'bar',
+                        barWidth: 30,
+                        itemStyle: {
+                            borderRadius: [4, 4, 0, 0],
+                            color: function(params) {
+                                const value = params.value;
+                                if (value >= 95) {
+                                    return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                        { offset: 0, color: '#52c41a' },
+                                        { offset: 1, color: '#95de64' }
+                                    ]);
+                                } else if (value >= 90) {
+                                    return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                        { offset: 0, color: '#faad14' },
+                                        { offset: 1, color: '#ffd666' }
+                                    ]);
+                                } else {
+                                    return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                        { offset: 0, color: '#ff4d4f' },
+                                        { offset: 1, color: '#ff7875' }
+                                    ]);
+                                }
+                            }
+                        },
+                        data: efficiency,
+                        label: {
+                            show: true,
+                            position: 'top',
+                            formatter: '{c}%',
+                            color: '#666',
+                            fontSize: 11
+                        }
+                    }
+                ],
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: '#e8e8e8',
+                    borderWidth: 1,
+                    textStyle: {
+                        color: '#666',
+                        fontSize: 12
+                    },
+                    formatter: function(params) {
+                        const param = params[0];
+                        return param.name + '<br/>' +
+                               param.marker + '运行效率: ' + param.value + '%<br/>' +
+                               '<span style="color: #999">状态: ' + (param.value >= 95 ? '优秀' : param.value >= 90 ? '良好' : '需优化') + '</span>';
+                    }
+                }
+            };
+            stationChart.setOption(option);
+        }
+        
+        // 电站收益分析图
+        function showStationRevenueChart() {
+            const stations = ['朝阳路工业园', '经开区储能站', '城西配电站', '滨海新区站', '高新区站', '产业园储能站'];
+            const todayRevenue = [12580, 10234, 8956, 7823, 9012, 10567];
+            const monthRevenue = [356.2, 289.5, 253.1, 221.3, 254.8, 298.9];
+            
+            const option = {
+                grid: {
+                    top: 30,
+                    right: 80,
+                    bottom: 60,
+                    left: 80
+                },
+                legend: {
+                    bottom: 0,
+                    data: ['今日收益', '月度收益'],
+                    textStyle: {
+                        fontSize: 12,
+                        color: '#666'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: stations,
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e8e8e8'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#999',
+                        fontSize: 11,
+                        rotate: 15
+                    }
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '今日收益(元)',
+                        nameTextStyle: {
+                            color: '#666',
+                            fontSize: 12,
+                            padding: [0, 0, 10, 0]
+                        },
+                        axisLine: {
+                            show: false
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                color: '#f0f0f0'
+                            }
+                        },
+                        axisLabel: {
+                            color: '#999',
+                            fontSize: 11
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: '月度收益(万元)',
+                        nameTextStyle: {
+                            color: '#666',
+                            fontSize: 12,
+                            padding: [0, 0, 10, 0]
+                        },
+                        axisLine: {
+                            show: false
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        splitLine: {
+                            show: false
+                        },
+                        axisLabel: {
+                            color: '#999',
+                            fontSize: 11
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: '今日收益',
+                        type: 'bar',
+                        barWidth: 20,
+                        itemStyle: {
+                            borderRadius: [4, 4, 0, 0],
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: '#8b5cf6' },
+                                { offset: 1, color: '#a78bfa' }
+                            ])
+                        },
+                        data: todayRevenue
+                    },
+                    {
+                        name: '月度收益',
+                        type: 'line',
+                        yAxisIndex: 1,
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 8,
+                        lineStyle: {
+                            color: '#faad14',
+                            width: 3
+                        },
+                        itemStyle: {
+                            color: '#faad14',
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        data: monthRevenue
+                    }
+                ],
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: '#e8e8e8',
+                    borderWidth: 1,
+                    textStyle: {
+                        color: '#666',
+                        fontSize: 12
+                    },
+                    formatter: function(params) {
+                        let html = params[0].name + '<br/>';
+                        params.forEach(param => {
+                            if (param.seriesName === '今日收益') {
+                                html += param.marker + param.seriesName + ': ¥' + param.value.toLocaleString() + '<br/>';
+                            } else {
+                                html += param.marker + param.seriesName + ': ¥' + param.value + '万<br/>';
+                            }
+                        });
+                        return html;
+                    }
+                }
+            };
+            stationChart.setOption(option);
+        }
+        
+        // 更新电站图表
+        function updateStationChart(type) {
+            switch (type) {
+                case 'power':
+                    showStationPowerChart();
+                    break;
+                case 'efficiency':
+                    showStationEfficiencyChart();
+                    break;
+                case 'revenue':
+                    showStationRevenueChart();
+                    break;
+                default:
+                    showStationPowerChart();
+            }
         }
 
         // 电站状态分布饼图
@@ -1046,12 +929,17 @@
                     textStyle: {
                         color: '#666',
                         fontSize: 12
+                    },
+                    formatter: function(params) {
+                        return params.name + '<br/>' +
+                               '电站数量: ' + params.value + '座<br/>' +
+                               '占比: ' + params.percent + '%';
                     }
                 },
                 legend: {
-                    bottom: 20,
+                    bottom: 10,
                     left: 'center',
-                    data: ['正常运行', '维护中', '故障停机'],
+                    data: ['正常运行', '故障', '离线'],
                     textStyle: {
                         fontSize: 12,
                         color: '#666'
@@ -1075,17 +963,56 @@
                         emphasis: {
                             label: {
                                 show: true,
-                                fontSize: 18,
-                                fontWeight: 'bold'
+                                fontSize: 20,
+                                fontWeight: 'bold',
+                                formatter: function(params) {
+                                    return params.value + '座';
+                                }
                             }
                         },
                         labelLine: {
                             show: false
                         },
                         data: [
-                            { value: 85, name: '正常运行', itemStyle: { color: '#52c41a' } },
-                            { value: 10, name: '维护中', itemStyle: { color: '#faad14' } },
-                            { value: 5, name: '故障停机', itemStyle: { color: '#ff4d4f' } }
+                            { 
+                                value: 10, 
+                                name: '正常运行', 
+                                itemStyle: { color: '#52c41a' },
+                                label: {
+                                    show: true,
+                                    position: 'inside',
+                                    formatter: '{c}座',
+                                    color: '#fff',
+                                    fontSize: 14,
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            { 
+                                value: 1, 
+                                name: '故障', 
+                                itemStyle: { color: '#ff4d4f' },
+                                label: {
+                                    show: true,
+                                    position: 'inside',
+                                    formatter: '{c}座',
+                                    color: '#fff',
+                                    fontSize: 14,
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            { 
+                                value: 1, 
+                                name: '离线', 
+                                itemStyle: { color: '#d9d9d9' },
+                                label: {
+                                    show: true,
+                                    position: 'inside',
+                                    formatter: '{c}座',
+                                    color: '#666',
+                                    fontSize: 14,
+                                    fontWeight: 'bold'
+                                }
+                            }
                         ]
                     }
                 ]

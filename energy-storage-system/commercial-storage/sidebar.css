@@ -227,3 +227,97 @@
     background: #1e3a8a;
     color: #60a5fa;
 }
+
+/* 侧边栏遮罩层 */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+@media (max-width: 768px) {
+    .sidebar-overlay.show {
+        display: block;
+    }
+}
+
+/* 三级菜单样式 */
+.submenu-item-with-children {
+    position: relative;
+}
+
+.submenu-item-with-children .submenu-item {
+    display: flex;
+    align-items: center;
+    justify-content: between;
+    padding-right: 2rem;
+}
+
+.submenu-arrow {
+    position: absolute;
+    right: 1.5rem;
+    font-size: 10px;
+    color: #9ca3af;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.submenu-arrow.expanded {
+    transform: rotate(90deg);
+}
+
+.sub-submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: #f3f4f6;
+}
+
+.sub-submenu.open {
+    max-height: 200px;
+}
+
+.sub-submenu-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1.5rem 0.5rem 4.5rem;
+    color: #6b7280;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
+}
+
+.sub-submenu-item:hover {
+    background: #e5e7eb;
+    color: #1f2937;
+}
+
+.sub-submenu-item.active {
+    color: #2563eb;
+    font-weight: 500;
+    background: #dbeafe;
+}
+
+/* 暗色主题 - 三级菜单 */
+[data-theme="dark"] .sub-submenu {
+    background: #0f172a;
+}
+
+[data-theme="dark"] .sub-submenu-item {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .sub-submenu-item:hover {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .sub-submenu-item.active {
+    background: #1e3a8a;
+    color: #60a5fa;
+}

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电价模板 - 能源管理系统</title>
+    <link rel="stylesheet" href="./sidebar.css">
+    <link rel="stylesheet" href="./navbar.css">
+    <link rel="stylesheet" href="./responsive.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #EBEDF5;
+            color: #1e293b;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            background: #EBEDF5;
+        }
+
+        /* 内容区域 */
+        .content {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        /* 卡片容器 */
+        .price-container {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        /* 电价信息表格 */
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .price-table th {
+            background: #f8fafc;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .price-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+            color: #1e293b;
+        }
+
+        .price-table tr:hover {
+            background: #f8fafc;
+        }
+
+        /* 时间段标签 */
+        .time-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .time-badge.peak {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .time-badge.normal {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .time-badge.valley {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        /* 电站选择器 */
+        .station-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            background: white;
+            color: #1e293b;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #3562E3;
+            box-shadow: 0 0 0 3px rgba(53, 98, 227, 0.1);
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .stat-unit {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            font-weight: normal;
+        }
+
+        /* Tab切换 */
+        .price-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #64748b;
+            font-weight: 500;
+            transition: all 150ms ease;
+            position: relative;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-button:hover {
+            color: #1e293b;
+        }
+
+        .tab-button.active {
+            color: #3562E3;
+            border-bottom-color: #3562E3;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        /* 电价卡片网格 */
+        .price-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .price-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .price-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .card-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-configured {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-incomplete {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .card-date {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .card-btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .card-btn-edit {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .card-btn-edit:hover {
+            background: #7dd3fc;
+        }
+
+        .card-btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .card-btn-delete:hover {
+            background: #fca5a5;
+        }
+
+        .add-card {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            min-height: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-card:hover {
+            border-color: #3562E3;
+            background: #eff6ff;
+        }
+
+        .add-icon {
+            width: 48px;
+            height: 48px;
+            background: #3562E3;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .add-text {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .price-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 0 1rem;
+            }
+
+            .navbar-left h1 {
+                font-size: 1.125rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <h1 class="page-title">电价模板</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 电价卡片网格 -->
+            <div class="price-cards-grid">
+                <!-- 已配置的卡片 -->
+                <div class="price-card">
+                    <div class="card-header">
+                        <h3 class="card-title">上海工业园分时电价</h3>
+                        <span class="card-status status-configured">已配置</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <span>📍</span>
+                            <span>电站：上海工业园储能站</span>
+                        </div>
+                        <div class="info-item">
+                            <span>📅</span>
+                            <span>电价类型：分时电价</span>
+                        </div>
+                        <div class="info-item">
+                            <span>💰</span>
+                            <span>峰时电价：1.35元/kWh</span>
+                        </div>
+                        <div class="info-item">
+                            <span>⏰</span>
+                            <span>有效期：永久生效</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-date">更新于 2025-07-20</span>
+                        <div class="card-actions">
+                            <button class="card-btn card-btn-edit" onclick="editPriceTemplate('sh-template')">编辑</button>
+                            <button class="card-btn card-btn-delete" onclick="deletePriceTemplate('sh-template')">删除</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 未完成配置的卡片 -->
+                <div class="price-card">
+                    <div class="card-header">
+                        <h3 class="card-title">北京科技园固定电价</h3>
+                        <span class="card-status status-incomplete">未完成</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <span>📍</span>
+                            <span>电站：北京科技园储能站</span>
+                        </div>
+                        <div class="info-item">
+                            <span>📅</span>
+                            <span>电价类型：固定电价</span>
+                        </div>
+                        <div class="info-item">
+                            <span>💰</span>
+                            <span>固定电价：--</span>
+                        </div>
+                        <div class="info-item">
+                            <span>⏰</span>
+                            <span>有效期：--</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-date">创建于 2025-07-25</span>
+                        <div class="card-actions">
+                            <button class="card-btn card-btn-edit" onclick="editPriceTemplate('bj-template')">继续配置</button>
+                            <button class="card-btn card-btn-delete" onclick="deletePriceTemplate('bj-template')">删除</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 已配置的卡片2 -->
+                <div class="price-card">
+                    <div class="card-header">
+                        <h3 class="card-title">深圳光伏站组合电价</h3>
+                        <span class="card-status status-configured">已配置</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <span>📍</span>
+                            <span>电站：深圳光伏储能站</span>
+                        </div>
+                        <div class="info-item">
+                            <span>📅</span>
+                            <span>电价模式：组合电价</span>
+                        </div>
+                        <div class="info-item">
+                            <span>🏢</span>
+                            <span>用电类型：工商业用电</span>
+                        </div>
+                        <div class="info-item">
+                            <span>💰</span>
+                            <span>基本电价：30元/kVA·月</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-date">更新于 2025-07-15</span>
+                        <div class="card-actions">
+                            <button class="card-btn card-btn-edit" onclick="editPriceTemplate('sz-template')">编辑</button>
+                            <button class="card-btn card-btn-delete" onclick="deletePriceTemplate('sz-template')">删除</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 添加新卡片 -->
+                <div class="price-card add-card" onclick="addNewPriceTemplate()">
+                    <div class="add-icon">+</div>
+                    <span class="add-text">添加新电价配置</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 电价配置模态框 -->
+    <div id="priceModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 8px; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div style="padding: 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                <h2 id="modalTitle" style="font-size: 1.25rem; font-weight: 600; color: #1e293b;">新建电价配置</h2>
+                <button onclick="closePriceModal()" style="width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; font-size: 24px; color: #64748b;">&times;</button>
+            </div>
+            <form id="priceForm" style="padding: 1.5rem;">
+                <!-- 电站选择 -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">选择电站</label>
+                    <select style="width: 100%; padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; font-size: 0.875rem;">
+                        <option value="">请选择电站</option>
+                        <option value="sh">上海工业园储能站</option>
+                        <option value="bj">北京科技园储能站</option>
+                        <option value="sz">深圳光伏储能站</option>
+                    </select>
+                </div>
+
+                <!-- 电价分类选择 -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">电价分类</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <label style="display: flex; align-items: center;">
+                            <input type="radio" name="priceCategory" value="feedIn" checked style="margin-right: 0.5rem;">
+                            <span>上网电价</span>
+                        </label>
+                        <label style="display: flex; align-items: center;">
+                            <input type="radio" name="priceCategory" value="purchase" style="margin-right: 0.5rem;">
+                            <span>购电电价</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 电价类型选择 -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">电价类型</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                        <label style="display: flex; align-items: center; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; cursor: pointer;">
+                            <input type="radio" name="priceType" value="fixed" checked style="margin-right: 0.5rem;">
+                            <div>
+                                <div style="font-weight: 500;">固定电价</div>
+                                <div style="font-size: 0.75rem; color: #64748b;">所有时间段电价一致</div>
+                            </div>
+                        </label>
+                        <label style="display: flex; align-items: center; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; cursor: pointer;">
+                            <input type="radio" name="priceType" value="time" style="margin-right: 0.5rem;">
+                            <div>
+                                <div style="font-weight: 500;">分时电价</div>
+                                <div style="font-size: 0.75rem; color: #64748b;">不同时段不同电价</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 固定电价设置 -->
+                <div id="fixedPriceSettings" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">固定电价（元/kWh）</label>
+                    <input type="number" step="0.01" placeholder="请输入电价" style="width: 200px; padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; font-size: 0.875rem;">
+                </div>
+
+                <!-- 分时电价设置 -->
+                <div id="timePriceSettings" style="display: none; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">分时电价设置</label>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem;">
+                        <div style="display: grid; grid-template-columns: 2fr 2fr 1fr auto; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <div style="font-size: 0.75rem; color: #64748b;">开始时间</div>
+                            <div style="font-size: 0.75rem; color: #64748b;">结束时间</div>
+                            <div style="font-size: 0.75rem; color: #64748b;">电价(元/kWh)</div>
+                            <div></div>
+                        </div>
+                        <div id="timeSlots">
+                            <div style="display: grid; grid-template-columns: 2fr 2fr 1fr auto; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                                <input type="time" value="00:00" style="padding: 0.375rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; font-size: 0.875rem;">
+                                <input type="time" value="08:00" style="padding: 0.375rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; font-size: 0.875rem;">
+                                <input type="number" step="0.01" placeholder="电价" style="padding: 0.375rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; font-size: 0.875rem;">
+                                <button type="button" onclick="removeTimeSlot(this)" style="padding: 0.25rem 0.5rem; background: #fee2e2; color: #dc2626; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.75rem;">删除</button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addTimeSlot()" style="margin-top: 0.5rem; padding: 0.375rem 0.75rem; background: #e0f2fe; color: #0369a1; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.875rem;">+ 添加时段</button>
+                    </div>
+                </div>
+
+                <!-- 有效期设置 -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">有效期设置</label>
+                    <label style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                        <input type="checkbox" id="permanentCheck" checked style="margin-right: 0.5rem;">
+                        <span>永久生效</span>
+                    </label>
+                    <div id="validityDates" style="display: none; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-size: 0.75rem; color: #64748b; margin-bottom: 0.25rem;">开始日期</label>
+                            <input type="date" style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; font-size: 0.875rem;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.75rem; color: #64748b; margin-bottom: 0.25rem;">结束日期</label>
+                            <input type="date" style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; font-size: 0.875rem;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 按钮 -->
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
+                    <button type="button" onclick="closePriceModal()" style="padding: 0.5rem 1rem; background: white; border: 1px solid #e2e8f0; border-radius: 0.5rem; cursor: pointer;">取消</button>
+                    <button type="button" onclick="savePriceConfig()" style="padding: 0.5rem 1rem; background: #3562E3; color: white; border: none; border-radius: 0.5rem; cursor: pointer;">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 编辑电价模板
+        function editPriceTemplate(templateId) {
+            // 打开模态框进行编辑
+            openPriceModal('edit', templateId);
+        }
+
+        // 删除电价模板
+        function deletePriceTemplate(templateId) {
+            if (confirm('确定要删除这个电价配置吗？')) {
+                // 这里添加删除逻辑
+                alert('电价配置已删除');
+                // 刷新页面或更新卡片列表
+                location.reload();
+            }
+        }
+
+        // 添加新电价模板
+        function addNewPriceTemplate() {
+            // 打开模态框创建新配置
+            openPriceModal('new');
+        }
+
+        // 打开价格配置模态框
+        function openPriceModal(mode, templateId) {
+            const modal = document.getElementById('priceModal');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            if (mode === 'new') {
+                modalTitle.textContent = '新建电价配置';
+                // 清空表单
+                document.getElementById('priceForm').reset();
+            } else {
+                modalTitle.textContent = '编辑电价配置';
+                // 加载现有数据
+                loadTemplateData(templateId);
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        // 关闭模态框
+        function closePriceModal() {
+            document.getElementById('priceModal').style.display = 'none';
+        }
+
+        // 加载模板数据
+        function loadTemplateData(templateId) {
+            // 这里加载模板数据到表单
+            console.log('加载模板数据:', templateId);
+        }
+
+        // 保存电价配置
+        function savePriceConfig() {
+            // 这里添加保存逻辑
+            alert('电价配置已保存');
+            closePriceModal();
+            location.reload();
+        }
+
+        // 切换语言
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            const currentLang = langText.textContent;
+            langText.textContent = currentLang === '中文' ? 'English' : '中文';
+        }
+
+        // 切换主题
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            localStorage.setItem('ess_theme', newTheme);
+        }
+
+        // 切换侧边栏
+        function toggleSidebar() {
+            if (window.sidebar) {
+                window.sidebar.toggle();
+            }
+        }
+
+        // 添加时间段
+        function addTimeSlot() {
+            const timeSlotsContainer = document.getElementById('timeSlots');
+            const newSlot = document.createElement('div');
+            newSlot.style.cssText = 'display: grid; grid-template-columns: 2fr 2fr 1fr auto; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;';
+            newSlot.innerHTML = `
+                <input type="time" value="08:00" style="padding: 0.375rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; font-size: 0.875rem;">
+                <input type="time" value="12:00" style="padding: 0.375rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; font-size: 0.875rem;">
+                <input type="number" step="0.01" placeholder="电价" style="padding: 0.375rem; border: 1px solid #e2e8f0; border-radius: 0.375rem; font-size: 0.875rem;">
+                <button type="button" onclick="removeTimeSlot(this)" style="padding: 0.25rem 0.5rem; background: #fee2e2; color: #dc2626; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.75rem;">删除</button>
+            `;
+            timeSlotsContainer.appendChild(newSlot);
+        }
+
+        // 删除时间段
+        function removeTimeSlot(button) {
+            button.parentElement.remove();
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 应用保存的主题
+            const savedTheme = localStorage.getItem('ess_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+            // 电价类型切换
+            document.querySelectorAll('input[name="priceType"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'fixed') {
+                        document.getElementById('fixedPriceSettings').style.display = 'block';
+                        document.getElementById('timePriceSettings').style.display = 'none';
+                    } else {
+                        document.getElementById('fixedPriceSettings').style.display = 'none';
+                        document.getElementById('timePriceSettings').style.display = 'block';
+                    }
+                });
+            });
+
+            // 有效期切换
+            document.getElementById('permanentCheck').addEventListener('change', function() {
+                if (this.checked) {
+                    document.getElementById('validityDates').style.display = 'none';
+                } else {
+                    document.getElementById('validityDates').style.display = 'grid';
+                }
+            });
+
+            // 点击模态框外部关闭
+            document.getElementById('priceModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePriceModal();
+                }
+            });
+        });
+    </script>
+
+    <!-- 引入侧边栏和导航栏脚本 -->
+    <script src="./sidebar.js"></script>
+    <script src="./navbar.js"></script>
+</body>
+</html>

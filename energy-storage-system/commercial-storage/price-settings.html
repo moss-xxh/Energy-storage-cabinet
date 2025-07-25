@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>电价模板 - 能源管理系统</title>
     <link rel="stylesheet" href="./sidebar.css">
+    <link rel="stylesheet" href="./navbar.css">
+    <link rel="stylesheet" href="./responsive.css">
     <style>
         * {
             margin: 0;
@@ -20,104 +22,6 @@
             overflow-x: hidden;
         }
 
-        /* 一级菜单样式 */
-        .menu-group {
-            margin-bottom: 0;
-        }
-        
-        .menu-parent {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 1.5rem;
-            color: #64748b;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
-            position: relative;
-        }
-        
-        .menu-parent:hover {
-            background: #f1f5f9;
-            color: #1e293b;
-        }
-        
-        .menu-parent.expanded {
-            background: transparent;
-            color: #3562E3;
-        }
-        
-        .menu-arrow {
-            transition: transform 0.2s ease;
-            font-size: 0.75rem;
-            color: #94a3b8;
-        }
-        
-        .menu-parent.expanded .menu-arrow {
-            transform: rotate(90deg);
-            color: #64748b;
-        }
-        
-        /* 二级菜单样式 */
-        .submenu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            background: transparent;
-        }
-        
-        .submenu.open {
-            max-height: 300px;
-        }
-        
-        .submenu-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1.5rem 0.75rem 3rem;
-            color: #64748b;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            font-size: 0.875rem;
-            position: relative;
-        }
-        
-        .submenu-item:hover {
-            background: #f1f5f9;
-            color: #1e293b;
-        }
-        
-        .submenu-item.active {
-            background: #eff6ff;
-            color: #3562E3;
-        }
-        
-        .submenu-item.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 3px;
-            height: 100%;
-            background: #3562E3;
-        }
-
-        .menu-icon {
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        .menu-icon svg {
-            width: 100%;
-            height: 100%;
-        }
-
         /* 主内容区域 */
         .main-content {
             margin-left: 240px;
@@ -125,12 +29,37 @@
             background: #EBEDF5;
         }
 
+        /* 内容区域 */
+        .content {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .page-subtitle {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
         /* 顶部导航栏 */
         .navbar {
             background: white;
             border-bottom: 1px solid #e2e8f0;
             padding: 0 2rem;
-            height: 64px;
+            min-height: 64px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -142,12 +71,43 @@
         .navbar-left {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
-        .page-title {
-            font-size: 1.25rem;
-            font-weight: 600;
+        /* 公司选择下拉列表 */
+        .company-select {
+            padding: 0.5rem 1rem;
+            padding-right: 2.5rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #1e293b;
+            cursor: pointer;
+            min-width: 250px;
+            transition: all 150ms ease;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .company-select:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .company-select:focus {
+            outline: none;
+            border-color: #3562E3;
+            box-shadow: 0 0 0 3px rgba(53, 98, 227, 0.1);
+        }
+
+        .company-select option {
+            padding: 0.5rem;
             color: #1e293b;
         }
 
@@ -177,57 +137,228 @@
             color: #1e293b;
         }
 
-        /* 内容区域 */
-        .content {
-            flex: 1;
-            padding: 2rem;
-            max-width: 1193px;
-            margin: 0 auto;
-        }
 
-        /* Tab切换 - 与数据分析保持一致 */
-        .price-tabs {
-            display: flex;
-            gap: 0;
+        /* 电价卡片网格 */
+        .price-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 2rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: -2px;
         }
 
-        .tab-button {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            background: none;
-            cursor: pointer;
-            color: #64748b;
-            font-weight: 500;
-            transition: all 150ms ease;
-            position: relative;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-        }
-
-        .tab-button:hover {
-            color: #1e293b;
-        }
-
-        .tab-button.active {
-            color: #3562E3;
-            border-bottom-color: #3562E3;
-        }
-
-        /* 电价设置内容 */
-        .price-content {
+        /* 电价卡片 */
+        .price-card-item {
             background: white;
             border-radius: 0.75rem;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
         }
 
-        .station-selector {
-            margin-bottom: 2rem;
+        .price-card-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
         }
 
+        .price-card-item.selected {
+            border-color: #3562E3;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .card-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-configuring {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .card-date {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .card-btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .card-btn-edit {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .card-btn-edit:hover {
+            background: #7dd3fc;
+        }
+
+        .card-btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .card-btn-delete:hover {
+            background: #fca5a5;
+        }
+
+        /* 添加卡片样式 */
+        .add-card {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            min-height: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-card:hover {
+            border-color: #3562E3;
+            background: #eff6ff;
+        }
+
+        .add-icon {
+            width: 48px;
+            height: 48px;
+            background: #3562E3;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .add-text {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* 模态框样式 */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 24px;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #1e293b;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* 表单样式 */
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -240,132 +371,104 @@
             margin-bottom: 0.5rem;
         }
 
+        .form-input,
         .form-select {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 1rem;
             border: 1px solid #e2e8f0;
             border-radius: 0.5rem;
             font-size: 0.875rem;
-            background: white;
-            color: #1e293b;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            height: 42px;
+            transition: all 0.2s;
         }
 
+        .form-input:focus,
         .form-select:focus {
             outline: none;
             border-color: #3562E3;
             box-shadow: 0 0 0 3px rgba(53, 98, 227, 0.1);
         }
 
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            background: white;
-            color: #1e293b;
-            transition: all 0.2s ease;
-            height: 42px;
+        .form-radio-group {
+            display: flex;
+            gap: 1rem;
         }
 
-        .form-input:focus {
-            outline: none;
-            border-color: #3562E3;
-            box-shadow: 0 0 0 3px rgba(53, 98, 227, 0.1);
-        }
-
-        /* 电价模板卡片 */
-        .template-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .template-card {
-            background: #f8fafc;
-            border: 2px solid transparent;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
+        .form-radio-label {
+            display: flex;
+            align-items: center;
             cursor: pointer;
-            transition: all 0.2s ease;
         }
 
-        .template-card:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        .form-radio-label input[type="radio"] {
+            margin-right: 0.5rem;
         }
 
-        .template-card.selected {
-            border-color: #3562E3;
-            background: #eff6ff;
+        /* 时间段配置 */
+        .time-slots-container {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 0.5rem;
         }
 
-        .template-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #1e293b;
+        .time-slot-header {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1.5fr 1fr auto;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .time-slot-item {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1.5fr 1fr auto;
+            gap: 0.5rem;
+            align-items: center;
             margin-bottom: 0.5rem;
         }
 
-        .template-description {
-            font-size: 0.875rem;
-            color: #64748b;
-            line-height: 1.5;
-        }
-
-        /* 时间段设置 */
-        .time-period-section {
-            background: #f8fafc;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .time-period-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .time-period-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .time-slots {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .time-slot {
-            display: grid;
-            grid-template-columns: 1fr 1fr 120px auto;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .time-input {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
+        .time-slot-item input {
+            padding: 0.375rem;
             border: 1px solid #e2e8f0;
             border-radius: 0.375rem;
             font-size: 0.875rem;
         }
 
-        .price-input {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
+        .time-slot-item select {
+            padding: 0.375rem;
             border: 1px solid #e2e8f0;
             border-radius: 0.375rem;
             font-size: 0.875rem;
-            text-align: right;
+            background: white;
+        }
+
+        .btn-remove {
+            padding: 0.25rem 0.5rem;
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .btn-remove:hover {
+            background: #fca5a5;
+        }
+
+        .btn-add-slot {
+            margin-top: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background: #e0f2fe;
+            color: #0369a1;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .btn-add-slot:hover {
+            background: #7dd3fc;
         }
 
         /* 按钮样式 */
@@ -373,13 +476,9 @@
             padding: 0.5rem 1rem;
             border: none;
             border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
         }
 
         .btn-primary {
@@ -388,243 +487,157 @@
         }
 
         .btn-primary:hover {
-            background: #2951d9;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: #2850C5;
         }
 
         .btn-secondary {
             background: white;
-            color: #374151;
-            border: 1px solid #d1d5db;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
         }
 
         .btn-secondary:hover {
-            background: #f9fafb;
-            border-color: #9ca3af;
+            background: #f8fafc;
+            border-color: #cbd5e1;
         }
 
-        .btn-text {
-            background: transparent;
-            color: #3562E3;
-            padding: 0.5rem;
-        }
-
-        .btn-text:hover {
-            background: #eff6ff;
-        }
-
-        .btn-danger {
-            background: transparent;
-            color: #ef4444;
-            padding: 0.5rem;
-        }
-
-        .btn-danger:hover {
-            background: #fee2e2;
-        }
-
-        .btn-icon {
-            padding: 0.5rem;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* 有效期设置 */
-        .validity-section {
+        /* 表单分组样式 */
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
             background: #f8fafc;
             border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
         }
 
-        .switch-container {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
             margin-bottom: 1rem;
         }
 
-        .switch {
-            position: relative;
-            width: 44px;
-            height: 24px;
-            background: #e2e8f0;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-
-        .switch.active {
-            background: #3562E3;
-        }
-
-        .switch-thumb {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .switch.active .switch-thumb {
-            transform: translateX(20px);
-        }
-
-        .date-range-inputs {
+        .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
         }
 
-        /* 操作栏 */
-        .action-bar {
+        /* 配置标签页样式 */
+        .price-config-tabs {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 2rem;
-            border-top: 1px solid #e2e8f0;
-            margin-top: 2rem;
+            gap: 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
         }
+
+        .config-tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #64748b;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 150ms ease;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .config-tab-btn:hover {
+            color: #1e293b;
+        }
+
+        .config-tab-btn.active {
+            color: #3562E3;
+            border-bottom-color: #3562E3;
+        }
+
+        .config-tab-content {
+            display: none;
+        }
+
+        .config-tab-content.active {
+            display: block;
+        }
+
+        /* 价格表格样式 */
+        .time-price-table {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .price-table th {
+            background: #f8fafc;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .price-table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .price-table input,
+        .price-table select {
+            width: 100%;
+            padding: 0.375rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        .price-type-section {
+            margin-top: 1rem;
+        }
+
 
         /* 响应式设计 */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
             .main-content {
                 margin-left: 0;
             }
 
-            .template-grid {
+            .content {
+                padding: 1rem;
+            }
+
+            .price-cards-grid {
                 grid-template-columns: 1fr;
             }
 
-            .time-slot {
-                grid-template-columns: 1fr;
+            .navbar {
+                padding: 0 1rem;
             }
-        }
 
-        /* 暗色主题 */
-        [data-theme="dark"] {
-            background: #0f172a;
-            color: #e2e8f0;
-        }
+            .navbar-left {
+                gap: 0.75rem;
+            }
 
-        [data-theme="dark"] body {
-            background: #0f172a;
-            color: #e2e8f0;
-        }
+            .page-title {
+                font-size: 1.125rem;
+            }
 
-        [data-theme="dark"] .sidebar {
-            background: #1e293b;
-            border-color: #334155;
-        }
+            .company-select {
+                min-width: 150px;
+                font-size: 0.75rem;
+                padding: 0.375rem 0.75rem;
+            }
 
-        [data-theme="dark"] .navbar {
-            background: #1e293b;
-            border-color: #334155;
-        }
-
-        [data-theme="dark"] .page-header {
-            background: #1e293b;
-            border-color: #334155;
-        }
-
-        [data-theme="dark"] .content-wrapper {
-            background: #0f172a;
-        }
-
-        [data-theme="dark"] .price-content {
-            background: #1e293b;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
-        }
-
-        [data-theme="dark"] .template-card {
-            background: #334155;
-        }
-
-        [data-theme="dark"] .template-card.selected {
-            background: #1e3a8a;
-        }
-
-        [data-theme="dark"] .time-period-section,
-        [data-theme="dark"] .validity-section {
-            background: #334155;
-        }
-
-        [data-theme="dark"] .form-select,
-        [data-theme="dark"] .form-input,
-        [data-theme="dark"] .time-input,
-        [data-theme="dark"] .price-input {
-            background: #334155;
-            border-color: #475569;
-            color: #f1f5f9;
-        }
-
-        [data-theme="dark"] .menu-parent {
-            color: #cbd5e1;
-        }
-        
-        [data-theme="dark"] .menu-parent:hover {
-            background: #334155;
-            color: #f1f5f9;
-        }
-        
-        [data-theme="dark"] .menu-parent.expanded {
-            background: transparent;
-            color: #60a5fa;
-        }
-        
-        [data-theme="dark"] .menu-arrow {
-            color: #64748b;
-        }
-        
-        [data-theme="dark"] .menu-parent.expanded .menu-arrow {
-            color: #60a5fa;
-        }
-        
-        [data-theme="dark"] .submenu {
-            background: transparent;
-        }
-        
-        [data-theme="dark"] .submenu-item {
-            color: #cbd5e1;
-        }
-        
-        [data-theme="dark"] .submenu-item:hover {
-            background: #334155;
-            color: #f1f5f9;
-        }
-        
-        [data-theme="dark"] .submenu-item.active {
-            background: #1e3a8a;
-            color: #60a5fa;
-        }
-
-        [data-theme="dark"] .menu-item {
-            color: #cbd5e1;
-        }
-
-        [data-theme="dark"] .menu-item:hover {
-            background: #334155;
-            color: #f1f5f9;
-        }
-
-        [data-theme="dark"] .menu-item.active {
-            background: #1e3a8a;
-            color: #60a5fa;
+            .time-slot-header,
+            .time-slot-item {
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
@@ -632,7 +645,6 @@
     <!-- 侧边栏容器 -->
     <div id="sidebar-container"></div>
 
-    <!-- 侧边栏 -->
     <!-- 主内容区域 -->
     <main class="main-content">
         <!-- 顶部导航栏 -->
@@ -641,10 +653,16 @@
                 <button class="nav-button" onclick="toggleSidebar()">
                     <span>☰</span>
                 </button>
-                <button class="nav-button" onclick="goBack()" title="返回场景选择">
-                    <span>←</span>
-                </button>
-                <h1 class="page-title i18n" data-i18n="page.title">电价模板</h1>
+                <h1 class="page-title">电价模板</h1>
+                <!-- 公司选择 -->
+                <div style="position: relative;">
+                    <select class="company-select" onchange="switchCompany(this.value)">
+                        <option value="company1">上海新能源科技有限公司</option>
+                        <option value="company2">北京储能技术有限公司</option>
+                        <option value="company3">深圳光伏储能有限公司</option>
+                        <option value="company4">广州能源管理有限公司</option>
+                    </select>
+                </div>
             </div>
             <div class="navbar-right">
                 <button class="nav-button" onclick="toggleLanguage()">
@@ -663,384 +681,705 @@
 
         <!-- 内容区域 -->
         <div class="content">
-            <!-- Tab切换 -->
-            <div class="price-tabs">
-                <button class="tab-button active" onclick="switchTab('feed-in')">
-                    <span class="i18n" data-i18n="price.feedIn">上网电价</span>
-                </button>
-                <button class="tab-button" onclick="switchTab('purchase')">
-                    <span class="i18n" data-i18n="price.purchase">购电电价</span>
-                </button>
-            </div>
 
-            <!-- 上网电价内容 -->
-            <div id="feed-in-content" class="price-content">
-                <!-- 电站选择 -->
-                <div class="station-selector">
-                    <div class="form-group">
-                        <label class="form-label i18n" data-i18n="price.selectStation">选择电站</label>
-                        <select class="form-select" id="station-select">
-                            <option value="">请选择电站</option>
-                            <option value="station1">上海工业园储能站</option>
-                            <option value="station2">北京科技园储能站</option>
-                            <option value="station3">深圳光伏储能站</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- 电价类型选择 -->
-                <div class="form-group">
-                    <label class="form-label i18n" data-i18n="price.priceType">电价类型</label>
-                    <div class="template-grid">
-                        <div class="template-card selected" onclick="selectPriceType(this, 'fixed')">
-                            <h3 class="template-title i18n" data-i18n="price.fixed">固定电价</h3>
-                            <p class="template-description i18n" data-i18n="price.fixedDesc">所有时间段的电价一致</p>
+            <!-- 电价卡片内容 -->
+            <div class="price-cards-grid">
+                    <!-- 已配置的卡片 -->
+                    <div class="price-card-item" onclick="selectCard(this, 'feed-1')">
+                        <div class="card-header">
+                            <h3 class="card-title">上海工业园储能站</h3>
+                            <span class="card-status status-completed">配置完成</span>
                         </div>
-                        <div class="template-card" onclick="selectPriceType(this, 'volume')">
-                            <h3 class="template-title i18n" data-i18n="price.volume">按电量定价</h3>
-                            <p class="template-description i18n" data-i18n="price.volumeDesc">可分别设置不同时间段内阶梯电量的电价</p>
+                        <div class="card-info">
+                            <div class="info-item">
+                                <span>📍</span>
+                                <span>电站位置：上海市浦东新区</span>
+                            </div>
+                            <div class="info-item">
+                                <span>💰</span>
+                                <span>峰时电价：0.85元/kWh</span>
+                            </div>
+                            <div class="info-item">
+                                <span>📅</span>
+                                <span>电价类型：分时电价</span>
+                            </div>
+                            <div class="info-item">
+                                <span>⏰</span>
+                                <span>有效期：永久生效</span>
+                            </div>
                         </div>
-                        <div class="template-card" onclick="selectPriceType(this, 'time')">
-                            <h3 class="template-title i18n" data-i18n="price.time">分时电价</h3>
-                            <p class="template-description i18n" data-i18n="price.timeDesc">可设置多个时间段的电价，各时间段不可重叠</p>
-                        </div>
-                        <div class="template-card" onclick="selectPriceType(this, 'timeWeekend')">
-                            <h3 class="template-title i18n" data-i18n="price.timeWeekend">分时电价（工作日+周末）</h3>
-                            <p class="template-description i18n" data-i18n="price.timeWeekendDesc">可分别设置工作日与周末不同时间段的电价</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 有效期设置 -->
-                <div class="validity-section">
-                    <h3 class="form-label i18n" data-i18n="price.validity">有效期设置</h3>
-                    <div class="switch-container">
-                        <label class="form-label i18n" data-i18n="price.permanent">永久生效</label>
-                        <div class="switch active" onclick="toggleSwitch(this)">
-                            <div class="switch-thumb"></div>
-                        </div>
-                    </div>
-                    <div class="date-range-inputs" id="validity-dates" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label i18n" data-i18n="price.startDate">开始日期</label>
-                            <input type="date" class="form-input" id="start-date">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label i18n" data-i18n="price.endDate">结束日期</label>
-                            <input type="date" class="form-input" id="end-date">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 固定电价设置 -->
-                <div id="fixed-price-settings">
-                    <div class="form-group">
-                        <label class="form-label i18n" data-i18n="price.fixedPriceValue">固定电价值</label>
-                        <div style="display: flex; gap: 1rem; align-items: center;">
-                            <input type="number" class="form-input" id="fixed-price" placeholder="请输入电价" step="0.01" style="max-width: 200px;">
-                            <span class="form-label">元/kWh</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 分时电价设置 -->
-                <div id="time-price-settings" style="display: none;">
-                    <div class="time-period-section">
-                        <div class="time-period-header">
-                            <h3 class="time-period-title i18n" data-i18n="price.timePeriods">时间段设置</h3>
-                            <button class="btn btn-text" onclick="addTimePeriod()">
-                                <span>+</span>
-                                <span class="i18n" data-i18n="price.addPeriod">添加时段</span>
-                            </button>
-                        </div>
-                        <div class="time-slots" id="time-slots">
-                            <div class="time-slot">
-                                <input type="time" class="time-input" value="00:00">
-                                <input type="time" class="time-input" value="08:00">
-                                <input type="number" class="price-input" placeholder="电价" step="0.01">
-                                <button class="btn btn-icon btn-danger" onclick="removeTimeSlot(this)">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>
-                                </button>
+                        <div class="card-footer">
+                            <span class="card-date">更新于 2025-07-20</span>
+                            <div class="card-actions">
+                                <button class="card-btn card-btn-edit" onclick="editCard(event, 'feed-1')">编辑</button>
+                                <button class="card-btn card-btn-delete" onclick="deleteCard(event, 'feed-1')">删除</button>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- 操作按钮 -->
-                <div class="action-bar">
-                    <div style="display: flex; gap: 1rem; margin-left: auto;">
-                        <button class="btn btn-secondary" onclick="cancelPriceSettings()">
-                            <span class="i18n" data-i18n="btn.cancel">取消</span>
-                        </button>
-                        <button class="btn btn-primary" onclick="savePriceSettings()">
-                            <span class="i18n" data-i18n="btn.save">保存模板</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 购电电价内容 -->
-            <div id="purchase-content" class="price-content" style="display: none;">
-                <!-- 内容与上网电价类似，可以根据需要调整 -->
-                <div class="station-selector">
-                    <div class="form-group">
-                        <label class="form-label i18n" data-i18n="price.selectStation">选择电站</label>
-                        <select class="form-select" id="purchase-station-select">
-                            <option value="">请选择电站</option>
-                            <option value="station1">上海工业园储能站</option>
-                            <option value="station2">北京科技园储能站</option>
-                            <option value="station3">深圳光伏储能站</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary" style="margin-bottom: 2rem;" onclick="addNewPrice()">
-                    <span>+</span>
-                    <span class="i18n" data-i18n="price.addNew">新增电价</span>
-                </button>
-
-                <!-- 组合电价/简单电价选择 -->
-                <div class="form-group">
-                    <label class="form-label i18n" data-i18n="price.priceMode">电价模式</label>
-                    <div style="display: flex; gap: 2rem;">
-                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                            <input type="radio" name="price-mode" value="combined" checked onchange="switchPriceMode('combined')">
-                            <span class="i18n" data-i18n="price.combined">组合电价</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                            <input type="radio" name="price-mode" value="simple" onchange="switchPriceMode('simple')">
-                            <span class="i18n" data-i18n="price.simple">简单电价</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 组合电价模板 -->
-                <div id="combined-price-templates">
-                    <h3 class="form-label i18n" data-i18n="price.selectTemplate">选择电价模板</h3>
-                    <div class="template-grid">
-                        <div class="template-card" onclick="selectTemplate(this, 'residential')">
-                            <h3 class="template-title i18n" data-i18n="price.residential">居民用电</h3>
-                            <p class="template-description i18n" data-i18n="price.residentialDesc">适用于居民生活用电</p>
+                    <!-- 配置中的卡片 -->
+                    <div class="price-card-item" onclick="selectCard(this, 'feed-2')">
+                        <div class="card-header">
+                            <h3 class="card-title">北京科技园储能站</h3>
+                            <span class="card-status status-configuring">配置中</span>
                         </div>
-                        <div class="template-card" onclick="selectTemplate(this, 'commercial')">
-                            <h3 class="template-title i18n" data-i18n="price.commercial">工商业用电</h3>
-                            <p class="template-description i18n" data-i18n="price.commercialDesc">适用于工商业用电，支持容量电价</p>
+                        <div class="card-info">
+                            <div class="info-item">
+                                <span>📍</span>
+                                <span>电站位置：北京市海淀区</span>
+                            </div>
+                            <div class="info-item">
+                                <span>💰</span>
+                                <span>固定电价：--</span>
+                            </div>
+                            <div class="info-item">
+                                <span>📅</span>
+                                <span>电价类型：固定电价</span>
+                            </div>
+                            <div class="info-item">
+                                <span>⏰</span>
+                                <span>有效期：--</span>
+                            </div>
                         </div>
-                        <div class="template-card" onclick="selectTemplate(this, 'agricultural')">
-                            <h3 class="template-title i18n" data-i18n="price.agricultural">农业用电</h3>
-                            <p class="template-description i18n" data-i18n="price.agriculturalDesc">适用于农业生产用电</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 基本电价设置（工商业用电） -->
-                <div id="basic-price-settings" style="display: none;">
-                    <div class="validity-section">
-                        <h3 class="form-label i18n" data-i18n="price.basicPrice">基本电价</h3>
-                        <div class="form-group">
-                            <label class="form-label i18n" data-i18n="price.billingMode">计费方式</label>
-                            <select class="form-select" id="billing-mode">
-                                <option value="capacity">按容量计费</option>
-                                <option value="demand">按需量计费</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label i18n" data-i18n="price.basicPriceValue">基本电价值</label>
-                            <div style="display: flex; gap: 1rem; align-items: center;">
-                                <input type="number" class="form-input" id="basic-price" placeholder="请输入基本电价" step="0.01" style="max-width: 200px;">
-                                <span class="form-label" id="basic-price-unit">元/kVA·月</span>
+                        <div class="card-footer">
+                            <span class="card-date">创建于 2025-07-25</span>
+                            <div class="card-actions">
+                                <button class="card-btn card-btn-edit" onclick="editCard(event, 'feed-2')">继续配置</button>
+                                <button class="card-btn card-btn-delete" onclick="deleteCard(event, 'feed-2')">删除</button>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- 操作按钮 -->
-                <div class="action-bar">
-                    <div style="display: flex; gap: 1rem; margin-left: auto;">
-                        <button class="btn btn-secondary" onclick="cancelPriceSettings()">
-                            <span class="i18n" data-i18n="btn.cancel">取消</span>
-                        </button>
-                        <button class="btn btn-primary" onclick="savePriceSettings()">
-                            <span class="i18n" data-i18n="btn.save">保存模板</span>
-                        </button>
+                    <!-- 已配置的卡片 -->
+                    <div class="price-card-item" onclick="selectCard(this, 'purchase-1')">
+                        <div class="card-header">
+                            <h3 class="card-title">深圳光伏储能站</h3>
+                            <span class="card-status status-completed">配置完成</span>
+                        </div>
+                        <div class="card-info">
+                            <div class="info-item">
+                                <span>📍</span>
+                                <span>电站位置：深圳市南山区</span>
+                            </div>
+                            <div class="info-item">
+                                <span>💰</span>
+                                <span>峰时电价：1.35元/kWh</span>
+                            </div>
+                            <div class="info-item">
+                                <span>📅</span>
+                                <span>电价类型：分时电价</span>
+                            </div>
+                            <div class="info-item">
+                                <span>⏰</span>
+                                <span>有效期：2025-12-31</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-date">更新于 2025-07-15</span>
+                            <div class="card-actions">
+                                <button class="card-btn card-btn-edit" onclick="editCard(event, 'purchase-1')">编辑</button>
+                                <button class="card-btn card-btn-delete" onclick="deleteCard(event, 'purchase-1')">删除</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    <!-- 添加新卡片 -->
+                    <div class="price-card-item add-card" onclick="addNewCard()">
+                        <div class="add-icon">+</div>
+                        <span class="add-text">添加新电价模板</span>
+                    </div>
             </div>
         </div>
-        <!-- content结束 -->
     </main>
 
+    <!-- 配置模态框 -->
+    <div id="configModal" class="modal-backdrop">
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">新建电价模板</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="priceForm">
+                <div class="modal-body">
+                    <!-- 基本信息 -->
+                    <div class="form-section">
+                        <h3 class="section-title">基本信息</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">模板名称</label>
+                                <input type="text" class="form-input" id="templateName" placeholder="请输入模板名称">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">关联电站</label>
+                                <select class="form-select" id="stationSelect">
+                                    <option value="">请选择电站</option>
+                                    <option value="sh">上海工业园储能站</option>
+                                    <option value="bj">北京科技园储能站</option>
+                                    <option value="sz">深圳光伏储能站</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 电价设置标签页 -->
+                    <div class="price-config-tabs">
+                        <button type="button" class="config-tab-btn active" onclick="switchConfigTab('feedin')">上网电价</button>
+                        <button type="button" class="config-tab-btn" onclick="switchConfigTab('usage')">用电价</button>
+                    </div>
+
+                    <!-- 上网电价配置 -->
+                    <div id="feedin-config" class="config-tab-content active">
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label class="form-label">电价类型</label>
+                                <div class="form-radio-group">
+                                    <label class="form-radio-label">
+                                        <input type="radio" name="feedinPriceType" value="fixed" checked onchange="toggleFeedinPriceType()">
+                                        固定电价
+                                    </label>
+                                    <label class="form-radio-label">
+                                        <input type="radio" name="feedinPriceType" value="time" onchange="toggleFeedinPriceType()">
+                                        分时电价
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div id="feedinFixedSection" class="price-type-section">
+                                <div class="form-group">
+                                    <label class="form-label">固定上网电价（元/kWh）</label>
+                                    <input type="number" class="form-input" id="feedinFixedPrice" step="0.01" placeholder="请输入上网电价">
+                                </div>
+                            </div>
+                            
+                            <div id="feedinTimeSection" class="price-type-section" style="display: none;">
+                                <label class="form-label">分时电价配置</label>
+                                <div class="time-price-table">
+                                    <table class="price-table">
+                                        <thead>
+                                            <tr>
+                                                <th>时间段</th>
+                                                <th>开始时间</th>
+                                                <th>结束时间</th>
+                                                <th>电价类型</th>
+                                                <th>电价(元/kWh)</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="feedinTimeSlots">
+                                            <tr>
+                                                <td>时段1</td>
+                                                <td><input type="time" value="00:00"></td>
+                                                <td><input type="time" value="08:00"></td>
+                                                <td>
+                                                    <select>
+                                                        <option value="valley">谷时</option>
+                                                        <option value="normal">平时</option>
+                                                        <option value="peak">峰时</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="number" step="0.01" placeholder="电价"></td>
+                                                <td><button type="button" class="btn-remove" onclick="removeRow(this)">删除</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="btn-add-slot" onclick="addFeedinTimeSlot()">+ 添加时段</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 用电价配置 -->
+                    <div id="usage-config" class="config-tab-content">
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label class="form-label">电价类型</label>
+                                <div class="form-radio-group">
+                                    <label class="form-radio-label">
+                                        <input type="radio" name="usagePriceType" value="fixed" checked onchange="toggleUsagePriceType()">
+                                        固定电价
+                                    </label>
+                                    <label class="form-radio-label">
+                                        <input type="radio" name="usagePriceType" value="time" onchange="toggleUsagePriceType()">
+                                        分时电价
+                                    </label>
+                                    <label class="form-radio-label">
+                                        <input type="radio" name="usagePriceType" value="tiered" onchange="toggleUsagePriceType()">
+                                        阶梯电价
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div id="usageFixedSection" class="price-type-section">
+                                <div class="form-group">
+                                    <label class="form-label">固定用电价（元/kWh）</label>
+                                    <input type="number" class="form-input" id="usageFixedPrice" step="0.01" placeholder="请输入用电价">
+                                </div>
+                            </div>
+                            
+                            <div id="usageTimeSection" class="price-type-section" style="display: none;">
+                                <label class="form-label">分时电价配置</label>
+                                <div class="time-price-table">
+                                    <table class="price-table">
+                                        <thead>
+                                            <tr>
+                                                <th>时间段</th>
+                                                <th>开始时间</th>
+                                                <th>结束时间</th>
+                                                <th>电价类型</th>
+                                                <th>电价(元/kWh)</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="usageTimeSlots">
+                                            <tr>
+                                                <td>时段1</td>
+                                                <td><input type="time" value="00:00"></td>
+                                                <td><input type="time" value="08:00"></td>
+                                                <td>
+                                                    <select>
+                                                        <option value="valley">谷时</option>
+                                                        <option value="normal">平时</option>
+                                                        <option value="peak">峰时</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="number" step="0.01" placeholder="电价"></td>
+                                                <td><button type="button" class="btn-remove" onclick="removeRow(this)">删除</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="btn-add-slot" onclick="addUsageTimeSlot()">+ 添加时段</button>
+                                </div>
+                            </div>
+                            
+                            <div id="usageTieredSection" class="price-type-section" style="display: none;">
+                                <label class="form-label">阶梯电价配置</label>
+                                <div class="time-price-table">
+                                    <table class="price-table">
+                                        <thead>
+                                            <tr>
+                                                <th>阶梯等级</th>
+                                                <th>起始电量(kWh)</th>
+                                                <th>结束电量(kWh)</th>
+                                                <th>电价(元/kWh)</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="usageTierSlots">
+                                            <tr>
+                                                <td>第一阶梯</td>
+                                                <td><input type="number" value="0" readonly></td>
+                                                <td><input type="number" placeholder="如：200"></td>
+                                                <td><input type="number" step="0.01" placeholder="电价"></td>
+                                                <td><button type="button" class="btn-remove" onclick="removeRow(this)">删除</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="btn-add-slot" onclick="addUsageTierSlot()">+ 添加阶梯</button>
+                                </div>
+                            </div>
+
+                            <!-- 基本电费 -->
+                            <div class="form-group" style="margin-top: 2rem;">
+                                <label class="form-label">基本电费设置（可选）</label>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">计费方式</label>
+                                        <select class="form-select" id="basicFeeType">
+                                            <option value="">不收取基本电费</option>
+                                            <option value="capacity">按容量计费</option>
+                                            <option value="demand">按需量计费</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">基本电价</label>
+                                        <input type="number" class="form-input" id="basicFeePrice" step="0.01" placeholder="元/kVA·月 或 元/kW·月">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 有效期设置 -->
+                    <div class="form-section" style="margin-top: 2rem;">
+                        <h3 class="section-title">有效期设置</h3>
+                        <div class="form-group">
+                            <label class="form-radio-label">
+                                <input type="checkbox" id="permanentCheck" checked onchange="toggleValidity()">
+                                永久生效
+                            </label>
+                            <div id="validityDates" style="display: none; margin-top: 1rem;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">开始日期</label>
+                                        <input type="date" class="form-input" id="startDate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">结束日期</label>
+                                        <input type="date" class="form-input" id="endDate">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="saveConfig()">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <script>
-        // 当前语言
-        let currentLang = localStorage.getItem('ess_language') || 'zh';
-        
-        // 多语言配置
-        const i18n = {
-            zh: {
-                // 页面标题
-                'page.title': '电价模板',
-                
-                // 菜单
-                'menu.station': '电站',
-                'menu.stationManagement': '电站管理',
-                'menu.priceSettings': '电价设置',
-                'menu.analysis': '数据分析',
-                'menu.alarm': '告警管理',
-                'menu.device': '设备管理',
-                'menu.user': '用户管理',
-                'menu.report': '报表中心',
-                'menu.setting': '系统设置',
-                
-                // 用户
-                'user.admin': '管理员',
-                
-                // 电价设置
-                'price.feedIn': '上网电价',
-                'price.purchase': '购电电价',
-                'price.selectStation': '选择电站',
-                'price.priceType': '电价类型',
-                'price.fixed': '固定电价',
-                'price.fixedDesc': '所有时间段的电价一致',
-                'price.volume': '按电量定价',
-                'price.volumeDesc': '可分别设置不同时间段内阶梯电量的电价',
-                'price.time': '分时电价',
-                'price.timeDesc': '可设置多个时间段的电价，各时间段不可重叠',
-                'price.timeWeekend': '分时电价（工作日+周末）',
-                'price.timeWeekendDesc': '可分别设置工作日与周末不同时间段的电价',
-                'price.validity': '有效期设置',
-                'price.permanent': '永久生效',
-                'price.startDate': '开始日期',
-                'price.endDate': '结束日期',
-                'price.fixedPriceValue': '固定电价值',
-                'price.timePeriods': '时间段设置',
-                'price.addPeriod': '添加时段',
-                'price.applyToOthers': '应用到其他电站',
-                'price.addNew': '新增电价',
-                'price.priceMode': '电价模式',
-                'price.combined': '组合电价',
-                'price.simple': '简单电价',
-                'price.selectTemplate': '选择电价模板',
-                'price.residential': '居民用电',
-                'price.residentialDesc': '适用于居民生活用电',
-                'price.commercial': '工商业用电',
-                'price.commercialDesc': '适用于工商业用电，支持容量电价',
-                'price.agricultural': '农业用电',
-                'price.agriculturalDesc': '适用于农业生产用电',
-                'price.basicPrice': '基本电价',
-                'price.billingMode': '计费方式',
-                'price.basicPriceValue': '基本电价值',
-                
-                // 按钮
-                'btn.cancel': '取消',
-                'btn.save': '保存模板',
-            },
-            en: {
-                // Page title
-                'page.title': 'Price Template',
-                
-                // Menu
-                'menu.station': 'Station',
-                'menu.stationManagement': 'Station Management',
-                'menu.priceSettings': 'Price Settings',
-                'menu.analysis': 'Data Analysis',
-                'menu.alarm': 'Alarm Management',
-                'menu.device': 'Device Management',
-                'menu.user': 'User Management',
-                'menu.report': 'Report Center',
-                'menu.setting': 'System Settings',
-                
-                // User
-                'user.admin': 'Admin',
-                
-                // Price settings
-                'price.feedIn': 'Feed-in Tariff',
-                'price.purchase': 'Purchase Tariff',
-                'price.selectStation': 'Select Station',
-                'price.priceType': 'Price Type',
-                'price.fixed': 'Fixed Price',
-                'price.fixedDesc': 'Same price for all time periods',
-                'price.volume': 'Volume-based Pricing',
-                'price.volumeDesc': 'Set tiered pricing for different time periods',
-                'price.time': 'Time-of-Use Pricing',
-                'price.timeDesc': 'Set prices for multiple time periods without overlap',
-                'price.timeWeekend': 'TOU Pricing (Weekday+Weekend)',
-                'price.timeWeekendDesc': 'Set different prices for weekdays and weekends',
-                'price.validity': 'Validity Period',
-                'price.permanent': 'Permanent',
-                'price.startDate': 'Start Date',
-                'price.endDate': 'End Date',
-                'price.fixedPriceValue': 'Fixed Price Value',
-                'price.timePeriods': 'Time Period Settings',
-                'price.addPeriod': 'Add Period',
-                'price.applyToOthers': 'Apply to Other Stations',
-                'price.addNew': 'Add New Price',
-                'price.priceMode': 'Price Mode',
-                'price.combined': 'Combined Price',
-                'price.simple': 'Simple Price',
-                'price.selectTemplate': 'Select Price Template',
-                'price.residential': 'Residential',
-                'price.residentialDesc': 'For residential electricity use',
-                'price.commercial': 'Commercial & Industrial',
-                'price.commercialDesc': 'For commercial and industrial use, supports capacity pricing',
-                'price.agricultural': 'Agricultural',
-                'price.agriculturalDesc': 'For agricultural electricity use',
-                'price.basicPrice': 'Basic Price',
-                'price.billingMode': 'Billing Mode',
-                'price.basicPriceValue': 'Basic Price Value',
-                
-                // Buttons
-                'btn.cancel': 'Cancel',
-                'btn.save': 'Save Template',
+        // 当前选中的卡片
+        let selectedCard = null;
+        let editingCardId = null;
+
+        // 选择卡片
+        function selectCard(element, cardId) {
+            // 如果点击的是按钮，不处理选择
+            if (event.target.classList.contains('card-btn')) {
+                return;
             }
-        };
-        
-        // 获取翻译
-        function t(key) {
-            return i18n[currentLang][key] || key;
-        }
-        
-        // 切换语言
-        function toggleLanguage() {
-            currentLang = currentLang === 'zh' ? 'en' : 'zh';
-            localStorage.setItem('ess_language', currentLang);
-            applyLanguage();
-        }
-        
-        // 返回场景选择
-        function goBack() {
-            window.location.href = '../scenario-selection.html';
-        }
-        
-        // 应用语言
-        function applyLanguage() {
-            document.getElementById('lang-text').textContent = currentLang === 'zh' ? '中文' : 'English';
             
-            // 更新管理员文本
-            const navButtons = document.querySelectorAll('.nav-button');
-            navButtons.forEach(btn => {
-                if (btn.textContent.includes('管理员') || btn.textContent.includes('Admin')) {
-                    const span = btn.querySelector('span:last-child');
-                    if (span) {
-                        span.textContent = currentLang === 'zh' ? '管理员' : 'Admin';
+            // 移除之前的选中状态
+            document.querySelectorAll('.price-card-item').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // 添加选中状态
+            element.classList.add('selected');
+            selectedCard = cardId;
+        }
+
+        // 添加新卡片
+        function addNewCard() {
+            console.log('addNewCard called');
+            try {
+                editingCardId = null;
+                const modalTitle = document.getElementById('modalTitle');
+                if (!modalTitle) {
+                    console.error('找不到 modalTitle 元素');
+                    return;
+                }
+                modalTitle.textContent = '新建电价模板';
+                
+                // 重置表单
+                const priceForm = document.getElementById('priceForm');
+                if (!priceForm) {
+                    console.error('找不到 priceForm 元素');
+                    return;
+                }
+                priceForm.reset();
+                
+                // 默认选中上网电价标签页
+                switchConfigTab('feedin');
+                
+                showModal();
+            } catch (error) {
+                console.error('addNewCard error:', error);
+            }
+        }
+
+        // 编辑卡片
+        function editCard(event, cardId) {
+            console.log('editCard called with cardId:', cardId);
+            try {
+                event.stopPropagation();
+                editingCardId = cardId;
+                
+                const modalTitle = document.getElementById('modalTitle');
+                if (!modalTitle) {
+                    console.error('找不到 modalTitle 元素');
+                    return;
+                }
+                modalTitle.textContent = '编辑电价模板';
+                
+                // 加载现有数据
+                loadCardData(cardId);
+                
+                showModal();
+            } catch (error) {
+                console.error('editCard error:', error);
+            }
+        }
+
+        // 删除卡片
+        function deleteCard(event, cardId) {
+            event.stopPropagation();
+            if (confirm('确定要删除这个电价配置吗？')) {
+                // 这里添加删除逻辑
+                alert('电价配置已删除');
+                // 实际应用中需要从DOM中移除卡片或重新加载数据
+            }
+        }
+
+        // 切换配置标签页
+        function switchConfigTab(tab) {
+            // 更新标签按钮状态
+            document.querySelectorAll('.config-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 如果是通过点击调用，event.target存在
+            if (event && event.target && event.target.classList.contains('config-tab-btn')) {
+                event.target.classList.add('active');
+            } else {
+                // 否则根据tab参数设置对应的按钮为active
+                document.querySelector(`.config-tab-btn:nth-child(${tab === 'feedin' ? 1 : 2})`).classList.add('active');
+            }
+            
+            // 切换内容显示
+            document.querySelectorAll('.config-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tab}-config`).classList.add('active');
+        }
+
+        // 切换上网电价类型
+        function toggleFeedinPriceType() {
+            const priceType = document.querySelector('input[name="feedinPriceType"]:checked').value;
+            document.getElementById('feedinFixedSection').style.display = priceType === 'fixed' ? 'block' : 'none';
+            document.getElementById('feedinTimeSection').style.display = priceType === 'time' ? 'block' : 'none';
+        }
+
+        // 切换用电价类型
+        function toggleUsagePriceType() {
+            const priceType = document.querySelector('input[name="usagePriceType"]:checked').value;
+            document.getElementById('usageFixedSection').style.display = priceType === 'fixed' ? 'block' : 'none';
+            document.getElementById('usageTimeSection').style.display = priceType === 'time' ? 'block' : 'none';
+            document.getElementById('usageTieredSection').style.display = priceType === 'tiered' ? 'block' : 'none';
+        }
+
+        // 添加上网电价时间段
+        function addFeedinTimeSlot() {
+            const tbody = document.getElementById('feedinTimeSlots');
+            const rowCount = tbody.children.length + 1;
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>时段${rowCount}</td>
+                <td><input type="time" value="08:00"></td>
+                <td><input type="time" value="12:00"></td>
+                <td>
+                    <select>
+                        <option value="valley">谷时</option>
+                        <option value="normal" selected>平时</option>
+                        <option value="peak">峰时</option>
+                    </select>
+                </td>
+                <td><input type="number" step="0.01" placeholder="电价"></td>
+                <td><button type="button" class="btn-remove" onclick="removeRow(this)">删除</button></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+
+        // 添加用电价时间段
+        function addUsageTimeSlot() {
+            const tbody = document.getElementById('usageTimeSlots');
+            const rowCount = tbody.children.length + 1;
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>时段${rowCount}</td>
+                <td><input type="time" value="08:00"></td>
+                <td><input type="time" value="12:00"></td>
+                <td>
+                    <select>
+                        <option value="valley">谷时</option>
+                        <option value="normal" selected>平时</option>
+                        <option value="peak">峰时</option>
+                    </select>
+                </td>
+                <td><input type="number" step="0.01" placeholder="电价"></td>
+                <td><button type="button" class="btn-remove" onclick="removeRow(this)">删除</button></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+
+        // 添加阶梯电价
+        function addUsageTierSlot() {
+            const tbody = document.getElementById('usageTierSlots');
+            const rowCount = tbody.children.length;
+            const lastRow = tbody.lastElementChild;
+            const lastEndValue = lastRow ? lastRow.children[2].querySelector('input').value : '0';
+            
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>第${numberToChinese(rowCount + 1)}阶梯</td>
+                <td><input type="number" value="${lastEndValue}" readonly></td>
+                <td><input type="number" placeholder="如：${parseInt(lastEndValue) + 200}"></td>
+                <td><input type="number" step="0.01" placeholder="电价"></td>
+                <td><button type="button" class="btn-remove" onclick="removeRow(this)">删除</button></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+
+        // 删除行
+        function removeRow(button) {
+            const row = button.parentElement.parentElement;
+            const tbody = row.parentElement;
+            row.remove();
+            
+            // 重新编号
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                const firstCell = row.children[0];
+                if (firstCell.textContent.includes('时段')) {
+                    firstCell.textContent = `时段${index + 1}`;
+                } else if (firstCell.textContent.includes('阶梯')) {
+                    firstCell.textContent = `第${numberToChinese(index + 1)}阶梯`;
+                    // 更新阶梯起始值
+                    if (index > 0) {
+                        const prevEndValue = rows[index - 1].children[2].querySelector('input').value;
+                        row.children[1].querySelector('input').value = prevEndValue;
                     }
                 }
             });
-            
-            // 更新所有带有i18n类的元素
-            document.querySelectorAll('.i18n').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (key && i18n[currentLang][key]) {
-                    element.textContent = i18n[currentLang][key];
-                }
-            });
-            
-            // 更新页面标题
-            document.title = t('page.title') + ' - ' + (currentLang === 'zh' ? '能源管理系统' : 'Energy Management System');
         }
-        
+
+        // 保存配置
+        function saveConfig() {
+            // 收集表单数据
+            const formData = {
+                templateName: document.getElementById('templateName').value,
+                station: document.getElementById('stationSelect').value,
+                feedinPrice: collectFeedinPrice(),
+                usagePrice: collectUsagePrice(),
+                isPermanent: document.getElementById('permanentCheck').checked
+            };
+            
+            if (!formData.isPermanent) {
+                formData.startDate = document.getElementById('startDate').value;
+                formData.endDate = document.getElementById('endDate').value;
+            }
+            
+            console.log('保存配置：', formData);
+            alert('电价模板已保存');
+            closeModal();
+            
+            // 实际应用中需要更新卡片列表或重新加载数据
+        }
+
+        // 收集上网电价数据
+        function collectFeedinPrice() {
+            const priceType = document.querySelector('input[name="feedinPriceType"]:checked').value;
+            const data = { type: priceType };
+            
+            if (priceType === 'fixed') {
+                data.price = document.getElementById('feedinFixedPrice').value;
+            } else if (priceType === 'time') {
+                data.timeSlots = [];
+                document.querySelectorAll('#feedinTimeSlots tr').forEach(row => {
+                    data.timeSlots.push({
+                        startTime: row.children[1].querySelector('input').value,
+                        endTime: row.children[2].querySelector('input').value,
+                        type: row.children[3].querySelector('select').value,
+                        price: row.children[4].querySelector('input').value
+                    });
+                });
+            }
+            
+            return data;
+        }
+
+        // 收集用电价数据
+        function collectUsagePrice() {
+            const priceType = document.querySelector('input[name="usagePriceType"]:checked').value;
+            const data = { 
+                type: priceType,
+                basicFeeType: document.getElementById('basicFeeType').value,
+                basicFeePrice: document.getElementById('basicFeePrice').value
+            };
+            
+            if (priceType === 'fixed') {
+                data.price = document.getElementById('usageFixedPrice').value;
+            } else if (priceType === 'time') {
+                data.timeSlots = [];
+                document.querySelectorAll('#usageTimeSlots tr').forEach(row => {
+                    data.timeSlots.push({
+                        startTime: row.children[1].querySelector('input').value,
+                        endTime: row.children[2].querySelector('input').value,
+                        type: row.children[3].querySelector('select').value,
+                        price: row.children[4].querySelector('input').value
+                    });
+                });
+            } else if (priceType === 'tiered') {
+                data.tiers = [];
+                document.querySelectorAll('#usageTierSlots tr').forEach(row => {
+                    data.tiers.push({
+                        startAmount: row.children[1].querySelector('input').value,
+                        endAmount: row.children[2].querySelector('input').value,
+                        price: row.children[3].querySelector('input').value
+                    });
+                });
+            }
+            
+            return data;
+        }
+
+        // 加载卡片数据（编辑时）
+        function loadCardData(cardId) {
+            // 这里应该根据cardId加载实际数据
+            // 示例数据
+            if (cardId === 'feed-1') {
+                document.getElementById('templateName').value = '上海工业园储能站电价模板';
+                document.getElementById('stationSelect').value = 'sh';
+                
+                // 切换到上网电价标签
+                switchConfigTab('feedin');
+                
+                // 设置分时电价
+                document.querySelector('input[name="feedinPriceType"][value="time"]').checked = true;
+                toggleFeedinPriceType();
+            } else if (cardId === 'purchase-1') {
+                document.getElementById('templateName').value = '深圳光伏储能站电价模板';
+                document.getElementById('stationSelect').value = 'sz';
+                
+                // 切换到用电价标签
+                switchConfigTab('usage');
+                
+                // 设置分时电价
+                document.querySelector('input[name="usagePriceType"][value="time"]').checked = true;
+                toggleUsagePriceType();
+            }
+        }
+
+        // 数字转中文
+        function numberToChinese(num) {
+            const chinese = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+            return num <= 10 ? chinese[num - 1] : num;
+        }
+
+        // 切换有效期
+        function toggleValidity() {
+            const isPermanent = document.getElementById('permanentCheck').checked;
+            document.getElementById('validityDates').style.display = isPermanent ? 'none' : 'grid';
+        }
+
+        // 显示模态框
+        function showModal() {
+            console.log('showModal called');
+            const modal = document.getElementById('configModal');
+            if (!modal) {
+                console.error('找不到 configModal 元素');
+                return;
+            }
+            modal.style.display = 'flex';
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('configModal').style.display = 'none';
+            document.getElementById('priceForm').reset();
+        }
+
+        // 切换语言
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            const currentLang = langText.textContent;
+            langText.textContent = currentLang === '中文' ? 'English' : '中文';
+        }
+
         // 切换主题
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -1049,140 +1388,32 @@
             document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
             localStorage.setItem('ess_theme', newTheme);
         }
-        
+
         // 切换侧边栏
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
-        
-        // 切换子菜单
-        function toggleSubmenu(menuParent) {
-            const submenu = menuParent.nextElementSibling;
-            const isOpen = submenu.classList.contains('open');
-            
-            // 关闭所有其他子菜单
-            document.querySelectorAll('.submenu.open').forEach(menu => {
-                if (menu !== submenu) {
-                    menu.classList.remove('open');
-                    menu.previousElementSibling.classList.remove('expanded');
-                }
-            });
-            
-            // 切换当前子菜单
-            if (isOpen) {
-                submenu.classList.remove('open');
-                menuParent.classList.remove('expanded');
-            } else {
-                submenu.classList.add('open');
-                menuParent.classList.add('expanded');
+            if (window.sidebar) {
+                window.sidebar.toggle();
             }
         }
-        
-        // 切换Tab
-        function switchTab(tab) {
-            // 更新Tab按钮状态
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.tab-button').classList.add('active');
+
+        // 切换公司
+        function switchCompany(companyId) {
+            console.log('切换到公司:', companyId);
+            // 这里可以添加切换公司后的逻辑
+            // 例如：重新加载该公司的电价模板数据
+            // loadCompanyPriceTemplates(companyId);
             
-            // 显示对应内容
-            if (tab === 'feed-in') {
-                document.getElementById('feed-in-content').style.display = 'block';
-                document.getElementById('purchase-content').style.display = 'none';
-            } else {
-                document.getElementById('feed-in-content').style.display = 'none';
-                document.getElementById('purchase-content').style.display = 'block';
-            }
-        }
-        
-        // 选择电价类型
-        function selectPriceType(card, type) {
-            // 更新卡片选中状态
-            document.querySelectorAll('.template-card').forEach(c => {
-                c.classList.remove('selected');
-            });
-            card.classList.add('selected');
+            // 暂时只显示提示
+            const companySelect = document.querySelector('.company-select');
+            const companyName = companySelect.options[companySelect.selectedIndex].text;
+            console.log('已切换到:', companyName);
             
-            // 显示对应的设置区域
-            document.getElementById('fixed-price-settings').style.display = type === 'fixed' ? 'block' : 'none';
-            document.getElementById('time-price-settings').style.display = type === 'time' || type === 'timeWeekend' ? 'block' : 'none';
+            // 可以在这里重新加载页面数据或更新卡片列表
+            // 示例：清空现有卡片并加载新公司的数据
+            // reloadPriceCards(companyId);
         }
-        
-        // 切换开关
-        function toggleSwitch(switchElement) {
-            switchElement.classList.toggle('active');
-            const isActive = switchElement.classList.contains('active');
-            document.getElementById('validity-dates').style.display = isActive ? 'none' : 'block';
-        }
-        
-        // 添加时间段
-        function addTimePeriod() {
-            const timeSlotsContainer = document.getElementById('time-slots');
-            const newSlot = document.createElement('div');
-            newSlot.className = 'time-slot';
-            newSlot.innerHTML = `
-                <input type="time" class="time-input" value="08:00">
-                <input type="time" class="time-input" value="12:00">
-                <input type="number" class="price-input" placeholder="电价" step="0.01">
-                <button class="btn btn-icon btn-danger" onclick="removeTimeSlot(this)">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            `;
-            timeSlotsContainer.appendChild(newSlot);
-        }
-        
-        // 删除时间段
-        function removeTimeSlot(button) {
-            button.closest('.time-slot').remove();
-        }
-        
-        // 切换电价模式
-        function switchPriceMode(mode) {
-            document.getElementById('combined-price-templates').style.display = mode === 'combined' ? 'block' : 'none';
-        }
-        
-        // 选择模板
-        function selectTemplate(card, template) {
-            // 更新卡片选中状态
-            card.parentElement.querySelectorAll('.template-card').forEach(c => {
-                c.classList.remove('selected');
-            });
-            card.classList.add('selected');
-            
-            // 显示基本电价设置（仅工商业）
-            document.getElementById('basic-price-settings').style.display = template === 'commercial' ? 'block' : 'none';
-        }
-        
-        // 保存电价模板
-        function savePriceSettings() {
-            // 这里添加保存逻辑
-            alert(currentLang === 'zh' ? '电价模板已保存成功！' : 'Price template saved successfully!');
-        }
-        
-        // 取消设置
-        function cancelPriceSettings() {
-            if (confirm(currentLang === 'zh' ? '确定要取消当前设置吗？' : 'Are you sure you want to cancel?')) {
-                // 重置表单
-                location.reload();
-            }
-        }
-        
-        // 应用到其他电站
-        function applyToOtherStations() {
-            // 这里可以打开一个模态框选择其他电站
-            alert(currentLang === 'zh' ? '选择要应用的电站' : 'Select stations to apply');
-        }
-        
-        // 新增电价
-        function addNewPrice() {
-            // 这里可以打开新增电价的模态框
-            alert(currentLang === 'zh' ? '新增电价配置' : 'Add new price configuration');
-        }
-        
+
+
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             // 应用保存的主题
@@ -1190,12 +1421,17 @@
             document.documentElement.setAttribute('data-theme', savedTheme);
             document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
             
-            // 应用语言
-            applyLanguage();
+            // 点击模态框外部关闭
+            document.getElementById('configModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
         });
     </script>
 
-    <!-- 引入侧边栏脚本 -->
+    <!-- 引入侧边栏和导航栏脚本 -->
     <script src="./sidebar.js"></script>
+    <script src="./navbar.js"></script>
 </body>
 </html>

@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择应用场景 - 能源管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: #1e293b;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(29, 78, 216, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+                linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 头部 */
+        .header {
+            padding: 2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: #2563eb;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .controls {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            border-radius: 0.75rem;
+            color: #475569;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 250ms ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-theme {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            justify-content: center;
+        }
+
+        .btn-control:hover {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 主体内容 */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 3rem 3rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.125rem;
+            color: #64748b;
+        }
+
+        /* 场景卡片网格 */
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* 场景卡片 */
+        .scenario-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 250ms ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: #2563eb;
+        }
+
+        .scenario-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scenario-icon {
+            font-size: 4rem;
+            opacity: 0.5;
+        }
+
+        .scenario-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scenario-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .scenario-desc {
+            font-size: 0.875rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .scenario-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem 0;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .stat-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .scenario-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 250ms ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-info {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-info:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+
+        .btn-select {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-select:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* 新建场景卡片 */
+        .scenario-card.add-new {
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .scenario-card.add-new:hover {
+            border-color: #2563eb;
+            background: #f1f5f9;
+        }
+
+        .scenario-card.add-new .scenario-image {
+            background: transparent;
+        }
+
+        .scenario-card.add-new .scenario-icon {
+            color: #2563eb;
+            opacity: 1;
+        }
+
+        /* 弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 150ms ease;
+        }
+
+        .modal-close:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .icon-selector {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+        }
+
+        .icon-option {
+            cursor: pointer;
+        }
+
+        .icon-option input {
+            display: none;
+        }
+
+        .icon-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .icon-option input:checked + .icon-display {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .btn-cancel {
+            background: white;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-cancel:hover {
+            background: #f8fafc;
+        }
+
+        .btn-submit {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background: #1d4ed8;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem;
+            }
+
+            .main {
+                padding: 0 1.5rem 1.5rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">⚡</span>
+            <span class="logo-text">能源管理系统</span>
+        </div>
+        <div class="controls">
+            <button class="btn-control" onclick="window.history.back()">
+                <span>←</span>
+                <span>返回</span>
+            </button>
+            <button class="btn-control btn-theme" onclick="toggleTheme()">
+                <span id="theme-icon">🌙</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">选择应用场景</h1>
+            <p class="page-subtitle">请选择您要管理的储能应用场景</p>
+        </div>
+
+        <!-- 场景卡片网格 -->
+        <div class="scenarios-grid">
+            <!-- 工商储能场景 -->
+            <div class="scenario-card" onclick="selectScenario('commercial')">
+                <div class="scenario-image">
+                    <span class="scenario-icon">🏢</span>
+                </div>
+                <div class="scenario-content">
+                    <h3 class="scenario-title">工商储能</h3>
+                    <p class="scenario-desc">
+                        适用于工业园区、商业综合体、办公楼等场景的储能系统管理。
+                        支持峰谷电价套利、需求响应、电力市场交易等功能。
+                    </p>
+                    <div class="scenario-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">15</div>
+                            <div class="stat-label">企业数量</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">128</div>
+                            <div class="stat-label">储能站点</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">450MW</div>
+                            <div class="stat-label">总装机容量</div>
+                        </div>
+                    </div>
+                    <div class="scenario-actions">
+                        <button class="btn btn-info" onclick="showInfo(event, 'commercial')">
+                            <span>ℹ️</span>
+                            <span>详情</span>
+                        </button>
+                        <button class="btn btn-select" onclick="selectScenario('commercial')">
+                            <span>选择</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 家庭储能场景 -->
+            <div class="scenario-card" onclick="selectScenario('home')">
+                <div class="scenario-image">
+                    <span class="scenario-icon">🏠</span>
+                </div>
+                <div class="scenario-content">
+                    <h3 class="scenario-title">家庭储能</h3>
+                    <p class="scenario-desc">
+                        适用于别墅、住宅等家庭场景的储能管理。
+                        支持光伏自发自用、备用电源、智能用电管理等功能。
+                    </p>
+                    <div class="scenario-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">8</div>
+                            <div class="stat-label">企业数量</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">3,500</div>
+                            <div class="stat-label">用户数量</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">25MW</div>
+                            <div class="stat-label">总装机容量</div>
+                        </div>
+                    </div>
+                    <div class="scenario-actions">
+                        <button class="btn btn-info" onclick="showInfo(event, 'home')">
+                            <span>ℹ️</span>
+                            <span>详情</span>
+                        </button>
+                        <button class="btn btn-select" onclick="selectScenario('home')">
+                            <span>选择</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 光储充场景 -->
+            <div class="scenario-card" onclick="selectScenario('solar')">
+                <div class="scenario-image">
+                    <span class="scenario-icon">☀️</span>
+                </div>
+                <div class="scenario-content">
+                    <h3 class="scenario-title">光储充一体化</h3>
+                    <p class="scenario-desc">
+                        集成光伏发电、储能系统、充电设施的综合能源管理。
+                        实现清洁能源最大化利用，支持V2G双向充电。
+                    </p>
+                    <div class="scenario-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">企业数量</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">85</div>
+                            <div class="stat-label">充电站点</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">180MW</div>
+                            <div class="stat-label">总装机容量</div>
+                        </div>
+                    </div>
+                    <div class="scenario-actions">
+                        <button class="btn btn-info" onclick="showInfo(event, 'solar')">
+                            <span>ℹ️</span>
+                            <span>详情</span>
+                        </button>
+                        <button class="btn btn-select" onclick="selectScenario('solar')">
+                            <span>选择</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新建场景 -->
+            <div class="scenario-card add-new" onclick="showAddModal()">
+                <div class="scenario-image">
+                    <span class="scenario-icon">+</span>
+                </div>
+                <div class="scenario-content">
+                    <h3 class="scenario-title">新建场景</h3>
+                    <p class="scenario-desc">
+                        创建新的应用场景，自定义场景类型和配置。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 场景详情弹窗 -->
+    <div id="infoModal" class="modal">
+        <div class="modal-backdrop" onclick="closeModal('infoModal')"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="infoTitle">场景详情</h2>
+                <button class="modal-close" onclick="closeModal('infoModal')">×</button>
+            </div>
+            <div class="modal-body" id="infoContent">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 新建场景弹窗 -->
+    <div id="addModal" class="modal">
+        <div class="modal-backdrop" onclick="closeModal('addModal')"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">新建应用场景</h2>
+                <button class="modal-close" onclick="closeModal('addModal')">×</button>
+            </div>
+            <form id="addScenarioForm" onsubmit="handleSubmit(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">场景类型</label>
+                        <select class="form-select" id="scenarioType" required>
+                            <option value="">请选择场景类型</option>
+                            <option value="industrial">工业储能</option>
+                            <option value="commercial">商业储能</option>
+                            <option value="residential">住宅储能</option>
+                            <option value="microgrid">微电网</option>
+                            <option value="datacenter">数据中心</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">场景名称</label>
+                        <input type="text" class="form-input" id="scenarioName" placeholder="请输入场景名称" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">场景描述</label>
+                        <textarea class="form-input form-textarea" id="scenarioDesc" placeholder="请输入场景描述"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">选择图标</label>
+                        <div class="icon-selector">
+                            <label class="icon-option">
+                                <input type="radio" name="scenarioIcon" value="🏭" checked>
+                                <span class="icon-display">🏭</span>
+                            </label>
+                            <label class="icon-option">
+                                <input type="radio" name="scenarioIcon" value="🏗️">
+                                <span class="icon-display">🏗️</span>
+                            </label>
+                            <label class="icon-option">
+                                <input type="radio" name="scenarioIcon" value="🏪">
+                                <span class="icon-display">🏪</span>
+                            </label>
+                            <label class="icon-option">
+                                <input type="radio" name="scenarioIcon" value="🏘️">
+                                <span class="icon-display">🏘️</span>
+                            </label>
+                            <label class="icon-option">
+                                <input type="radio" name="scenarioIcon" value="⚡">
+                                <span class="icon-display">⚡</span>
+                            </label>
+                            <label class="icon-option">
+                                <input type="radio" name="scenarioIcon" value="🔋">
+                                <span class="icon-display">🔋</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal('addModal')">取消</button>
+                    <button type="submit" class="btn btn-submit">创建场景</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 选择场景
+        function selectScenario(scenario) {
+            console.log('选择场景:', scenario);
+            // 存储选择的场景
+            localStorage.setItem('selectedScenario', scenario);
+            // 跳转到电价模板页面
+            window.location.href = '../price-settings.html';
+        }
+
+        // 显示场景详情
+        function showInfo(event, scenario) {
+            event.stopPropagation();
+            
+            const infoData = {
+                commercial: {
+                    title: '工商储能',
+                    content: `
+                        <h4>应用场景</h4>
+                        <ul>
+                            <li>工业园区储能系统</li>
+                            <li>商业综合体储能</li>
+                            <li>办公楼宇储能</li>
+                            <li>数据中心备电</li>
+                        </ul>
+                        <h4>主要功能</h4>
+                        <ul>
+                            <li>峰谷电价套利</li>
+                            <li>需求侧响应</li>
+                            <li>电力现货市场交易</li>
+                            <li>容量费用管理</li>
+                            <li>电能质量改善</li>
+                        </ul>
+                        <h4>典型配置</h4>
+                        <p>储能容量：1MW-10MW<br>
+                        功率配置：0.5C-2C<br>
+                        电池类型：磷酸铁锂、钠离子电池</p>
+                    `
+                },
+                home: {
+                    title: '家庭储能',
+                    content: `
+                        <h4>应用场景</h4>
+                        <ul>
+                            <li>独栋别墅储能</li>
+                            <li>联排住宅储能</li>
+                            <li>高层住宅储能</li>
+                            <li>农村家庭储能</li>
+                        </ul>
+                        <h4>主要功能</h4>
+                        <ul>
+                            <li>光伏自发自用</li>
+                            <li>备用电源功能</li>
+                            <li>分时电价管理</li>
+                            <li>智能家居联动</li>
+                            <li>远程监控管理</li>
+                        </ul>
+                        <h4>典型配置</h4>
+                        <p>储能容量：5kWh-30kWh<br>
+                        功率配置：3kW-10kW<br>
+                        电池类型：磷酸铁锂</p>
+                    `
+                },
+                solar: {
+                    title: '光储充一体化',
+                    content: `
+                        <h4>应用场景</h4>
+                        <ul>
+                            <li>高速服务区充电站</li>
+                            <li>城市充电站</li>
+                            <li>园区充电设施</li>
+                            <li>商业停车场</li>
+                        </ul>
+                        <h4>主要功能</h4>
+                        <ul>
+                            <li>光伏发电管理</li>
+                            <li>储能调度优化</li>
+                            <li>智能充电管理</li>
+                            <li>V2G双向充放电</li>
+                            <li>能源交易结算</li>
+                        </ul>
+                        <h4>典型配置</h4>
+                        <p>光伏容量：100kW-1MW<br>
+                        储能容量：200kWh-2MWh<br>
+                        充电功率：60kW-480kW</p>
+                    `
+                }
+            };
+
+            document.getElementById('infoTitle').textContent = infoData[scenario].title;
+            document.getElementById('infoContent').innerHTML = infoData[scenario].content;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        // 显示新建场景弹窗
+        function showAddModal() {
+            document.getElementById('addModal').style.display = 'flex';
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 处理表单提交
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const formData = {
+                type: document.getElementById('scenarioType').value,
+                name: document.getElementById('scenarioName').value,
+                desc: document.getElementById('scenarioDesc').value,
+                icon: document.querySelector('input[name="scenarioIcon"]:checked').value
+            };
+            
+            console.log('创建新场景:', formData);
+            alert(`场景"${formData.name}"创建成功！`);
+            
+            // 关闭弹窗
+            closeModal('addModal');
+            
+            // 重置表单
+            document.getElementById('addScenarioForm').reset();
+            
+            // 实际应用中，这里应该调用API创建场景
+            // createScenario(formData);
+        }
+
+        // 切换主题
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 应用保存的主题
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        });
+    </script>
+</body>
+</html>
