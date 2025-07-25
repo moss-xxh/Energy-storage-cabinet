@@ -86,6 +86,28 @@
     transition: transform 0.2s ease;
 }
 
+/* 一级菜单链接样式 */
+.menu-item.menu-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+}
+
+.menu-item.menu-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.menu-item.menu-link.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 500;
+}
+
+.menu-item.menu-link.active .menu-item-content {
+    color: #2563eb;
+}
+
 .menu-item.expanded .menu-arrow {
     transform: rotate(90deg);
 }

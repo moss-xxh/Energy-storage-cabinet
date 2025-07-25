@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>负载历史数据 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #EBEDF4;
+            color: #333;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .device-selector {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .selector-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .selector-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .data-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .overview-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .overview-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .overview-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .overview-unit {
+            font-size: 14px;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        .overview-trend {
+            font-size: 12px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .trend-up {
+            color: #10b981;
+        }
+
+        .trend-down {
+            color: #ef4444;
+        }
+
+        .chart-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-card.full-width {
+            grid-column: span 2;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .time-selector {
+            display: flex;
+            background: #f3f4f6;
+            border-radius: 6px;
+            padding: 2px;
+        }
+
+        .time-option {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .time-option.active {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .load-distribution {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .load-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .load-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .load-item.selected {
+            border: 2px solid #3b82f6;
+        }
+
+        .load-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .load-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .load-power {
+            font-size: 20px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 5px;
+        }
+
+        .load-status {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .load-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .load-indicator.off {
+            background: #6b7280;
+        }
+
+        .data-table-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-export {
+            padding: 8px 16px;
+            border: 1px solid #e5e7eb;
+            background: white;
+            color: #333;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-export:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .data-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .data-table td {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .data-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.normal {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-badge.error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .device-info {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .device-details {
+            display: flex;
+            gap: 30px;
+        }
+
+        .device-detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .peak-valley-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .peak-valley-item {
+            text-align: center;
+        }
+
+        .peak-valley-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .peak-valley-time {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .peak-valley-price {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 1200px) {
+            .chart-section {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-card.full-width {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            .data-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .device-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .device-details {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .peak-valley-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .load-distribution {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content">
+        
+        <!-- 设备选择器 -->
+        <div class="device-selector">
+            <div class="selector-group">
+                <label class="selector-label">选择电站:</label>
+                <select class="form-control" style="width: 200px;" id="stationSelect">
+                    <option value="1">朝阳路工业园储能站</option>
+                    <option value="2">城西配电站</option>
+                    <option value="3">经开区储能站</option>
+                </select>
+            </div>
+            <div class="selector-group">
+                <label class="selector-label">选择负载类型:</label>
+                <select class="form-control" style="width: 200px;" id="deviceSelect">
+                    <option value="all">全部负载</option>
+                    <option value="production">生产设备</option>
+                    <option value="office">办公设备</option>
+                    <option value="lighting">照明系统</option>
+                    <option value="hvac">空调系统</option>
+                    <option value="other">其他设备</option>
+                </select>
+            </div>
+            <div class="selector-group">
+                <label class="selector-label">时间范围:</label>
+                <input type="date" class="form-control" id="startDate" value="2024-01-01">
+                <span style="margin: 0 5px;">至</span>
+                <input type="date" class="form-control" id="endDate" value="2024-01-31">
+            </div>
+            <button class="btn btn-primary" onclick="queryData()">查询</button>
+        </div>
+
+        <!-- 峰谷时段信息 -->
+        <div class="peak-valley-info">
+            <div class="peak-valley-item">
+                <div class="peak-valley-label">尖峰时段</div>
+                <div class="peak-valley-time">10:00-12:00, 19:00-21:00</div>
+                <div class="peak-valley-price">¥1.2/kWh</div>
+            </div>
+            <div class="peak-valley-item">
+                <div class="peak-valley-label">高峰时段</div>
+                <div class="peak-valley-time">08:00-10:00, 12:00-19:00</div>
+                <div class="peak-valley-price">¥0.95/kWh</div>
+            </div>
+            <div class="peak-valley-item">
+                <div class="peak-valley-label">平段时段</div>
+                <div class="peak-valley-time">07:00-08:00, 21:00-23:00</div>
+                <div class="peak-valley-price">¥0.65/kWh</div>
+            </div>
+            <div class="peak-valley-item">
+                <div class="peak-valley-label">低谷时段</div>
+                <div class="peak-valley-time">23:00-07:00</div>
+                <div class="peak-valley-price">¥0.35/kWh</div>
+            </div>
+        </div>
+
+        <!-- 设备信息 -->
+        <div class="device-info">
+            <div class="device-details">
+                <div class="device-detail-item">
+                    <span class="detail-label">负载类型</span>
+                    <span class="detail-value">全部负载</span>
+                </div>
+                <div class="device-detail-item">
+                    <span class="detail-label">总装机容量</span>
+                    <span class="detail-value">3500 kW</span>
+                </div>
+                <div class="device-detail-item">
+                    <span class="detail-label">当前负载率</span>
+                    <span class="detail-value">68.5%</span>
+                </div>
+                <div class="device-detail-item">
+                    <span class="detail-label">功率因数</span>
+                    <span class="detail-value">0.92</span>
+                </div>
+                <div class="device-detail-item">
+                    <span class="detail-label">运行状态</span>
+                    <span class="status-badge normal">
+                        <span style="width: 6px; height: 6px; background: currentColor; border-radius: 50%;"></span>
+                        正常运行
+                    </span>
+                </div>
+            </div>
+            <div>
+                <button class="btn-export" onclick="exportReport()">
+                    <span>📊</span> 生成报告
+                </button>
+            </div>
+        </div>
+
+        <!-- 数据概览 -->
+        <div class="data-overview">
+            <div class="overview-card">
+                <div class="overview-label">总用电量</div>
+                <div class="overview-value">45,678<span class="overview-unit">MWh</span></div>
+                <div class="overview-trend trend-up">
+                    <span>↑</span>
+                    <span>12.3%</span>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-label">今日用电</div>
+                <div class="overview-value">156.8<span class="overview-unit">MWh</span></div>
+                <div class="overview-trend trend-up">
+                    <span>↑</span>
+                    <span>8.5%</span>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-label">峰值功率</div>
+                <div class="overview-value">2,856<span class="overview-unit">kW</span></div>
+                <div class="overview-trend trend-down">
+                    <span>↓</span>
+                    <span>5.2%</span>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-label">平均负载率</div>
+                <div class="overview-value">72.3<span class="overview-unit">%</span></div>
+                <div class="overview-trend trend-up">
+                    <span>↑</span>
+                    <span>3.1%</span>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-label">电费支出</div>
+                <div class="overview-value">¥38.5<span class="overview-unit">万</span></div>
+                <div class="overview-trend trend-down">
+                    <span>↓</span>
+                    <span>15.6%</span>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-label">需量超限次数</div>
+                <div class="overview-value">2<span class="overview-unit">次</span></div>
+                <div class="overview-trend trend-down">
+                    <span>↓</span>
+                    <span>3次</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 负载分布 -->
+        <div class="chart-card full-width">
+            <div class="chart-header">
+                <h3 class="chart-title">负载设备分布</h3>
+                <button class="btn btn-sm btn-outline-secondary" onclick="refreshLoads()">刷新</button>
+            </div>
+            <div class="load-distribution" id="loadGrid">
+                <div class="load-item" onclick="selectLoad('production')">
+                    <div class="load-indicator"></div>
+                    <div class="load-icon">🏭</div>
+                    <div class="load-name">生产设备</div>
+                    <div class="load-power">1,245 kW</div>
+                    <div class="load-status">运行中 85%</div>
+                </div>
+                <div class="load-item" onclick="selectLoad('office')">
+                    <div class="load-indicator"></div>
+                    <div class="load-icon">💻</div>
+                    <div class="load-name">办公设备</div>
+                    <div class="load-power">456 kW</div>
+                    <div class="load-status">运行中 92%</div>
+                </div>
+                <div class="load-item" onclick="selectLoad('lighting')">
+                    <div class="load-indicator"></div>
+                    <div class="load-icon">💡</div>
+                    <div class="load-name">照明系统</div>
+                    <div class="load-power">234 kW</div>
+                    <div class="load-status">运行中 78%</div>
+                </div>
+                <div class="load-item" onclick="selectLoad('hvac')">
+                    <div class="load-indicator"></div>
+                    <div class="load-icon">❄️</div>
+                    <div class="load-name">空调系统</div>
+                    <div class="load-power">678 kW</div>
+                    <div class="load-status">运行中 65%</div>
+                </div>
+                <div class="load-item" onclick="selectLoad('elevator')">
+                    <div class="load-indicator"></div>
+                    <div class="load-icon">🛗</div>
+                    <div class="load-name">电梯系统</div>
+                    <div class="load-power">89 kW</div>
+                    <div class="load-status">运行中 45%</div>
+                </div>
+                <div class="load-item" onclick="selectLoad('other')">
+                    <div class="load-indicator off"></div>
+                    <div class="load-icon">⚡</div>
+                    <div class="load-name">其他设备</div>
+                    <div class="load-power">154 kW</div>
+                    <div class="load-status">待机中</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="chart-section">
+            <!-- 负载功率曲线 -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3 class="chart-title">负载功率曲线</h3>
+                    <div class="chart-controls">
+                        <div class="time-selector">
+                            <button class="time-option active" data-range="day">日</button>
+                            <button class="time-option" data-range="week">周</button>
+                            <button class="time-option" data-range="month">月</button>
+                            <button class="time-option" data-range="year">年</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="powerChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 负载类型分布 -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">负载类型分布</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="typeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 峰谷用电分析 -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">峰谷用电分析</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="peakValleyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 功率因数趋势 -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">功率因数趋势</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="pfChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 需量管理 -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">需量管理分析</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="demandChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 用电成本分析 -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3 class="chart-title">用电成本分析</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="costChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据表格 -->
+        <div class="data-table-section">
+            <div class="table-controls">
+                <h3 class="chart-title">历史数据明细</h3>
+                <div class="export-buttons">
+                    <button class="btn-export" onclick="exportExcel()">
+                        <span>📑</span> 导出Excel
+                    </button>
+                    <button class="btn-export" onclick="exportPDF()">
+                        <span>📄</span> 导出PDF
+                    </button>
+                </div>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>总功率(kW)</th>
+                        <th>用电量(kWh)</th>
+                        <th>负载率(%)</th>
+                        <th>功率因数</th>
+                        <th>电价时段</th>
+                        <th>电价(元/kWh)</th>
+                        <th>电费(元)</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBody">
+                    <!-- 数据将通过JavaScript动态插入 -->
+                </tbody>
+            </table>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <div style="font-size: 14px; color: #666;">
+                    显示 <span id="showingCount">1-10</span> 条，共 <span id="totalCount">678</span> 条
+                </div>
+                <div class="pagination">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="previousPage()">上一页</button>
+                    <span style="margin: 0 10px;">第 <span id="currentPage">1</span> 页</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="nextPage()">下一页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../sidebar.js"></script>
+    <script>
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 初始化图表
+            initCharts();
+            
+            // 加载数据
+            loadTableData();
+            
+            // 绑定时间选择器事件
+            document.querySelectorAll('.time-option').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.time-option').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    updateCharts(this.dataset.range);
+                });
+            });
+            
+            // 监听设备选择变化
+            document.getElementById('deviceSelect').addEventListener('change', function() {
+                loadDeviceData(this.value);
+            });
+        });
+
+        // 初始化图表
+        function initCharts() {
+            // 负载功率曲线
+            const powerCtx = document.getElementById('powerChart').getContext('2d');
+            window.powerChart = new Chart(powerCtx, {
+                type: 'line',
+                data: {
+                    labels: generateTimeLabels(24),
+                    datasets: [
+                        {
+                            label: '实际负载',
+                            data: generateLoadPowerData(24),
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: '预测负载',
+                            data: generatePredictedLoadData(24),
+                            borderColor: '#10b981',
+                            borderDash: [5, 5],
+                            backgroundColor: 'transparent',
+                            fill: false,
+                            tension: 0.4
+                        },
+                        {
+                            label: '需量限值',
+                            data: Array(24).fill(2800),
+                            borderColor: '#ef4444',
+                            borderDash: [10, 5],
+                            backgroundColor: 'transparent',
+                            fill: false,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '功率 (kW)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 负载类型分布
+            const typeCtx = document.getElementById('typeChart').getContext('2d');
+            window.typeChart = new Chart(typeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['生产设备', '空调系统', '办公设备', '照明系统', '电梯系统', '其他'],
+                    datasets: [{
+                        data: [45, 25, 12, 8, 5, 5],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#6b7280']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+
+            // 峰谷用电分析
+            const peakValleyCtx = document.getElementById('peakValleyChart').getContext('2d');
+            window.peakValleyChart = new Chart(peakValleyCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['尖峰', '高峰', '平段', '低谷'],
+                    datasets: [
+                        {
+                            label: '用电量(MWh)',
+                            data: [25, 45, 30, 20],
+                            backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981'],
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '电费(万元)',
+                            data: [3.0, 4.275, 1.95, 0.7],
+                            type: 'line',
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'transparent',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: '用电量 (MWh)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: '电费 (万元)'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 功率因数趋势
+            const pfCtx = document.getElementById('pfChart').getContext('2d');
+            window.pfChart = new Chart(pfCtx, {
+                type: 'line',
+                data: {
+                    labels: generateTimeLabels(24),
+                    datasets: [{
+                        label: '功率因数',
+                        data: generatePFData(24),
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0.8,
+                            max: 1.0,
+                            title: {
+                                display: true,
+                                text: '功率因数'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 需量管理
+            const demandCtx = document.getElementById('demandChart').getContext('2d');
+            window.demandChart = new Chart(demandCtx, {
+                type: 'bar',
+                data: {
+                    labels: generateDayLabels(7),
+                    datasets: [
+                        {
+                            label: '最大需量',
+                            data: [2650, 2780, 2450, 2890, 2560, 2720, 2480],
+                            backgroundColor: function(context) {
+                                const value = context.parsed.y;
+                                return value > 2800 ? '#ef4444' : '#3b82f6';
+                            }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 2800,
+                                    yMax: 2800,
+                                    borderColor: '#ef4444',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5]
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 2000,
+                            title: {
+                                display: true,
+                                text: '需量 (kW)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 用电成本分析
+            const costCtx = document.getElementById('costChart').getContext('2d');
+            window.costChart = new Chart(costCtx, {
+                type: 'line',
+                data: {
+                    labels: generateMonthLabels(12),
+                    datasets: [
+                        {
+                            label: '总电费',
+                            data: [35.2, 38.5, 42.1, 45.6, 48.2, 52.3, 56.8, 54.2, 49.8, 43.2, 38.5, 36.4],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: '节省电费',
+                            data: [8.5, 9.2, 10.5, 12.3, 14.2, 15.8, 18.2, 16.5, 13.8, 11.2, 9.5, 8.8],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '电费 (万元)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 生成时间标签
+        function generateTimeLabels(hours) {
+            return Array.from({length: hours}, (_, i) => `${i}:00`);
+        }
+
+        // 生成日期标签
+        function generateDayLabels(days) {
+            const labels = [];
+            const today = new Date();
+            for (let i = days - 1; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
+            }
+            return labels;
+        }
+
+        // 生成月份标签
+        function generateMonthLabels(months) {
+            const labels = [];
+            const now = new Date();
+            for (let i = months - 1; i >= 0; i--) {
+                const date = new Date(now);
+                date.setMonth(date.getMonth() - i);
+                labels.push(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`);
+            }
+            return labels;
+        }
+
+        // 生成负载功率数据
+        function generateLoadPowerData(points) {
+            const data = [];
+            for (let i = 0; i < points; i++) {
+                let basePower = 800;
+                if (i >= 8 && i <= 11) {
+                    basePower = 2200 + Math.random() * 400; // 上午高峰
+                } else if (i >= 13 && i <= 16) {
+                    basePower = 2000 + Math.random() * 300; // 下午工作
+                } else if (i >= 18 && i <= 21) {
+                    basePower = 2400 + Math.random() * 400; // 晚间高峰
+                } else if (i >= 0 && i < 6) {
+                    basePower = 600 + Math.random() * 200; // 夜间低谷
+                } else {
+                    basePower = 1200 + Math.random() * 300; // 其他时段
+                }
+                data.push(basePower);
+            }
+            return data;
+        }
+
+        // 生成预测负载数据
+        function generatePredictedLoadData(points) {
+            const actualData = generateLoadPowerData(points);
+            return actualData.map(value => value + (Math.random() - 0.5) * 200);
+        }
+
+        // 生成功率因数数据
+        function generatePFData(points) {
+            const data = [];
+            for (let i = 0; i < points; i++) {
+                const pf = 0.88 + Math.random() * 0.08 + Math.sin(i / 4) * 0.02;
+                data.push(Math.min(0.98, pf));
+            }
+            return data;
+        }
+
+        // 加载表格数据
+        function loadTableData() {
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '';
+            
+            // 生成示例数据
+            for (let i = 0; i < 10; i++) {
+                const row = document.createElement('tr');
+                const time = new Date();
+                time.setHours(time.getHours() - i);
+                
+                const hour = time.getHours();
+                let power, period, price;
+                
+                // 根据时段确定功率和电价
+                if ((hour >= 10 && hour < 12) || (hour >= 19 && hour < 21)) {
+                    period = '尖峰';
+                    price = 1.2;
+                    power = Math.round(Math.random() * 400 + 2400);
+                } else if ((hour >= 8 && hour < 10) || (hour >= 12 && hour < 19)) {
+                    period = '高峰';
+                    price = 0.95;
+                    power = Math.round(Math.random() * 300 + 2000);
+                } else if ((hour >= 7 && hour < 8) || (hour >= 21 && hour < 23)) {
+                    period = '平段';
+                    price = 0.65;
+                    power = Math.round(Math.random() * 300 + 1200);
+                } else {
+                    period = '低谷';
+                    price = 0.35;
+                    power = Math.round(Math.random() * 200 + 600);
+                }
+                
+                const energy = power * 1; // 1小时的电量
+                const loadRate = ((power / 3500) * 100).toFixed(1);
+                const pf = (0.88 + Math.random() * 0.08).toFixed(3);
+                const cost = (energy * price).toFixed(2);
+                const status = power > 2800 ? 'warning' : 'normal';
+                const statusText = power > 2800 ? '需量超限' : '正常';
+                
+                row.innerHTML = `
+                    <td>${time.toLocaleString('zh-CN')}</td>
+                    <td>${power}</td>
+                    <td>${energy}</td>
+                    <td>${loadRate}</td>
+                    <td>${pf}</td>
+                    <td>${period}</td>
+                    <td>${price}</td>
+                    <td>${cost}</td>
+                    <td><span class="status-badge ${status}">${statusText}</span></td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        // 选择负载
+        function selectLoad(loadType) {
+            document.querySelectorAll('.load-item').forEach(item => item.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            console.log('选择负载:', loadType);
+            // 更新相关数据
+        }
+
+        // 刷新负载数据
+        function refreshLoads() {
+            console.log('刷新负载数据...');
+        }
+
+        // 查询数据
+        function queryData() {
+            console.log('查询数据...');
+            loadTableData();
+            updateCharts('day');
+        }
+
+        // 更新图表
+        function updateCharts(range) {
+            console.log('更新图表:', range);
+            // 根据时间范围更新图表数据
+        }
+
+        // 加载设备数据
+        function loadDeviceData(deviceType) {
+            console.log('加载设备数据:', deviceType);
+            // 更新设备信息和数据
+            queryData();
+        }
+
+        // 导出报告
+        function exportReport() {
+            alert('正在生成负载历史数据报告...');
+        }
+
+        // 导出Excel
+        function exportExcel() {
+            alert('正在导出Excel文件...');
+        }
+
+        // 导出PDF
+        function exportPDF() {
+            alert('正在导出PDF文件...');
+        }
+
+        // 分页
+        function previousPage() {
+            console.log('上一页');
+        }
+
+        function nextPage() {
+            console.log('下一页');
+        }
+    </script>
+</body>
+</html>

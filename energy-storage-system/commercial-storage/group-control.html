@@ -1,0 +1,2293 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备群控 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="./sidebar.css">
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #EBEDF4;
+            color: #1e293b;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            background: #EBEDF4;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        /* 内容区域 */
+        .content {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header-left h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .page-header-right {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #3562E3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2951d9;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 设备分组卡片网格 */
+        .group-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .group-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .group-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .group-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        /* 删除按钮样式 */
+        .delete-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+        
+        .delete-btn:hover {
+            color: #ef4444;
+            background: #fee2e2;
+        }
+        
+        .delete-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .group-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .group-status.active {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .group-status.inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .group-status.partial {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .group-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .info-value {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .device-names {
+            font-size: 0.75rem;
+            color: #64748b;
+            white-space: normal;
+            line-height: 1.3;
+        }
+
+        .group-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #374151;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .action-btn.primary {
+            background: #3562E3;
+            color: white;
+            border-color: #3562E3;
+        }
+
+        .action-btn.primary:hover {
+            background: #2951d9;
+        }
+
+        /* 控制弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* 控制面板样式 - 复用control.html的样式 */
+        .control-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .control-section {
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* 工作模式网格 */
+        .work-mode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .mode-card:hover {
+            border-color: #3562E3;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-card.active {
+            border-color: #3562E3;
+            background: #eff6ff;
+        }
+
+        .mode-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mode-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .mode-desc {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .mode-check {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            background: #3562E3;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .mode-card.active .mode-check {
+            opacity: 1;
+        }
+
+        /* 控制网格 */
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .control-value {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: #3562E3;
+            box-shadow: 0 0 0 2px rgba(53, 98, 227, 0.1);
+        }
+
+        .control-unit {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        /* 开关控件 */
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .switch.active {
+            background: #3562E3;
+        }
+
+        .switch-handle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .switch.active .switch-handle {
+            left: 22px;
+        }
+
+        /* 滑块控件 */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .control-slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3562E3;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider-value-input {
+            width: 70px;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        /* 按钮样式 */
+        .control-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #3562E3;
+            background: white;
+            color: #3562E3;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #3562E3;
+            color: white;
+        }
+
+        .control-btn.primary {
+            background: #3562E3;
+            color: white;
+        }
+
+        .control-btn.primary:hover {
+            background: #2951d9;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .group-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 表单样式 */
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3562E3;
+            box-shadow: 0 0 0 2px rgba(53, 98, 227, 0.1);
+        }
+
+        .form-select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* 设备选择样式 */
+        .device-selection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .device-filter {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .selection-summary {
+            font-size: 0.875rem;
+            color: #3562E3;
+            font-weight: 500;
+        }
+
+        .device-selection-list {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .device-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background 0.2s ease;
+        }
+
+        .device-item:last-child {
+            border-bottom: none;
+        }
+
+        .device-item:hover {
+            background: #f8fafc;
+        }
+
+        .device-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .device-details {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+        }
+
+        .device-type {
+            color: #64748b;
+        }
+
+        .device-capacity {
+            color: #3562E3;
+        }
+
+        .device-status {
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+        }
+
+        .device-status.online {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .device-status.offline {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* 表单操作按钮 */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        /* 暗色主题 */
+        [data-theme="dark"] body {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .navbar {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .group-card {
+            background: #1e293b;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="dark"] .modal-content {
+            background: #1e293b;
+        }
+
+        [data-theme="dark"] .modal-header {
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .control-section {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        [data-theme="dark"] .mode-card {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        [data-theme="dark"] .control-input {
+            background: #1e293b;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+        
+        /* 时段设置样式 */
+        .time-period-settings {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .period-type-selector {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .period-type {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .period-type input[type="radio"] {
+            cursor: pointer;
+        }
+        
+        .period-label {
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .period-label.peak {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .period-label.valley {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        
+        .period-label.normal {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+        
+        /* 24小时选择器样式 */
+        .hour-selector {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            gap: 2px;
+            background: #e5e7eb;
+            padding: 2px;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            user-select: none;
+        }
+        
+        .hour-cell {
+            background: white;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+        }
+        
+        .hour-cell:hover {
+            border-color: #9ca3af;
+        }
+        
+        .hour-cell.peak {
+            background: #fee2e2;
+            border-color: #fecaca;
+        }
+        
+        .hour-cell.valley {
+            background: #dbeafe;
+            border-color: #bfdbfe;
+        }
+        
+        .hour-cell.normal {
+            background: #f3f4f6;
+            border-color: #e5e7eb;
+        }
+        
+        .hour-number {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 2px;
+        }
+        
+        .period-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .hour-cell.peak .period-text {
+            color: #dc2626;
+        }
+        
+        .hour-cell.valley .period-text {
+            color: #2563eb;
+        }
+        
+        .hour-cell.normal .period-text {
+            color: #4b5563;
+        }
+        
+        .period-statistics {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .stat-item.peak {
+            color: #dc2626;
+        }
+        
+        .stat-item.valley {
+            color: #2563eb;
+        }
+        
+        .stat-item.normal {
+            color: #4b5563;
+        }
+        
+        .preset-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            color: #374151;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .preset-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏容器 -->
+    <div id="sidebar-container"></div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
+                    <span>←</span>
+                </button>
+                <h1 class="page-title">设备群控</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="nav-button">
+                    <span>👤</span>
+                    <span>管理员</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 页面内容 -->
+        <div class="content">
+            <!-- 页面头部 -->
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h2>设备分组管理</h2>
+                    <p class="page-subtitle">管理和控制设备分组，批量执行控制指令</p>
+                </div>
+                <div class="page-header-right">
+                    <button class="btn btn-primary" onclick="createNewGroup()">
+                        <span>+</span>
+                        <span>新建分组</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 设备分组卡片 -->
+            <div class="group-grid">
+                <!-- 分组1: A区储能系统 -->
+                <div class="group-card" data-group-id="group1">
+                    <div class="group-header">
+                        <h3 class="group-name">A区储能系统</h3>
+                        <button class="delete-btn" onclick="deleteGroup('group1')" title="删除分组">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="group-info">
+                        <div class="info-row">
+                            <span class="info-label">设备名称</span>
+                            <span class="info-value device-names">储能柜#001, 储能柜#002, 储能柜#004, PCS#001</span>
+                        </div>
+                    </div>
+                    <div class="group-actions">
+                        <button class="action-btn" onclick="editGroup('group1')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>编辑</span>
+                        </button>
+                        <button class="action-btn primary" onclick="openGroupControl('group1', 'A区储能系统')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            <span>控制</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 分组2: B区储能系统 -->
+                <div class="group-card" data-group-id="group2">
+                    <div class="group-header">
+                        <h3 class="group-name">B区储能系统</h3>
+                        <button class="delete-btn" onclick="deleteGroup('group2')" title="删除分组">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="group-info">
+                        <div class="info-row">
+                            <span class="info-label">设备名称</span>
+                            <span class="info-value device-names">储能柜#003, PCS#002</span>
+                        </div>
+                    </div>
+                    <div class="group-actions">
+                        <button class="action-btn" onclick="editGroup('group2')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>编辑</span>
+                        </button>
+                        <button class="action-btn primary" onclick="openGroupControl('group2', 'B区储能系统')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            <span>控制</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 分组3: 应急备用组 -->
+                <div class="group-card" data-group-id="group3">
+                    <div class="group-header">
+                        <h3 class="group-name">应急备用组</h3>
+                        <button class="delete-btn" onclick="deleteGroup('group3')" title="删除分组">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="group-info">
+                        <div class="info-row">
+                            <span class="info-label">设备名称</span>
+                            <span class="info-value device-names">储能柜#001, 储能柜#002</span>
+                        </div>
+                    </div>
+                    <div class="group-actions">
+                        <button class="action-btn" onclick="editGroup('group3')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>编辑</span>
+                        </button>
+                        <button class="action-btn primary" onclick="openGroupControl('group3', '应急备用组')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            <span>控制</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 分组4: 光伏协同组 -->
+                <div class="group-card" data-group-id="group4">
+                    <div class="group-header">
+                        <h3 class="group-name">光伏协同组</h3>
+                        <button class="delete-btn" onclick="deleteGroup('group4')" title="删除分组">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="group-info">
+                        <div class="info-row">
+                            <span class="info-label">设备名称</span>
+                            <span class="info-value device-names">储能柜#004, PCS#001, PCS#002</span>
+                        </div>
+                    </div>
+                    <div class="group-actions">
+                        <button class="action-btn" onclick="editGroup('group4')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>编辑</span>
+                        </button>
+                        <button class="action-btn primary" onclick="openGroupControl('group4', '光伏协同组')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            <span>控制</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 分组5: 测试分组 -->
+                <div class="group-card" data-group-id="group5">
+                    <div class="group-header">
+                        <h3 class="group-name">测试分组</h3>
+                        <button class="delete-btn" onclick="deleteGroup('group5')" title="删除分组">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="group-info">
+                        <div class="info-row">
+                            <span class="info-label">设备名称</span>
+                            <span class="info-value device-names">储能柜#003</span>
+                        </div>
+                    </div>
+                    <div class="group-actions">
+                        <button class="action-btn" onclick="editGroup('group5')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            <span>编辑</span>
+                        </button>
+                        <button class="action-btn primary" onclick="openGroupControl('group5', '测试分组')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            <span>控制</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新建/编辑分组弹窗 -->
+    <div class="modal" id="create-group-modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-form-title">新建设备分组</h3>
+                <button class="modal-close" onclick="closeCreateGroupModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-section">
+                    <h4 class="form-section-title">基本信息</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">分组名称</label>
+                            <input type="text" class="form-input" id="new-group-name" placeholder="请输入分组名称">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">分组描述</label>
+                            <textarea class="form-input" id="new-group-desc" rows="3" placeholder="请输入分组描述（选填）"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="form-section-title">选择设备</h4>
+                    <div class="device-selection-header">
+                        <div class="device-filter">
+                            <input type="text" class="form-input" placeholder="搜索设备..." style="width: 200px;" oninput="filterDeviceList(this.value)">
+                            <select class="form-select" style="width: 150px;" onchange="filterDeviceByType(this.value)">
+                                <option value="all">全部类型</option>
+                                <option value="cabinet">储能柜</option>
+                                <option value="pcs">PCS</option>
+                                <option value="battery">电池组</option>
+                            </select>
+                        </div>
+                        <div class="selection-summary">
+                            已选择: <span id="selected-device-count">0</span> 台设备
+                        </div>
+                    </div>
+                    
+                    <div class="device-selection-list">
+                        <div class="device-item" data-device-id="cab001" data-type="cabinet">
+                            <input type="checkbox" class="device-checkbox" onchange="updateDeviceSelection()">
+                            <div class="device-info">
+                                <div class="device-name">储能柜#001</div>
+                                <div class="device-details">
+                                    <span class="device-type">储能柜</span>
+                                    <span class="device-capacity">500 kWh</span>
+                                    <span class="device-status online">在线</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="device-item" data-device-id="cab002" data-type="cabinet">
+                            <input type="checkbox" class="device-checkbox" onchange="updateDeviceSelection()">
+                            <div class="device-info">
+                                <div class="device-name">储能柜#002</div>
+                                <div class="device-details">
+                                    <span class="device-type">储能柜</span>
+                                    <span class="device-capacity">500 kWh</span>
+                                    <span class="device-status online">在线</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="device-item" data-device-id="cab003" data-type="cabinet">
+                            <input type="checkbox" class="device-checkbox" onchange="updateDeviceSelection()">
+                            <div class="device-info">
+                                <div class="device-name">储能柜#003</div>
+                                <div class="device-details">
+                                    <span class="device-type">储能柜</span>
+                                    <span class="device-capacity">500 kWh</span>
+                                    <span class="device-status offline">离线</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="device-item" data-device-id="cab004" data-type="cabinet">
+                            <input type="checkbox" class="device-checkbox" onchange="updateDeviceSelection()">
+                            <div class="device-info">
+                                <div class="device-name">储能柜#004</div>
+                                <div class="device-details">
+                                    <span class="device-type">储能柜</span>
+                                    <span class="device-capacity">500 kWh</span>
+                                    <span class="device-status online">在线</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="device-item" data-device-id="pcs001" data-type="pcs">
+                            <input type="checkbox" class="device-checkbox" onchange="updateDeviceSelection()">
+                            <div class="device-info">
+                                <div class="device-name">PCS#001</div>
+                                <div class="device-details">
+                                    <span class="device-type">PCS</span>
+                                    <span class="device-capacity">250 kW</span>
+                                    <span class="device-status online">在线</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="device-item" data-device-id="pcs002" data-type="pcs">
+                            <input type="checkbox" class="device-checkbox" onchange="updateDeviceSelection()">
+                            <div class="device-info">
+                                <div class="device-name">PCS#002</div>
+                                <div class="device-details">
+                                    <span class="device-type">PCS</span>
+                                    <span class="device-capacity">250 kW</span>
+                                    <span class="device-status online">在线</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="closeCreateGroupModal()">取消</button>
+                    <button class="btn btn-primary" id="submit-group-btn" onclick="submitGroup()">创建分组</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 控制弹窗 -->
+    <div class="modal" id="control-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">设备群控 - <span id="group-name"></span></h3>
+                <button class="modal-close" onclick="closeControlModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="control-sections">
+                    <!-- 工作模式设置 -->
+                    <section class="control-section">
+                        <div class="section-header">
+                            <h3 class="section-title">工作模式设置</h3>
+                        </div>
+                        <div class="work-mode-grid">
+                            <div class="mode-card active" onclick="selectWorkMode(this, 'self-consumption')">
+                                <div class="mode-check">✓</div>
+                                <div class="mode-icon">🏠</div>
+                                <div class="mode-title">自发自用</div>
+                                <div class="mode-desc">优先自用，余电上网</div>
+                            </div>
+                            <div class="mode-card" onclick="selectWorkMode(this, 'economic')">
+                                <div class="mode-check">✓</div>
+                                <div class="mode-icon">💰</div>
+                                <div class="mode-title">经济模式</div>
+                                <div class="mode-desc">峰谷套利，降低电费</div>
+                            </div>
+                            <div class="mode-card" onclick="selectWorkMode(this, 'emergency')">
+                                <div class="mode-check">✓</div>
+                                <div class="mode-icon">⚡</div>
+                                <div class="mode-title">应急模式</div>
+                                <div class="mode-desc">保持高电量，应急供电</div>
+                            </div>
+                            <div class="mode-card" onclick="selectWorkMode(this, 'vpp')">
+                                <div class="mode-check">✓</div>
+                                <div class="mode-icon">🔗</div>
+                                <div class="mode-title">VPP模式</div>
+                                <div class="mode-desc">虚拟电厂聚合</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 经济模式时段设置（仅在经济模式下显示） -->
+                    <section class="control-section" id="economic-time-settings" style="display: none;">
+                        <div class="section-header">
+                            <h3 class="section-title">时段设置</h3>
+                        </div>
+                        <div class="time-period-settings">
+                            <div class="period-type-selector">
+                                <label class="period-type">
+                                    <input type="radio" name="period-type" value="peak" onchange="setPeriodType('peak')">
+                                    <span class="period-label peak">峰时段</span>
+                                </label>
+                                <label class="period-type">
+                                    <input type="radio" name="period-type" value="valley" onchange="setPeriodType('valley')">
+                                    <span class="period-label valley">谷时段</span>
+                                </label>
+                                <label class="period-type">
+                                    <input type="radio" name="period-type" value="normal" onchange="setPeriodType('normal')" checked>
+                                    <span class="period-label normal">平时段</span>
+                                </label>
+                            </div>
+                            <div class="time-slots-grid">
+                                <!-- 24小时时段选择器 -->
+                                <div class="hour-selector" id="hour-selector">
+                                    <!-- 动态生成24个小时格子 -->
+                                </div>
+                                <div class="period-statistics">
+                                    <span class="stat-item peak">峰时段: <span id="peak-hours">0</span>小时</span>
+                                    <span class="stat-item valley">谷时段: <span id="valley-hours">0</span>小时</span>
+                                    <span class="stat-item normal">平时段: <span id="normal-hours">0</span>小时</span>
+                                </div>
+                                <div class="preset-buttons">
+                                    <button class="preset-btn" onclick="loadPreset('commercial')">工商业预设</button>
+                                    <button class="preset-btn" onclick="loadPreset('industrial')">工业预设</button>
+                                    <button class="preset-btn" onclick="clearAllHours()">清除全部</button>
+                                </div>
+                                <div class="time-slot-row">
+                                    <span class="time-label">17:00-22:00</span>
+                                    <div class="time-slot normal" data-hours="17-21">平</div>
+                                </div>
+                                <div class="time-slot-row">
+                                    <span class="time-label">22:00-24:00</span>
+                                    <div class="time-slot valley" data-hours="22-23">谷</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 基础参数设置 -->
+                    <section class="control-section">
+                        <div class="section-header">
+                            <h3 class="section-title">基础参数设置</h3>
+                        </div>
+                        <div class="control-grid">
+                            <div class="control-item">
+                                <label class="control-label">充电停止SOC</label>
+                                <div class="control-value">
+                                    <div class="slider-container">
+                                        <input type="range" class="control-slider" value="95" min="80" max="100" id="charge-stop-soc-slider" oninput="updateSliderValue(this, 'charge-stop-soc-value')">
+                                        <input type="number" class="slider-value-input" id="charge-stop-soc-value" value="95" min="80" max="100" oninput="updateSliderFromInput(this, 'charge-stop-soc-slider')">
+                                        <span class="control-unit">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">放电停止SOC</label>
+                                <div class="control-value">
+                                    <div class="slider-container">
+                                        <input type="range" class="control-slider" value="20" min="5" max="50" id="discharge-stop-soc-slider" oninput="updateSliderValue(this, 'discharge-stop-soc-value')">
+                                        <input type="number" class="slider-value-input" id="discharge-stop-soc-value" value="20" min="5" max="50" oninput="updateSliderFromInput(this, 'discharge-stop-soc-slider')">
+                                        <span class="control-unit">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">充电功率限制</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="500" min="0" max="1000" id="charge-power-limit">
+                                    <span class="control-unit">kW</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">放电功率限制</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="500" min="0" max="1000" id="discharge-power-limit">
+                                    <span class="control-unit">kW</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 高级参数设置 -->
+                    <section class="control-section">
+                        <div class="section-header">
+                            <h3 class="section-title">高级参数设置</h3>
+                        </div>
+                        <div class="control-grid">
+                            <div class="control-item">
+                                <label class="control-label">需量控制</label>
+                                <div class="control-value">
+                                    <div class="switch" onclick="toggleSwitch(this)">
+                                        <div class="switch-handle"></div>
+                                    </div>
+                                    <span>启用</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">合同容量</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="1000" min="100" max="10000" id="contract-capacity">
+                                    <span class="control-unit">kW</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">预警百分比</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="90" min="50" max="100" id="warning-percentage">
+                                    <span class="control-unit">%</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">余电上网</label>
+                                <div class="control-value">
+                                    <div class="switch active" onclick="toggleSwitch(this)">
+                                        <div class="switch-handle"></div>
+                                    </div>
+                                    <span>允许</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">温度保护</label>
+                                <div class="control-value">
+                                    <div class="switch active" onclick="toggleSwitch(this)">
+                                        <div class="switch-handle"></div>
+                                    </div>
+                                    <span>启用</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">过载保护</label>
+                                <div class="control-value">
+                                    <div class="switch active" onclick="toggleSwitch(this)">
+                                        <div class="switch-handle"></div>
+                                    </div>
+                                    <span>启用</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 调度策略设置 -->
+                    <section class="control-section">
+                        <div class="section-header">
+                            <h3 class="section-title">调度策略设置</h3>
+                        </div>
+                        <div class="control-grid">
+                            <div class="control-item">
+                                <label class="control-label">调度模式</label>
+                                <div class="control-value">
+                                    <select class="control-input">
+                                        <option value="auto">自动调度</option>
+                                        <option value="manual">手动控制</option>
+                                        <option value="remote">远程调度</option>
+                                        <option value="local">本地控制</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">响应速度</label>
+                                <div class="control-value">
+                                    <select class="control-input">
+                                        <option value="fast">快速响应</option>
+                                        <option value="standard" selected>标准响应</option>
+                                        <option value="slow">缓慢响应</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">优先级</label>
+                                <div class="control-value">
+                                    <select class="control-input">
+                                        <option value="high">高</option>
+                                        <option value="medium" selected>中</option>
+                                        <option value="low">低</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">自动优化</label>
+                                <div class="control-value">
+                                    <div class="switch active" onclick="toggleSwitch(this)">
+                                        <div class="switch-handle"></div>
+                                    </div>
+                                    <span>启用</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 系统保护设置 -->
+                    <section class="control-section">
+                        <div class="section-header">
+                            <h3 class="section-title">系统保护设置</h3>
+                        </div>
+                        <div class="control-grid">
+                            <div class="control-item">
+                                <label class="control-label">充电电流限制</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="100" min="0" max="500" id="charge-current-limit">
+                                    <span class="control-unit">A</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">放电电流限制</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="100" min="0" max="500" id="discharge-current-limit">
+                                    <span class="control-unit">A</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">最高温度限制</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="45" min="20" max="60" id="max-temp-limit">
+                                    <span class="control-unit">°C</span>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <label class="control-label">最低温度限制</label>
+                                <div class="control-value">
+                                    <input type="number" class="control-input" value="-10" min="-30" max="10" id="min-temp-limit">
+                                    <span class="control-unit">°C</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 操作按钮 -->
+                    <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                        <button class="control-btn" onclick="resetParameters()">重置参数</button>
+                        <button class="control-btn primary" onclick="applyGroupSettings()">应用设置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认弹窗 -->
+    <div id="delete-confirm-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">确认删除</h3>
+            </div>
+            <div class="modal-body" style="padding: 1.5rem;">
+                <p style="margin: 0; color: #4b5563;">确定要删除分组"<span id="delete-group-name" style="font-weight: 600; color: #1f2937;"></span>"吗？</p>
+                <p style="margin: 0.5rem 0 0 0; color: #dc2626; font-size: 0.875rem;">删除后无法恢复</p>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.75rem; padding: 1rem 1.5rem; border-top: 1px solid #e5e7eb;">
+                <button class="btn" onclick="cancelDeleteGroup()">取消</button>
+                <button class="btn" style="background: #dc2626; color: white;" onclick="confirmDeleteGroup()">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 侧边栏脚本 -->
+    <script src="./sidebar.js"></script>
+    
+    <script>
+        // 全局变量
+        let currentGroup = null;
+        let currentWorkMode = 'self-consumption';
+        let editMode = false;
+        let editingGroupId = null;
+
+        // 存储分组数据（模拟后端数据）
+        const groupsData = {
+            'group1': {
+                name: 'A区储能系统',
+                description: 'A区所有储能设备',
+                devices: ['cab001', 'cab002', 'cab004', 'pcs001']
+            },
+            'group2': {
+                name: 'B区储能系统',
+                description: 'B区所有储能设备',
+                devices: ['cab003', 'pcs002']
+            },
+            'group3': {
+                name: '应急备用组',
+                description: '用于应急供电的储能设备',
+                devices: ['cab001', 'cab002']
+            },
+            'group4': {
+                name: '光伏协同组',
+                description: '与光伏系统协同工作的储能设备',
+                devices: ['cab004', 'pcs001', 'pcs002']
+            },
+            'group5': {
+                name: '测试分组',
+                description: '测试用途',
+                devices: ['cab003']
+            }
+        };
+
+        // 创建新分组
+        function createNewGroup() {
+            editMode = false;
+            editingGroupId = null;
+            openGroupModal('新建设备分组', '创建分组');
+            // 重置表单
+            document.getElementById('new-group-name').value = '';
+            document.getElementById('new-group-desc').value = '';
+            document.querySelectorAll('#create-group-modal .device-checkbox').forEach(cb => cb.checked = false);
+            updateDeviceSelection();
+        }
+
+        // 编辑分组
+        function editGroup(groupId) {
+            editMode = true;
+            editingGroupId = groupId;
+            const groupData = groupsData[groupId];
+            
+            if (!groupData) {
+                alert('分组数据不存在');
+                return;
+            }
+
+            openGroupModal('编辑设备分组', '保存修改');
+            
+            // 填充表单数据
+            document.getElementById('new-group-name').value = groupData.name;
+            document.getElementById('new-group-desc').value = groupData.description || '';
+            
+            // 选中已有设备
+            document.querySelectorAll('#create-group-modal .device-checkbox').forEach(cb => {
+                const deviceId = cb.closest('.device-item').dataset.deviceId;
+                cb.checked = groupData.devices.includes(deviceId);
+            });
+            
+            updateDeviceSelection();
+        }
+
+        // 打开分组弹窗
+        function openGroupModal(title, buttonText) {
+            document.getElementById('modal-form-title').textContent = title;
+            document.getElementById('submit-group-btn').textContent = buttonText;
+            document.getElementById('create-group-modal').classList.add('active');
+        }
+
+        // 关闭新建分组弹窗
+        function closeCreateGroupModal() {
+            document.getElementById('create-group-modal').classList.remove('active');
+            editMode = false;
+            editingGroupId = null;
+        }
+
+        // 更新设备选择计数
+        function updateDeviceSelection() {
+            const checkedCount = document.querySelectorAll('#create-group-modal .device-checkbox:checked').length;
+            document.getElementById('selected-device-count').textContent = checkedCount;
+        }
+
+        // 过滤设备列表
+        function filterDeviceList(searchText) {
+            const devices = document.querySelectorAll('#create-group-modal .device-item');
+            devices.forEach(device => {
+                const name = device.querySelector('.device-name').textContent.toLowerCase();
+                if (name.includes(searchText.toLowerCase())) {
+                    device.style.display = 'flex';
+                } else {
+                    device.style.display = 'none';
+                }
+            });
+        }
+
+        // 按类型过滤设备
+        function filterDeviceByType(type) {
+            const devices = document.querySelectorAll('#create-group-modal .device-item');
+            devices.forEach(device => {
+                if (type === 'all' || device.dataset.type === type) {
+                    device.style.display = 'flex';
+                } else {
+                    device.style.display = 'none';
+                }
+            });
+        }
+
+        // 提交分组（创建或更新）
+        function submitGroup() {
+            const groupName = document.getElementById('new-group-name').value.trim();
+            const groupDesc = document.getElementById('new-group-desc').value.trim();
+            const selectedDevices = document.querySelectorAll('#create-group-modal .device-checkbox:checked');
+
+            if (!groupName) {
+                alert('请输入分组名称');
+                return;
+            }
+
+            if (selectedDevices.length === 0) {
+                alert('请至少选择一个设备');
+                return;
+            }
+
+            const selectedDeviceIds = Array.from(selectedDevices).map(cb => 
+                cb.closest('.device-item').dataset.deviceId
+            );
+
+            if (editMode) {
+                // 更新现有分组
+                updateExistingGroup(editingGroupId, {
+                    name: groupName,
+                    description: groupDesc,
+                    devices: selectedDeviceIds
+                });
+                alert(`分组"${groupName}"已更新！`);
+            } else {
+                // 创建新分组
+                // 获取设备名称
+                const deviceNames = Array.from(selectedDevices).map(cb => {
+                    const deviceItem = cb.closest('.device-item');
+                    return deviceItem.querySelector('.device-name').textContent;
+                }).join(', ');
+
+                const newGroupData = {
+                    name: groupName,
+                    description: groupDesc,
+                    deviceNames: deviceNames,
+                    devices: selectedDeviceIds
+                };
+
+                // 创建新的分组卡片
+                createGroupCard(newGroupData);
+                alert(`分组"${groupName}"创建成功！`);
+            }
+            
+            // 关闭弹窗
+            closeCreateGroupModal();
+        }
+
+        // 更新现有分组
+        function updateExistingGroup(groupId, data) {
+            // 更新数据存储
+            groupsData[groupId] = {
+                ...groupsData[groupId],
+                ...data
+            };
+
+            // 更新页面上的卡片
+            const groupCard = document.querySelector(`[data-group-id="${groupId}"]`);
+            if (groupCard) {
+                groupCard.querySelector('.group-name').textContent = data.name;
+                
+                // 更新设备名称
+                const deviceNamesElement = groupCard.querySelector('.device-names');
+                if (deviceNamesElement) {
+                    const deviceNames = data.devices.map(deviceId => {
+                        const deviceItem = document.querySelector(`[data-device-id="${deviceId}"]`);
+                        return deviceItem ? deviceItem.querySelector('.device-name').textContent : deviceId;
+                    }).join(', ');
+                    deviceNamesElement.textContent = deviceNames;
+                }
+                
+                // 只需要更新设备名称，其他字段已移除
+            }
+        }
+
+        // 创建分组卡片
+        function createGroupCard(groupData) {
+            const groupGrid = document.querySelector('.group-grid');
+            const newCard = document.createElement('div');
+            newCard.className = 'group-card';
+            const groupId = 'group-new-' + Date.now();
+            newCard.setAttribute('data-group-id', groupId);
+            newCard.innerHTML = `
+                <div class="group-header">
+                    <h3 class="group-name">${groupData.name}</h3>
+                    <button class="delete-btn" onclick="deleteGroup('${groupId}')" title="删除分组">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18"></path>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="group-info">
+                    <div class="info-row">
+                        <span class="info-label">设备名称</span>
+                        <span class="info-value device-names">${groupData.deviceNames || '--'}</span>
+                    </div>
+                </div>
+                <div class="group-actions">
+                    <button class="action-btn" onclick="editGroup('${groupId}')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        <span>编辑</span>
+                    </button>
+                    <button class="action-btn primary" onclick="openGroupControl('${groupId}', '${groupData.name}')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        <span>控制</span>
+                    </button>
+                </div>
+            `;
+            groupGrid.appendChild(newCard);
+            
+            // 保存新的分组数据
+            groupsData[groupId] = {
+                name: groupData.name,
+                description: groupData.description || '',
+                devices: groupData.devices || []
+            };
+        }
+
+        // 删除分组相关变量
+        let deletingGroupId = null;
+        
+        // 删除分组
+        function deleteGroup(groupId) {
+            const groupCard = document.querySelector(`[data-group-id="${groupId}"]`);
+            const groupName = groupCard ? groupCard.querySelector('.group-name').textContent : '';
+            
+            // 保存要删除的分组ID
+            deletingGroupId = groupId;
+            
+            // 显示分组名称
+            document.getElementById('delete-group-name').textContent = groupName;
+            
+            // 显示确认弹窗
+            document.getElementById('delete-confirm-modal').classList.add('active');
+        }
+        
+        // 确认删除
+        function confirmDeleteGroup() {
+            if (deletingGroupId) {
+                const groupCard = document.querySelector(`[data-group-id="${deletingGroupId}"]`);
+                
+                // 从DOM中移除卡片
+                if (groupCard) {
+                    groupCard.remove();
+                }
+                
+                // 从数据中删除
+                delete groupsData[deletingGroupId];
+                
+                // 关闭弹窗
+                cancelDeleteGroup();
+            }
+        }
+        
+        // 取消删除
+        function cancelDeleteGroup() {
+            deletingGroupId = null;
+            document.getElementById('delete-confirm-modal').classList.remove('active');
+        }
+
+        // 打开群控弹窗
+        function openGroupControl(groupId, groupName) {
+            currentGroup = groupId;
+            document.getElementById('group-name').textContent = groupName;
+            document.getElementById('control-modal').classList.add('active');
+        }
+
+        // 关闭控制弹窗
+        function closeControlModal() {
+            document.getElementById('control-modal').classList.remove('active');
+            currentGroup = null;
+        }
+
+        // 选择工作模式
+        function selectWorkMode(element, mode) {
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            element.classList.add('active');
+            currentWorkMode = mode;
+            
+            // 显示/隐藏经济模式时段设置
+            const economicTimeSettings = document.getElementById('economic-time-settings');
+            if (economicTimeSettings) {
+                if (mode === 'economic') {
+                    economicTimeSettings.style.display = 'block';
+                    // 初始化时段选择器（如果还未初始化）
+                    if (!document.querySelector('.hour-cell')) {
+                        initHourSelector();
+                        loadPreset('commercial');
+                    }
+                } else {
+                    economicTimeSettings.style.display = 'none';
+                }
+            }
+        }
+
+        // 滑块控制
+        function updateSliderValue(slider, valueInputId) {
+            document.getElementById(valueInputId).value = slider.value;
+        }
+
+        function updateSliderFromInput(input, sliderId) {
+            document.getElementById(sliderId).value = input.value;
+        }
+
+        // 开关控制
+        function toggleSwitch(switchElement) {
+            switchElement.classList.toggle('active');
+        }
+
+        // 应用群组设置
+        function applyGroupSettings() {
+            const groupName = document.getElementById('group-name').textContent;
+            if (confirm(`确定要将这些设置应用到"${groupName}"的所有设备吗？`)) {
+                // 模拟应用设置
+                setTimeout(() => {
+                    alert('设置已成功应用！');
+                    closeControlModal();
+                }, 1000);
+            }
+        }
+
+        // 重置参数
+        function resetParameters() {
+            document.getElementById('charge-stop-soc-slider').value = 95;
+            document.getElementById('charge-stop-soc-value').value = 95;
+            document.getElementById('discharge-stop-soc-slider').value = 20;
+            document.getElementById('discharge-stop-soc-value').value = 20;
+            document.getElementById('charge-power-limit').value = 500;
+            document.getElementById('discharge-power-limit').value = 500;
+            document.getElementById('contract-capacity').value = 1000;
+            document.getElementById('warning-percentage').value = 90;
+        }
+
+        // 页面导航函数
+        function goBack() {
+            window.history.back();
+        }
+
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            if (langText.textContent === '中文') {
+                langText.textContent = 'EN';
+            } else {
+                langText.textContent = '中文';
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            localStorage.setItem('ess_theme', newTheme);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('collapsed');
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 应用保存的主题
+            const savedTheme = localStorage.getItem('ess_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        });
+
+        // 点击模态框外部关闭
+        document.getElementById('control-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeControlModal();
+            }
+        });
+
+        // 点击创建分组模态框外部关闭
+        document.getElementById('create-group-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCreateGroupModal();
+            }
+        });
+        
+        // 点击删除确认模态框外部关闭
+        document.getElementById('delete-confirm-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cancelDeleteGroup();
+            }
+        });
+        
+        // 经济模式时段选择功能
+        let currentPeriodType = 'normal'; // 当前选中的时段类型
+        let hourData = new Array(24).fill(''); // 存储每个小时的时段类型
+        let isDragging = false;
+        let dragStartHour = null;
+        
+        // 时段类型标签
+        const periodTypeLabels = {
+            'peak': '峰',
+            'valley': '谷',
+            'normal': '平'
+        };
+        
+        // 初始化24小时选择器
+        function initHourSelector() {
+            const hourSelector = document.getElementById('hour-selector');
+            if (!hourSelector) return;
+            
+            // 清空现有内容，避免重复
+            hourSelector.innerHTML = '';
+            
+            // 生成24个小时格子
+            for (let hour = 0; hour < 24; hour++) {
+                const cell = document.createElement('div');
+                cell.className = 'hour-cell';
+                cell.dataset.hour = hour;
+                
+                // 添加小时数字
+                const hourNumber = document.createElement('div');
+                hourNumber.className = 'hour-number';
+                hourNumber.textContent = hour.toString();
+                cell.appendChild(hourNumber);
+                
+                // 添加时段文字（初始为空）
+                const periodText = document.createElement('div');
+                periodText.className = 'period-text';
+                cell.appendChild(periodText);
+                
+                hourSelector.appendChild(cell);
+                
+                // 鼠标事件处理
+                cell.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    isDragging = true;
+                    dragStartHour = hour;
+                    
+                    // 应用当前时段类型到起始格子
+                    setHourPeriod(hour, currentPeriodType);
+                });
+                
+                cell.addEventListener('mouseenter', () => {
+                    if (isDragging && dragStartHour !== null) {
+                        // 计算拖动范围
+                        const start = Math.min(dragStartHour, hour);
+                        const end = Math.max(dragStartHour, hour);
+                        
+                        // 批量设置时段
+                        for (let h = start; h <= end; h++) {
+                            setHourPeriod(h, currentPeriodType);
+                        }
+                    }
+                });
+                
+                cell.addEventListener('click', () => {
+                    if (!isDragging) {
+                        toggleHour(hour);
+                    }
+                });
+            }
+            
+            // 全局鼠标事件
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                dragStartHour = null;
+            });
+            
+            // 防止文本选择
+            hourSelector.addEventListener('selectstart', (e) => {
+                e.preventDefault();
+            });
+        }
+        
+        // 设置小时的时段类型
+        function setHourPeriod(hour, periodType) {
+            const cell = document.querySelector(`[data-hour="${hour}"]`);
+            if (!cell) return;
+            
+            hourData[hour] = periodType;
+            
+            // 清除原有类并应用新类
+            cell.classList.remove('peak', 'valley', 'normal');
+            if (periodType) {
+                cell.classList.add(periodType);
+                const periodText = cell.querySelector('.period-text');
+                if (periodText) {
+                    periodText.textContent = periodTypeLabels[periodType] || '';
+                }
+            } else {
+                const periodText = cell.querySelector('.period-text');
+                if (periodText) {
+                    periodText.textContent = '';
+                }
+            }
+            
+            updatePeriodStatistics();
+        }
+        
+        // 选择时段类型
+        function setPeriodType(type) {
+            currentPeriodType = type;
+        }
+        
+        // 切换小时的时段类型（单击）
+        function toggleHour(hour) {
+            const cell = document.querySelector(`[data-hour="${hour}"]`);
+            if (!cell) return;
+            
+            // 如果点击的是相同类型，则清除
+            if (hourData[hour] === currentPeriodType) {
+                hourData[hour] = '';
+                cell.className = 'hour-cell';
+                cell.querySelector('.period-text').textContent = '';
+            } else {
+                // 设置新的时段类型
+                setHourPeriod(hour, currentPeriodType);
+            }
+        }
+        
+        // 清除所有时段
+        function clearAllHours() {
+            hourData.fill('');
+            document.querySelectorAll('.hour-cell').forEach(cell => {
+                cell.className = 'hour-cell';
+                const periodText = cell.querySelector('.period-text');
+                if (periodText) {
+                    periodText.textContent = '';
+                }
+            });
+            updatePeriodStatistics();
+        }
+        
+        // 加载预设配置
+        function loadPreset(presetType) {
+            clearAllHours();
+            
+            if (presetType === 'commercial') {
+                // 工商业预设：峰时段 8-11, 18-22；谷时段 23-7
+                for (let h = 8; h <= 11; h++) hourData[h] = 'peak';
+                for (let h = 18; h <= 22; h++) hourData[h] = 'peak';
+                for (let h = 23; h <= 23; h++) hourData[h] = 'valley';
+                for (let h = 0; h <= 7; h++) hourData[h] = 'valley';
+                // 其余为平时段
+                for (let h = 0; h < 24; h++) {
+                    if (!hourData[h]) hourData[h] = 'normal';
+                }
+            } else if (presetType === 'industrial') {
+                // 工业预设：峰时段 9-12, 17-21；谷时段 0-6
+                for (let h = 9; h <= 12; h++) hourData[h] = 'peak';
+                for (let h = 17; h <= 21; h++) hourData[h] = 'peak';
+                for (let h = 0; h <= 6; h++) hourData[h] = 'valley';
+                // 其余为平时段
+                for (let h = 0; h < 24; h++) {
+                    if (!hourData[h]) hourData[h] = 'normal';
+                }
+            }
+            
+            // 更新显示
+            hourData.forEach((type, hour) => {
+                const cell = document.querySelector(`[data-hour="${hour}"]`);
+                if (cell && type) {
+                    cell.className = `hour-cell ${type}`;
+                    const periodText = cell.querySelector('.period-text');
+                    if (periodText) {
+                        periodText.textContent = periodTypeLabels[type] || '';
+                    }
+                }
+            });
+            
+            updatePeriodStatistics();
+        }
+        
+        // 更新时段统计
+        function updatePeriodStatistics() {
+            const stats = {
+                peak: 0,
+                valley: 0,
+                normal: 0
+            };
+            
+            hourData.forEach(type => {
+                if (type && stats.hasOwnProperty(type)) {
+                    stats[type]++;
+                }
+            });
+            
+            // 更新显示
+            document.getElementById('peak-hours').textContent = stats.peak;
+            document.getElementById('valley-hours').textContent = stats.valley;
+            document.getElementById('normal-hours').textContent = stats.normal;
+        }
+        
+        // 在打开控制模态框时初始化时段选择器
+        const originalOpenControlModal = openControlModal;
+        openControlModal = function(groupId) {
+            originalOpenControlModal(groupId);
+            // 延迟初始化，确保DOM已渲染
+            setTimeout(() => {
+                initHourSelector();
+                // 加载默认预设
+                loadPreset('commercial');
+            }, 100);
+        };
+    </script>
+</body>
+</html>

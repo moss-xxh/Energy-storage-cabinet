@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>发电量报表 - 工商储能管理系统</title>
+    <title>收益报表 - 工商储能管理系统</title>
     <link rel="stylesheet" href="../sidebar.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
@@ -182,6 +182,23 @@
             color: #dc3545;
         }
 
+        .revenue-card {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .revenue-card .value {
+            color: white;
+        }
+
+        .revenue-card .label {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .revenue-card .trend {
+            color: white;
+        }
+
         .chart-section {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -225,6 +242,16 @@
             background-color: #f8f9fa;
         }
 
+        .revenue-positive {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .revenue-negative {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 margin-left: 0;
@@ -256,7 +283,7 @@
     
     <div class="main-content">
         <div class="page-header">
-            <h1 class="page-title">发电量报表</h1>
+            <h1 class="page-title">收益报表</h1>
         </div>
 
         <div class="query-section">
@@ -271,13 +298,13 @@
                     </select>
                 </div>
                 <div class="query-item">
-                    <label>发电类型：</label>
-                    <select id="generationTypeSelect">
+                    <label>收益类型：</label>
+                    <select id="revenueTypeSelect">
                         <option value="">全部类型</option>
-                        <option value="solar">光伏发电</option>
-                        <option value="storage">储能放电</option>
-                        <option value="wind">风力发电</option>
-                        <option value="other">其他</option>
+                        <option value="peak-valley">峰谷套利</option>
+                        <option value="demand">需量管理</option>
+                        <option value="frequency">调频服务</option>
+                        <option value="capacity">容量电费</option>
                     </select>
                 </div>
                 <div class="query-item">
@@ -308,92 +335,140 @@
         </div>
 
         <div class="summary-cards">
-            <div class="summary-card">
-                <div class="value">3,245.8</div>
-                <div class="label">本月累计发电量(MWh)</div>
-                <div class="trend up">↑ 12.5% 同比增长</div>
+            <div class="summary-card revenue-card">
+                <div class="value">¥1,234,567</div>
+                <div class="label">本月总收益</div>
+                <div class="trend">↑ 18.5% 同比增长</div>
             </div>
             <div class="summary-card">
-                <div class="value">108.7</div>
-                <div class="label">今日发电量(MWh)</div>
-                <div class="trend up">↑ 5.2% 环比增长</div>
+                <div class="value">¥38,520</div>
+                <div class="label">今日收益</div>
+                <div class="trend up">↑ 12.3% 环比增长</div>
             </div>
             <div class="summary-card">
-                <div class="value">92.3%</div>
-                <div class="label">发电效率</div>
+                <div class="value">¥0.85</div>
+                <div class="label">度电收益</div>
+                <div class="trend up">↑ 5.2% 较上月</div>
+            </div>
+            <div class="summary-card">
+                <div class="value">15.8%</div>
+                <div class="label">投资回报率</div>
                 <div class="trend up">↑ 2.1% 较上月</div>
-            </div>
-            <div class="summary-card">
-                <div class="value">156.2</div>
-                <div class="label">峰值发电量(MWh)</div>
-                <div class="trend up">↑ 0.8% 较上月</div>
             </div>
         </div>
 
         <div class="chart-section">
             <div class="chart-container">
-                <h3 class="chart-title">发电量趋势</h3>
-                <canvas id="powerTrendChart" height="300"></canvas>
+                <h3 class="chart-title">收益趋势分析</h3>
+                <canvas id="revenueTrendChart" height="300"></canvas>
             </div>
             <div class="chart-container">
-                <h3 class="chart-title">发电结构分布</h3>
-                <canvas id="powerStructureChart" height="300"></canvas>
+                <h3 class="chart-title">收益来源分布</h3>
+                <canvas id="revenueSourceChart" height="300"></canvas>
             </div>
         </div>
 
-        <div class="data-table-section">
-            <h3 class="chart-title">发电单元详细数据</h3>
+        <div class="data-table-section" style="margin-bottom: 20px;">
+            <h3 class="chart-title">日收益明细</h3>
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>发电单元</th>
-                        <th>今日发电量(MWh)</th>
-                        <th>昨日发电量(MWh)</th>
-                        <th>利用率</th>
-                        <th>效率</th>
+                        <th>日期</th>
+                        <th>峰谷套利</th>
+                        <th>需量管理</th>
+                        <th>调频服务</th>
+                        <th>容量电费</th>
+                        <th>总收益</th>
+                        <th>同比</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2024-01-24</td>
+                        <td class="revenue-positive">¥28,350</td>
+                        <td class="revenue-positive">¥5,620</td>
+                        <td class="revenue-positive">¥3,200</td>
+                        <td class="revenue-positive">¥1,350</td>
+                        <td class="revenue-positive">¥38,520</td>
+                        <td><span class="badge badge-success">+12.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td>2024-01-23</td>
+                        <td class="revenue-positive">¥26,890</td>
+                        <td class="revenue-positive">¥5,200</td>
+                        <td class="revenue-positive">¥2,980</td>
+                        <td class="revenue-positive">¥1,350</td>
+                        <td class="revenue-positive">¥36,420</td>
+                        <td><span class="badge badge-success">+8.5%</span></td>
+                    </tr>
+                    <tr>
+                        <td>2024-01-22</td>
+                        <td class="revenue-positive">¥25,670</td>
+                        <td class="revenue-positive">¥4,850</td>
+                        <td class="revenue-positive">¥3,500</td>
+                        <td class="revenue-positive">¥1,350</td>
+                        <td class="revenue-positive">¥35,370</td>
+                        <td><span class="badge badge-success">+5.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td>2024-01-21</td>
+                        <td class="revenue-positive">¥22,120</td>
+                        <td class="revenue-positive">¥4,500</td>
+                        <td class="revenue-positive">¥2,800</td>
+                        <td class="revenue-positive">¥1,350</td>
+                        <td class="revenue-positive">¥30,770</td>
+                        <td><span class="badge badge-danger">-2.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td>2024-01-20</td>
+                        <td class="revenue-positive">¥20,890</td>
+                        <td class="revenue-positive">¥4,200</td>
+                        <td class="revenue-positive">¥2,650</td>
+                        <td class="revenue-positive">¥1,350</td>
+                        <td class="revenue-positive">¥29,090</td>
+                        <td><span class="badge badge-danger">-5.3%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="data-table-section">
+            <h3 class="chart-title">电站收益排名</h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>电站名称</th>
+                        <th>本月收益</th>
+                        <th>度电收益</th>
+                        <th>收益率</th>
                         <th>状态</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>光伏阵列#1</td>
-                        <td>42.3</td>
-                        <td>40.1</td>
-                        <td>89.2%</td>
-                        <td>94.5%</td>
-                        <td><span class="badge badge-success">正常</span></td>
+                        <td>1</td>
+                        <td>朝阳路工业园储能站</td>
+                        <td class="revenue-positive">¥567,890</td>
+                        <td>¥0.92/kWh</td>
+                        <td>18.5%</td>
+                        <td><span class="badge badge-success">优秀</span></td>
                     </tr>
                     <tr>
-                        <td>光伏阵列#2</td>
-                        <td>38.9</td>
-                        <td>37.5</td>
-                        <td>85.7%</td>
-                        <td>92.8%</td>
-                        <td><span class="badge badge-success">正常</span></td>
+                        <td>2</td>
+                        <td>城西配电站</td>
+                        <td class="revenue-positive">¥423,456</td>
+                        <td>¥0.85/kWh</td>
+                        <td>16.2%</td>
+                        <td><span class="badge badge-success">良好</span></td>
                     </tr>
                     <tr>
-                        <td>储能放电</td>
-                        <td>18.5</td>
-                        <td>20.2</td>
-                        <td>76.3%</td>
-                        <td>88.6%</td>
-                        <td><span class="badge badge-success">正常</span></td>
-                    </tr>
-                    <tr>
-                        <td>风力发电</td>
-                        <td>6.8</td>
-                        <td>8.3</td>
-                        <td>42.1%</td>
-                        <td>75.2%</td>
-                        <td><span class="badge badge-warning">低风速</span></td>
-                    </tr>
-                    <tr>
-                        <td>柴油发电</td>
-                        <td>2.2</td>
-                        <td>0</td>
-                        <td>12.5%</td>
-                        <td>85.0%</td>
-                        <td><span class="badge badge-secondary">备用</span></td>
+                        <td>3</td>
+                        <td>经开区储能站</td>
+                        <td class="revenue-positive">¥243,221</td>
+                        <td>¥0.78/kWh</td>
+                        <td>14.8%</td>
+                        <td><span class="badge badge-warning">一般</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -408,41 +483,39 @@
         });
 
         function initCharts() {
-            const trendCtx = document.getElementById('powerTrendChart').getContext('2d');
+            // 收益趋势图
+            const trendCtx = document.getElementById('revenueTrendChart').getContext('2d');
             new Chart(trendCtx, {
                 type: 'line',
                 data: {
                     labels: Array.from({length: 31}, (_, i) => `1月${i + 1}日`),
                     datasets: [
                         {
-                            label: '光伏发电',
-                            data: generateData(31, 60, 120),
-                            borderColor: '#f59e0b',
-                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            label: '日收益',
+                            data: generateData(31, 25000, 40000),
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
                             fill: true,
                             tension: 0.4
                         },
                         {
-                            label: '储能放电',
-                            data: generateData(31, 10, 30),
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: '风力发电',
-                            data: generateData(31, 2, 15),
-                            borderColor: '#10b981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            fill: true,
-                            tension: 0.4
+                            label: '累计收益',
+                            data: generateCumulativeData(31, 25000, 40000),
+                            borderColor: '#007bff',
+                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            fill: false,
+                            tension: 0.4,
+                            yAxisID: 'y1'
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
                     plugins: {
                         legend: {
                             position: 'top'
@@ -450,24 +523,39 @@
                     },
                     scales: {
                         y: {
-                            beginAtZero: true,
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
                             title: {
                                 display: true,
-                                text: '发电量 (MWh)'
+                                text: '日收益 (元)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: '累计收益 (元)'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
                             }
                         }
                     }
                 }
             });
 
-            const structureCtx = document.getElementById('powerStructureChart').getContext('2d');
-            new Chart(structureCtx, {
+            // 收益来源饼图
+            const sourceCtx = document.getElementById('revenueSourceChart').getContext('2d');
+            new Chart(sourceCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['光伏发电', '储能放电', '风力发电', '柴油发电'],
+                    labels: ['峰谷套利', '需量管理', '调频服务', '容量电费'],
                     datasets: [{
-                        data: [78.5, 17.2, 3.8, 0.5],
-                        backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444']
+                        data: [68.5, 18.2, 9.8, 3.5],
+                        backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#6c757d']
                     }]
                 },
                 options: {
@@ -486,6 +574,14 @@
             return Array.from({length: count}, () => 
                 Math.floor(Math.random() * (max - min + 1)) + min
             );
+        }
+
+        function generateCumulativeData(count, min, max) {
+            let cumulative = 0;
+            return Array.from({length: count}, () => {
+                cumulative += Math.floor(Math.random() * (max - min + 1)) + min;
+                return cumulative;
+            });
         }
 
         function queryData() {

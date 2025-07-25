@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电站详情 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="./sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f6fa;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+
+        .content {
+            flex: 1;
+            margin-left: 240px;
+            background: #f5f6fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .navbar-time {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .theme-toggle {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .theme-toggle:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .language-selector {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        /* 主内容区域 */
+        .page-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* 电站选择器 */
+        .station-selector {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .station-selector-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .station-selector-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .station-select {
+            width: 300px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* 概览卡片 */
+        .overview-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .overview-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .overview-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .overview-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* 3D 视图容器 */
+        .visualization-container {
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .visualization-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .visualization-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .view-btn.active {
+            background: #3562E3;
+            color: white;
+            border-color: #3562E3;
+        }
+
+        /* 3D 场景 */
+        .scene-container {
+            height: 600px;
+            background: #f8fafc;
+            position: relative;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .scene-3d {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        /* 储能柜网格 */
+        .cabinet-grid {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) rotateX(30deg) rotateY(45deg);
+            transform-style: preserve-3d;
+            display: grid;
+            grid-template-columns: repeat(12, 80px);
+            grid-template-rows: repeat(6, 80px);
+            gap: 15px;
+        }
+
+        /* 单个储能柜 */
+        .cabinet {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .cabinet:hover {
+            transform: translateZ(20px) scale(1.1);
+        }
+
+        .cabinet-face {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #2e7d32;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 4px;
+            text-align: center;
+            word-break: break-all;
+        }
+
+        /* 储能柜状态颜色 */
+        .cabinet.status-normal .cabinet-face {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-color: rgba(76, 175, 80, 0.3);
+            color: #2e7d32;
+        }
+
+        .cabinet.status-warning .cabinet-face {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border-color: rgba(255, 193, 7, 0.3);
+            color: #f57f17;
+        }
+
+        .cabinet.status-alarm .cabinet-face {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-color: rgba(244, 67, 54, 0.3);
+            color: #c62828;
+        }
+
+        .cabinet.status-offline .cabinet-face {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border-color: rgba(158, 158, 158, 0.3);
+            color: #616161;
+        }
+
+        /* 3D 立体效果 */
+        .cabinet-face.front {
+            transform: translateZ(40px);
+        }
+
+        .cabinet-face.back {
+            transform: rotateY(180deg) translateZ(40px);
+        }
+
+        .cabinet-face.left {
+            transform: rotateY(-90deg) translateZ(40px);
+            width: 80px;
+        }
+
+        .cabinet-face.right {
+            transform: rotateY(90deg) translateZ(40px);
+            width: 80px;
+        }
+
+        .cabinet-face.top {
+            transform: rotateX(90deg) translateZ(40px);
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .cabinet-face.bottom {
+            transform: rotateX(-90deg) translateZ(40px);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* 图例 */
+        .legend {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-color.normal {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+
+        .legend-color.warning {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+        }
+
+        .legend-color.alarm {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+        }
+
+        .legend-color.offline {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        }
+
+        /* 详情弹窗 */
+        .cabinet-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .cabinet-detail-content {
+            background: white;
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .cabinet-detail-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cabinet-detail-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .cabinet-detail-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            border-radius: 0.5rem;
+            transition: all 150ms ease;
+        }
+
+        .cabinet-detail-close:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .cabinet-detail-body {
+            padding: 1.5rem;
+        }
+
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .detail-item {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* 暗色主题 */
+        [data-theme="dark"] body {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .navbar,
+        [data-theme="dark"] .station-selector,
+        [data-theme="dark"] .overview-card,
+        [data-theme="dark"] .visualization-container {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .page-title,
+        [data-theme="dark"] .station-selector-title,
+        [data-theme="dark"] .overview-value,
+        [data-theme="dark"] .visualization-title {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .theme-toggle,
+        [data-theme="dark"] .language-selector,
+        [data-theme="dark"] .station-select,
+        [data-theme="dark"] .view-btn {
+            background: #334155;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .scene-container {
+            background: #1e293b;
+        }
+
+        [data-theme="dark"] .legend {
+            background: #334155;
+        }
+
+        [data-theme="dark"] .legend-title {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .cabinet-detail-content {
+            background: #1e293b;
+        }
+
+        [data-theme="dark"] .cabinet-detail-header {
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .cabinet-detail-title {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .detail-item {
+            background: #334155;
+        }
+
+        [data-theme="dark"] .detail-value {
+            color: #f1f5f9;
+        }
+
+        [data-theme="dark"] .station-info-card {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+        }
+
+        [data-theme="dark"] .station-info-card span {
+            color: #94a3b8 !important;
+        }
+
+        [data-theme="dark"] .station-info-card div[style*="color: #1e293b"] {
+            color: #f1f5f9 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div id="sidebar-container"></div>
+        
+        <div class="content">
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <h1 class="page-title i18n" data-i18n="menu.station.detail">电站详情</h1>
+                </div>
+                <div class="navbar-right">
+                    <span class="navbar-time" id="current-time"></span>
+                    <select class="language-selector" id="language-selector">
+                        <option value="zh">中文</option>
+                        <option value="en">English</option>
+                    </select>
+                    <button class="theme-toggle" id="theme-toggle">
+                        <span class="i18n" data-i18n="theme.toggle">🌓 切换主题</span>
+                    </button>
+                </div>
+            </nav>
+
+            <div class="page-content">
+                <!-- 电站信息卡片 -->
+                <div class="station-info-card" style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <select class="station-select" id="station-select" style="width: 300px;">
+                            <option value="ST001">上海工业园储能站</option>
+                            <option value="ST002">北京科技园储能站</option>
+                            <option value="ST003">深圳产业园储能站</option>
+                            <option value="ST004">广州智慧园储能站</option>
+                            <option value="ST005">杭州科创园储能站</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 概览信息 -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">储能柜总数</div>
+                            <div style="font-size: 1.5rem; font-weight: 600; color: #1e293b;">72</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">正常运行</div>
+                            <div style="font-size: 1.5rem; font-weight: 600; color: #2e7d32;">68</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">预警</div>
+                            <div style="font-size: 1.5rem; font-weight: 600; color: #f57f17;">3</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">告警</div>
+                            <div style="font-size: 1.5rem; font-weight: 600; color: #c62828;">1</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">离线</div>
+                            <div style="font-size: 1.5rem; font-weight: 600; color: #616161;">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3D 可视化 -->
+                <div class="visualization-container">
+                    <div class="visualization-header">
+                        <h2 class="visualization-title i18n" data-i18n="cabinet.3d.view">储能柜3D视图</h2>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 0.875rem; color: #64748b;">显示数据：</span>
+                                <select class="station-select" id="data-select" style="width: 120px; padding: 0.5rem;" onchange="updateDisplayData()">
+                                    <option value="id">编号</option>
+                                    <option value="soc">SOC</option>
+                                    <option value="power">功率</option>
+                                    <option value="utilization">利用率</option>
+                                </select>
+                            </div>
+                            <div class="view-controls">
+                                <button class="view-btn active" onclick="changeView('3d')">3D视图</button>
+                                <button class="view-btn" onclick="changeView('2d')">2D平面</button>
+                                <button class="view-btn" onclick="resetView()">重置视角</button>
+                                <button class="view-btn" onclick="zoomIn()">放大</button>
+                                <button class="view-btn" onclick="zoomOut()">缩小</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="scene-container" id="scene-container">
+                        <div class="scene-3d" id="scene-3d">
+                            <div class="cabinet-grid" id="cabinet-grid">
+                                <!-- 储能柜将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 图例 -->
+                        <div class="legend">
+                            <div class="legend-title i18n" data-i18n="legend.title">状态图例</div>
+                            <div class="legend-item">
+                                <div class="legend-color normal"></div>
+                                <span class="i18n" data-i18n="status.normal">正常运行</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color warning"></div>
+                                <span class="i18n" data-i18n="status.warning">预警</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color alarm"></div>
+                                <span class="i18n" data-i18n="status.alarm">告警</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color offline"></div>
+                                <span class="i18n" data-i18n="status.offline">离线</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 储能柜详情弹窗 -->
+    <div class="cabinet-detail-modal" id="cabinet-detail-modal">
+        <div class="cabinet-detail-content">
+            <div class="cabinet-detail-header">
+                <h3 class="cabinet-detail-title" id="cabinet-detail-title">储能柜详情</h3>
+                <button class="cabinet-detail-close" onclick="closeCabinetDetail()">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 6l12 12M6 18L18 6"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="cabinet-detail-body">
+                <div class="detail-section">
+                    <div class="detail-section-title i18n" data-i18n="cabinet.basic.info">基本信息</div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="cabinet.id">柜体编号</div>
+                            <div class="detail-value" id="detail-cabinet-id">ESS-001</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="cabinet.status">运行状态</div>
+                            <div class="detail-value" id="detail-cabinet-status">正常</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="cabinet.model">型号</div>
+                            <div class="detail-value" id="detail-cabinet-model">ESS-2500</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="cabinet.capacity">容量</div>
+                            <div class="detail-value" id="detail-cabinet-capacity">2.5 MWh</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-section-title i18n" data-i18n="cabinet.battery.info">电池信息</div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="battery.soc">SOC</div>
+                            <div class="detail-value" id="detail-battery-soc">85%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="battery.soh">SOH</div>
+                            <div class="detail-value" id="detail-battery-soh">98%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="battery.voltage">电压</div>
+                            <div class="detail-value" id="detail-battery-voltage">750.3 V</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="battery.current">电流</div>
+                            <div class="detail-value" id="detail-battery-current">125.5 A</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="battery.temp.max">最高温度</div>
+                            <div class="detail-value" id="detail-battery-temp-max">28.5°C</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="battery.temp.min">最低温度</div>
+                            <div class="detail-value" id="detail-battery-temp-min">25.2°C</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-section-title i18n" data-i18n="cabinet.operation.info">运行信息</div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="operation.power">功率</div>
+                            <div class="detail-value" id="detail-operation-power">94.1 kW</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="operation.mode">运行模式</div>
+                            <div class="detail-value" id="detail-operation-mode">充电</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="operation.cycles">循环次数</div>
+                            <div class="detail-value" id="detail-operation-cycles">1,234</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label i18n" data-i18n="operation.runtime">运行时长</div>
+                            <div class="detail-value" id="detail-operation-runtime">8,760 h</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./sidebar.js"></script>
+    <script src="./i18n.js"></script>
+    <script>
+        // 储能柜数据
+        const cabinetData = [];
+        const totalCabinets = 72;
+        
+        // 生成储能柜数据
+        for (let i = 0; i < totalCabinets; i++) {
+            let status = 'normal';
+            if (i === 15 || i === 28 || i === 45) status = 'warning';
+            if (i === 60) status = 'alarm';
+            
+            cabinetData.push({
+                id: `ESS-${String(i + 1).padStart(3, '0')}`,
+                status: status,
+                soc: Math.floor(Math.random() * 30) + 70,
+                soh: Math.floor(Math.random() * 5) + 95,
+                voltage: (740 + Math.random() * 20).toFixed(1),
+                current: (100 + Math.random() * 50).toFixed(1),
+                tempMax: (25 + Math.random() * 5).toFixed(1),
+                tempMin: (20 + Math.random() * 5).toFixed(1),
+                power: (80 + Math.random() * 40).toFixed(1),
+                utilization: Math.floor(Math.random() * 30) + 65,
+                mode: Math.random() > 0.5 ? '充电' : '放电',
+                cycles: Math.floor(Math.random() * 2000) + 500,
+                runtime: Math.floor(Math.random() * 10000) + 5000
+            });
+        }
+
+        // 初始化3D场景
+        function initScene() {
+            const grid = document.getElementById('cabinet-grid');
+            grid.innerHTML = '';
+            
+            cabinetData.forEach((cabinet, index) => {
+                const cabinetEl = createCabinet(cabinet, index);
+                grid.appendChild(cabinetEl);
+            });
+        }
+
+        // 创建单个储能柜
+        function createCabinet(data, index) {
+            const cabinet = document.createElement('div');
+            cabinet.className = `cabinet status-${data.status}`;
+            cabinet.dataset.index = index;
+            
+            // 创建6个面
+            const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+            faces.forEach(face => {
+                const faceEl = document.createElement('div');
+                faceEl.className = `cabinet-face ${face}`;
+                if (face === 'front') {
+                    const displayType = document.getElementById('data-select') ? document.getElementById('data-select').value : 'id';
+                    faceEl.textContent = getDisplayText(data, displayType);
+                }
+                cabinet.appendChild(faceEl);
+            });
+            
+            cabinet.addEventListener('click', () => showCabinetDetail(data));
+            
+            return cabinet;
+        }
+
+        // 显示储能柜详情
+        function showCabinetDetail(data) {
+            document.getElementById('cabinet-detail-title').textContent = `储能柜详情 - ${data.id}`;
+            document.getElementById('detail-cabinet-id').textContent = data.id;
+            document.getElementById('detail-cabinet-status').textContent = getStatusText(data.status);
+            document.getElementById('detail-battery-soc').textContent = data.soc + '%';
+            document.getElementById('detail-battery-soh').textContent = data.soh + '%';
+            document.getElementById('detail-battery-voltage').textContent = data.voltage + ' V';
+            document.getElementById('detail-battery-current').textContent = data.current + ' A';
+            document.getElementById('detail-battery-temp-max').textContent = data.tempMax + '°C';
+            document.getElementById('detail-battery-temp-min').textContent = data.tempMin + '°C';
+            document.getElementById('detail-operation-power').textContent = data.power + ' kW';
+            document.getElementById('detail-operation-mode').textContent = data.mode;
+            document.getElementById('detail-operation-cycles').textContent = data.cycles.toLocaleString();
+            document.getElementById('detail-operation-runtime').textContent = data.runtime.toLocaleString() + ' h';
+            
+            document.getElementById('cabinet-detail-modal').style.display = 'flex';
+        }
+
+        // 关闭详情弹窗
+        function closeCabinetDetail() {
+            document.getElementById('cabinet-detail-modal').style.display = 'none';
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const statusMap = {
+                'normal': '正常',
+                'warning': '预警',
+                'alarm': '告警',
+                'offline': '离线'
+            };
+            return statusMap[status] || status;
+        }
+
+        // 切换视图
+        function changeView(view) {
+            const buttons = document.querySelectorAll('.view-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (view === '2d') {
+                currentX = 0;
+                currentY = -150;
+            } else {
+                currentX = 225;
+                currentY = -150;
+            }
+            updateTransform();
+        }
+
+        // 重置视角
+        function resetView() {
+            currentX = 225;
+            currentY = -150;
+            currentScale = 1;
+            updateTransform();
+            
+            // 激活3D按钮
+            const buttons = document.querySelectorAll('.view-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            buttons[0].classList.add('active');
+        }
+
+        // 场景交互
+        let isRotating = false;
+        let startX = 0;
+        let startY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let currentScale = 1;
+
+        const sceneContainer = document.getElementById('scene-container');
+        const scene = document.getElementById('scene-3d');
+
+        sceneContainer.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.cabinet')) return;
+            isRotating = true;
+            startX = e.clientX - currentX;
+            startY = e.clientY - currentY;
+            sceneContainer.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isRotating) return;
+            e.preventDefault();
+            currentX = e.clientX - startX;
+            currentY = e.clientY - startY;
+            updateTransform();
+        });
+
+        window.addEventListener('mouseup', () => {
+            isRotating = false;
+            sceneContainer.style.cursor = 'grab';
+        });
+
+        // 获取显示文本
+        function getDisplayText(data, type) {
+            switch(type) {
+                case 'soc':
+                    return data.soc + '%';
+                case 'power':
+                    return data.power + 'kW';
+                case 'utilization':
+                    return data.utilization + '%';
+                default:
+                    return data.id;
+            }
+        }
+
+        // 更新显示数据
+        function updateDisplayData() {
+            const displayType = document.getElementById('data-select').value;
+            const cabinets = document.querySelectorAll('.cabinet');
+            
+            cabinets.forEach((cabinet, index) => {
+                const frontFace = cabinet.querySelector('.cabinet-face.front');
+                if (frontFace && cabinetData[index]) {
+                    frontFace.textContent = getDisplayText(cabinetData[index], displayType);
+                }
+            });
+        }
+
+        // 放大
+        function zoomIn() {
+            currentScale = Math.min(currentScale * 1.2, 3);
+            updateTransform();
+        }
+
+        // 缩小
+        function zoomOut() {
+            currentScale = Math.max(currentScale / 1.2, 0.5);
+            updateTransform();
+        }
+
+        // 更新变换
+        function updateTransform() {
+            const grid = document.getElementById('cabinet-grid');
+            const rotateX = 30 + currentY * 0.2;
+            const rotateY = 45 + currentX * 0.2;
+            grid.style.transform = `translate(-50%, -50%) scale(${currentScale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        }
+
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeStr;
+        }
+
+        // 主题切换
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载保存的主题
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            // 初始化场景
+            initScene();
+            
+            // 更新时间
+            updateTime();
+            setInterval(updateTime, 1000);
+        });
+
+        // 点击弹窗外部关闭
+        document.getElementById('cabinet-detail-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCabinetDetail();
+            }
+        });
+    </script>
+</body>
+</html>

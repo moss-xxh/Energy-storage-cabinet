@@ -15,17 +15,28 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f8fafc;
+            background: #EBEDF4;
             color: #1f2937;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            background: #EBEDF4;
+            min-height: 100vh;
         }
 
         .content {
             padding: 1.5rem;
+            background: #EBEDF4;
+            max-width: 1188px;
+            margin: 0 auto;
         }
 
-        /* 页面头部 */
-        .page-header {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #ec4899 100%);
+        /* 顶部信息栏 */
+        .report-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 2rem;
             border-radius: 12px;
@@ -34,260 +45,140 @@
             overflow: hidden;
         }
 
-        .page-header::before {
+        .report-header::before {
             content: '';
             position: absolute;
-            top: -30%;
-            right: -30%;
-            width: 80%;
-            height: 160%;
-            background: rgba(255, 255, 255, 0.08);
-            transform: rotate(-15deg);
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
         }
 
-        .page-header-content {
+        .report-header-content {
             position: relative;
             z-index: 1;
         }
 
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .title-icon {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.75rem;
-            border-radius: 12px;
-            font-size: 1.5rem;
-        }
-
-        .page-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 1.5rem;
-        }
-
-        .header-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .header-stat {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 1.5rem;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .stat-value {
+        .report-title {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
 
-        .stat-label {
+        .report-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .meta-label {
             font-size: 0.875rem;
             opacity: 0.8;
         }
 
-        /* 设备概览卡片 */
-        .device-overview {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .device-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .device-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-        }
-
-        .device-card.normal::before {
-            background: linear-gradient(180deg, #10b981, #059669);
-        }
-
-        .device-card.warning::before {
-            background: linear-gradient(180deg, #f59e0b, #d97706);
-        }
-
-        .device-card.error::before {
-            background: linear-gradient(180deg, #ef4444, #dc2626);
-        }
-
-        .device-card.maintenance::before {
-            background: linear-gradient(180deg, #6b7280, #4b5563);
-        }
-
-        .device-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .device-name {
+        .meta-value {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #1e293b;
         }
 
-        .device-status {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .status-normal {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-warning {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-error {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .status-maintenance {
-            background: #f1f5f9;
-            color: #475569;
-        }
-
-        .device-metrics {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .metric {
-            text-align: center;
-        }
-
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 0.25rem;
-        }
-
-        .metric-label {
-            font-size: 0.75rem;
-            color: #64748b;
-        }
-
-        .metric-unit {
-            font-size: 0.875rem;
-            color: #64748b;
-            font-weight: 400;
-        }
-
-        /* 性能图表 */
-        .performance-section {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
+        /* 顶部操作栏 */
+        .report-actions {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
         }
 
-        .chart-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-        }
-
-        .chart-header {
+        .search-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 1rem;
         }
 
-        .chart-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1e293b;
+        .search-left {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-right {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .station-selector,
+        .time-dimension,
+        .date-range,
+        .device-filter {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .chart-info {
-            font-size: 0.875rem;
-            color: #64748b;
+        .station-selector label,
+        .time-dimension label,
+        .date-range label,
+        .device-filter label {
+            font-weight: 500;
+            color: #374151;
+            white-space: nowrap;
+            min-width: 75px;
         }
 
-        .chart-container {
-            height: 350px;
-            position: relative;
-        }
-
-        /* 控制面板 */
-        .control-panel {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-        }
-
-        .control-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .filter-select {
+        .station-selector select,
+        .time-dimension select,
+        .device-filter select {
             padding: 8px 12px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
-            font-size: 0.875rem;
+            font-size: 14px;
             min-width: 150px;
         }
 
+        .station-selector select {
+            min-width: 200px;
+        }
+
+        .date-range input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 150px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
         .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
             font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
@@ -298,47 +189,262 @@
         }
 
         .btn-primary {
-            background: #7c3aed;
+            background: #3562E3;
             color: white;
+            border-color: #3562E3;
         }
 
         .btn-primary:hover {
-            background: #6d28d9;
-            transform: translateY(-1px);
+            background: #2951d3;
+            border-color: #2951d3;
         }
 
         .btn-secondary {
-            background: #e5e7eb;
+            background: white;
             color: #374151;
+            border: 1px solid #D6D8DE;
         }
 
         .btn-secondary:hover {
-            background: #d1d5db;
+            background: #f8fafc;
+            border-color: #9ca3af;
+            color: #1e293b;
+        }
+        
+        .btn span {
+            font-size: 1rem;
+            line-height: 1;
         }
 
-        /* 详细数据表格 */
-        .data-section {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        /* 关键指标卡片 */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .section-header {
+        .kpi-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #3b82f6;
+            transition: transform 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .kpi-card.positive {
+            border-left-color: #10b981;
+        }
+
+        .kpi-card.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .kpi-card.danger {
+            border-left-color: #ef4444;
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .kpi-title {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .kpi-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .kpi-icon.blue {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .kpi-icon.green {
+            background: #d1fae5;
+            color: #10b981;
+        }
+
+        .kpi-icon.yellow {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .kpi-icon.red {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .trend-up {
+            color: #10b981;
+        }
+
+        .trend-down {
+            color: #ef4444;
+        }
+
+        .trend-stable {
+            color: #64748b;
+        }
+
+        /* 数据指标部分 */
+        .metrics-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metrics-group {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .metrics-group-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .metrics-icon {
+            font-size: 1.25rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .metric-item:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .metric-unit {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 400;
+            margin-left: 0.25rem;
+        }
+
+        /* 图表区域 */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #f1f5f9;
         }
 
-        .section-title {
-            font-size: 1.25rem;
+        .chart-title {
+            font-size: 1.1rem;
             font-weight: 600;
             color: #1e293b;
+        }
+
+        .chart-period {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* 数据表格 */
+        .data-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .data-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .data-table {
@@ -346,143 +452,79 @@
             border-collapse: collapse;
         }
 
-        .data-table th {
-            background: #f8fafc;
+        .data-table th,
+        .data-table td {
             padding: 12px;
             text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table th {
+            background: #f8fafc;
             font-weight: 600;
             color: #374151;
             font-size: 0.875rem;
-            border-bottom: 2px solid #e2e8f0;
         }
 
         .data-table td {
-            padding: 12px;
-            border-bottom: 1px solid #f1f5f9;
             font-size: 0.875rem;
             color: #1f2937;
         }
 
-        .data-table tr:hover {
-            background: #f8fafc;
-        }
-
-        .efficiency-bar {
-            width: 100px;
-            height: 8px;
-            background: #f1f5f9;
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .efficiency-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        /* 告警信息 */
-        .alert-section {
-            background: white;
+        .status-badge {
+            padding: 4px 8px;
             border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 2rem;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
 
-        .alert-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
+        .status-normal {
+            background: #d1fae5;
+            color: #059669;
         }
 
-        .alert-critical {
-            background: #fef2f2;
-            border-left: 4px solid #ef4444;
-        }
-
-        .alert-warning {
-            background: #fffbeb;
-            border-left: 4px solid #f59e0b;
-        }
-
-        .alert-info {
-            background: #eff6ff;
-            border-left: 4px solid #3b82f6;
-        }
-
-        .alert-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-        }
-
-        .alert-critical .alert-icon {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .alert-warning .alert-icon {
+        .status-warning {
             background: #fef3c7;
             color: #d97706;
         }
 
-        .alert-info .alert-icon {
-            background: #dbeafe;
-            color: #2563eb;
-        }
-
-        .alert-content {
-            flex: 1;
-        }
-
-        .alert-title {
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.25rem;
-        }
-
-        .alert-description {
-            font-size: 0.875rem;
-            color: #64748b;
-        }
-
-        .alert-time {
-            font-size: 0.75rem;
-            color: #64748b;
+        .status-alarm {
+            background: #fee2e2;
+            color: #dc2626;
         }
 
         /* 响应式设计 */
         @media (max-width: 768px) {
-            .performance-section {
+            .chart-grid {
                 grid-template-columns: 1fr;
             }
             
-            .device-overview {
+            .data-section {
                 grid-template-columns: 1fr;
             }
             
-            .control-row {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-actions {
                 flex-direction: column;
-                align-items: stretch;
+                gap: 1rem;
             }
             
-            .page-title {
-                font-size: 2rem;
+            .station-selector,
+            .date-range,
+            .action-buttons {
+                width: 100%;
+                justify-content: center;
             }
         }
 
-        /* 导航栏样式 */
+        /* 顶部导航栏 */
         .navbar {
             background: white;
             border-bottom: 1px solid #e2e8f0;
@@ -494,7 +536,6 @@
             position: sticky;
             top: 0;
             z-index: 50;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .navbar-left {
@@ -503,7 +544,7 @@
             gap: 2rem;
         }
 
-        .navbar-title {
+        .page-title {
             font-size: 1.25rem;
             font-weight: 600;
             color: #1e293b;
@@ -613,10 +654,10 @@
                 <button class="nav-button" onclick="toggleSidebar()">
                     <span>☰</span>
                 </button>
-                <button class="nav-button" onclick="goBack()" title="返回上级">
+                <button class="nav-button" onclick="goBack()" title="返回场景选择">
                     <span>←</span>
                 </button>
-                <h1 class="navbar-title">逆变器报表</h1>
+                <h1 class="page-title">逆变器报表</h1>
             </div>
             <div class="navbar-right">
                 <button class="nav-button" onclick="toggleLanguage()">
@@ -646,330 +687,360 @@
         </nav>
 
         <div class="content">
-            <!-- 页面头部 -->
-            <div class="page-header">
-                <div class="page-header-content">
-                    <h1 class="page-title">
-                        <div class="title-icon">🔌</div>
-                        逆变器报表
-                    </h1>
-                    <p class="page-subtitle">实时监控逆变器设备状态，分析运行效率和性能表现</p>
-                    <div class="header-stats">
-                        <div class="header-stat">
-                            <div class="stat-value">28 <span style="font-size: 1rem; opacity: 0.8;">台</span></div>
-                            <div class="stat-label">设备总数</div>
+            <!-- 操作栏 -->
+            <div class="report-actions">
+                <div class="search-row">
+                    <div class="search-left">
+                        <div class="station-selector">
+                            <label>电站：</label>
+                            <select id="stationSelect" onchange="changeStation()">
+                                <option value="station1">北京亦庄储能电站</option>
+                                <option value="station2">上海临港储能电站</option>
+                                <option value="station3">深圳前海储能电站</option>
+                                <option value="station4">杭州滨江储能电站</option>
+                            </select>
                         </div>
-                        <div class="header-stat">
-                            <div class="stat-value">26 <span style="font-size: 1rem; opacity: 0.8;">台</span></div>
-                            <div class="stat-label">正常运行</div>
+                        <div class="device-filter">
+                            <label>设备状态：</label>
+                            <select id="deviceStatus" onchange="filterDevices()">
+                                <option value="all">全部状态</option>
+                                <option value="normal">正常运行</option>
+                                <option value="warning">告警</option>
+                                <option value="maintenance">维护中</option>
+                            </select>
                         </div>
-                        <div class="header-stat">
-                            <div class="stat-value">94.8 <span style="font-size: 1rem; opacity: 0.8;">%</span></div>
-                            <div class="stat-label">平均效率</div>
+                        <div class="date-range">
+                            <label>统计时间：</label>
+                            <input type="month" id="selectedMonth" value="2024-01">
                         </div>
-                        <div class="header-stat">
-                            <div class="stat-value">2,856 <span style="font-size: 1rem; opacity: 0.8;">小时</span></div>
-                            <div class="stat-label">累计运行时长</div>
+                    </div>
+                    <div class="search-right">
+                        <button class="btn btn-primary" onclick="refreshReport()">查询</button>
+                        <button class="btn btn-secondary" onclick="resetSearch()">重置</button>
+                    </div>
+                </div>
+                <div class="action-row">
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="showSubscriptionModal()">订阅</button>
+                        <button class="btn btn-secondary" onclick="showExportOptions()">导出</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 报告头部 -->
+            <div class="report-header">
+                <div class="report-header-content">
+                    <h1 class="report-title">逆变器运行报告</h1>
+                    <p class="report-subtitle">北京亦庄储能电站 - 逆变器设备运行分析报告</p>
+                    <div class="report-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">报告期间</span>
+                            <span class="meta-value">2024年1月</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">设备总数</span>
+                            <span class="meta-value">28台</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">正常运行</span>
+                            <span class="meta-value">26台</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">平均效率</span>
+                            <span class="meta-value">94.8%</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 控制面板 -->
-            <div class="control-panel">
-                <div class="control-row">
-                    <div class="filter-group">
-                        <label>设备状态:</label>
-                        <select class="filter-select" id="statusFilter" onchange="filterDevices()">
-                            <option value="">全部状态</option>
-                            <option value="normal">正常运行</option>
-                            <option value="warning">告警</option>
-                            <option value="error">故障</option>
-                            <option value="maintenance">维护中</option>
-                        </select>
-                        
-                        <label>设备类型:</label>
-                        <select class="filter-select" id="typeFilter" onchange="filterDevices()">
-                            <option value="">全部类型</option>
-                            <option value="string">组串式逆变器</option>
-                            <option value="central">集中式逆变器</option>
-                            <option value="micro">微型逆变器</option>
-                        </select>
+            <!-- 关键指标 -->
+            <div class="kpi-grid">
+                <div class="kpi-card positive">
+                    <div class="kpi-header">
+                        <span class="kpi-title">总发电功率</span>
+                        <div class="kpi-icon green">⚡</div>
                     </div>
-                    <div class="filter-group">
-                        <button class="btn btn-secondary" onclick="exportReport('excel')">
-                            <span>📊</span>导出Excel
-                        </button>
-                        <button class="btn btn-primary" onclick="refreshData()">
-                            <span>🔄</span>刷新数据
-                        </button>
+                    <div class="kpi-value">425.6 <span style="font-size: 1rem; color: #64748b;">kW</span></div>
+                    <div class="kpi-trend trend-up">
+                        <span>↗</span>
+                        <span>较上月 +8.3%</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card positive">
+                    <div class="kpi-header">
+                        <span class="kpi-title">平均效率</span>
+                        <div class="kpi-icon blue">📊</div>
+                    </div>
+                    <div class="kpi-value">94.8 <span style="font-size: 1rem; color: #64748b;">%</span></div>
+                    <div class="kpi-trend trend-up">
+                        <span>↗</span>
+                        <span>较上月 +1.2%</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card positive">
+                    <div class="kpi-header">
+                        <span class="kpi-title">设备可用率</span>
+                        <div class="kpi-icon green">✓</div>
+                    </div>
+                    <div class="kpi-value">92.9 <span style="font-size: 1rem; color: #64748b;">%</span></div>
+                    <div class="kpi-trend trend-stable">
+                        <span>—</span>
+                        <span>与上月持平</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card warning">
+                    <div class="kpi-header">
+                        <span class="kpi-title">故障率</span>
+                        <div class="kpi-icon yellow">⚠️</div>
+                    </div>
+                    <div class="kpi-value">3.2 <span style="font-size: 1rem; color: #64748b;">%</span></div>
+                    <div class="kpi-trend trend-up">
+                        <span>↗</span>
+                        <span>较上月 +0.8%</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card positive">
+                    <div class="kpi-header">
+                        <span class="kpi-title">累计发电量</span>
+                        <div class="kpi-icon green">💡</div>
+                    </div>
+                    <div class="kpi-value">2,156 <span style="font-size: 1rem; color: #64748b;">MWh</span></div>
+                    <div class="kpi-trend trend-up">
+                        <span>↗</span>
+                        <span>较上月 +12.5%</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card danger">
+                    <div class="kpi-header">
+                        <span class="kpi-title">告警次数</span>
+                        <div class="kpi-icon red">🔔</div>
+                    </div>
+                    <div class="kpi-value">18 <span style="font-size: 1rem; color: #64748b;">次</span></div>
+                    <div class="kpi-trend trend-up">
+                        <span>↗</span>
+                        <span>较上月 +5次</span>
                     </div>
                 </div>
             </div>
 
-            <!-- 设备概览 -->
-            <div class="device-overview">
-                <div class="device-card normal">
-                    <div class="device-header">
-                        <h3 class="device-name">逆变器 #001</h3>
-                        <span class="device-status status-normal">正常</span>
-                    </div>
-                    <div class="device-metrics">
-                        <div class="metric">
-                            <div class="metric-value">15.2 <span class="metric-unit">kW</span></div>
-                            <div class="metric-label">输出功率</div>
+            <!-- 数据指标 -->
+            <div class="metrics-section">
+                <!-- 运行信息 -->
+                <div class="metrics-group">
+                    <h3 class="metrics-group-title">
+                        <span class="metrics-icon">⚡</span>
+                        运行信息
+                    </h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-label">总输出功率</span>
+                            <span class="metric-value">425.6 <span class="metric-unit">kW</span></span>
                         </div>
-                        <div class="metric">
-                            <div class="metric-value">96.3 <span class="metric-unit">%</span></div>
-                            <div class="metric-label">效率</div>
+                        <div class="metric-item">
+                            <span class="metric-label">日发电量</span>
+                            <span class="metric-value">72.3 <span class="metric-unit">MWh</span></span>
                         </div>
-                        <div class="metric">
-                            <div class="metric-value">45.2 <span class="metric-unit">°C</span></div>
-                            <div class="metric-label">温度</div>
+                        <div class="metric-item">
+                            <span class="metric-label">月发电量</span>
+                            <span class="metric-value">2,156.7 <span class="metric-unit">MWh</span></span>
                         </div>
-                        <div class="metric">
-                            <div class="metric-value">1,248 <span class="metric-unit">h</span></div>
-                            <div class="metric-label">运行时长</div>
+                        <div class="metric-item">
+                            <span class="metric-label">累计运行时长</span>
+                            <span class="metric-value">8,562 <span class="metric-unit">h</span></span>
                         </div>
-                    </div>
-                </div>
-
-                <div class="device-card normal">
-                    <div class="device-header">
-                        <h3 class="device-name">逆变器 #002</h3>
-                        <span class="device-status status-normal">正常</span>
-                    </div>
-                    <div class="device-metrics">
-                        <div class="metric">
-                            <div class="metric-value">14.8 <span class="metric-unit">kW</span></div>
-                            <div class="metric-label">输出功率</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">95.7 <span class="metric-unit">%</span></div>
-                            <div class="metric-label">效率</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">43.8 <span class="metric-unit">°C</span></div>
-                            <div class="metric-label">温度</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">1,356 <span class="metric-unit">h</span></div>
-                            <div class="metric-label">运行时长</div>
+                        <div class="metric-item">
+                            <span class="metric-label">平均温度</span>
+                            <span class="metric-value">45.2 <span class="metric-unit">°C</span></span>
                         </div>
                     </div>
                 </div>
 
-                <div class="device-card warning">
-                    <div class="device-header">
-                        <h3 class="device-name">逆变器 #003</h3>
-                        <span class="device-status status-warning">告警</span>
-                    </div>
-                    <div class="device-metrics">
-                        <div class="metric">
-                            <div class="metric-value">12.5 <span class="metric-unit">kW</span></div>
-                            <div class="metric-label">输出功率</div>
+                <!-- 效率信息 -->
+                <div class="metrics-group">
+                    <h3 class="metrics-group-title">
+                        <span class="metrics-icon">📈</span>
+                        效率信息
+                    </h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-label">最高效率</span>
+                            <span class="metric-value">96.8 <span class="metric-unit">%</span></span>
                         </div>
-                        <div class="metric">
-                            <div class="metric-value">89.3 <span class="metric-unit">%</span></div>
-                            <div class="metric-label">效率</div>
+                        <div class="metric-item">
+                            <span class="metric-label">平均效率</span>
+                            <span class="metric-value">94.8 <span class="metric-unit">%</span></span>
                         </div>
-                        <div class="metric">
-                            <div class="metric-value">58.4 <span class="metric-unit">°C</span></div>
-                            <div class="metric-label">温度</div>
+                        <div class="metric-item">
+                            <span class="metric-label">最低效率</span>
+                            <span class="metric-value">89.2 <span class="metric-unit">%</span></span>
                         </div>
-                        <div class="metric">
-                            <div class="metric-value">1,189 <span class="metric-unit">h</span></div>
-                            <div class="metric-label">运行时长</div>
+                        <div class="metric-item">
+                            <span class="metric-label">转换损耗</span>
+                            <span class="metric-value">5.2 <span class="metric-unit">%</span></span>
                         </div>
-                    </div>
-                </div>
-
-                <div class="device-card maintenance">
-                    <div class="device-header">
-                        <h3 class="device-name">逆变器 #004</h3>
-                        <span class="device-status status-maintenance">维护中</span>
-                    </div>
-                    <div class="device-metrics">
-                        <div class="metric">
-                            <div class="metric-value">0.0 <span class="metric-unit">kW</span></div>
-                            <div class="metric-label">输出功率</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">0.0 <span class="metric-unit">%</span></div>
-                            <div class="metric-label">效率</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">25.1 <span class="metric-unit">°C</span></div>
-                            <div class="metric-label">温度</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">1,425 <span class="metric-unit">h</span></div>
-                            <div class="metric-label">运行时长</div>
+                        <div class="metric-item">
+                            <span class="metric-label">功率因数</span>
+                            <span class="metric-value">0.98</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 性能图表 -->
-            <div class="performance-section">
+            <!-- 图表区域 -->
+            <div class="chart-grid">
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h3 class="chart-title">
-                            <span>📊</span>
-                            功率输出趋势
-                        </h3>
-                        <div class="chart-info">过去24小时</div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="powerOutputChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3 class="chart-title">
-                            <span>⚡</span>
-                            效率分布
-                        </h3>
-                        <div class="chart-info">当前状态</div>
+                        <h3 class="chart-title">逆变器效率趋势</h3>
+                        <span class="chart-period">2024年1月</span>
                     </div>
                     <div class="chart-container">
                         <canvas id="efficiencyChart"></canvas>
                     </div>
                 </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">设备状态分布</h3>
+                        <span class="chart-period">当前状态</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
             </div>
 
-            <!-- 详细数据表格 -->
+            <!-- 数据统计表格 -->
             <div class="data-section">
-                <div class="section-header">
-                    <h3 class="section-title">设备详细信息</h3>
-                    <div class="chart-info">实时数据</div>
+                <div class="data-card">
+                    <h3 style="margin-bottom: 1rem; color: #1e293b;">设备运行详情</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>设备编号</th>
+                                <th>运行状态</th>
+                                <th>输出功率</th>
+                                <th>效率</th>
+                                <th>温度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>INV-001</td>
+                                <td><span class="status-badge status-normal">正常</span></td>
+                                <td>15.2 kW</td>
+                                <td>96.3%</td>
+                                <td>45.2°C</td>
+                            </tr>
+                            <tr>
+                                <td>INV-002</td>
+                                <td><span class="status-badge status-normal">正常</span></td>
+                                <td>14.8 kW</td>
+                                <td>95.7%</td>
+                                <td>43.8°C</td>
+                            </tr>
+                            <tr>
+                                <td>INV-003</td>
+                                <td><span class="status-badge status-warning">告警</span></td>
+                                <td>12.5 kW</td>
+                                <td>89.3%</td>
+                                <td>58.4°C</td>
+                            </tr>
+                            <tr>
+                                <td>INV-004</td>
+                                <td><span class="status-badge status-alarm">维护</span></td>
+                                <td>0 kW</td>
+                                <td>0%</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>INV-005</td>
+                                <td><span class="status-badge status-normal">正常</span></td>
+                                <td>15.6 kW</td>
+                                <td>96.8%</td>
+                                <td>44.1°C</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>设备编号</th>
-                            <th>设备类型</th>
-                            <th>状态</th>
-                            <th>输出功率</th>
-                            <th>效率</th>
-                            <th>温度</th>
-                            <th>运行时长</th>
-                            <th>最后维护</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>INV-001</td>
-                            <td>组串式逆变器</td>
-                            <td><span class="device-status status-normal">正常</span></td>
-                            <td>15.2 kW</td>
-                            <td>
-                                <div class="efficiency-bar">
-                                    <div class="efficiency-fill" style="width: 96.3%"></div>
-                                </div>
-                                96.3%
-                            </td>
-                            <td>45.2°C</td>
-                            <td>1,248h</td>
-                            <td>2024-01-15</td>
-                        </tr>
-                        <tr>
-                            <td>INV-002</td>
-                            <td>组串式逆变器</td>
-                            <td><span class="device-status status-normal">正常</span></td>
-                            <td>14.8 kW</td>
-                            <td>
-                                <div class="efficiency-bar">
-                                    <div class="efficiency-fill" style="width: 95.7%"></div>
-                                </div>
-                                95.7%
-                            </td>
-                            <td>43.8°C</td>
-                            <td>1,356h</td>
-                            <td>2024-01-12</td>
-                        </tr>
-                        <tr>
-                            <td>INV-003</td>
-                            <td>集中式逆变器</td>
-                            <td><span class="device-status status-warning">告警</span></td>
-                            <td>12.5 kW</td>
-                            <td>
-                                <div class="efficiency-bar">
-                                    <div class="efficiency-fill" style="width: 89.3%"></div>
-                                </div>
-                                89.3%
-                            </td>
-                            <td>58.4°C</td>
-                            <td>1,189h</td>
-                            <td>2024-01-08</td>
-                        </tr>
-                        <tr>
-                            <td>INV-004</td>
-                            <td>组串式逆变器</td>
-                            <td><span class="device-status status-maintenance">维护中</span></td>
-                            <td>0.0 kW</td>
-                            <td>
-                                <div class="efficiency-bar">
-                                    <div class="efficiency-fill" style="width: 0%"></div>
-                                </div>
-                                0.0%
-                            </td>
-                            <td>25.1°C</td>
-                            <td>1,425h</td>
-                            <td>2024-01-24</td>
-                        </tr>
-                        <tr>
-                            <td>INV-005</td>
-                            <td>微型逆变器</td>
-                            <td><span class="device-status status-normal">正常</span></td>
-                            <td>8.9 kW</td>
-                            <td>
-                                <div class="efficiency-bar">
-                                    <div class="efficiency-fill" style="width: 92.1%"></div>
-                                </div>
-                                92.1%
-                            </td>
-                            <td>41.6°C</td>
-                            <td>987h</td>
-                            <td>2024-01-20</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <div class="data-card">
+                    <h3 style="margin-bottom: 1rem; color: #1e293b;">告警统计</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>告警类型</th>
+                                <th>次数</th>
+                                <th>占比</th>
+                                <th>处理情况</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>温度过高</td>
+                                <td>8</td>
+                                <td>44.4%</td>
+                                <td>已处理</td>
+                            </tr>
+                            <tr>
+                                <td>效率偏低</td>
+                                <td>5</td>
+                                <td>27.8%</td>
+                                <td>已处理</td>
+                            </tr>
+                            <tr>
+                                <td>通信中断</td>
+                                <td>3</td>
+                                <td>16.7%</td>
+                                <td>处理中</td>
+                            </tr>
+                            <tr>
+                                <td>过载保护</td>
+                                <td>2</td>
+                                <td>11.1%</td>
+                                <td>已处理</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- 告警信息 -->
-            <div class="alert-section">
-                <div class="section-header">
-                    <h3 class="section-title">告警信息</h3>
-                    <div class="chart-info">最近24小时</div>
+            <!-- 运行报告分析 -->
+            <div class="chart-card" style="margin-bottom: 2rem;">
+                <div class="chart-header">
+                    <h3 class="chart-title">运行分析报告</h3>
+                    <span class="chart-period">月度总结</span>
                 </div>
-                
-                <div class="alert-item alert-warning">
-                    <div class="alert-icon">⚠️</div>
-                    <div class="alert-content">
-                        <div class="alert-title">温度告警 - 逆变器 #003</div>
-                        <div class="alert-description">设备温度过高 (58.4°C)，已触发温度保护，请检查散热系统</div>
-                        <div class="alert-time">2024-01-24 14:25:30</div>
-                    </div>
-                </div>
+                <div style="padding: 1rem 0; line-height: 1.8; color: #374151;">
+                    <h4 style="color: #1e293b; margin-bottom: 1rem;">📊 运行概况</h4>
+                    <p style="margin-bottom: 1rem;">
+                        本月逆变器设备整体运行稳定，28台逆变器中26台正常运行，设备可用率达到92.9%。
+                        总发电功率425.6kW，平均效率94.8%，较上月提升1.2个百分点。
+                    </p>
 
-                <div class="alert-item alert-info">
-                    <div class="alert-icon">🔧</div>
-                    <div class="alert-content">
-                        <div class="alert-title">维护提醒 - 逆变器 #004</div>
-                        <div class="alert-description">设备正在进行定期维护，预计完成时间：2024-01-25 10:00</div>
-                        <div class="alert-time">2024-01-24 09:00:00</div>
-                    </div>
-                </div>
+                    <h4 style="color: #1e293b; margin-bottom: 1rem;">⚡ 效率分析</h4>
+                    <p style="margin-bottom: 1rem;">
+                        逆变器平均效率保持在94.8%的较高水平，最高效率达到96.8%。
+                        效率提升主要得益于定期维护和参数优化。少数设备效率低于90%，需要重点关注。
+                    </p>
 
-                <div class="alert-item alert-info">
-                    <div class="alert-icon">📊</div>
-                    <div class="alert-content">
-                        <div class="alert-title">性能优化建议</div>
-                        <div class="alert-description">建议对运行时长超过1000小时的设备进行预防性维护</div>
-                        <div class="alert-time">2024-01-24 08:00:00</div>
-                    </div>
+                    <h4 style="color: #1e293b; margin-bottom: 1rem;">🔧 设备状态</h4>
+                    <p style="margin-bottom: 1rem;">
+                        本月共发生18次告警，主要为温度过高告警（44.4%）和效率偏低告警（27.8%）。
+                        INV-003设备温度持续偏高，建议检查散热系统。INV-004设备正在进行计划维护。
+                    </p>
+
+                    <h4 style="color: #1e293b; margin-bottom: 1rem;">💡 优化建议</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>加强高温设备的散热管理，特别是INV-003</li>
+                        <li>对效率低于90%的设备进行参数调整</li>
+                        <li>建议增加设备巡检频率，预防性维护</li>
+                        <li>优化MPPT算法，进一步提升整体发电效率</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -983,97 +1054,23 @@
 
         // 初始化图表
         function initCharts() {
-            // 功率输出趋势图
-            const powerCtx = document.getElementById('powerOutputChart').getContext('2d');
-            new Chart(powerCtx, {
-                type: 'line',
-                data: {
-                    labels: Array.from({length: 24}, (_, i) => `${i}:00`),
-                    datasets: [
-                        {
-                            label: '逆变器 #001',
-                            data: generateData(24, 10, 18),
-                            borderColor: '#7c3aed',
-                            backgroundColor: 'rgba(124, 58, 237, 0.1)',
-                            fill: false,
-                            tension: 0.4
-                        },
-                        {
-                            label: '逆变器 #002',
-                            data: generateData(24, 9, 17),
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            fill: false,
-                            tension: 0.4
-                        },
-                        {
-                            label: '逆变器 #003',
-                            data: generateData(24, 8, 15),
-                            borderColor: '#f59e0b',
-                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                            fill: false,
-                            tension: 0.4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                usePointStyle: true,
-                                padding: 20
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: '功率输出 (kW)'
-                            },
-                            grid: {
-                                color: '#f1f5f9'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: '时间'
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-
-            // 效率分布图
+            // 效率趋势图
             const efficiencyCtx = document.getElementById('efficiencyChart').getContext('2d');
             new Chart(efficiencyCtx, {
-                type: 'bar',
+                type: 'line',
                 data: {
-                    labels: ['90-92%', '92-94%', '94-96%', '96-98%', '98-100%'],
+                    labels: Array.from({length: 31}, (_, i) => `${i + 1}日`),
                     datasets: [{
-                        label: '设备数量',
-                        data: [2, 5, 8, 10, 3],
-                        backgroundColor: [
-                            '#ef4444',
-                            '#f59e0b',
-                            '#10b981',
-                            '#3b82f6',
-                            '#7c3aed'
+                        label: '平均效率 (%)',
+                        data: [
+                            94.2, 94.5, 94.3, 94.8, 94.6, 94.9, 95.1, 94.7, 94.8, 94.6,
+                            94.9, 95.2, 94.8, 94.7, 94.5, 94.8, 95.0, 94.9, 94.7, 94.8,
+                            94.6, 94.9, 95.1, 94.8, 94.7, 94.8, 94.9, 95.0, 94.8, 94.7, 94.8
                         ],
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4
                     }]
                 },
                 options: {
@@ -1086,20 +1083,14 @@
                     },
                     scales: {
                         y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: '设备数量'
-                            },
+                            beginAtZero: false,
+                            min: 90,
+                            max: 100,
                             grid: {
                                 color: '#f1f5f9'
                             }
                         },
                         x: {
-                            title: {
-                                display: true,
-                                text: '效率区间'
-                            },
                             grid: {
                                 display: false
                             }
@@ -1107,40 +1098,92 @@
                     }
                 }
             });
+
+            // 设备状态饼图
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['正常运行', '告警', '维护中', '故障'],
+                    datasets: [{
+                        data: [26, 1, 1, 0],
+                        backgroundColor: [
+                            '#10b981',
+                            '#f59e0b',
+                            '#3b82f6',
+                            '#ef4444'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
         }
 
-        // 生成模拟数据
-        function generateData(count, min, max) {
-            return Array.from({length: count}, () => 
-                Math.floor(Math.random() * (max - min + 1)) + min
-            );
+        // 切换电站
+        function changeStation() {
+            const station = document.getElementById('stationSelect').value;
+            showMessage(`已切换到${document.getElementById('stationSelect').selectedOptions[0].text}`, 'info');
         }
 
-        // 设备筛选
+        // 筛选设备
         function filterDevices() {
-            const statusFilter = document.getElementById('statusFilter').value;
-            const typeFilter = document.getElementById('typeFilter').value;
-            
-            showMessage(`筛选条件：状态=${statusFilter || '全部'}, 类型=${typeFilter || '全部'}`, 'info');
+            const status = document.getElementById('deviceStatus').value;
+            showMessage('正在筛选设备...', 'info');
         }
 
-        // 刷新数据
-        function refreshData() {
-            showMessage('正在刷新逆变器数据...', 'info');
+        // 刷新报告
+        function refreshReport() {
+            const selectedMonth = document.getElementById('selectedMonth').value;
+            
+            if (!selectedMonth) {
+                showMessage('请选择报表月份', 'error');
+                return;
+            }
+            
+            showMessage('正在查询报告数据...', 'info');
             
             setTimeout(() => {
-                showMessage('逆变器数据已更新', 'success');
-                initCharts();
-            }, 2000);
+                showMessage('报告数据已更新', 'success');
+            }, 1500);
         }
 
-        // 导出报表
-        function exportReport(format) {
-            showMessage(`正在导出${format.toUpperCase()}格式报表...`, 'info');
+        // 重置搜索
+        function resetSearch() {
+            document.getElementById('deviceStatus').value = 'all';
+            document.getElementById('selectedMonth').value = new Date().toISOString().slice(0, 7);
+            document.getElementById('stationSelect').selectedIndex = 0;
             
-            setTimeout(() => {
-                showMessage(`逆变器报表${format.toUpperCase()}导出完成`, 'success');
-            }, 3000);
+            showMessage('搜索条件已重置', 'info');
+            refreshReport();
+        }
+
+        // 显示订阅模态框
+        function showSubscriptionModal() {
+            if (window.subscriptionModalV2) {
+                window.subscriptionModalV2.show();
+            } else {
+                // 如果模态框组件还没加载，尝试直接显示
+                $('#subscriptionModalV2').modal('show');
+            }
+        }
+
+        // 显示导出选项
+        function showExportOptions() {
+            $('#exportModal').modal('show');
         }
 
         // 用户下拉菜单功能
@@ -1154,12 +1197,14 @@
             }
         }
 
+        // 显示账号信息
         function showAccountInfo() {
             document.getElementById('userDropdownMenu').classList.remove('show');
             document.querySelector('.user-menu-btn').classList.remove('active');
             alert('账号信息功能开发中');
         }
 
+        // 确认退出
         function confirmLogout() {
             document.getElementById('userDropdownMenu').classList.remove('show');
             document.querySelector('.user-menu-btn').classList.remove('active');
@@ -1237,15 +1282,140 @@
                 messageEl.style.opacity = '0';
                 messageEl.style.transform = 'translateX(100%)';
                 setTimeout(() => {
-                    if (document.body.contains(messageEl)) {
-                        document.body.removeChild(messageEl);
-                    }
+                    document.body.removeChild(messageEl);
                 }, 300);
             }, 3000);
         }
     </script>
 
+    <!-- 导出选项模态框 -->
+    <div id="exportModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">导出报表</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="export-options">
+                        <h6 class="mb-3">选择导出格式</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="export-option" onclick="selectExportFormat('pdf')">
+                                    <div class="export-icon">📄</div>
+                                    <h6>PDF格式</h6>
+                                    <p class="text-muted small">适合打印和分享</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="export-option" onclick="selectExportFormat('excel')">
+                                    <div class="export-icon">📊</div>
+                                    <h6>Excel格式</h6>
+                                    <p class="text-muted small">适合数据分析</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="executeExport()">导出</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入Bootstrap和jQuery -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <!-- 引入侧边栏脚本 -->
     <script src="../sidebar.js"></script>
+    
+    <!-- 引入订阅模态框组件 -->
+    <script src="subscription-modal-v2.js"></script>
+    
+    <style>
+        /* 模态框样式 */
+        .modal-content {
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+        }
+        
+        /* 导出选项样式 */
+        .export-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .export-option:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+        
+        .export-option.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .export-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .export-option h6 {
+            margin-bottom: 0.25rem;
+            color: #1e293b;
+        }
+        
+        .export-option p {
+            margin-bottom: 0;
+        }
+    </style>
+    
+    <script>
+        let selectedExportFormat = 'pdf';
+        
+        // 选择导出格式
+        function selectExportFormat(format) {
+            selectedExportFormat = format;
+            document.querySelectorAll('.export-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+        
+        // 执行导出
+        function executeExport() {
+            $('#exportModal').modal('hide');
+            showMessage(`正在导出${selectedExportFormat.toUpperCase()}格式报表...`, 'info');
+            
+            setTimeout(() => {
+                showMessage(`${selectedExportFormat.toUpperCase()}报表导出完成`, 'success');
+            }, 3000);
+        }
+    </script>
 </body>
 </html>

@@ -3,13 +3,19 @@ class Sidebar {
     constructor() {
         this.menuData = [
             {
+                id: 'overview',
+                name: '首页',
+                icon: '🏠',
+                href: './index.html'
+            },
+            {
                 id: 'station',
                 name: '电站',
                 icon: '⚡',
                 children: [
+                    { name: '电站详情', href: './station-detail-3d.html' },
                     { name: '电站管理', href: './station-management.html' },
-                    { name: '电价设置', href: './price-settings.html' },
-                    { name: '电站控制', href: './control.html' }
+                    { name: '电价模板', href: './price-settings.html' }
                 ]
             },
             {
@@ -17,10 +23,10 @@ class Sidebar {
                 name: '设备管理',
                 icon: '⚙️',
                 children: [
+                    { name: '设备控制', href: './control.html' },
                     { name: '设备列表', href: './monitoring/device-list.html' },
-                    { name: '设备台账', href: './device/manage.html' },
-                    { name: '远程控制', href: './device/control.html' },
-                    { name: '固件管理', href: './device/firmware.html' }
+                    { name: '设备1', href: './device/device1.html' },
+                    { name: '设备群控', href: './group-control.html' }
                 ]
             },
             {
@@ -31,6 +37,18 @@ class Sidebar {
                     { name: '能耗分析', href: './analysis/energy.html' },
                     { name: '效率分析', href: './analysis/efficiency.html' },
                     { name: '经济性分析', href: './analysis/economic.html' }
+                ]
+            },
+            {
+                id: 'history',
+                name: '历史数据',
+                icon: '📈',
+                children: [
+                    { name: '储能系统', href: './history/storage-history.html' },
+                    { name: 'PCS数据', href: './history/pcs-history.html' },
+                    { name: '电池组数据', href: './history/battery-history.html' },
+                    { name: '光伏数据', href: './history/pv-history.html' },
+                    { name: '负载数据', href: './history/load-history.html' }
                 ]
             },
             {
@@ -50,12 +68,11 @@ class Sidebar {
                 children: [
                     { name: '电站报告', href: './report/station-report.html' },
                     { name: '逆变器报表', href: './report/inverter-report.html' },
-                    { name: 'PCS报表', href: './report/pcs-report.html' },
                     { name: '储能报表', href: './report/storage-report.html' },
                     { name: '发电量报表', href: './report/power-generation.html' },
-                    { name: '报表列表', href: './report/list.html' },
-                    { name: '创建报表', href: './report/create.html' },
-                    { name: '报表模板', href: './report/templates.html' }
+                    { name: '收益报表', href: './report/revenue-report.html' },
+                    { name: '自定义报表', href: './report/custom-report.html' },
+                    { name: '报表列表', href: './report/list.html' }
                 ]
             },
             {
@@ -63,6 +80,8 @@ class Sidebar {
                 name: '系统设置',
                 icon: '🔧',
                 children: [
+                    { name: '企业管理', href: './system/enterprise.html' },
+                    { name: '电价模板', href: './system/electricity-price-template.html' },
                     { name: '菜单管理', href: './system/menus.html' },
                     { name: '用户管理', href: './system/users.html' },
                     { name: '角色管理', href: './system/roles.html' },
@@ -86,7 +105,7 @@ class Sidebar {
         const isInSubdir = path.includes('/monitoring/') || path.includes('/analysis/') || 
                           path.includes('/alarm/') || path.includes('/device/') || 
                           path.includes('/report/') || path.includes('/system/') || 
-                          path.includes('/user/');
+                          path.includes('/user/') || path.includes('/history/');
         const logoPath = isInSubdir ? '../../logo.png' : '../logo.png';
         
         sidebar.innerHTML = `
@@ -108,6 +127,25 @@ class Sidebar {
         const pathPrefix = this.getPathPrefix();
         
         return this.menuData.map(menu => {
+            // 如果是一级菜单（有href属性）
+            if (menu.href) {
+                let href = menu.href;
+                if (href.startsWith('./')) {
+                    href = pathPrefix + href.substring(2);
+                }
+                return `
+                    <div class="menu-group">
+                        <a href="${href}" class="menu-item menu-link ${this.isCurrentPage(menu.href) ? 'active' : ''}" data-menu-id="${menu.id}">
+                            <div class="menu-item-content">
+                                <span class="menu-icon">${menu.icon}</span>
+                                <span>${menu.name}</span>
+                            </div>
+                        </a>
+                    </div>
+                `;
+            }
+            
+            // 如果是有子菜单的菜单
             const isExpanded = this.expandedMenus.includes(menu.id);
             return `
                 <div class="menu-group">
@@ -149,7 +187,7 @@ class Sidebar {
         const isInSubdir = path.includes('/monitoring/') || path.includes('/analysis/') || 
                           path.includes('/alarm/') || path.includes('/device/') || 
                           path.includes('/report/') || path.includes('/system/') || 
-                          path.includes('/user/');
+                          path.includes('/user/') || path.includes('/history/');
         return isInSubdir ? '../' : './';
     }
 
@@ -165,7 +203,7 @@ class Sidebar {
         }
 
         // 绑定菜单点击事件
-        document.querySelectorAll('.menu-item').forEach(item => {
+        document.querySelectorAll('.menu-item:not(.menu-link)').forEach(item => {
             item.addEventListener('click', (e) => this.toggleMenu(e));
         });
 
@@ -199,22 +237,32 @@ class Sidebar {
         const currentPath = window.location.pathname;
         const currentFile = currentPath.split('/').pop();
         
-        // 查找并激活对应的子菜单项
+        // 查找并激活对应的菜单项
         this.menuData.forEach(menu => {
-            menu.children.forEach(child => {
-                if (child.href.includes(currentFile)) {
-                    // 展开父菜单
-                    const menuItem = document.querySelector(`[data-menu-id="${menu.id}"]`);
-                    const submenu = menuItem.nextElementSibling;
-                    menuItem.classList.add('expanded');
-                    submenu.classList.add('open');
-                    
-                    if (!this.expandedMenus.includes(menu.id)) {
-                        this.expandedMenus.push(menu.id);
-                        this.saveExpandedState();
-                    }
+            // 如果是一级菜单
+            if (menu.href && menu.href.includes(currentFile)) {
+                const menuItem = document.querySelector(`[data-menu-id="${menu.id}"]`);
+                if (menuItem) {
+                    menuItem.classList.add('active');
                 }
-            });
+            }
+            // 如果有子菜单
+            else if (menu.children) {
+                menu.children.forEach(child => {
+                    if (child.href.includes(currentFile)) {
+                        // 展开父菜单
+                        const menuItem = document.querySelector(`[data-menu-id="${menu.id}"]`);
+                        const submenu = menuItem.nextElementSibling;
+                        menuItem.classList.add('expanded');
+                        submenu.classList.add('open');
+                        
+                        if (!this.expandedMenus.includes(menu.id)) {
+                            this.expandedMenus.push(menu.id);
+                            this.saveExpandedState();
+                        }
+                    }
+                });
+            }
         });
     }
 

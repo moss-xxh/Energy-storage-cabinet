@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>电价设置 - 能源管理系统</title>
+    <title>电价模板 - 能源管理系统</title>
     <link rel="stylesheet" href="./sidebar.css">
     <style>
         * {
@@ -644,7 +644,7 @@
                 <button class="nav-button" onclick="goBack()" title="返回场景选择">
                     <span>←</span>
                 </button>
-                <h1 class="page-title i18n" data-i18n="page.title">电价设置</h1>
+                <h1 class="page-title i18n" data-i18n="page.title">电价模板</h1>
             </div>
             <div class="navbar-right">
                 <button class="nav-button" onclick="toggleLanguage()">
@@ -771,15 +771,12 @@
 
                 <!-- 操作按钮 -->
                 <div class="action-bar">
-                    <button class="btn btn-secondary" onclick="applyToOtherStations()">
-                        <span class="i18n" data-i18n="price.applyToOthers">应用到其他电站</span>
-                    </button>
-                    <div style="display: flex; gap: 1rem;">
+                    <div style="display: flex; gap: 1rem; margin-left: auto;">
                         <button class="btn btn-secondary" onclick="cancelPriceSettings()">
                             <span class="i18n" data-i18n="btn.cancel">取消</span>
                         </button>
                         <button class="btn btn-primary" onclick="savePriceSettings()">
-                            <span class="i18n" data-i18n="btn.save">保存</span>
+                            <span class="i18n" data-i18n="btn.save">保存模板</span>
                         </button>
                     </div>
                 </div>
@@ -862,15 +859,12 @@
 
                 <!-- 操作按钮 -->
                 <div class="action-bar">
-                    <button class="btn btn-secondary" onclick="applyToOtherStations()">
-                        <span class="i18n" data-i18n="price.applyToOthers">应用到其他电站</span>
-                    </button>
-                    <div style="display: flex; gap: 1rem;">
+                    <div style="display: flex; gap: 1rem; margin-left: auto;">
                         <button class="btn btn-secondary" onclick="cancelPriceSettings()">
                             <span class="i18n" data-i18n="btn.cancel">取消</span>
                         </button>
                         <button class="btn btn-primary" onclick="savePriceSettings()">
-                            <span class="i18n" data-i18n="btn.save">保存</span>
+                            <span class="i18n" data-i18n="btn.save">保存模板</span>
                         </button>
                     </div>
                 </div>
@@ -887,7 +881,7 @@
         const i18n = {
             zh: {
                 // 页面标题
-                'page.title': '电价设置',
+                'page.title': '电价模板',
                 
                 // 菜单
                 'menu.station': '电站',
@@ -941,11 +935,11 @@
                 
                 // 按钮
                 'btn.cancel': '取消',
-                'btn.save': '保存',
+                'btn.save': '保存模板',
             },
             en: {
                 // Page title
-                'page.title': 'Price Settings',
+                'page.title': 'Price Template',
                 
                 // Menu
                 'menu.station': 'Station',
@@ -999,7 +993,7 @@
                 
                 // Buttons
                 'btn.cancel': 'Cancel',
-                'btn.save': 'Save',
+                'btn.save': 'Save Template',
             }
         };
         
@@ -1163,10 +1157,10 @@
             document.getElementById('basic-price-settings').style.display = template === 'commercial' ? 'block' : 'none';
         }
         
-        // 保存电价设置
+        // 保存电价模板
         function savePriceSettings() {
             // 这里添加保存逻辑
-            alert(currentLang === 'zh' ? '电价设置已保存' : 'Price settings saved');
+            alert(currentLang === 'zh' ? '电价模板已保存成功！' : 'Price template saved successfully!');
         }
         
         // 取消设置

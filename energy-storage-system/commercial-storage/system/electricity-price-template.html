@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电价模板 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #EBEDF4;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* 工具栏 */
+        .toolbar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toolbar-left {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .toolbar-right {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #d1d5db;
+            color: #374151;
+        }
+
+        .btn-outline:hover {
+            background: #f9fafb;
+        }
+
+        /* 模板网格 */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .template-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .template-info {
+            flex: 1;
+        }
+
+        .template-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .template-region {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .template-type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .template-type.industrial {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .template-type.commercial {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* 价格详情 */
+        .price-details {
+            margin-bottom: 20px;
+        }
+
+        .price-periods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .price-period {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .price-period.peak {
+            background: #fef3c7;
+            border-color: #f59e0b;
+        }
+
+        .price-period.flat {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .price-period.valley {
+            background: #dcfce7;
+            border-color: #10b981;
+        }
+
+        .period-name {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .period-price {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .peak .period-price { color: #d97706; }
+        .flat .period-price { color: #6b7280; }
+        .valley .period-price { color: #059669; }
+
+        .period-time {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .price-difference {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .difference-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .difference-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #059669;
+        }
+
+        /* 收益预估 */
+        .revenue-estimate {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .revenue-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .revenue-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .revenue-item {
+            text-align: center;
+        }
+
+        .revenue-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .revenue-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #059669;
+        }
+
+        /* 模态框样式 */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 20px 24px;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* 时间段配置 */
+        .time-periods {
+            display: grid;
+            gap: 16px;
+        }
+
+        .time-period-group {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .period-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .period-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .time-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .time-input {
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
+
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
+            }
+
+            .toolbar-left {
+                justify-content: center;
+            }
+
+            .toolbar-right {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content">
+        <div class="content">
+            <!-- 页面头部 -->
+            <div class="page-header">
+                <h1 class="page-title">电价模板管理</h1>
+                <p class="page-subtitle">管理各地区的分时电价模板，支持峰谷套利策略优化</p>
+            </div>
+
+            <!-- 工具栏 -->
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <select class="form-control" style="width: 150px;" id="regionFilter">
+                        <option value="">全部地区</option>
+                        <option value="浙江">浙江省</option>
+                        <option value="江苏">江苏省</option>
+                        <option value="广东">广东省</option>
+                        <option value="山东">山东省</option>
+                        <option value="上海">上海市</option>
+                    </select>
+                    <select class="form-control" style="width: 120px;" id="typeFilter">
+                        <option value="">全部类型</option>
+                        <option value="industrial">工业用电</option>
+                        <option value="commercial">商业用电</option>
+                    </select>
+                </div>
+                <div class="toolbar-right">
+                    <button class="btn btn-outline" onclick="importTemplate()">
+                        <span>📥</span> 导入模板
+                    </button>
+                    <button class="btn btn-primary" onclick="createTemplate()">
+                        <span>➕</span> 新建模板
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模板网格 -->
+            <div class="template-grid" id="templateGrid">
+                <!-- 浙江省工业电价模板 -->
+                <div class="template-card" data-region="浙江" data-type="industrial">
+                    <div class="template-header">
+                        <div class="template-info">
+                            <h3 class="template-title">浙江省工业用电</h3>
+                            <div class="template-region">浙江省 • 更新时间: 2024-01-15</div>
+                            <span class="template-type industrial">工业用电</span>
+                        </div>
+                        <div class="template-actions">
+                            <button class="btn btn-outline btn-sm" onclick="editTemplate('zj-industrial')">编辑</button>
+                            <button class="btn btn-primary btn-sm" onclick="applyTemplate('zj-industrial')">应用</button>
+                        </div>
+                    </div>
+                    
+                    <div class="price-details">
+                        <div class="price-periods">
+                            <div class="price-period peak">
+                                <div class="period-name">尖峰</div>
+                                <div class="period-price">1.2768</div>
+                                <div class="period-time">10:00-11:00<br>14:00-15:00<br>18:00-21:00</div>
+                            </div>
+                            <div class="price-period flat">
+                                <div class="period-name">平段</div>
+                                <div class="period-price">0.8512</div>
+                                <div class="period-time">8:00-10:00<br>11:00-14:00<br>15:00-18:00<br>21:00-22:00</div>
+                            </div>
+                            <div class="price-period valley">
+                                <div class="period-name">谷段</div>
+                                <div class="period-price">0.4256</div>
+                                <div class="period-time">22:00-8:00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="price-difference">
+                            <span class="difference-label">峰谷价差</span>
+                            <span class="difference-value">0.8512 元/kWh</span>
+                        </div>
+
+                        <div class="revenue-estimate">
+                            <div class="revenue-title">收益预估 (500kWh系统)</div>
+                            <div class="revenue-items">
+                                <div class="revenue-item">
+                                    <div class="revenue-label">日收益</div>
+                                    <div class="revenue-value">¥425.6</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">年收益</div>
+                                    <div class="revenue-value">¥155,344</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">投资回收期</div>
+                                    <div class="revenue-value">6.4年</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">年收益率</div>
+                                    <div class="revenue-value">15.5%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 江苏省工业电价模板 -->
+                <div class="template-card" data-region="江苏" data-type="industrial">
+                    <div class="template-header">
+                        <div class="template-info">
+                            <h3 class="template-title">江苏省工业用电</h3>
+                            <div class="template-region">江苏省 • 更新时间: 2024-01-12</div>
+                            <span class="template-type industrial">工业用电</span>
+                        </div>
+                        <div class="template-actions">
+                            <button class="btn btn-outline btn-sm" onclick="editTemplate('js-industrial')">编辑</button>
+                            <button class="btn btn-primary btn-sm" onclick="applyTemplate('js-industrial')">应用</button>
+                        </div>
+                    </div>
+                    
+                    <div class="price-details">
+                        <div class="price-periods">
+                            <div class="price-period peak">
+                                <div class="period-name">峰段</div>
+                                <div class="period-price">1.1845</div>
+                                <div class="period-time">8:00-11:00<br>13:00-17:00<br>19:00-21:00</div>
+                            </div>
+                            <div class="price-period flat">
+                                <div class="period-name">平段</div>
+                                <div class="period-price">0.7897</div>
+                                <div class="period-time">11:00-13:00<br>17:00-19:00<br>21:00-23:00</div>
+                            </div>
+                            <div class="price-period valley">
+                                <div class="period-name">谷段</div>
+                                <div class="period-price">0.3948</div>
+                                <div class="period-time">23:00-8:00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="price-difference">
+                            <span class="difference-label">峰谷价差</span>
+                            <span class="difference-value">0.7897 元/kWh</span>
+                        </div>
+
+                        <div class="revenue-estimate">
+                            <div class="revenue-title">收益预估 (500kWh系统)</div>
+                            <div class="revenue-items">
+                                <div class="revenue-item">
+                                    <div class="revenue-label">日收益</div>
+                                    <div class="revenue-value">¥394.9</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">年收益</div>
+                                    <div class="revenue-value">¥144,139</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">投资回收期</div>
+                                    <div class="revenue-value">6.9年</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">年收益率</div>
+                                    <div class="revenue-value">14.4%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 广东省商业电价模板 -->
+                <div class="template-card" data-region="广东" data-type="commercial">
+                    <div class="template-header">
+                        <div class="template-info">
+                            <h3 class="template-title">广东省商业用电</h3>
+                            <div class="template-region">广东省 • 更新时间: 2024-01-10</div>
+                            <span class="template-type commercial">商业用电</span>
+                        </div>
+                        <div class="template-actions">
+                            <button class="btn btn-outline btn-sm" onclick="editTemplate('gd-commercial')">编辑</button>
+                            <button class="btn btn-primary btn-sm" onclick="applyTemplate('gd-commercial')">应用</button>
+                        </div>
+                    </div>
+                    
+                    <div class="price-details">
+                        <div class="price-periods">
+                            <div class="price-period peak">
+                                <div class="period-name">峰段</div>
+                                <div class="period-price">1.0523</div>
+                                <div class="period-time">14:00-17:00<br>19:00-22:00</div>
+                            </div>
+                            <div class="price-period flat">
+                                <div class="period-name">平段</div>
+                                <div class="period-price">0.7682</div>
+                                <div class="period-time">8:00-14:00<br>17:00-19:00<br>22:00-24:00</div>
+                            </div>
+                            <div class="price-period valley">
+                                <div class="period-name">谷段</div>
+                                <div class="period-price">0.4841</div>
+                                <div class="period-time">0:00-8:00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="price-difference">
+                            <span class="difference-label">峰谷价差</span>
+                            <span class="difference-value">0.5682 元/kWh</span>
+                        </div>
+
+                        <div class="revenue-estimate">
+                            <div class="revenue-title">收益预估 (500kWh系统)</div>
+                            <div class="revenue-items">
+                                <div class="revenue-item">
+                                    <div class="revenue-label">日收益</div>
+                                    <div class="revenue-value">¥284.1</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">年收益</div>
+                                    <div class="revenue-value">¥103,697</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">投资回收期</div>
+                                    <div class="revenue-value">9.6年</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">年收益率</div>
+                                    <div class="revenue-value">10.4%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 上海市工业电价模板 -->
+                <div class="template-card" data-region="上海" data-type="industrial">
+                    <div class="template-header">
+                        <div class="template-info">
+                            <h3 class="template-title">上海市工业用电</h3>
+                            <div class="template-region">上海市 • 更新时间: 2024-01-08</div>
+                            <span class="template-type industrial">工业用电</span>
+                        </div>
+                        <div class="template-actions">
+                            <button class="btn btn-outline btn-sm" onclick="editTemplate('sh-industrial')">编辑</button>
+                            <button class="btn btn-primary btn-sm" onclick="applyTemplate('sh-industrial')">应用</button>
+                        </div>
+                    </div>
+                    
+                    <div class="price-details">
+                        <div class="price-periods">
+                            <div class="price-period peak">
+                                <div class="period-name">峰段</div>
+                                <div class="period-price">1.1247</div>
+                                <div class="period-time">9:00-12:00<br>13:00-15:00<br>18:00-21:00</div>
+                            </div>
+                            <div class="price-period flat">
+                                <div class="period-name">平段</div>
+                                <div class="period-price">0.7498</div>
+                                <div class="period-time">6:00-9:00<br>12:00-13:00<br>15:00-18:00<br>21:00-22:00</div>
+                            </div>
+                            <div class="price-period valley">
+                                <div class="period-name">谷段</div>
+                                <div class="period-price">0.3749</div>
+                                <div class="period-time">22:00-6:00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="price-difference">
+                            <span class="difference-label">峰谷价差</span>
+                            <span class="difference-value">0.7498 元/kWh</span>
+                        </div>
+
+                        <div class="revenue-estimate">
+                            <div class="revenue-title">收益预估 (500kWh系统)</div>
+                            <div class="revenue-items">
+                                <div class="revenue-item">
+                                    <div class="revenue-label">日收益</div>
+                                    <div class="revenue-value">¥374.9</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">年收益</div>
+                                    <div class="revenue-value">¥136,839</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">投资回收期</div>
+                                    <div class="revenue-value">7.3年</div>
+                                </div>
+                                <div class="revenue-item">
+                                    <div class="revenue-label">年收益率</div>
+                                    <div class="revenue-value">13.7%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新建模板模态框 -->
+    <div class="modal fade" id="templateModal" tabindex="-1" aria-labelledby="templateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="templateModalLabel">新建电价模板</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="templateForm">
+                        <div class="form-group">
+                            <label class="form-label">模板名称</label>
+                            <input type="text" class="form-control" id="templateName" placeholder="例如：浙江省工业用电">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">适用地区</label>
+                            <select class="form-control" id="templateRegion">
+                                <option value="">请选择地区</option>
+                                <option value="浙江">浙江省</option>
+                                <option value="江苏">江苏省</option>
+                                <option value="广东">广东省</option>
+                                <option value="山东">山东省</option>
+                                <option value="上海">上海市</option>
+                                <option value="北京">北京市</option>
+                                <option value="其他">其他地区</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">用电类型</label>
+                            <select class="form-control" id="templateType">
+                                <option value="industrial">工业用电</option>
+                                <option value="commercial">商业用电</option>
+                            </select>
+                        </div>
+
+                        <div class="time-periods">
+                            <!-- 峰段配置 -->
+                            <div class="time-period-group" style="border-color: #f59e0b;">
+                                <div class="period-header">
+                                    <h6 class="period-title" style="color: #d97706;">峰段电价</h6>
+                                    <input type="number" class="form-control" style="width: 120px;" id="peakPrice" placeholder="1.20" step="0.01">
+                                </div>
+                                <label class="form-label">时间段设置</label>
+                                <div class="time-inputs">
+                                    <div class="time-input-group">
+                                        <label style="font-size: 12px;">开始1</label>
+                                        <input type="time" class="time-input" id="peak1Start" value="08:00">
+                                    </div>
+                                    <div class="time-input-group">
+                                        <label style="font-size: 12px;">结束1</label>
+                                        <input type="time" class="time-input" id="peak1End" value="11:00">
+                                    </div>
+                                    <div class="time-input-group">
+                                        <label style="font-size: 12px;">开始2</label>
+                                        <input type="time" class="time-input" id="peak2Start" value="18:00">
+                                    </div>
+                                    <div class="time-input-group">
+                                        <label style="font-size: 12px;">结束2</label>
+                                        <input type="time" class="time-input" id="peak2End" value="21:00">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 平段配置 -->
+                            <div class="time-period-group" style="border-color: #9ca3af;">
+                                <div class="period-header">
+                                    <h6 class="period-title" style="color: #6b7280;">平段电价</h6>
+                                    <input type="number" class="form-control" style="width: 120px;" id="flatPrice" placeholder="0.80" step="0.01">
+                                </div>
+                                <label class="form-label">时间段设置</label>
+                                <div class="time-inputs">
+                                    <div class="time-input-group">
+                                        <label style="font-size: 12px;">开始1</label>
+                                        <input type="time" class="time-input" id="flat1Start" value="11:00">
+                                    </div>
+                                    <div class="time-input-group">
+                                        <label style="font-size: 12px;">结束1</label>
+                                        <input type="time" class="time-input" id="flat1End" value="18:00">
+                                    </div>
+                                    <div class="time-input-group">
+                                        <label style="font-size: 12px;">开始2</label>
+                                        <input type="time" class="time-input" id="flat2Start" value="21:00">
+                                    </div>
+                                    <div class="time-input-group">
+                                        <label style="font-size: 12px;">结束2</label>
+                                        <input type="time" class="time-input" id="flat2End" value="22:00">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 谷段配置 -->
+                            <div class="time-period-group" style="border-color: #10b981;">
+                                <div class="period-header">
+                                    <h6 class="period-title" style="color: #059669;">谷段电价</h6>
+                                    <input type="number" class="form-control" style="width: 120px;" id="valleyPrice" placeholder="0.40" step="0.01">
+                                </div>
+                                <label class="form-label">时间段设置</label>
+                                <div class="time-inputs">
+                                    <div class="time-input-group">
+                                        <label style="font-size: 12px;">开始</label>
+                                        <input type="time" class="time-input" id="valleyStart" value="22:00">
+                                    </div>
+                                    <div class="time-input-group">
+                                        <label style="font-size: 12px;">结束</label>
+                                        <input type="time" class="time-input" id="valleyEnd" value="08:00">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTemplate()">保存模板</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../sidebar.js"></script>
+    <script>
+        // 筛选功能
+        function filterTemplates() {
+            const regionFilter = document.getElementById('regionFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const cards = document.querySelectorAll('.template-card');
+
+            cards.forEach(card => {
+                const region = card.dataset.region;
+                const type = card.dataset.type;
+                
+                const showRegion = !regionFilter || region === regionFilter;
+                const showType = !typeFilter || type === typeFilter;
+                
+                card.style.display = (showRegion && showType) ? 'block' : 'none';
+            });
+        }
+
+        // 绑定筛选事件
+        document.getElementById('regionFilter').addEventListener('change', filterTemplates);
+        document.getElementById('typeFilter').addEventListener('change', filterTemplates);
+
+        // 创建新模板
+        function createTemplate() {
+            document.getElementById('templateModalLabel').textContent = '新建电价模板';
+            document.getElementById('templateForm').reset();
+            $('#templateModal').modal('show');
+        }
+
+        // 编辑模板
+        function editTemplate(templateId) {
+            document.getElementById('templateModalLabel').textContent = '编辑电价模板';
+            // 这里可以加载现有模板数据
+            $('#templateModal').modal('show');
+        }
+
+        // 保存模板
+        function saveTemplate() {
+            const formData = {
+                name: document.getElementById('templateName').value,
+                region: document.getElementById('templateRegion').value,
+                type: document.getElementById('templateType').value,
+                peakPrice: document.getElementById('peakPrice').value,
+                flatPrice: document.getElementById('flatPrice').value,
+                valleyPrice: document.getElementById('valleyPrice').value,
+                // 时间段数据
+                periods: {
+                    peak: [
+                        { start: document.getElementById('peak1Start').value, end: document.getElementById('peak1End').value },
+                        { start: document.getElementById('peak2Start').value, end: document.getElementById('peak2End').value }
+                    ],
+                    flat: [
+                        { start: document.getElementById('flat1Start').value, end: document.getElementById('flat1End').value },
+                        { start: document.getElementById('flat2Start').value, end: document.getElementById('flat2End').value }
+                    ],
+                    valley: [
+                        { start: document.getElementById('valleyStart').value, end: document.getElementById('valleyEnd').value }
+                    ]
+                }
+            };
+
+            if (!formData.name || !formData.region || !formData.peakPrice || !formData.flatPrice || !formData.valleyPrice) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            // 这里发送数据到服务器保存
+            console.log('保存模板:', formData);
+            
+            // 模拟保存成功
+            $('#templateModal').modal('hide');
+            showMessage('模板保存成功！', 'success');
+            
+            // 刷新页面或添加新卡片到网格
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        }
+
+        // 应用模板
+        function applyTemplate(templateId) {
+            if (confirm('确定要将此电价模板应用到当前系统吗？')) {
+                // 这里处理模板应用逻辑
+                console.log('应用模板:', templateId);
+                showMessage('电价模板应用成功！', 'success');
+            }
+        }
+
+        // 导入模板
+        function importTemplate() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json,.csv,.xlsx';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // 这里处理文件导入逻辑
+                    console.log('导入文件:', file.name);
+                    showMessage('模板导入成功！', 'success');
+                }
+            };
+            input.click();
+        }
+
+        // 显示消息
+        function showMessage(message, type = 'info') {
+            const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `;
+            
+            const alertElement = $(alertHtml);
+            $('body').append(alertElement);
+            
+            setTimeout(() => {
+                alertElement.alert('close');
+            }, 3000);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化图表或其他功能
+            console.log('电价模板页面初始化完成');
+        });
+    </script>
+</body>
+</html>

@@ -1279,6 +1279,792 @@
             border-color: #9ca3af;
             color: #374151;
         }
+        
+        /* 详情弹窗样式 */
+        .modal-large {
+            max-width: 1200px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            transition: all 0.15s;
+        }
+        
+        .modal-close:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+        
+        .modal-body {
+            overflow-y: auto;
+            max-height: calc(90vh - 150px);
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .station-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            min-height: 500px;
+        }
+        
+        .station-detail-info {
+            padding-right: 2rem;
+            border-right: 1px solid #e2e8f0;
+        }
+        
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .info-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        .info-value {
+            font-size: 1rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        
+        .topology-container {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            position: relative;
+        }
+        
+        .topology-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            cursor: zoom-in;
+        }
+        
+        .topology-fullscreen-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.15s;
+        }
+        
+        .topology-fullscreen-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .station-detail-metrics {
+            padding-left: 1rem;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .metric-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .metric-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #3562E3;
+        }
+        
+        .device-status-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .device-status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+        
+        .device-name {
+            font-size: 0.875rem;
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .device-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-online {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .status-offline {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .status-warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        /* 全屏查看模态框 */
+        .fullscreen-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .fullscreen-content {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+        }
+        
+        .fullscreen-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            cursor: grab;
+        }
+        
+        .fullscreen-image.grabbing {
+            cursor: grabbing;
+        }
+        
+        .fullscreen-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 2rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        
+        .fullscreen-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .zoom-controls {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .zoom-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.15s;
+        }
+        
+        .zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .zoom-info {
+            color: white;
+            font-size: 0.875rem;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: #3562E3;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2951d3;
+        }
+        
+        .btn-cancel {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+        
+        .btn-cancel:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+        
+        /* 超大模态框 */
+        .modal-xl {
+            width: 90%;
+            max-width: 1400px;
+            height: 90vh;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Tab样式 */
+        .detail-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+        }
+        
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #64748b;
+            font-weight: 500;
+            transition: all 150ms ease;
+            position: relative;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        
+        .tab-button:hover {
+            color: #1e293b;
+        }
+        
+        .tab-button.active {
+            color: #3562E3;
+            border-bottom-color: #3562E3;
+        }
+        
+        /* Tab内容区域 */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 能量流图样式 */
+        .energy-metrics-container {
+            display: flex;
+            gap: 24px;
+            align-items: stretch;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            min-height: 500px;
+        }
+        
+        .energy-flow-diagram {
+            flex: 1;
+            position: relative;
+            min-height: 460px;
+            background: transparent;
+            border-radius: 12px;
+            overflow: visible;
+        }
+        
+        .data-metrics-card {
+            width: 280px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .metrics-section {
+            margin-bottom: 24px;
+        }
+        
+        .metrics-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .metrics-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .metrics-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 12px 0;
+            text-align: left;
+        }
+        
+        .metrics-label {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        
+        .metrics-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1;
+        }
+        
+        /* 能量流组件 */
+        .flow-component {
+            position: absolute;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 20;
+        }
+        
+        .flow-component:hover {
+            transform: scale(1.05);
+        }
+        
+        .flow-component img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.1));
+            transition: filter 0.3s ease;
+        }
+        
+        .flow-component.pv {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+        }
+        
+        .flow-component.load {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+        }
+        
+        .flow-component.storage {
+            bottom: 20px;
+            left: 60px;
+            width: 180px;
+        }
+        
+        .flow-component.grid {
+            bottom: 20px;
+            right: 80px;
+            width: 160px;
+        }
+        
+        .component-label {
+            position: absolute;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            background: white;
+            padding: 10px 24px;
+            border-radius: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: inline-block;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .flow-component.pv .component-label {
+            right: -80px;
+            top: calc(50% - 10px);
+            transform: translateY(-50%);
+        }
+        
+        .flow-component.load .component-label {
+            right: -85px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .flow-component.storage .component-label,
+        .flow-component.grid .component-label {
+            position: static;
+            margin-top: 15px;
+        }
+        
+        /* 电池指示器 */
+        .battery-indicator {
+            position: absolute;
+            top: 50%;
+            left: -60px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 30;
+        }
+        
+        .battery-icon {
+            position: relative;
+            width: 30px;
+            height: 16px;
+            border: 2px solid #64748b;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+        }
+        
+        .battery-icon::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 8px;
+            background: #64748b;
+            border-radius: 0 2px 2px 0;
+        }
+        
+        .battery-level {
+            height: 100%;
+            background: #10b981;
+            border-radius: 1px;
+            transition: width 0.3s ease;
+        }
+        
+        .battery-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        /* SVG能量流 */
+        .energy-flow-svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        /* 概览网格 */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .overview-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card.energy-flow-card {
+            background: #f8fafc;
+        }
+        
+        .card-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        
+        .stat-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        /* 数据网格 */
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .data-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 告警表格 */
+        .alarm-list {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .alarm-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .alarm-table th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+        
+        .alarm-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.875rem;
+            color: #1e293b;
+        }
+        
+        .alarm-level {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .alarm-level.minor {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        /* 报表 */
+        .report-content {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 时间选择按钮 */
+        .time-btn {
+            padding: 6px 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+        
+        .time-btn:hover {
+            background: #f8fafc;
+            color: #1e293b;
+        }
+        
+        .time-btn.active {
+            background: #3562E3;
+            color: white;
+            border-color: #3562E3;
+        }
+        
+        .chart-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+        
+        /* 馈电状态样式 */
+        .power-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-weight: 500;
+        }
+        
+        .power-status-badge.feeding {
+            background-color: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+        
+        /* 设备列表 */
+        .device-list {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -1315,7 +2101,7 @@
 
         <!-- 内容区域 - 左右布局 -->
         <div class="content">
-            <div class="main-layout">
+            <div class="main-layout" id="device-list-section">
                 <!-- 左侧电站搜索区域 -->
                 <div class="left-panel">
                     <div class="station-search-section">
@@ -1454,6 +2240,11 @@
                         
                     </div>
                 </div>
+            </div>
+            
+            <!-- 设备详情内容区域 -->
+            <div id="device-detail-section" style="display: none;">
+                <!-- 这里将插入详情内容 -->
             </div>
         </div>
     </main>
@@ -1705,8 +2496,257 @@
                 return;
             }
             
-            // 跳转到设备详情页面
-            window.location.href = `../device-detail.html?deviceId=${encodeURIComponent(device.code)}&stationId=${encodeURIComponent(selectedStationId || '')}`;
+            // 隐藏设备列表，显示详情
+            document.getElementById('device-list-section').style.display = 'none';
+            document.getElementById('device-detail-section').style.display = 'block';
+            
+            // 构建三部分结构
+            const detailHTML = `
+                <div style="display: flex; flex-direction: column; min-height: calc(100vh - 100px); background: #f8f9fa;">
+                    <!-- 第一部分：顶部信息栏 -->
+                    <div class="device-detail-header" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <div style="max-width: 1400px; margin: 0 auto; padding: 20px 24px;">
+                            <div style="display: flex; align-items: center; gap: 20px;">
+                                <!-- 返回按钮 -->
+                                <button class="back-btn" onclick="backToDeviceList()" 
+                                    style="padding: 8px 16px; border: 1px solid #e2e8f0; border-radius: 6px; background: white; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #374151; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#f3f4f6'; this.style.borderColor='#d1d5db'" 
+                                    onmouseout="this.style.background='white'; this.style.borderColor='#e2e8f0'">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span>返回</span>
+                                </button>
+                                
+                                <!-- 设备名称 -->
+                                <h2 style="margin: 0; font-size: 20px; font-weight: 600; color: #1e293b;">${device.name || device.sn}</h2>
+                                
+                                <!-- 右侧状态信息 -->
+                                <div style="display: flex; align-items: center; gap: 20px; margin-left: auto;">
+                                    <!-- 通讯状态 -->
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 14px; color: #6b7280;">通讯：</span>
+                                        <div style="display: flex; align-items: center; gap: 4px;">
+                                            <div style="width: 3px; height: 8px; background: #10b981; border-radius: 1px;"></div>
+                                            <div style="width: 3px; height: 12px; background: #10b981; border-radius: 1px;"></div>
+                                            <div style="width: 3px; height: 16px; background: #10b981; border-radius: 1px;"></div>
+                                            <div style="width: 3px; height: 12px; background: #10b981; border-radius: 1px;"></div>
+                                            <div style="width: 3px; height: 8px; background: #10b981; border-radius: 1px;"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 设备状态 -->
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 14px; color: #6b7280;">状态：</span>
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <div style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></div>
+                                            <span style="font-size: 14px; color: #10b981; font-weight: 500;">在线</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 馈电状态 -->
+                                    <div class="power-status-badge feeding" 
+                                        style="display: flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 999px; background: #dcfce7; border: 1px solid #bbf7d0;">
+                                        <div style="width: 6px; height: 6px; border-radius: 50%; background: #16a34a;"></div>
+                                        <span style="font-size: 14px; color: #16a34a; font-weight: 500;">馈电</span>
+                                    </div>
+                                    
+                                    <!-- 运行模式选择 -->
+                                    <select style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; color: #374151; font-size: 14px; cursor: pointer;" 
+                                        onchange="switchDetailMode(this.value)">
+                                        <option value="self-consumption">自发自用</option>
+                                        <option value="time-plan">时间计划</option>
+                                        <option value="backup-mode">备电模式</option>
+                                        <option value="force-mode" selected>强制模式</option>
+                                        <option value="vpp-dispatch">VPP调度</option>
+                                        <option value="ai-mode">AI模式</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 第二部分：Tab导航栏 -->
+                    <div class="device-detail-tabs" style="background: white; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; z-index: 10;">
+                        <div style="max-width: 1400px; margin: 0 auto;">
+                            <div class="detail-tabs" style="padding: 0 24px;">
+                                <button class="tab-button active" onclick="switchInlineDetailTab('overview')">概览</button>
+                                <button class="tab-button" onclick="switchInlineDetailTab('devices')">设备</button>
+                                <button class="tab-button" onclick="switchInlineDetailTab('operation')">运行数据</button>
+                                <button class="tab-button" onclick="switchInlineDetailTab('alarms')">告警</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 第三部分：内容区域 -->
+                    <div class="device-detail-content" style="flex: 1; padding: 20px;">
+                        <div style="max-width: 1400px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                            <div style="padding: 24px;">
+                                ${document.querySelector('#device-detail-modal .modal-body > div:last-child').innerHTML}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('device-detail-section').innerHTML = detailHTML;
+            
+            // 初始化能量流图
+            setTimeout(() => {
+                createDetailEnergyFlowLines();
+                updateDetailEnergyFlow();
+            }, 100);
+        }
+        
+        function backToDeviceList() {
+            // 显示设备列表，隐藏详情
+            document.getElementById('device-list-section').style.display = 'block';
+            document.getElementById('device-detail-section').style.display = 'none';
+        }
+        
+        // 为内联详情添加单独的tab切换函数
+        function switchInlineDetailTab(tabName) {
+            // 更新Tab按钮状态
+            document.querySelectorAll('#device-detail-section .detail-tabs .tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 找到被点击的按钮并激活
+            const clickedButton = document.querySelector(`#device-detail-section .detail-tabs button[onclick="switchInlineDetailTab('${tabName}')"]`);
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+            }
+            
+            // 切换内容
+            document.querySelectorAll('#device-detail-section .tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            const targetTab = document.getElementById('detail-' + tabName + '-tab');
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+        }
+        
+        // 创建详情能量流线
+        function createDetailEnergyFlowLines() {
+            const svg = document.getElementById('detail-energy-flow-svg');
+            if (!svg) {
+                return;
+            }
+            
+            // 设置SVG内容 - 调整视图框大小
+            svg.setAttribute('viewBox', '0 0 800 500');
+            svg.innerHTML = `
+                <!-- 定义渐变色 -->
+                <defs>
+                    <linearGradient id="pvGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#3562E3;stop-opacity:0.8" />
+                        <stop offset="100%" style="stop-color:#3562E3;stop-opacity:0.3" />
+                    </linearGradient>
+                    <linearGradient id="gridGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.8" />
+                        <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.3" />
+                    </linearGradient>
+                </defs>
+                
+                <!-- 光伏到负载 - 垂直线 -->
+                <line x1="400" y1="120" x2="400" y2="210" stroke="#EDEDED" stroke-width="10" stroke-linecap="round" />
+                <line x1="400" y1="120" x2="400" y2="210" stroke="url(#pvGradient)" stroke-width="10" stroke-linecap="round" 
+                      stroke-dasharray="40 10" opacity="0.8">
+                    <animate attributeName="stroke-dashoffset" from="0" to="-50" dur="2s" repeatCount="indefinite" />
+                </line>
+                
+                <!-- 储能到光伏 - 左侧曲线 -->
+                <path d="M 150 350 L 150 100 Q 150 80 170 80 L 320 80" 
+                      stroke="#EDEDED" stroke-width="10" fill="none" stroke-linecap="round" />
+                
+                <!-- 光伏到电网 - 右侧曲线 -->
+                <path d="M 480 80 L 630 80 Q 650 80 650 100 L 650 350" 
+                      stroke="#EDEDED" stroke-width="10" fill="none" stroke-linecap="round" />
+                
+                <!-- 负载到储能 - 左下曲线 -->
+                <path d="M 380 290 L 380 380 Q 380 400 360 400 L 200 400" 
+                      stroke="#EDEDED" stroke-width="10" fill="none" stroke-linecap="round" />
+                
+                <!-- 负载到电网 - 右下曲线 -->
+                <path d="M 420 290 L 420 380 Q 420 400 440 400 L 600 400" 
+                      stroke="#EDEDED" stroke-width="10" fill="none" stroke-linecap="round" />
+                <path d="M 420 290 L 420 380 Q 420 400 440 400 L 600 400" 
+                      stroke="url(#gridGradient)" stroke-width="10" fill="none" stroke-linecap="round" 
+                      stroke-dasharray="40 10" opacity="0.8">
+                    <animate attributeName="stroke-dashoffset" from="0" to="-50" dur="2s" repeatCount="indefinite" />
+                </path>
+                
+                <!-- 储能到电网 - 底部横线 -->
+                <line x1="200" y1="420" x2="600" y2="420" stroke="#EDEDED" stroke-width="10" stroke-linecap="round" />
+                
+                <!-- 动画线段 -->
+                <line x1="0" y1="-10" x2="0" y2="10" stroke="#5C85FF" stroke-width="4" stroke-linecap="round">
+                    <animateMotion dur="2s" repeatCount="indefinite">
+                        <mpath href="#pvToLoad"/>
+                    </animateMotion>
+                </line>
+                <path id="pvToLoad" d="M 500 130 L 500 250" style="display:none;" />
+                
+                <!-- 功率文字 -->
+                <text x="515" y="190" fill="#5C85FF" font-size="14" font-weight="600">7.5 kW</text>
+            `;
+        }
+        
+        // 更新详情能量流数据
+        function updateDetailEnergyFlow() {
+            // 模拟动态数据
+            const soc = Math.floor(Math.random() * 20 + 75); // 75-95%
+            
+            // 更新SOC显示
+            document.getElementById('detail-soc-display').textContent = soc + '%';
+            const batteryLevel = document.getElementById('detail-battery-level');
+            if (batteryLevel) {
+                batteryLevel.style.width = soc + '%';
+                
+                // 根据电量设置颜色
+                if (soc > 60) {
+                    batteryLevel.style.background = '#10b981'; // 绿色
+                } else if (soc > 30) {
+                    batteryLevel.style.background = '#f59e0b'; // 橙色
+                } else {
+                    batteryLevel.style.background = '#ef4444'; // 红色
+                }
+            }
+        }
+        
+        // 切换详情Tab
+        function switchDetailTab(tabName) {
+            // 更新Tab按钮状态
+            document.querySelectorAll('.detail-tabs .tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 找到被点击的按钮并激活
+            const clickedButton = document.querySelector(`.detail-tabs button[onclick="switchDetailTab('${tabName}')"]`);
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+            }
+            
+            // 切换内容
+            document.querySelectorAll('#device-detail-modal .tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            const targetTab = document.getElementById('detail-' + tabName + '-tab');
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+        }
+        
+        // 切换详情设置面板
+        function toggleDetailSettingsPanel() {
+            const panel = document.getElementById('detail-settings-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // 切换详情模式
+        function switchDetailMode(mode) {
+            console.log('切换设备模式:', mode);
         }
 
         function editDevice(sn) {
@@ -1778,6 +2818,156 @@
         function cancelDelete() {
             deleteDeviceSn = null;
             document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+        
+        // 关闭设备详情弹窗
+        function closeDeviceDetailModal() {
+            // 保留原方法以兼容其他调用
+            document.getElementById('device-detail-modal').style.display = 'none';
+        }
+        
+        // 选择时间范围
+        function selectTimeRange(range) {
+            // 更新按钮状态
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 根据选择的时间范围加载数据
+            console.log('选择时间范围：', range);
+            // 这里可以根据时间范围重新加载数据
+        }
+        
+        // 查看设备详情
+        function viewDeviceDetail(deviceName) {
+            console.log('查看设备详情：', deviceName);
+            // 可以跳转到具体设备页面或显示详情弹窗
+        }
+        
+        // 确认告警
+        function acknowledgeAlarm(alarmCode) {
+            console.log('确认告警：', alarmCode);
+            // 更新告警状态
+            showToast('告警已确认');
+        }
+        
+        // 进入设备监控页面
+        function goToDeviceMonitoring() {
+            const deviceSn = document.getElementById('detail-sn').textContent;
+            const deviceName = document.getElementById('detail-name').textContent;
+            // 跳转到监控页面
+            window.location.href = `./device-detail.html?deviceId=${encodeURIComponent(deviceSn)}&name=${encodeURIComponent(deviceName)}`;
+        }
+        
+        // 全屏查看图片
+        let currentScale = 1;
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+        
+        function openFullscreenImage() {
+            const modal = document.getElementById('fullscreen-modal');
+            const fullscreenImage = document.getElementById('fullscreen-image');
+            const topologyImage = document.getElementById('topology-image');
+            
+            fullscreenImage.src = topologyImage.src;
+            modal.style.display = 'flex';
+            
+            // 重置缩放和位置
+            currentScale = 1;
+            xOffset = 0;
+            yOffset = 0;
+            updateImageTransform();
+            updateZoomInfo();
+        }
+        
+        function closeFullscreenImage() {
+            document.getElementById('fullscreen-modal').style.display = 'none';
+        }
+        
+        function zoomIn() {
+            currentScale = Math.min(currentScale * 1.2, 5);
+            updateImageTransform();
+            updateZoomInfo();
+        }
+        
+        function zoomOut() {
+            currentScale = Math.max(currentScale * 0.8, 0.5);
+            updateImageTransform();
+            updateZoomInfo();
+        }
+        
+        function resetZoom() {
+            currentScale = 1;
+            xOffset = 0;
+            yOffset = 0;
+            updateImageTransform();
+            updateZoomInfo();
+        }
+        
+        function updateImageTransform() {
+            const image = document.getElementById('fullscreen-image');
+            image.style.transform = `translate(${xOffset}px, ${yOffset}px) scale(${currentScale})`;
+        }
+        
+        function updateZoomInfo() {
+            document.getElementById('zoom-info').textContent = Math.round(currentScale * 100) + '%';
+        }
+        
+        // 拖拽功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const fullscreenImage = document.getElementById('fullscreen-image');
+            
+            fullscreenImage.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+            
+            // 鼠标滚轮缩放
+            fullscreenImage.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                currentScale = Math.min(Math.max(currentScale * delta, 0.5), 5);
+                updateImageTransform();
+                updateZoomInfo();
+            });
+        });
+        
+        function dragStart(e) {
+            if (currentScale > 1) {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+                
+                if (e.target === document.getElementById('fullscreen-image')) {
+                    isDragging = true;
+                    e.target.classList.add('grabbing');
+                }
+            }
+        }
+        
+        function dragEnd(e) {
+            initialX = currentX;
+            initialY = currentY;
+            
+            isDragging = false;
+            document.getElementById('fullscreen-image').classList.remove('grabbing');
+        }
+        
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+                
+                xOffset = currentX;
+                yOffset = currentY;
+                
+                updateImageTransform();
+            }
         }
         
         // 切换设备启用/禁用状态
@@ -2149,6 +3339,32 @@
             renderStationCards();
             // 默认显示所有设备
             renderDeviceTable(allDevices);
+            
+            // 初始化详情设置面板复选框事件
+            const detailCheckboxes = document.querySelectorAll('#detail-settings-panel input[type="checkbox"]');
+            detailCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const metricItemName = this.getAttribute('data-detail-metric-item');
+                    if (metricItemName) {
+                        const metricItem = document.querySelector(`[data-detail-metric-item="${metricItemName}"]`);
+                        if (metricItem) {
+                            metricItem.style.display = this.checked ? 'flex' : 'none';
+                        }
+                    }
+                });
+            });
+            
+            // 点击外部关闭详情设置面板
+            document.addEventListener('click', function(event) {
+                const settingsBtn = document.getElementById('detail-settings-btn');
+                const settingsPanel = document.getElementById('detail-settings-panel');
+                
+                if (settingsBtn && settingsPanel && 
+                    !settingsBtn.contains(event.target) && 
+                    !settingsPanel.contains(event.target)) {
+                    settingsPanel.style.display = 'none';
+                }
+            });
         });
     </script>
     <!-- 右侧抽屉 -->
@@ -2322,6 +3538,704 @@
             <div class="modal-footer">
                 <button class="btn-cancel" onclick="cancelDelete()">取消</button>
                 <button class="btn-primary" onclick="confirmDelete()" style="background: #dc2626; border-color: #dc2626;">确认删除</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 设备详情弹窗 -->
+    <div class="modal" id="device-detail-modal">
+        <div class="modal-content modal-xl">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 20px; flex: 1;">
+                    <h3 class="modal-title" id="device-detail-title">设备详情</h3>
+                    
+                    <!-- 设备状态信息 -->
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <!-- 通讯状态 -->
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 14px; color: #6b7280;">通讯：</span>
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <div style="width: 3px; height: 8px; background: #10b981; border-radius: 1px;"></div>
+                                <div style="width: 3px; height: 12px; background: #10b981; border-radius: 1px;"></div>
+                                <div style="width: 3px; height: 16px; background: #10b981; border-radius: 1px;"></div>
+                                <div style="width: 3px; height: 12px; background: #10b981; border-radius: 1px;"></div>
+                                <div style="width: 3px; height: 8px; background: #10b981; border-radius: 1px;"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 状态 -->
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 14px; color: #6b7280;">状态：</span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <div style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></div>
+                                <span style="font-size: 14px; color: #10b981; font-weight: 500;">在线</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 馈电状态 -->
+                        <div class="power-status-badge feeding" style="display: flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 999px; background: #dcfce7; border: 1px solid #bbf7d0;">
+                            <div style="width: 6px; height: 6px; border-radius: 50%; background: #16a34a;"></div>
+                            <span style="font-size: 14px; color: #16a34a; font-weight: 500;">馈电</span>
+                        </div>
+                        
+                        <!-- 运行模式 -->
+                        <select style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; color: #374151; font-size: 14px; cursor: pointer;" onchange="switchDetailMode(this.value)">
+                            <option value="self-consumption">自发自用</option>
+                            <option value="time-plan">时间计划</option>
+                            <option value="backup-mode">备电模式</option>
+                            <option value="force-mode" selected>强制模式</option>
+                            <option value="vpp-dispatch">VPP调度</option>
+                            <option value="ai-mode">AI模式</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeDeviceDetailModal()">×</button>
+            </div>
+            <div class="modal-body" style="padding: 0;">
+                <!-- Tab切换 -->
+                <div class="detail-tabs" style="padding: 0 24px; border-bottom: 2px solid #e2e8f0;">
+                    <button class="tab-button active" onclick="switchDetailTab('overview')">概览</button>
+                    <button class="tab-button" onclick="switchDetailTab('devices')">设备</button>
+                    <button class="tab-button" onclick="switchDetailTab('operation')">运行数据</button>
+                    <button class="tab-button" onclick="switchDetailTab('alarms')">告警</button>
+                </div>
+                
+                <!-- Tab内容 -->
+                <div style="padding: 24px;">
+                    <!-- 概览 -->
+                    <div class="tab-content active" id="detail-overview-tab">
+                        <!-- 能量流图 -->
+                        <div class="card energy-flow-card" style="margin-bottom: 1.5rem; padding: 1rem;">
+                            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding-bottom: 0.5rem;">
+                                <h3 class="card-title" style="margin: 0;">能量图</h3>
+                                <div style="position: relative;">
+                                    <button id="detail-settings-btn" style="padding: 8px; background: white; border: 1px solid #e0e0e0; border-radius: 6px; cursor: pointer; font-size: 14px; color: #666; display: flex; align-items: center;" onclick="toggleDetailSettingsPanel()">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                            <path d="m12 1 0 6m0 6 0 6"></path>
+                                            <path d="m1 12 6 0m6 0 6 0"></path>
+                                        </svg>
+                                        <span style="margin-left: 4px;">设置</span>
+                                    </button>
+                                    <div id="detail-settings-panel" style="display: none; position: absolute; top: 100%; right: 0; background: white; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 16px; min-width: 200px; z-index: 1000;">
+                                        <div style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #333;">显示指标选择</div>
+                                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                                <input type="checkbox" checked data-detail-metric-item="pv-daily">
+                                                <span style="font-size: 13px; color: #666;">日发电量</span>
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                                <input type="checkbox" checked data-detail-metric-item="pv-total">
+                                                <span style="font-size: 13px; color: #666;">总发电量</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <!-- 能量图和数据指标容器 -->
+                                <div class="energy-metrics-container">
+                                    <!-- 能量流向图 -->
+                                    <div class="energy-flow-diagram">
+                                        <!-- SVG 能量流向连线 -->
+                                        <svg class="energy-flow-svg" id="detail-energy-flow-svg"></svg>
+                                        
+                                        <!-- 光伏 -->
+                                        <div class="flow-component pv">
+                                            <img src="../../光伏.png" alt="光伏面板">
+                                            <div class="component-label">光伏</div>
+                                        </div>
+                                        
+                                        <!-- 负载 -->
+                                        <div class="flow-component load">
+                                            <img src="../../负载.png" alt="负载">
+                                            <div class="component-label">负载</div>
+                                        </div>
+                                        
+                                        <!-- 储能 -->
+                                        <div class="flow-component storage">
+                                            <img src="../../储能柜.png" alt="储能系统">
+                                            <div class="component-label">储能</div>
+                                            <div class="battery-indicator">
+                                                <div class="battery-icon">
+                                                    <div class="battery-level" id="detail-battery-level" style="width: 82%"></div>
+                                                </div>
+                                                <span class="battery-text" id="detail-soc-display">82%</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 电网 -->
+                                        <div class="flow-component grid">
+                                            <img src="../../电网.png" alt="电网">
+                                            <div class="component-label">电网</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 数据指标卡片 -->
+                                    <div class="data-metrics-card">
+                                        <div class="metrics-section">
+                                            <h4 class="metrics-title">光伏</h4>
+                                            <div class="metrics-grid">
+                                                <div class="metrics-item" data-detail-metric-item="pv-daily">
+                                                    <span class="metrics-label">日发电量</span>
+                                                    <span class="metrics-value">46.1 kWh</span>
+                                                </div>
+                                                <div class="metrics-item" data-detail-metric-item="pv-total">
+                                                    <span class="metrics-label">总发电量</span>
+                                                    <span class="metrics-value">12622 kWh</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="metrics-section">
+                                            <h4 class="metrics-title">储能</h4>
+                                            <div class="metrics-grid">
+                                                <div class="metrics-item">
+                                                    <span class="metrics-label">日充电量</span>
+                                                    <span class="metrics-value">39.8 kWh</span>
+                                                </div>
+                                                <div class="metrics-item">
+                                                    <span class="metrics-label">累计充电量</span>
+                                                    <span class="metrics-value">8774 kWh</span>
+                                                </div>
+                                                <div class="metrics-item">
+                                                    <span class="metrics-label">日放电量</span>
+                                                    <span class="metrics-value">25.7 kWh</span>
+                                                </div>
+                                                <div class="metrics-item">
+                                                    <span class="metrics-label">累计放电量</span>
+                                                    <span class="metrics-value">7347 kWh</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="metrics-section">
+                                            <h4 class="metrics-title">收益</h4>
+                                            <div class="metrics-grid">
+                                                <div class="metrics-item">
+                                                    <span class="metrics-label">昨日收益</span>
+                                                    <span class="metrics-value">¥141.72</span>
+                                                </div>
+                                                <div class="metrics-item">
+                                                    <span class="metrics-label">今日收益</span>
+                                                    <span class="metrics-value">¥81.12</span>
+                                                </div>
+                                                <div class="metrics-item">
+                                                    <span class="metrics-label">当月收益</span>
+                                                    <span class="metrics-value">¥2518.65</span>
+                                                </div>
+                                                <div class="metrics-item">
+                                                    <span class="metrics-label">累计收益</span>
+                                                    <span class="metrics-value">¥40772.62</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <!-- 设备 -->
+                    <div class="tab-content" id="detail-devices-tab">
+                        <div class="device-list">
+                            <!-- 设备统计信息 -->
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px;">
+                                <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;">总设备数</div>
+                                    <div style="font-size: 24px; font-weight: 600; color: #1e293b;">5</div>
+                                </div>
+                                <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;">在线设备</div>
+                                    <div style="font-size: 24px; font-weight: 600; color: #10b981;">4</div>
+                                </div>
+                                <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;">告警设备</div>
+                                    <div style="font-size: 24px; font-weight: 600; color: #f59e0b;">1</div>
+                                </div>
+                                <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;">离线设备</div>
+                                    <div style="font-size: 24px; font-weight: 600; color: #ef4444;">0</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 设备列表 -->
+                            <table class="device-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>设备名称</th>
+                                        <th>设备类型</th>
+                                        <th>设备SN</th>
+                                        <th>状态</th>
+                                        <th>通讯状态</th>
+                                        <th>当前功率</th>
+                                        <th>额定功率</th>
+                                        <th>温度</th>
+                                        <th>更新时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>PCS-01</td>
+                                        <td>储能变流器</td>
+                                        <td>PCS2024001234</td>
+                                        <td><span class="device-status online">正常</span></td>
+                                        <td><span style="color: #10b981;">● 在线</span></td>
+                                        <td>225 kW</td>
+                                        <td>250 kW</td>
+                                        <td>38.5°C</td>
+                                        <td>2024-01-20 15:32:45</td>
+                                        <td>
+                                            <button style="padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 12px;" onclick="viewDeviceDetail('PCS-01')">详情</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>BMS-01</td>
+                                        <td>电池管理系统</td>
+                                        <td>BMS2024001235</td>
+                                        <td><span class="device-status online">正常</span></td>
+                                        <td><span style="color: #10b981;">● 在线</span></td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>28.3°C</td>
+                                        <td>2024-01-20 15:32:45</td>
+                                        <td>
+                                            <button style="padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 12px;" onclick="viewDeviceDetail('BMS-01')">详情</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Battery-01</td>
+                                        <td>电池簇</td>
+                                        <td>BAT2024001236</td>
+                                        <td><span class="device-status online">正常</span></td>
+                                        <td><span style="color: #10b981;">● 在线</span></td>
+                                        <td>-</td>
+                                        <td>215 kWh</td>
+                                        <td>26.5°C</td>
+                                        <td>2024-01-20 15:32:45</td>
+                                        <td>
+                                            <button style="padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 12px;" onclick="viewDeviceDetail('Battery-01')">详情</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>EMS-01</td>
+                                        <td>能量管理系统</td>
+                                        <td>EMS2024001237</td>
+                                        <td><span class="device-status online">正常</span></td>
+                                        <td><span style="color: #10b981;">● 在线</span></td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>22.0°C</td>
+                                        <td>2024-01-20 15:32:45</td>
+                                        <td>
+                                            <button style="padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 12px;" onclick="viewDeviceDetail('EMS-01')">详情</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Meter-01</td>
+                                        <td>电能表</td>
+                                        <td>MTR2024001238</td>
+                                        <td><span class="device-status warning">告警</span></td>
+                                        <td><span style="color: #f59e0b;">● 通讯异常</span></td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>2024-01-20 15:30:12</td>
+                                        <td>
+                                            <button style="padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 12px;" onclick="viewDeviceDetail('Meter-01')">详情</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- 运行数据 -->
+                    <div class="tab-content" id="detail-operation-tab">
+                        <!-- 设备选择和刷新 -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 8px;">
+                            <div style="display: flex; gap: 16px; align-items: center;">
+                                <label style="font-size: 14px; color: #64748b;">选择设备：</label>
+                                <select style="padding: 8px 16px; border: 1px solid #d1d5db; border-radius: 6px; background: white; font-size: 14px; min-width: 200px;">
+                                    <option>PCS-01 (储能变流器)</option>
+                                    <option>BMS-01 (电池管理系统)</option>
+                                    <option>Battery-01 (电池簇)</option>
+                                    <option>EMS-01 (能量管理系统)</option>
+                                    <option>Meter-01 (电能表)</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <span style="font-size: 13px; color: #94a3b8;">最后更新：<span id="last-update-time">2024-01-20 15:32:45</span></span>
+                                <button style="padding: 6px 16px; border: 1px solid #d1d5db; background: white; border-radius: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                                    </svg>
+                                    刷新
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 设备实时数据 -->
+                        <div style="background: white; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 4px; height: 20px; background: #3562E3; border-radius: 2px;"></span>
+                                设备实时数据
+                            </h3>
+                            
+                            <!-- PV输入数据 -->
+                            <div style="margin-bottom: 24px;">
+                                <h4 style="font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">组串</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                                    <div>
+                                        <table style="width: 100%; font-size: 14px;">
+                                            <thead>
+                                                <tr style="background: #f8fafc;">
+                                                    <th style="padding: 8px 12px; text-align: left; font-weight: 500; color: #64748b;"></th>
+                                                    <th style="padding: 8px 12px; text-align: center; font-weight: 500; color: #64748b;">PV1</th>
+                                                    <th style="padding: 8px 12px; text-align: center; font-weight: 500; color: #64748b;">PV2</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="padding: 8px 12px; color: #64748b;">输入电压(V)</td>
+                                                    <td style="padding: 8px 12px; text-align: center; font-weight: 600;">326.6</td>
+                                                    <td style="padding: 8px 12px; text-align: center; font-weight: 600;">392.4</td>
+                                                </tr>
+                                                <tr style="background: #f8fafc;">
+                                                    <td style="padding: 8px 12px; color: #64748b;">输入电流(A)</td>
+                                                    <td style="padding: 8px 12px; text-align: center; font-weight: 600;">3.39</td>
+                                                    <td style="padding: 8px 12px; text-align: center; font-weight: 600;">3.23</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 逆变器状态 -->
+                            <div style="margin-bottom: 24px;">
+                                <h4 style="font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">逆变器状态</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">状态</div>
+                                        <div style="font-size: 15px; font-weight: 600; color: #10b981;">并网</div>
+                                    </div>
+                                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">当日发电量</div>
+                                        <div style="font-size: 15px; font-weight: 600;">18.66 度</div>
+                                    </div>
+                                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">累计发电量</div>
+                                        <div style="font-size: 15px; font-weight: 600;">16,270.92 度</div>
+                                    </div>
+                                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">有功功率</div>
+                                        <div style="font-size: 15px; font-weight: 600;">2.293 kW</div>
+                                    </div>
+                                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">无功功率</div>
+                                        <div style="font-size: 15px; font-weight: 600;">-0.001 kvar</div>
+                                    </div>
+                                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">逆变器额定功率</div>
+                                        <div style="font-size: 15px; font-weight: 600;">10.000 kW</div>
+                                    </div>
+                                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">功率因数</div>
+                                        <div style="font-size: 15px; font-weight: 600;">1.000</div>
+                                    </div>
+                                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">电网频率</div>
+                                        <div style="font-size: 15px; font-weight: 600;">50.02 Hz</div>
+                                    </div>
+                                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">输出方式</div>
+                                        <div style="font-size: 15px; font-weight: 600;">三相四线制</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 电网参数 -->
+                            <div style="margin-bottom: 24px;">
+                                <h4 style="font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">电网参数</h4>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                                    <div>
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">电网A相电流</div>
+                                        <div style="font-size: 20px; font-weight: 600;">3.329 A</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">电网B相电流</div>
+                                        <div style="font-size: 20px; font-weight: 600;">3.326 A</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">电网C相电流</div>
+                                        <div style="font-size: 20px; font-weight: 600;">3.349 A</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">电网A相电压</div>
+                                        <div style="font-size: 20px; font-weight: 600;">227.3 V</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">电网B相电压</div>
+                                        <div style="font-size: 20px; font-weight: 600;">228.9 V</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">电网C相电压</div>
+                                        <div style="font-size: 20px; font-weight: 600;">229.5 V</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 其他参数 -->
+                            <div>
+                                <h4 style="font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">其他参数</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                                    <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <span style="font-size: 13px; color: #64748b;">逆变器开机时间</span>
+                                        <span style="font-size: 14px; font-weight: 600;">2025-07-25 05:45:32</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <span style="font-size: 13px; color: #64748b;">逆变器关机时间</span>
+                                        <span style="font-size: 14px; font-weight: 600;">2025-07-24 19:23:18</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <span style="font-size: 13px; color: #64748b;">内部温度</span>
+                                        <span style="font-size: 14px; font-weight: 600;">69.9°C</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <span style="font-size: 13px; color: #64748b;">绝缘阻值</span>
+                                        <span style="font-size: 14px; font-weight: 600;">3.000 MΩ</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <span style="font-size: 13px; color: #64748b;">有功调节状态</span>
+                                        <span style="font-size: 14px; font-weight: 600;">P=59.2% (有功百分比调节)</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <span style="font-size: 13px; color: #64748b;">无功调节状态</span>
+                                        <span style="font-size: 14px; font-weight: 600;">PF=1.000(功率因数)</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                        <span style="font-size: 13px; color: #64748b;">RS485-2端口模式</span>
+                                        <span style="font-size: 14px; font-weight: 600;">主机模式</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 基础信息 -->
+                        <div style="background: white; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-top: 20px;">
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 4px; height: 20px; background: #3562E3; border-radius: 2px;"></span>
+                                基础信息
+                            </h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                                <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                    <span style="font-size: 13px; color: #64748b;">设备名称</span>
+                                    <span style="font-size: 14px; font-weight: 600;">********88039852</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                    <span style="font-size: 13px; color: #64748b;">设备类型</span>
+                                    <span style="font-size: 14px; font-weight: 600;">逆变器</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                    <span style="font-size: 13px; color: #64748b;">SN号</span>
+                                    <span style="font-size: 14px; font-weight: 600;">******039852</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                    <span style="font-size: 13px; color: #64748b;">型号</span>
+                                    <span style="font-size: 14px; font-weight: 600;">SUN2000-10KTL-M1</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                    <span style="font-size: 13px; color: #64748b;">软件版本号</span>
+                                    <span style="font-size: 14px; font-weight: 600;">V100R001C00SPC152</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                    <span style="font-size: 13px; color: #64748b;">换机历史</span>
+                                    <span style="font-size: 14px; font-weight: 600;">--</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 6px;">
+                                    <span style="font-size: 13px; color: #64748b;">软件包名称</span>
+                                    <span style="font-size: 14px; font-weight: 600;">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 告警 -->
+                    <div class="tab-content" id="detail-alarms-tab">
+                        <!-- 告警统计 -->
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px;">
+                            <div style="background: #fee2e2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca;">
+                                <div style="font-size: 14px; color: #dc2626; margin-bottom: 8px;">紧急告警</div>
+                                <div style="font-size: 24px; font-weight: 600; color: #dc2626;">0</div>
+                            </div>
+                            <div style="background: #fef3c7; padding: 16px; border-radius: 8px; border: 1px solid #fde68a;">
+                                <div style="font-size: 14px; color: #d97706; margin-bottom: 8px;">主要告警</div>
+                                <div style="font-size: 24px; font-weight: 600; color: #d97706;">1</div>
+                            </div>
+                            <div style="background: #fef9c3; padding: 16px; border-radius: 8px; border: 1px solid #fef08a;">
+                                <div style="font-size: 14px; color: #ca8a04; margin-bottom: 8px;">次要告警</div>
+                                <div style="font-size: 24px; font-weight: 600; color: #ca8a04;">3</div>
+                            </div>
+                            <div style="background: #dbeafe; padding: 16px; border-radius: 8px; border: 1px solid #bfdbfe;">
+                                <div style="font-size: 14px; color: #2563eb; margin-bottom: 8px;">提示告警</div>
+                                <div style="font-size: 24px; font-weight: 600; color: #2563eb;">5</div>
+                            </div>
+                            <div style="background: #f0f9ff; padding: 16px; border-radius: 8px; border: 1px solid #e0f2fe;">
+                                <div style="font-size: 14px; color: #0284c7; margin-bottom: 8px;">已清除</div>
+                                <div style="font-size: 24px; font-weight: 600; color: #0284c7;">12</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 筛选器 -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <select style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; font-size: 14px;">
+                                    <option>全部级别</option>
+                                    <option>紧急</option>
+                                    <option>主要</option>
+                                    <option>次要</option>
+                                    <option>提示</option>
+                                </select>
+                                <select style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; font-size: 14px;">
+                                    <option>全部状态</option>
+                                    <option>活动</option>
+                                    <option>已清除</option>
+                                </select>
+                                <select style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; font-size: 14px;">
+                                    <option>全部设备</option>
+                                    <option>PCS-01</option>
+                                    <option>BMS-01</option>
+                                    <option>Battery-01</option>
+                                    <option>EMS-01</option>
+                                    <option>Meter-01</option>
+                                </select>
+                                <input type="date" style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; font-size: 14px;" value="2024-01-20">
+                            </div>
+                            <button style="padding: 6px 16px; background: #3562E3; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">导出告警</button>
+                        </div>
+                        
+                        <!-- 告警列表 -->
+                        <div class="alarm-list">
+                            <table class="alarm-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 160px;">告警时间</th>
+                                        <th style="width: 100px;">设备</th>
+                                        <th style="width: 80px;">级别</th>
+                                        <th style="width: 100px;">告警代码</th>
+                                        <th>告警内容</th>
+                                        <th style="width: 100px;">当前值</th>
+                                        <th style="width: 100px;">阈值</th>
+                                        <th style="width: 80px;">状态</th>
+                                        <th style="width: 160px;">清除时间</th>
+                                        <th style="width: 100px;">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2024-01-20 15:28:45</td>
+                                        <td>Meter-01</td>
+                                        <td><span class="alarm-level" style="background: #fef3c7; color: #d97706;">主要</span></td>
+                                        <td>MTR_COMM_01</td>
+                                        <td>电能表通讯异常</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td><span style="color: #dc2626;">活动</span></td>
+                                        <td>-</td>
+                                        <td>
+                                            <button style="padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 12px;" onclick="acknowledgeAlarm('MTR_COMM_01')">确认</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-01-20 14:52:30</td>
+                                        <td>PCS-01</td>
+                                        <td><span class="alarm-level" style="background: #fef9c3; color: #ca8a04;">次要</span></td>
+                                        <td>PCS_TEMP_01</td>
+                                        <td>PCS温度过高</td>
+                                        <td>42.5°C</td>
+                                        <td>40°C</td>
+                                        <td><span style="color: #dc2626;">活动</span></td>
+                                        <td>-</td>
+                                        <td>
+                                            <button style="padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 12px;" onclick="acknowledgeAlarm('PCS_TEMP_01')">确认</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-01-20 14:23:15</td>
+                                        <td>PCS-01</td>
+                                        <td><span class="alarm-level" style="background: #fef9c3; color: #ca8a04;">次要</span></td>
+                                        <td>PCS_VOL_01</td>
+                                        <td>直流侧电压偏高</td>
+                                        <td>765V</td>
+                                        <td>760V</td>
+                                        <td><span style="color: #10b981;">已清除</span></td>
+                                        <td>2024-01-20 14:25:30</td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-01-20 13:45:20</td>
+                                        <td>Battery-01</td>
+                                        <td><span class="alarm-level" style="background: #dbeafe; color: #2563eb;">提示</span></td>
+                                        <td>BAT_SOC_01</td>
+                                        <td>电池SOC低</td>
+                                        <td>15%</td>
+                                        <td>20%</td>
+                                        <td><span style="color: #10b981;">已清除</span></td>
+                                        <td>2024-01-20 14:10:15</td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-01-20 12:30:45</td>
+                                        <td>BMS-01</td>
+                                        <td><span class="alarm-level" style="background: #fef9c3; color: #ca8a04;">次要</span></td>
+                                        <td>BMS_TEMP_02</td>
+                                        <td>电池温度差异过大</td>
+                                        <td>5.2°C</td>
+                                        <td>5°C</td>
+                                        <td><span style="color: #dc2626;">活动</span></td>
+                                        <td>-</td>
+                                        <td>
+                                            <button style="padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 12px;" onclick="acknowledgeAlarm('BMS_TEMP_02')">确认</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-01-20 11:15:30</td>
+                                        <td>EMS-01</td>
+                                        <td><span class="alarm-level" style="background: #dbeafe; color: #2563eb;">提示</span></td>
+                                        <td>EMS_COMM_01</td>
+                                        <td>与云平台通讯中断</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td><span style="color: #10b981;">已清除</span></td>
+                                        <td>2024-01-20 11:18:45</td>
+                                        <td>-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="goToDeviceMonitoring()">进入监控</button>
+                <button class="btn btn-cancel" onclick="closeDeviceDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 全屏查看模态框 -->
+    <div class="fullscreen-modal" id="fullscreen-modal">
+        <div class="fullscreen-content">
+            <img src="" alt="全屏查看" class="fullscreen-image" id="fullscreen-image">
+            <button class="fullscreen-close" onclick="closeFullscreenImage()">×</button>
+            <div class="zoom-controls">
+                <button class="zoom-btn" onclick="zoomOut()" title="缩小">-</button>
+                <button class="zoom-btn" onclick="resetZoom()" title="重置">⌖</button>
+                <div class="zoom-info" id="zoom-info">100%</div>
+                <button class="zoom-btn" onclick="zoomIn()" title="放大">+</button>
             </div>
         </div>
     </div>

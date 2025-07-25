@@ -4,18 +4,21 @@ class SubscriptionModal {
         this.modal = null;
         this.subscriptions = [];
         this.selectedReportType = 'all';
+        this.currentStep = 1; // 订阅向导步骤
+        this.subscriptionData = {}; // 订阅配置数据
         this.init();
     }
 
     init() {
         this.createModal();
         this.bindEvents();
+        this.loadEmailTemplates();
     }
 
     createModal() {
         const modalHTML = `
             <div id="subscriptionModal" class="modal fade" tabindex="-1">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">
@@ -26,6 +29,54 @@ class SubscriptionModal {
                             </button>
                         </div>
                         <div class="modal-body">
+                            <!-- 标签页导航 -->
+                            <ul class="nav nav-tabs mb-4" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#newSubscription">
+                                        <i class="fas fa-plus-circle"></i> 新建订阅
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#mySubscriptions">
+                                        <i class="fas fa-list"></i> 我的订阅
+                                        <span class="badge badge-primary ml-1" id="subscriptionCount">0</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#subscriptionHistory">
+                                        <i class="fas fa-history"></i> 发送历史
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#emailTemplate">
+                                        <i class="fas fa-file-alt"></i> 邮件模板
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <!-- 标签页内容 -->
+                            <div class="tab-content">
+                                <!-- 新建订阅标签页 -->
+                                <div class="tab-pane fade show active" id="newSubscription">
+                                    ${this.createNewSubscriptionForm()}
+                                </div>
+                                
+                                <!-- 我的订阅标签页 -->
+                                <div class="tab-pane fade" id="mySubscriptions">
+                                    ${this.createMySubscriptionsView()}
+                                </div>
+                                
+                                <!-- 发送历史标签页 -->
+                                <div class="tab-pane fade" id="subscriptionHistory">
+                                    ${this.createHistoryView()}
+                                </div>
+                                
+                                <!-- 邮件模板标签页 -->
+                                <div class="tab-pane fade" id="emailTemplate">
+                                    ${this.createEmailTemplateView()}
+                                </div>
+                            </div>
+                        </div>
                             <!-- 新增订阅表单 -->
                             <div class="subscription-form mb-4">
                                 <h6 class="mb-3">新增订阅</h6>

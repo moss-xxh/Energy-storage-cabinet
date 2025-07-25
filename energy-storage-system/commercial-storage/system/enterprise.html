@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企业管理 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="../sidebar.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #EBEDF4;
+            color: #333;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin: -20px -20px 20px -20px;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .navbar-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            transition: all 150ms ease;
+        }
+
+        .nav-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+
+        .enterprise-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: #1e293b;
+            position: relative;
+        }
+
+        .enterprise-selector:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .enterprise-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .enterprise-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            font-size: 0.875rem;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.active {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .enterprise-info-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .info-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .api-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .api-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .api-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.pending {
+            background: #fbbf24;
+        }
+
+        .status-dot.approved {
+            background: #10b981;
+        }
+
+        .status-dot.rejected {
+            background: #ef4444;
+        }
+
+        .api-content {
+            display: none;
+        }
+
+        .api-content.active {
+            display: block;
+        }
+
+        .api-info {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .api-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .api-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .api-info-label {
+            font-weight: 500;
+            color: #495057;
+            width: 120px;
+        }
+
+        .api-info-value {
+            color: #2c3e50;
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+
+        .api-docs {
+            margin-top: 20px;
+        }
+
+        .api-docs-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .api-docs-link:hover {
+            text-decoration: underline;
+        }
+
+        .api-form {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 8px 12px;
+        }
+
+        .form-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 1px solid #D6D8DE;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+
+        .btn-apply {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .btn-apply:hover {
+            background: #218838;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            .navbar {
+                margin: -10px -10px 20px -10px;
+                padding: 0 1rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content">
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="nav-button" onclick="goHome()" title="首页">
+                    <span>🏠</span>
+                </button>
+                <h1 class="navbar-title">企业管理</h1>
+                <div class="enterprise-selector" onclick="toggleEnterpriseDropdown()">
+                    <span id="selectedEnterprise">杭州阳光新能源科技有限公司</span>
+                    <span class="dropdown-arrow">▼</span>
+                    <div class="enterprise-dropdown" id="enterpriseDropdown">
+                        <div class="dropdown-item active" onclick="selectEnterprise('杭州阳光新能源科技有限公司', '1')">
+                            杭州阳光新能源科技有限公司
+                        </div>
+                        <div class="dropdown-item" onclick="selectEnterprise('上海绿能电力集团', '2')">
+                            上海绿能电力集团
+                        </div>
+                        <div class="dropdown-item" onclick="selectEnterprise('北京储能科技有限公司', '3')">
+                            北京储能科技有限公司
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" onclick="toggleLanguage()">
+                    <span>🌐</span>
+                    <span id="lang-text">中文</span>
+                </button>
+                <button class="nav-button" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <div class="user-dropdown">
+                    <button class="nav-button user-menu-btn" onclick="toggleUserMenu()">
+                        <span>👤</span>
+                        <span>管理员</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="enterprise-info-card">
+            <div class="info-header">
+                <h2 class="info-title">企业基本信息</h2>
+                <button class="btn btn-secondary" onclick="editEnterpriseInfo()">编辑信息</button>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">企业名称</span>
+                    <span class="info-value" id="enterpriseName">杭州阳光新能源科技有限公司</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">企业编号</span>
+                    <span class="info-value" id="enterpriseCode">ENT2024012401</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">统一社会信用代码</span>
+                    <span class="info-value">91330100MA2H3N8K9T</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">联系电话</span>
+                    <span class="info-value">0571-88888888</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">企业邮箱</span>
+                    <span class="info-value">contact@sunshineenergy.com</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">注册地址</span>
+                    <span class="info-value">浙江省杭州市西湖区文三路398号</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <div class="api-header">
+                <h2 class="api-title">第三方API接入</h2>
+                <div class="api-status">
+                    <div class="status-item">
+                        <span class="status-dot pending"></span>
+                        <span>待审核</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot approved"></span>
+                        <span>已通过</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot rejected"></span>
+                        <span>已拒绝</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 未申请状态 -->
+            <div class="api-content" id="notApplied">
+                <div class="api-form">
+                    <h3 style="margin-bottom: 20px; color: #2c3e50;">申请API访问权限</h3>
+                    <form id="apiApplicationForm">
+                        <div class="form-group">
+                            <label>应用名称</label>
+                            <input type="text" class="form-control" id="appName" placeholder="请输入应用名称">
+                            <small class="form-text">用于标识您的应用程序</small>
+                        </div>
+                        <div class="form-group">
+                            <label>应用描述</label>
+                            <textarea class="form-control" id="appDesc" rows="3" placeholder="请描述您的应用用途"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>回调URL</label>
+                            <input type="url" class="form-control" id="callbackUrl" placeholder="https://your-domain.com/callback">
+                            <small class="form-text">用于接收API回调通知</small>
+                        </div>
+                        <div class="form-group">
+                            <label>技术联系人</label>
+                            <input type="text" class="form-control" id="techContact" placeholder="请输入技术联系人姓名">
+                        </div>
+                        <div class="form-group">
+                            <label>联系邮箱</label>
+                            <input type="email" class="form-control" id="contactEmail" placeholder="tech@company.com">
+                        </div>
+                        <div class="form-group">
+                            <label>预计调用量</label>
+                            <select class="form-control" id="expectedUsage">
+                                <option value="">请选择</option>
+                                <option value="low">低（<1000次/天）</option>
+                                <option value="medium">中（1000-10000次/天）</option>
+                                <option value="high">高（>10000次/天）</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-apply" onclick="submitApiApplication()">提交申请</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 审核中状态 -->
+            <div class="api-content" id="pending" style="text-align: center; padding: 60px;">
+                <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
+                <h3 style="color: #2c3e50; margin-bottom: 10px;">API申请审核中</h3>
+                <p style="color: #666;">您的API访问权限申请正在审核中，预计1-3个工作日内完成审核</p>
+                <p style="color: #666; font-size: 14px;">申请时间：2024-01-24 10:30:00</p>
+            </div>
+
+            <!-- 已通过状态 -->
+            <div class="api-content active" id="approved">
+                <div class="api-info">
+                    <div class="api-info-item">
+                        <span class="api-info-label">App ID:</span>
+                        <span class="api-info-value">app_2024012401_sunshine</span>
+                    </div>
+                    <div class="api-info-item">
+                        <span class="api-info-label">App Secret:</span>
+                        <span class="api-info-value">sk_live_4242424242424242</span>
+                    </div>
+                    <div class="api-info-item">
+                        <span class="api-info-label">API Endpoint:</span>
+                        <span class="api-info-value">https://api.energy-storage.com/v1</span>
+                    </div>
+                    <div class="api-info-item">
+                        <span class="api-info-label">Rate Limit:</span>
+                        <span class="api-info-value">10000 requests/day</span>
+                    </div>
+                </div>
+                <div class="api-docs">
+                    <a href="#" class="api-docs-link" onclick="viewApiDocs()">
+                        <span>📚</span>
+                        <span>查看API文档</span>
+                    </a>
+                    <a href="#" class="api-docs-link" onclick="downloadSDK()" style="margin-left: 20px;">
+                        <span>📦</span>
+                        <span>下载SDK</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 已拒绝状态 -->
+            <div class="api-content" id="rejected" style="text-align: center; padding: 60px;">
+                <div style="font-size: 48px; margin-bottom: 20px;">❌</div>
+                <h3 style="color: #dc3545; margin-bottom: 10px;">API申请未通过</h3>
+                <p style="color: #666;">拒绝原因：申请信息不完整，请补充应用场景说明</p>
+                <button class="btn btn-primary" onclick="reapplyApi()">重新申请</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../sidebar.js"></script>
+    <script>
+        let currentEnterpriseId = '1';
+
+        function toggleEnterpriseDropdown() {
+            const dropdown = document.getElementById('enterpriseDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function selectEnterprise(name, id) {
+            document.getElementById('selectedEnterprise').textContent = name;
+            document.getElementById('enterpriseName').textContent = name;
+            currentEnterpriseId = id;
+            
+            // Update enterprise code based on selection
+            const codes = {
+                '1': 'ENT2024012401',
+                '2': 'ENT2024012402',
+                '3': 'ENT2024012403'
+            };
+            document.getElementById('enterpriseCode').textContent = codes[id];
+            
+            // Close dropdown
+            document.getElementById('enterpriseDropdown').classList.remove('show');
+            
+            // Mark selected item
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            showMessage(`已切换到：${name}`, 'success');
+        }
+
+        function submitApiApplication() {
+            const appName = document.getElementById('appName').value;
+            const appDesc = document.getElementById('appDesc').value;
+            const callbackUrl = document.getElementById('callbackUrl').value;
+            const techContact = document.getElementById('techContact').value;
+            const contactEmail = document.getElementById('contactEmail').value;
+            const expectedUsage = document.getElementById('expectedUsage').value;
+
+            if (!appName || !appDesc || !callbackUrl || !techContact || !contactEmail || !expectedUsage) {
+                showMessage('请填写所有必填字段', 'error');
+                return;
+            }
+
+            showMessage('正在提交申请...', 'info');
+            
+            setTimeout(() => {
+                // Switch to pending status
+                document.querySelectorAll('.api-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById('pending').classList.add('active');
+                
+                showMessage('API申请已提交，请等待审核', 'success');
+            }, 1500);
+        }
+
+        function editEnterpriseInfo() {
+            showMessage('编辑企业信息功能开发中', 'info');
+        }
+
+        function viewApiDocs() {
+            window.open('https://docs.energy-storage.com/api', '_blank');
+        }
+
+        function downloadSDK() {
+            showMessage('正在下载SDK...', 'info');
+            setTimeout(() => {
+                showMessage('SDK下载成功', 'success');
+            }, 1500);
+        }
+
+        function reapplyApi() {
+            document.querySelectorAll('.api-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('notApplied').classList.add('active');
+        }
+
+        function goHome() {
+            window.location.href = '../index.html';
+        }
+
+        function toggleLanguage() {
+            const langText = document.getElementById('lang-text');
+            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
+        }
+
+        function toggleTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            }
+        }
+
+        function toggleUserMenu() {
+            // User menu functionality
+        }
+
+        function showMessage(message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 'alert-info';
+            
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 80px; right: 20px; z-index: 9999;">
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            `;
+            
+            const alertElement = $(alertHtml);
+            $('body').append(alertElement);
+            
+            setTimeout(() => {
+                alertElement.alert('close');
+            }, 3000);
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const selector = document.querySelector('.enterprise-selector');
+            const dropdown = document.getElementById('enterpriseDropdown');
+            
+            if (!selector.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 工商储能管理系统</title>
+    <link rel="stylesheet" href="./sidebar.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #EBEDF4;
+            color: #333;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 0;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* 三区域指标布局 */
+        .metrics-sections {
+            display: flex;
+            height: 180px;
+        }
+
+        .metrics-section {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .metrics-section:nth-child(1) {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .metrics-section:nth-child(2) {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .metrics-section:nth-child(3) {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .metrics-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .metric-item {
+            text-align: center;
+        }
+
+        .metric-value {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        /* 三列图表布局 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+        }
+
+        /* 发电趋势图表 */
+        .power-trend-container {
+            grid-column: span 1;
+        }
+
+        /* 设备告警状态 */
+        .alarm-status-container {
+            grid-column: span 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .alarm-chart-wrapper {
+            position: relative;
+            height: 200px;
+            margin-bottom: 1rem;
+        }
+
+        .alarm-details {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .alarm-detail-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .alarm-count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .alarm-count.normal { color: #10b981; }
+        .alarm-count.warning { color: #f59e0b; }
+        .alarm-count.error { color: #ef4444; }
+
+        .alarm-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        /* 电站信息列表 */
+        .station-info-container {
+            grid-column: span 1;
+        }
+
+        .station-list {
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        .station-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .station-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .station-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .station-icon.normal { background: #dcfce7; color: #059669; }
+        .station-icon.warning { background: #fef3c7; color: #d97706; }
+        .station-icon.error { background: #fee2e2; color: #dc2626; }
+        .station-icon.offline { background: #f3f4f6; color: #6b7280; }
+
+        .station-info {
+            flex: 1;
+        }
+
+        .station-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .station-status {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .station-value {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        /* 环保效益统计 */
+        .environmental-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .env-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+
+        .env-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .env-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .env-icon.co2 {
+            background: linear-gradient(135deg, #84cc16, #65a30d);
+            color: white;
+        }
+
+        .env-icon.coal {
+            background: linear-gradient(135deg, #6b7280, #374151);
+            color: white;
+        }
+
+        .env-icon.tree {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .env-content {
+            flex: 1;
+        }
+
+        .env-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .env-label {
+            font-size: 1rem;
+            color: #6b7280;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #3b82f6, #06b6d4);
+        }
+
+        .stat-card.green::before {
+            background: linear-gradient(180deg, #10b981, #34d399);
+        }
+
+        .stat-card.orange::before {
+            background: linear-gradient(180deg, #f59e0b, #fbbf24);
+        }
+
+        .stat-card.purple::before {
+            background: linear-gradient(180deg, #8b5cf6, #a78bfa);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            color: white;
+        }
+
+        .stat-icon.green {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        .stat-icon.orange {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+
+        .stat-icon.purple {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .stat-unit {
+            font-size: 16px;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        .chart-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .station-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .station-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .station-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .station-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .station-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .station-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .station-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .station-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .station-status.online {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .station-status.offline {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .alert-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .alert-icon.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .alert-icon.critical {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .alert-desc {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .alert-time {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 1200px) {
+            .chart-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .station-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content">
+        <!-- Dashboard Header - 三区域指标 -->
+        <div class="dashboard-header">
+            <div class="metrics-sections">
+                <div class="metrics-section">
+                    <h3>功率</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-value" id="current-power">168.5</span>
+                            <span class="metric-label">实时功率(kW)</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-value" id="peak-power">245.8</span>
+                            <span class="metric-label">峰值功率(kW)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="metrics-section">
+                    <h3>生产</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-value" id="daily-generation">2,456</span>
+                            <span class="metric-label">当日发电(kWh)</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-value" id="monthly-generation">68,345</span>
+                            <span class="metric-label">当月发电(kWh)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="metrics-section">
+                    <h3>收益</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-value" id="daily-revenue">¥1,847</span>
+                            <span class="metric-label">当日收益</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-value" id="monthly-revenue">¥52,680</span>
+                            <span class="metric-label">当月收益</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 三列图表区域 -->
+        <div class="dashboard-grid">
+            <!-- 发电趋势 -->
+            <div class="chart-container power-trend-container">
+                <div class="chart-title">
+                    发电趋势
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-sm" style="padding: 2px 8px; font-size: 12px; background: #3b82f6; color: white; border: none; border-radius: 4px;">日</button>
+                        <button class="btn btn-sm" style="padding: 2px 8px; font-size: 12px; background: #e5e7eb; border: none; border-radius: 4px;">周</button>
+                        <button class="btn btn-sm" style="padding: 2px 8px; font-size: 12px; background: #e5e7eb; border: none; border-radius: 4px;">月</button>
+                        <button class="btn btn-sm" style="padding: 2px 8px; font-size: 12px; background: #e5e7eb; border: none; border-radius: 4px;">年</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="powerTrendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 设备告警状态 -->
+            <div class="chart-container alarm-status-container">
+                <div class="chart-title">设备告警</div>
+                <div class="alarm-chart-wrapper">
+                    <canvas id="alarmChart"></canvas>
+                </div>
+                <div class="alarm-details">
+                    <div class="alarm-detail-item">
+                        <div class="alarm-count normal" id="normal-count">104</div>
+                        <div class="alarm-label">正常</div>
+                    </div>
+                    <div class="alarm-detail-item">
+                        <div class="alarm-count warning" id="warning-count">19</div>
+                        <div class="alarm-label">告警</div>
+                    </div>
+                    <div class="alarm-detail-item">
+                        <div class="alarm-count error" id="error-count">0</div>
+                        <div class="alarm-label">故障</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 电站信息 -->
+            <div class="chart-container station-info-container">
+                <div class="chart-title">电站信息</div>
+                <div class="station-list">
+                    <div class="station-item">
+                        <div class="station-icon normal">🏭</div>
+                        <div class="station-info">
+                            <div class="station-name">朝阳路工业园储能站</div>
+                            <div class="station-status">装机容量: 5.2MW</div>
+                        </div>
+                        <div class="station-value">3</div>
+                    </div>
+                    <div class="station-item">
+                        <div class="station-icon normal">⭐</div>
+                        <div class="station-info">
+                            <div class="station-name">经开区商业中心</div>
+                            <div class="station-status">装机容量: 3.8MW</div>
+                        </div>
+                        <div class="station-value">17</div>
+                    </div>
+                    <div class="station-item">
+                        <div class="station-icon normal">✅</div>
+                        <div class="station-info">
+                            <div class="station-name">高新科技园区</div>
+                            <div class="station-status">装机容量: 4.1MW</div>
+                        </div>
+                        <div class="station-value">3</div>
+                    </div>
+                    <div class="station-item">
+                        <div class="station-icon warning">⚠️</div>
+                        <div class="station-info">
+                            <div class="station-name">物流园配送中心</div>
+                            <div class="station-status">装机容量: 2.5MW</div>
+                        </div>
+                        <div class="station-value">30</div>
+                    </div>
+                    <div class="station-item">
+                        <div class="station-icon normal">🔧</div>
+                        <div class="station-info">
+                            <div class="station-name">制造业基地A区</div>
+                            <div class="station-status">装机容量: 6.8MW</div>
+                        </div>
+                        <div class="station-value">195</div>
+                    </div>
+                    <div class="station-item">
+                        <div class="station-icon normal">💎</div>
+                        <div class="station-info">
+                            <div class="station-name">商务中心B栋</div>
+                            <div class="station-status">装机容量: 1.9MW</div>
+                        </div>
+                        <div class="station-value">82</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 环保效益统计 -->
+        <div class="environmental-section">
+            <div class="env-stats-grid">
+                <div class="env-stat-item">
+                    <div class="env-icon co2">🌿</div>
+                    <div class="env-content">
+                        <div class="env-value" id="co2-reduction">5,448.93</div>
+                        <div class="env-label">CO₂减排量(吨)</div>
+                    </div>
+                </div>
+                <div class="env-stat-item">
+                    <div class="env-icon coal">⛽</div>
+                    <div class="env-content">
+                        <div class="env-value" id="coal-saved">2,329.26</div>
+                        <div class="env-label">节约标煤(吨)</div>
+                    </div>
+                </div>
+                <div class="env-stat-item">
+                    <div class="env-icon tree">🌳</div>
+                    <div class="env-content">
+                        <div class="env-value" id="tree-equivalent">31.13</div>
+                        <div class="env-label">等效植树(亩)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="./sidebar.js"></script>
+    <script>
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化图表
+            initCharts();
+            
+            // 定时刷新数据
+            setInterval(updateData, 30000);
+        });
+
+        // 初始化图表
+        function initCharts() {
+            // 发电趋势图 - 面积图（类似阳光电源风格）
+            const powerTrendCtx = document.getElementById('powerTrendChart').getContext('2d');
+            new Chart(powerTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => String(i).padStart(2, '0') + ':00'),
+                    datasets: [{
+                        label: '发电',
+                        data: generatePowerTrendData(),
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.6)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                color: '#6b7280',
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                color: '#6b7280',
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+
+            // 设备告警圆环图
+            const alarmCtx = document.getElementById('alarmChart').getContext('2d');
+            new Chart(alarmCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['正常', '告警', '故障'],
+                    datasets: [{
+                        data: [104, 19, 0],
+                        backgroundColor: [
+                            '#10b981',
+                            '#f59e0b', 
+                            '#ef4444'
+                        ],
+                        borderWidth: 0,
+                        cutout: '75%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // 生成发电趋势数据（模拟阳光电源的曲线）
+        function generatePowerTrendData() {
+            const data = [];
+            for (let i = 0; i < 24; i++) {
+                if (i >= 6 && i <= 18) {
+                    // 白天发电，模拟日照曲线
+                    const peak = 12; // 正午
+                    const distance = Math.abs(i - peak);
+                    const baseValue = Math.max(0, 80 - distance * 8);
+                    data.push(baseValue + Math.random() * 20 - 10);
+                } else {
+                    // 夜间无发电
+                    data.push(Math.random() * 5);
+                }
+            }
+            return data;
+        }
+
+        // 更新数据
+        function updateData() {
+            // 更新顶部指标数据
+            updateMetricsData();
+            
+            // 更新环保数据
+            updateEnvironmentalData();
+        }
+        
+        // 更新指标数据
+        function updateMetricsData() {
+            // 模拟实时数据更新
+            document.getElementById('current-power').textContent = (Math.random() * 100 + 150).toFixed(1);
+            document.getElementById('peak-power').textContent = (Math.random() * 50 + 230).toFixed(1);
+            document.getElementById('daily-generation').textContent = (Math.random() * 500 + 2200).toFixed(0);
+            document.getElementById('monthly-generation').textContent = (Math.random() * 5000 + 65000).toFixed(0);
+            document.getElementById('daily-revenue').textContent = '¥' + (Math.random() * 200 + 1700).toFixed(0);
+            document.getElementById('monthly-revenue').textContent = '¥' + (Math.random() * 5000 + 50000).toFixed(0);
+        }
+        
+        // 更新环保数据
+        function updateEnvironmentalData() {
+            document.getElementById('co2-reduction').textContent = (Math.random() * 100 + 5400).toFixed(2);
+            document.getElementById('coal-saved').textContent = (Math.random() * 50 + 2300).toFixed(2);
+            document.getElementById('tree-equivalent').textContent = (Math.random() * 5 + 30).toFixed(2);
+        }
+    </script>
+</body>
+</html>

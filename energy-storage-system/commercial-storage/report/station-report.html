@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>电站报告 - 工商储能管理系统</title>
     <link rel="stylesheet" href="../sidebar.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -521,123 +524,7 @@
             }
         }
 
-        /* 顶部导航栏 */
-        .navbar {
-            background: white;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 0 2rem;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .navbar-left {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .page-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .nav-button {
-            padding: 0.5rem 1rem;
-            border: 1px solid #e2e8f0;
-            background: white;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            color: #64748b;
-            transition: all 150ms ease;
-        }
-
-        .nav-button:hover {
-            background: #f8fafc;
-            border-color: #cbd5e1;
-            color: #1e293b;
-        }
-
-        /* 用户下拉菜单样式 */
-        .user-dropdown {
-            position: relative;
-        }
-
-        .user-menu-btn {
-            position: relative;
-        }
-
-        .dropdown-arrow {
-            font-size: 0.75rem;
-            transition: transform 0.2s ease;
-        }
-
-        .user-menu-btn.active .dropdown-arrow {
-            transform: rotate(180deg);
-        }
-
-        .user-dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 0.5rem;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            min-width: 200px;
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.2s ease;
-        }
-
-        .user-dropdown-menu.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            color: #374151;
-            font-size: 0.875rem;
-            transition: background-color 0.15s ease;
-        }
-
-        .dropdown-item:hover {
-            background: #f8fafc;
-        }
-
-        .dropdown-item.logout:hover {
-            background: #fef2f2;
-            color: #dc2626;
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background: #e2e8f0;
-            margin: 0.25rem 0;
-        }
+        /* Navigation styles are now handled by common-nav.js */
     </style>
 </head>
 <body>
@@ -645,43 +532,6 @@
     <div id="sidebar-container"></div>
     
     <div class="main-content">
-        <!-- 顶部导航栏 -->
-        <nav class="navbar">
-            <div class="navbar-left">
-                <button class="nav-button" onclick="toggleSidebar()">
-                    <span>☰</span>
-                </button>
-                <button class="nav-button" onclick="goBack()" title="返回场景选择">
-                    <span>←</span>
-                </button>
-                <h1 class="page-title">电站报告</h1>
-            </div>
-            <div class="navbar-right">
-                <button class="nav-button" onclick="toggleLanguage()">
-                    <span>🌐</span>
-                    <span id="lang-text">中文</span>
-                </button>
-                <button class="nav-button" onclick="toggleTheme()">
-                    <span id="theme-icon">🌙</span>
-                </button>
-                <div class="user-dropdown">
-                    <button class="nav-button user-menu-btn" onclick="toggleUserMenu()">
-                        <span>👤</span>
-                        <span>管理员</span>
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="user-dropdown-menu" id="userDropdownMenu">
-                        <div class="dropdown-item" onclick="showAccountInfo()">
-                            <span>账号信息</span>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-item logout" onclick="confirmLogout()">
-                            <span>退出</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
 
         <div class="content">
             <!-- 操作栏 -->
@@ -1035,6 +885,8 @@
     <script>
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
+            
+            // Initialize charts
             initCharts();
         });
 
@@ -1205,77 +1057,8 @@
             }, 3000);
         }
 
-        // 用户下拉菜单功能
-        function toggleUserMenu() {
-            console.log('toggleUserMenu called');
-            const dropdown = document.getElementById('userDropdownMenu');
-            const button = document.querySelector('.user-menu-btn');
-            
-            if (dropdown && button) {
-                dropdown.classList.toggle('show');
-                button.classList.toggle('active');
-            }
-        }
 
-        // 显示账号信息
-        function showAccountInfo() {
-            document.getElementById('userDropdownMenu').classList.remove('show');
-            document.querySelector('.user-menu-btn').classList.remove('active');
-            alert('账号信息功能开发中');
-        }
-
-        // 确认退出
-        function confirmLogout() {
-            document.getElementById('userDropdownMenu').classList.remove('show');
-            document.querySelector('.user-menu-btn').classList.remove('active');
-            
-            if (confirm('您确定要退出系统吗？')) {
-                alert('正在退出...');
-                setTimeout(() => {
-                    window.location.href = '../../index.html';
-                }, 1000);
-            }
-        }
-
-        // 点击外部关闭下拉菜单
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('userDropdownMenu');
-            const button = document.querySelector('.user-menu-btn');
-            
-            if (dropdown && button && !button.contains(event.target)) {
-                dropdown.classList.remove('show');
-                button.classList.remove('active');
-            }
-        });
-
-        // 通用工具函数
-        function toggleSidebar() {
-            if (window.sidebar) {
-                window.sidebar.toggle();
-            }
-        }
-
-        function goBack() {
-            history.back();
-        }
-
-        function toggleLanguage() {
-            const langText = document.getElementById('lang-text');
-            langText.textContent = langText.textContent === '中文' ? 'EN' : '中文';
-        }
-
-        function toggleTheme() {
-            const themeIcon = document.getElementById('theme-icon');
-            const body = document.body;
-            
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                themeIcon.textContent = '🌙';
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                themeIcon.textContent = '☀️';
-            }
-        }
+        // Navigation functions are now handled by common-nav.js
 
         function showMessage(message, type) {
             const messageEl = document.createElement('div');
@@ -1463,7 +1246,26 @@
     <script src="../sidebar.js"></script>
     
     <!-- 引入订阅模态框组件 -->
-    <script src="subscription-modal.js"></script>
+    <script src="subscription-modal-v2.js"></script>
+    
+    <script>
+        // 添加一个调试函数
+        function debugSubscriptionModal() {
+            console.log('Debug info:');
+            console.log('jQuery loaded:', typeof $ !== 'undefined');
+            console.log('Bootstrap modal available:', typeof $.fn.modal !== 'undefined');
+            console.log('subscriptionModalV2:', window.subscriptionModalV2);
+            console.log('Modal element exists:', $('#subscriptionModalV2').length > 0);
+            
+            // 尝试手动显示模态框
+            if ($('#subscriptionModalV2').length > 0) {
+                $('#subscriptionModalV2').modal('show');
+                console.log('Modal shown manually');
+            } else {
+                console.error('Modal element not found in DOM');
+            }
+        }
+    </script>
     
     <style>
         /* 模态框样式 */
@@ -1553,8 +1355,15 @@
         
         // 显示订阅模态框
         function showSubscriptionModal() {
-            if (window.subscriptionModal) {
-                window.subscriptionModal.show();
+            console.log('showSubscriptionModal called');
+            console.log('window.subscriptionModalV2:', window.subscriptionModalV2);
+            
+            if (window.subscriptionModalV2) {
+                window.subscriptionModalV2.show();
+            } else {
+                console.error('subscriptionModalV2 not found');
+                // 如果模态框组件还没加载，尝试直接显示
+                $('#subscriptionModalV2').modal('show');
             }
         }
         
